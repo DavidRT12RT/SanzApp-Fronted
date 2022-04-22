@@ -1,0 +1,26 @@
+¿Que es Redux?
+    Es un Contenedor predecible del estado de nuestra aplicación
+    
+    ¿Que quiere decir esto ?
+        Es una forma de controlar donde se encuentra la 
+        información de nuestra aplicación en todo momento y 
+        tambien ayuda  que la modificación de la información sea 
+        de una sola via con el objetivo de prevenir fallos 
+        acidentales en la misma
+
+¿Para que sirve?
+    Es una forma de establecer el estado de la aplicación que 
+    es independiente al framework o libreria que utilizemos 
+    Redux es un patron
+
+Conceptos de Redux
+
+    Store:
+    Ahi es donde está la información que mis componenetes 
+    consumiran.
+    Cuando necesito información voy al store vaya.
+
+
+Reducer
+    Es una función pura que maneja un estado
+ 
