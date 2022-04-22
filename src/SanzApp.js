@@ -1,9 +1,11 @@
 import { Provider } from "react-redux";
 
-import { AppRouter } from "./routers/AppRouter";
+//import { AppRouter } from "./routers/AppRouter";
+import {AppRouter} from "./routers/AppRouterV6";
+
 import { store } from "./store/store";
 
-export const JournalApp = () => {
+export const SanzApp = () => {
     return (
         <Provider store={store}>
             <AppRouter />;

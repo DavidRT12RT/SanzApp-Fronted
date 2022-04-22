@@ -1,9 +1,23 @@
 import { Link } from "react-router-dom";
 import { useForm } from "../../hooks/useForm";
 import validator from 'validator';
-export const RegisterScreen = () => {
-    //useForm
+//Hooks de react redux
+import { useDispatch, useSelector } from "react-redux";
+import { removeError, setError } from "../../actions/uiActions";
+import { startRegister } from "../../actions/authActions";
 
+export const RegisterScreen = () => {
+    //Sacar información del state
+    const state = useSelector( (state)=> state );
+    const {msgError} = state.ui;
+    console.log(msgError);
+
+
+    console.log(state);
+
+    //el dispatch le envia las acciones al reducer
+    const distpach = useDispatch();
+    //useForm
     const [formValues, handleInputChange] = useForm({
         name: "name",
         email: "example@gmail.com",
@@ -16,23 +30,24 @@ export const RegisterScreen = () => {
     const handleRegister = (e) => {
         e.preventDefault();
         if(isFormValid()){
-            console.log("Formulario correcto!");
+            //Disparar la acción
+            distpach(startRegister(name,email,password)); 
         }
     };
 
     //Funcion para validar formulario
     const isFormValid = () =>{
         if(name.trim().length === 0){
-            console.log("Name is required!");
+            distpach(setError("Nombre es requerido!"));
             return false;
         }else if(!validator.isEmail(email)){
-            console.log("Email is not valid!");
+            distpach(setError("Email no es valido!"));
             return false;
         }else if(password !== password2 || password.length <5 ){
-            console.log("Password must be 6 characters and match");
+            distpach(setError("La contraseña NO es valida!"));
             return false;
         }
-           
+        distpach(removeError());  
         return true;
     }
 
@@ -41,9 +56,13 @@ export const RegisterScreen = () => {
         <>
             <h3 className="auth__title">Register</h3>
             <form onSubmit={handleRegister}>
-                <div className="auth__alert-error d-none">
-                    Hola mundo!
-                </div>
+                {
+                    msgError && 
+                    (<div className="auth__alert-error d-none">
+                        {msgError} 
+                    </div>)
+                }
+               
                 <input
                     type="text"
                     placeholder="Name"
