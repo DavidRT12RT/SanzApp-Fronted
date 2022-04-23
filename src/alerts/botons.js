@@ -1,9 +1,9 @@
 import Swal from "sweetalert2";
 
 
-export const success = () =>{Swal.fire({
+export const success = (msg="") =>{Swal.fire({
             icon:"success",
-            title:"Haz accedido correctamente!",
+            title:msg,
             showConfirmButton:false,
             timer:1500
         });
@@ -11,12 +11,9 @@ export const success = () =>{Swal.fire({
 
 
 export const error = (mensaje) =>{
-
             Swal.fire({
                 icon:"error",
                 title:mensaje,
-                showConfirmButton:false,
-                timer:1500,
             
             });
 }

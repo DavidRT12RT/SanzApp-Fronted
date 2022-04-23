@@ -12,3 +12,10 @@ ody {
 .margin-top{
     margin-top: 120px;
 }
+
+.bgRegistro {
+    background-image: url("./assets//BGRegistro.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 80%;
+}

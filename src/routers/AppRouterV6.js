@@ -26,7 +26,7 @@ export const AppRouter = ()=>{
                         <LoginScreen/>
                     </PublicRoute>
                 } />
-              <Route path="/registro" elementent={
+              <Route path="/registro" element={
               <PublicRoute>
                   <RegisterScreen/>
               </PublicRoute>
