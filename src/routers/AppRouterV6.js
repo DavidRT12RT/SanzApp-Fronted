@@ -1,13 +1,12 @@
+//React
 import {BrowserRouter, Route, Routes} from "react-router-dom"
-import {ComunRoutes} from "./ComunRoutes";
+//Importaciones propias
 import {PrivateRoute} from "./PrivateRoute";
-
 import { ApplicationRoutes } from "./ApplicationRoutes";
 import { LandingPage } from "../components/landingPage/LandingPage";
 import { About } from "../components/aboutUs/About";
 import { Features } from "../components/features/Features";
 import { Contact } from "../components/contact/Contact";
-import { AuthRouterV6 } from "./AuthRouterV6";
 import { Component404 } from "../components/component404/Component404";
 import { LoginScreen } from "../components/auth/LoginScreen";
 import { RegisterScreen } from "../components/auth/RegisterScreen";

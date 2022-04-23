@@ -3,45 +3,34 @@ import {Link, useNavigate} from "react-router-dom";
 import {useForm} from "../../hooks/useForm";
 import './Style.css';
 //import "../../Styles/style.css";
-import Swal from "sweetalert2";
 import { Navbar } from "../ui/NavbarBootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { startLoginEmailPassword } from "../../actions/authActions";
 
 //Note: You must use htmlfor instead of for in label tags when react is use 
-
+    
+   
+    
 export const LoginScreen = () => {
 
-    const navigate = useNavigate();
-   
     //Hook personalizado para el formulario
-    const [values,handleInputChange] = useForm({
-        email:'',
-        password:''
+    const [formValues,handleInputChange] = useForm({
+        email:'examle@gmail.com',
+        password:'123456'
     });
 
-    //Destructurando los valores para el formulario
+    const {email,password} = formValues;
 
-    const {email,password} = values;
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    //State
+    const loading = useSelector((state)=> state.ui.loading);
 
+    
+       
     const handleLogin=(e)=>{
         e.preventDefault();
-        //const correo = document.querySelector("#email").value;
-        const correo = email;
-        Swal.fire({
-            position:"top-center",
-            width:"50%",
-            icon:"success",
-            title:"Haz accedido correctamente!",
-            showConfirmButton:false,
-            timer:1500
-        });
-        //Look for lastPath in localStorage 
-        const lastPath = localStorage.getItem('lastPath') || "/aplicacion";
-        //replacing the history to avoid the user can go back in log page after login
-        /*navigate(lastPath,{
-            replace:true
-        });
-        */
-       navigate("/aplicacion/");
+        dispatch(startLoginEmailPassword(email,password));
     }
     
 
@@ -57,16 +46,16 @@ export const LoginScreen = () => {
                     <img src={require('./assets/logo.png')} width="100" alt="logo"/>
                 </div>
                 <h2 className="fw-bold text-center py-5">Bienvenido</h2>
-                <form id="iniciarSesion" className="needs-validation" noValidate>
+                <form id="iniciarSesion" className="needs-validation" noValidate onSubmit={handleLogin}>
                     <div className="mb-4">
-                        <label for="email" className="form-label">Correo Electronico</label>
+                        <label className="form-label">Correo Electronico</label>
                         <input 
                             type="email" 
                             name="email" 
                             value={email}
                             onChange={handleInputChange}
+                            autoComplete = "disabled"
                             id="email"  
-                            placeholder="ejemplo@hotmail.com"
                             className="form-control" 
                             required/>
 
@@ -74,7 +63,7 @@ export const LoginScreen = () => {
                         <div className="invalid-feedback">Complete los datos</div>
                     </div>
                     <div className="mb-4">
-                        <label for="password" className="form-label">Contraseña</label>
+                        <label className="form-label">Contraseña</label>
 
                         <input 
                             type="password" 
@@ -90,11 +79,11 @@ export const LoginScreen = () => {
                         <div className="invalid-feedback">Complete los datos</div>
                     </div>
                     <div className="mb4 form-check">
-                        <input type="checkbox" name="connected" className="form-check-input" id="" checked/>
-                        <label for="connected" className="form-check-label">Permanecer conectado</label>
+                        <input type="checkbox" name="connected" className="form-check-input" id="" />
+                        <label className="form-check-label">Permanecer conectado</label>
                     </div>
                     <div className="d-grid mt-5">
-                        <button type="submit" onClick={handleLogin} className="btn btn-warning" id="btnEnviar">Login</button>
+                        <button type="submit" className="btn btn-warning" id="btnEnviar" disabled={loading}>Login</button>
                     </div>
                     <span className="w-100 mt-5 d-flex justify-content-center">No tienes cuenta? </span>
                     <div className="d-flex justify-content-center px-5 w-auto">

@@ -1,22 +1,36 @@
 import { types } from "../types/types";
-import { firebase, googleAuthProvider } from "../firebase/firebase-config";
 import { uistartLoading, uiStopLoading } from "./uiActions";
-import {sucess} from '../alerts/botons';
+import {success} from '../alerts/botons';
 
 
 export const startLoginEmailPassword = (email, password) => {
 
     
    
+    //const url ="http://localhost:8080/api/auth/login";
     return (dispatch) => {
         dispatch(uistartLoading());
         console.log("Haciendo petición a Backend!!!");
-        setTimeout(() => {
-            dispatch(uiStopLoading());
-        }, 3500);
-        dispatch(login(123,"Pedro"));
+        const payload = {
+            "correo":email,
+            "password":password
+        };
+        console.log(payload);
+        fetch("api/auth/login",{
+            method:'POST',
+            body:JSON.stringify(payload)
+        })
+            .then( (datos) =>{
+                console.log(datos);
+                dispatch(login(datos.usuario.uid,datos.usuario.nombre));
+                success();
+                dispatch(uiStopLoading());
+            })
+            .catch(e=>{
+                console.log(e);
+                dispatch(uiStopLoading());
+            });
         //Llamar API para logearse 
-        sucess();
     };
 };
 
@@ -32,16 +46,7 @@ export const startRegister = () =>{
         dispatch(login(123,"Pedrita!"));
     };
 }
-export const startGoogleLogin = () => {
-    return (dispatch) => {
-        firebase
-            .auth()
-            .signInWithPopup(googleAuthProvider)
-            .then(({ user }) => {
-                dispatch(login(user.id, user.displayName));
-            });
-    };
-};
+
 
 //Accion que pondra en el store
 export const login = (uid, displayName) => ({

@@ -1,13 +1,11 @@
 import Swal from "sweetalert2";
 
-export const sucess = () =>{
-    Swal.fire({
-        position:"top-center",
-        //heightAuto:false,
-        width:"20%",
-        icon:"success",
-        title:"Logeo correcto!",
-        showConfirmButton:false,
-        timer:1500
-    }); 
-}
+
+export const success = () =>{Swal.fire({
+            width:"50%",
+            icon:"success",
+            title:"Haz accedido correctamente!",
+            showConfirmButton:false,
+            timer:1500
+        });
+    }
