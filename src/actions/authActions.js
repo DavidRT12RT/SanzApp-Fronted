@@ -1,36 +1,34 @@
 import { types } from "../types/types";
 import { uistartLoading, uiStopLoading } from "./uiActions";
-import {success} from '../alerts/botons';
+import {error, success} from '../alerts/botons';
+import {fetchSinToken} from "../helpers/fetch";
 
 
-export const startLoginEmailPassword = (email, password) => {
-
+export const startLogincorreoPassword = (correo, password) => {
     
    
-    //const url ="http://localhost:8080/api/auth/login";
-    return (dispatch) => {
+    return async(dispatch) => {
+
         dispatch(uistartLoading());
-        console.log("Haciendo petición a Backend!!!");
-        const payload = {
-            "correo":email,
-            "password":password
-        };
-        console.log(payload);
-        fetch("api/auth/login",{
-            method:'POST',
-            body:JSON.stringify(payload)
-        })
-            .then( (datos) =>{
-                console.log(datos);
-                dispatch(login(datos.usuario.uid,datos.usuario.nombre));
-                success();
-                dispatch(uiStopLoading());
-            })
-            .catch(e=>{
-                console.log(e);
-                dispatch(uiStopLoading());
-            });
         //Llamar API para logearse 
+        const resp = await fetchSinToken("login",{correo,password},"POST");
+        const body = await resp.json();
+
+        if(resp.status == 200){
+            localStorage.setItem("token",body.token);
+            localStorage.setItem("token-init-date",new Date().getTime());
+            dispatch(uiStopLoading());
+            //dispatch al store para grabar el usuario
+            dispatch(login({
+                uid:body.usuario.uid,
+                name:body.usuario.nombre
+            }));
+            success();
+        } else {
+            error(body.msg);
+            dispatch(uiStopLoading());
+        }
+
     };
 };
 
@@ -49,12 +47,9 @@ export const startRegister = () =>{
 
 
 //Accion que pondra en el store
-export const login = (uid, displayName) => ({
+export const login = (user) => ({
     type: types.login,
-    payload: {
-        uid,
-        displayName,
-    },
+    payload: user
 });
 
 

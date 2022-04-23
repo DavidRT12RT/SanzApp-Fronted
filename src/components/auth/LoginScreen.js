@@ -5,7 +5,7 @@ import './Style.css';
 //import "../../Styles/style.css";
 import { Navbar } from "../ui/NavbarBootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { startLoginEmailPassword } from "../../actions/authActions";
+import { startLogincorreoPassword } from "../../actions/authActions";
 
 //Note: You must use htmlfor instead of for in label tags when react is use 
     
@@ -15,28 +15,28 @@ export const LoginScreen = () => {
 
     //Hook personalizado para el formulario
     const [formValues,handleInputChange] = useForm({
-        email:'examle@gmail.com',
+        correo:'examle@gmail.com',
         password:'123456'
     });
 
-    const {email,password} = formValues;
+    const {correo,password} = formValues;
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
     //State
     const loading = useSelector((state)=> state.ui.loading);
 
+    const state = useSelector((state)=> state);
     
        
     const handleLogin=(e)=>{
         e.preventDefault();
-        dispatch(startLoginEmailPassword(email,password));
+        dispatch(startLogincorreoPassword(correo,password));
     }
     
 
     return <>
         <Navbar/>
-    (
     <div className="w-100 d-md-block container w-75 bg-primary rounded shadow margin-top">
         <div className="row align-items-lg-stretch">
             <div className="col bg d-none d-lg-block col-md-5 col-lg-5 col-xl-6 rounded">
@@ -50,12 +50,12 @@ export const LoginScreen = () => {
                     <div className="mb-4">
                         <label className="form-label">Correo Electronico</label>
                         <input 
-                            type="email" 
-                            name="email" 
-                            value={email}
+                            type="correo" 
+                            name="correo" 
+                            value={correo}
                             onChange={handleInputChange}
                             autoComplete = "disabled"
-                            id="email"  
+                            id="correo"  
                             className="form-control" 
                             required/>
 
@@ -87,7 +87,7 @@ export const LoginScreen = () => {
                     </div>
                     <span className="w-100 mt-5 d-flex justify-content-center">No tienes cuenta? </span>
                     <div className="d-flex justify-content-center px-5 w-auto">
-                        <span className="mx-2"><Link to="#">Registrate</Link></span>
+                        <span className="mx-2"><Link to="/registro">Registrate</Link></span>
                         <span ><Link to="#">Recuperar password</Link></span>
                     </div>
                 </form>
