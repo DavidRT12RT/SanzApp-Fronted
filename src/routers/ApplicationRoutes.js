@@ -11,7 +11,11 @@ export const ApplicationRoutes = () => {
             <AplicationNavbar/> 
             <Routes>
                 <Route path="/" element={<AplicationLandingPage />} />
-                <Route path="games" element={<Games />} />
+                <Route path="/aplicacion" element={<AplicationLandingPage />} />
+                <Route path="/inventario" element={<Games />} />
+                <Route path="/obras" element={<Games />} />
+                <Route path="/calendario" element={<Games />} />
+                <Route path="/camionetas" element={<Games />} />
                 <Route path="/*" element={<Component404 />} />
             </Routes>
         </>

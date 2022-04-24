@@ -13,7 +13,9 @@ export const startLogincorreoPassword = (correo, password) => {
         //Llamar API para logearse 
         const resp = await fetchSinToken("/auth/login",{correo,password},"POST");
         const body = await resp.json();
+        let mensaje = "";
 
+        console.log(body);
         if(resp.status == 200){
             localStorage.setItem("token",body.token);
             localStorage.setItem("token-init-date",new Date().getTime());
@@ -23,11 +25,19 @@ export const startLogincorreoPassword = (correo, password) => {
                 uid:body.usuario.uid,
                 name:body.usuario.nombre
             }));
-            success("Inicio de sección con exito!");
+            success("inicio de sesión con éxito");
             dispatch(uiStopLoading());
         } else {
-            error(body.msg);
-            dispatch(uiStopLoading());
+            if(body?.errors){
+                    body.errors.forEach((object)=>{
+                        mensaje += object.msg;
+                        mensaje += "\n";
+                    });
+                    error(mensaje);
+                }else{
+                    error(body.msg);
+                }
+                dispatch(uiStopLoading());
         }
 
     };

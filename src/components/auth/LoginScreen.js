@@ -78,17 +78,12 @@ export const LoginScreen = () => {
                         <div className="valid-feedback">Luce bien!</div>
                         <div className="invalid-feedback">Complete los datos</div>
                     </div>
-                    <div className="mb4 form-check">
-                        <input type="checkbox" name="connected" className="form-check-input" id="" />
-                        <label className="form-check-label">Permanecer conectado</label>
-                    </div>
                     <div className="d-grid mt-5">
                         <button type="submit" className="btn btn-warning" id="btnEnviar" disabled={loading}>Login</button>
                     </div>
                     <span className="w-100 mt-5 d-flex justify-content-center">No tienes cuenta? </span>
                     <div className="d-flex justify-content-center px-5 w-auto">
                         <span className="mx-2"><Link to="/registro">Registrate</Link></span>
-                        <span ><Link to="#">Recuperar password</Link></span>
                     </div>
                 </form>
                 

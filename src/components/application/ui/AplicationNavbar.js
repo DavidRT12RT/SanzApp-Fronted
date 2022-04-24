@@ -14,33 +14,50 @@ export const AplicationNavbar = () =>{
     //handleLogout
     const handleLogout=()=>{
         dispatch(startLogout());
-        //navigate('/',{replace:true});
+        navigate('/',{replace:true});
     }
 
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container-fluid">
-                <Link to="/aplication/" className="navbar-brand">Pokemon Workflow</Link>
+                <Link to="/aplicacion/" className="navbar-brand">Sanz espacio de trabajo</Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarText">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link" + (isActive ? " active" : "")
-                            } to="/aplication/" aria-current="page">Home</NavLink>
+                            } to="/aplicacion/" aria-current="page">Inicio</NavLink>
                         </li>
+
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link" + (isActive ? " active" : "")
-                            } to="/aplication/orders" aria-current="page">Orders</NavLink>
+                            } to="/aplicacion/inventario" aria-current="page">Inventario almacen</NavLink>
                         </li>
+
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link" + (isActive ? " active" : "")
-                            } to="/aplication/products" aria-current="page">Products</NavLink></li>
+                            } to="/aplicacion/obras" aria-current="page">Obras</NavLink>
+                        </li>
+
+                        <li className="nav-item">
+                            <NavLink className={({isActive})=>
+                                "nav-link" + (isActive ? " active" : "")
+                            } to="/aplicacion/calendario" aria-current="page">Calendario</NavLink>
+                        </li>
+
+                        <li className="nav-item">
+                            <NavLink className={({isActive})=>
+                                "nav-link" + (isActive ? " active" : "")
+                            } to="/aplicacion/camionetas" aria-current="page">Control de camionetas</NavLink>
+                        </li>
+
                     </ul>
                     <span className="navbar-text">
                             {nombre}

@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 
 export const Footer = () =>{
     return (
-        <section className="py-5 text-center container-fluid color-fondo"> 
+        <section className="py-5 text-center container-fluid color-fondo marginSpecial"> 
             <div className="row py-lg-5">
                 <div className="col-lg-6 col-md-8 mx-auto">
                     <img className="d-block mb-4 mx-auto" src={require('../assets/imgs/logoSanz.png')} alt="" width="100"/>

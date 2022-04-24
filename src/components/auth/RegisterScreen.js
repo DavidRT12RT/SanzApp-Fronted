@@ -166,7 +166,8 @@ export const RegisterScreen = () => {
                     <div className="d-grid mt-5">
                         <button type="submit" className="btn btn-warning" id="btnEnviar" disabled={loading}>Registrar usuario</button>
                     </div>
-                    <div className="d-flex justify-content-center px-5 w-auto mt-3">
+                    <span className="w-100 mt-5 d-flex justify-content-center">¿Ya tienes una cuenta?</span>
+                    <div className="d-flex justify-content-center px-5 w-auto">
                         <span className="mx-2"><Link to="/login">Login</Link></span>
                     </div>
                 </form>
