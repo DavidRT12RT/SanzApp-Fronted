@@ -14,6 +14,6 @@ export const error = (mensaje) =>{
             Swal.fire({
                 icon:"error",
                 title:mensaje,
-            
+                confirmButtonColor: "#ffc107",
             });
 }

@@ -11,12 +11,23 @@ export const authReducer = (state = initialState, action) => {
             return {
                 //Informacion que viene de la API
                 ...state,
-                checking:false,
-                ...action.payload
+                ...action.payload,
+                checking:false
             };
+
+        case types.authCheckingFinish:
+            return {
+                ...state,
+                checking:false
+            }
+
         case types.logout:
-            return {};
+            return {
+                checking:false
+            };
+
         default:
             return state;
     }
 };
+

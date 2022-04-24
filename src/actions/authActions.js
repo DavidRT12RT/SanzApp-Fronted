@@ -24,6 +24,7 @@ export const startLogincorreoPassword = (correo, password) => {
                 name:body.usuario.nombre
             }));
             success("Inicio de sección con exito!");
+            dispatch(uiStopLoading());
         } else {
             error(body.msg);
             dispatch(uiStopLoading());
@@ -79,6 +80,7 @@ export const login = (user) => ({
 export const startLogout = () => {
     return (dispatch) =>{
         //Borrar token localstorage
+        localStorage.clear();
         dispatch(logout());
     }
 }
@@ -89,3 +91,26 @@ export const logout = () =>({
 });
 
 
+export const startChecking = () =>{
+    return async (dispatch) => {
+        const resp = await fetchConToken("/auth/renew");
+        const body = await resp.json();
+
+        if(resp.status == 200){
+            localStorage.setItem("token",body.token);
+            localStorage.setItem("token-init-date",new Date().getTime());
+            dispatch(login({
+                uid:body.uid,
+                name:body.nombre
+            }));
+
+        }else{
+            dispatch(checkingFinish());
+        }
+
+    }
+}
+
+const checkingFinish = () =>({
+    type:types.authCheckingFinish
+});

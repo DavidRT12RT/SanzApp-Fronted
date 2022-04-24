@@ -11,5 +11,9 @@ export const types = {
 
 
     uiStartLoading : "[UI] Start loading",
-    uiStopLoading : "[UI] Stop Loading"
+    uiStopLoading : "[UI] Stop Loading",
+
+    authCheckingFinish : "[auth] Finish checking login state"
+
+
 };

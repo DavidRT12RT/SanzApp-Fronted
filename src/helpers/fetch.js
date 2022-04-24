@@ -20,14 +20,16 @@ const fetchSinToken = (endpoint,data,method = "GET") =>{
     }
 }
 
-const fetchConToken = (endpoint,data,method = "POST") =>{
+const fetchConToken = (endpoint,data,method = "GET") =>{
     const url = `${baseUrl}${endpoint}`;
+    const token = localStorage.getItem('token') || "";
 
     switch (method) {
         case "GET":
             return fetch(url,{
+                method,
                 headers:{
-                    'x-token':localStorage.getItem('token')
+                    'x-token':token
                 }
             }) 
         case "POST":
@@ -35,7 +37,7 @@ const fetchConToken = (endpoint,data,method = "POST") =>{
                 method,
                 headers:{
                     'Content-type':'application/json',
-                    'x-token':localStorage.getItem("token")
+                    'x-token':token
                 },
                 body:JSON.stringify(data)
             })

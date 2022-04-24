@@ -1,13 +1,20 @@
+import { useDispatch, useSelector } from "react-redux";
 import {Link, NavLink, useNavigate} from "react-router-dom"
+import { startLogout } from "../../../actions/authActions";
 //import {AuthContext} from "../../../auth/authContext";
 
 export const AplicationNavbar = () =>{
     //Hook for change the state of the user and navigate
-    const navigate =useNavigate();
+    const navigate = useNavigate();
 
+
+    let nombre = useSelector(state => state.auth.name);
+
+    const dispatch = useDispatch();
     //handleLogout
     const handleLogout=()=>{
-        navigate('/',{replace:true});
+        dispatch(startLogout());
+        //navigate('/',{replace:true});
     }
 
 
@@ -36,6 +43,7 @@ export const AplicationNavbar = () =>{
                             } to="/aplication/products" aria-current="page">Products</NavLink></li>
                     </ul>
                     <span className="navbar-text">
+                            {nombre}
                     </span>
                     <button className="btn btn-outline-warning mx-3" onClick={handleLogout}>Logout</button>
                 </div>

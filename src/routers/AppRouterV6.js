@@ -11,8 +11,25 @@ import { Component404 } from "../components/component404/Component404";
 import { LoginScreen } from "../components/auth/LoginScreen";
 import { RegisterScreen } from "../components/auth/RegisterScreen";
 import { PublicRoute } from "./PublicRoute";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { startChecking } from "../actions/authActions";
 
 export const AppRouter = ()=>{
+
+    const dispatch = useDispatch();
+    const {checking,uid} =  useSelector(state => state.auth);
+
+    //Esta al pendiente de el uid que nunca sea null o lo envia al login
+    useEffect(()=>{
+        dispatch(startChecking());
+    },[dispatch]);
+
+    //Cargando mientras se hace la autenticación automatica
+
+    if(checking){
+      return <h5>Espere...</h5>;
+    }
     return (
       <BrowserRouter>
           <Routes>
@@ -22,17 +39,17 @@ export const AppRouter = ()=>{
               <Route path="/obras" element={<Features/>}/>
               <Route path="/contacto" element={<Contact/>}/>
                 <Route path="/login" element={
-                    <PublicRoute>
+                    <PublicRoute uid={uid}>
                         <LoginScreen/>
                     </PublicRoute>
                 } />
               <Route path="/registro" element={
-              <PublicRoute>
+              <PublicRoute uid={uid}>
                   <RegisterScreen/>
               </PublicRoute>
               } />
               <Route path="/aplicacion/*" element={
-                  <PrivateRoute>
+                  <PrivateRoute uid={uid}>
                       <ApplicationRoutes/>
                   </PrivateRoute>
                 }
