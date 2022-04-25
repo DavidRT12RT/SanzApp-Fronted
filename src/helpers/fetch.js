@@ -1,3 +1,5 @@
+
+
 //fetch con token y sin token
 const baseUrl = "https://backendsanzconstructora.herokuapp.com/api";
 const fetchSinToken = (endpoint,data,method = "GET") =>{
@@ -46,7 +48,16 @@ const fetchConToken = (endpoint,data,method = "GET") =>{
     }
 }
 
+
+const fetchEmpleados = async(endpoint="/usuarios",method = "GET") =>{
+    const url = `${baseUrl}${endpoint}`;
+    const token = localStorage.getItem('token') || "";
+    return fetch(url,{method,headers:{'x-token':token}});
+
+}
+
 export {
     fetchSinToken,
-    fetchConToken
+    fetchConToken,
+    fetchEmpleados
 }

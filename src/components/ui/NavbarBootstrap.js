@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 /*Link y Navlink son componentes 
  1.-Link es como un enlace normalito y se acompa�a con la etiqueta to
@@ -9,6 +10,8 @@ import { Link, NavLink } from "react-router-dom";
  */
 
 export const Navbar = () => {
+    const {name} = useSelector(state => state.auth);
+    
     return (
         <nav className="navbar navbar-expand-sm navbar-light bg-light fixed-top mb-5">
             <div className="container">
@@ -91,7 +94,7 @@ export const Navbar = () => {
                         className={({isActive})=>
                             "btn btn-warning " + (isActive ? " active": "")
                         }>
-                        Login
+                        {name ? "Sanz App" : "Login"}
                    </NavLink>
                 </div>
             </div>

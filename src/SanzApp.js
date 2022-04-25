@@ -8,7 +8,7 @@ import { store } from "./store/store";
 export const SanzApp = () => {
     return (
         <Provider store={store}>
-            <AppRouter />;
+            <AppRouter />
         </Provider>
     );
 };

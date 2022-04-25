@@ -45,6 +45,12 @@ export const AplicationNavbar = () =>{
                                 "nav-link" + (isActive ? " active" : "")
                             } to="/aplicacion/obras" aria-current="page">Obras</NavLink>
                         </li>
+                         
+                         <li className="nav-item">
+                            <NavLink className={({isActive})=>
+                                "nav-link" + (isActive ? " active" : "")
+                            } to="/aplicacion/empleados" aria-current="page">Empleados</NavLink>
+                        </li>
 
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
@@ -57,6 +63,8 @@ export const AplicationNavbar = () =>{
                                 "nav-link" + (isActive ? " active" : "")
                             } to="/aplicacion/camionetas" aria-current="page">Control de camionetas</NavLink>
                         </li>
+
+                       
 
                     </ul>
                     <span className="navbar-text">
