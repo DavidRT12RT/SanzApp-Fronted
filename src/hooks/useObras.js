@@ -1,16 +1,16 @@
 import { useEffect , useState } from 'react'
 import { fetchConToken } from '../helpers/fetch';
 
-export const useEmpleados = () => {
+export const useObras = () => {
 
     const [isLoading,setisloading] = useState(true);
-    const [empleados, setEmpleados] = useState([]);
+    const [obras, setObras] = useState([]);
 
     useEffect(() => {
         //Carga de empleados
-        fetchConToken("/usuarios",{},"GET")
+        fetchConToken("/obras",{},"GET")
             .then(response => response.json())
-            .then(resp => setEmpleados(resp.usuarios));
+            .then(resp => setObras(resp.obras));
         setisloading(false);
     }, []);
 
@@ -18,6 +18,6 @@ export const useEmpleados = () => {
     
     return {
         isLoading,
-        empleados
+        obras
     }
 }

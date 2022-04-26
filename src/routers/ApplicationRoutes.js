@@ -5,6 +5,7 @@ import { AplicationLandingPage } from "../components/application/AplicationLandi
 import { Games } from "../components/application/Games";
 import {AplicationNavbar} from "../components/application/ui/AplicationNavbar";
 import { EmpleadosScreen } from "../components/empleados/EmpleadosScreen";
+import { ObrasScreen } from "../components/obras/ObrasScreen";
 
 export const ApplicationRoutes = () => {
     return (
@@ -14,7 +15,7 @@ export const ApplicationRoutes = () => {
                 <Route path="/" element={<AplicationLandingPage />} />
                 <Route path="/aplicacion" element={<AplicationLandingPage />} />
                 <Route path="/inventario" element={<Games />} />
-                <Route path="/obras" element={<Games />} />
+                <Route path="/obras" element={<ObrasScreen />} />
                 <Route path="/calendario" element={<Games />} />
                 <Route path="/camionetas" element={<Games />} />
                 <Route path="/empleados" element={<EmpleadosScreen/>} />
