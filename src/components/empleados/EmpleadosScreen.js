@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
 import { useEmpleados } from '../../hooks/useEmpleados'
 import { EmpleadoCard } from './EmpleadoCard';
 import { Loading } from './Loading';
@@ -60,6 +61,7 @@ export const EmpleadosScreen = () => {
             <button className='btn btn-warning mx-2' onClick={nextPage}>
                 Siguiente
             </button>
+            <Link to="/registro" className="btn btn-warning">Registrar usuario</Link>
             <div className="d-flex justify-content-center flex-column mt-5">
                  {
                         empleadosFiltrados().map(empleado => 

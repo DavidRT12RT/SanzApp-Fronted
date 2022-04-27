@@ -19,7 +19,7 @@ export const ObraCard = ({titulo,situacionReporte,plaza,sucursal,tipoReporte,num
         <p className="card-text">Plaza: {plaza}</p>
         <p className="card-text">Tipo reporte {tipoReporte}</p>
         <p className="card-text"><small className="text-muted">{fecha}</small></p>
-        <Link to="/" className='btn btn-warning'>Ver datos completos de la obra</Link>
+        <Link to={`/aplicacion/obra/${_id}`} className='btn btn-warning'>Ver datos completos de la obra</Link>
       </div>
     </div>
   </div>

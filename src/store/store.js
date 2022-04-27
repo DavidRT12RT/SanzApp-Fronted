@@ -1,8 +1,9 @@
-import thunk from "redux-thunk";
+import thunk from "redux-thunk";//Nos permite hacer acciones asincronas
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 
 import { authReducer } from "../reducers/authReducer";
 import { uiReducer } from "../reducers/uiReducer";
+import { calendarReducer } from "../reducers/calendarReducer"; 
 
 const composeEnhancers =
     (typeof window !== "undefined" &&
@@ -17,7 +18,8 @@ const composeEnhancers =
 //Es alguna documentaciones es llamada como rootReducer
 const reducers = combineReducers({
     auth: authReducer,
-    ui : uiReducer
+    ui : uiReducer,
+    calendar: calendarReducer
 });
 
 export const store = createStore(

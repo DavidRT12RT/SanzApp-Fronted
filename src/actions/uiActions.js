@@ -25,3 +25,13 @@ export const uiStopLoading = () =>({
 });
 
 
+//Calendar
+export const uiOpenModal = () =>({
+    type:types.uiOpenModal
+});
+
+
+export const uiCloseModal = () =>({
+    type:types.uiCloseModal
+});
+

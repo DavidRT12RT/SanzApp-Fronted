@@ -1,5 +1,5 @@
 
-import {Link, useNavigate} from "react-router-dom";
+//import {useNavigate} from "react-router-dom";
 
 
 import {useForm} from "../../hooks/useForm";
@@ -7,7 +7,7 @@ import './Style.css';
 //import "../../Styles/style.css";
 import { Navbar } from "../ui/NavbarBootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { startLogincorreoPassword, startRegister } from "../../actions/authActions";
+import {startRegister } from "../../actions/authActions";
 
 //Note: You must use htmlfor instead of for in label tags when react is use 
     
@@ -31,11 +31,11 @@ export const RegisterScreen = () => {
     const {correo,password,nombre,telefono,NSS,RFC,CURP,rol} = formValues;
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
     //State
     const loading = useSelector((state)=> state.ui.loading);
 
-    const state = useSelector((state)=> state);
+    //const state = useSelector((state)=> state);
     
        
     const handleLogin=(e)=>{
@@ -166,15 +166,16 @@ export const RegisterScreen = () => {
                     <div className="d-grid mt-5">
                         <button type="submit" className="btn btn-warning" id="btnEnviar" disabled={loading}>Registrar usuario</button>
                     </div>
+                    {/*
                     <span className="w-100 mt-5 d-flex justify-content-center">¿Ya tienes una cuenta?</span>
                     <div className="d-flex justify-content-center px-5 w-auto">
                         <span className="mx-2"><Link to="/login">Login</Link></span>
                     </div>
+                    */}
                 </form>
                 
             </div>
         </div>
     </div> 
-    );
     </>
-};
+}

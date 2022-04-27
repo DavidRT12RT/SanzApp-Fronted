@@ -44,9 +44,9 @@ export const AppRouter = ()=>{
                     </PublicRoute>
                 } />
               <Route path="/registro" element={
-              <PublicRoute uid={uid}>
+              <PrivateRoute uid={uid}>
                   <RegisterScreen/>
-              </PublicRoute>
+              </PrivateRoute>
               } />
               <Route path="/aplicacion/*" element={
                   <PrivateRoute uid={uid}>

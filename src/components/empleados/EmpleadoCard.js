@@ -26,8 +26,8 @@ export const EmpleadoCard = ({
         <h1 className="card-title">{nombre}</h1>
         <p className="card-text">Telefono: {telefono}</p>
         <p className="card-text">Correo electronico: {correo}</p>
-        <p className="card-text"><small class="text-muted">{rol}</small></p>
-        <Link to="/" className='btn btn-warning'>Saber mas</Link>
+        <p className="card-text"><small className="text-muted">{rol}</small></p>
+        <Link to={`/aplicacion/empleado/${uid}`} className='btn btn-warning'>Ver datos completos del empleado</Link>
       </div>
     </div>
   </div>

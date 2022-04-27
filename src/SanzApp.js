@@ -7,7 +7,7 @@ import { store } from "./store/store";
 
 export const SanzApp = () => {
     return (
-        <Provider store={store}>
+        <Provider store={store}>{/* Provider prove toda la información a todos sus hijso*/}
             <AppRouter />
         </Provider>
     );
@@ -17,3 +17,4 @@ export const SanzApp = () => {
 /*El provider es lo mismo que el userContext 
 Es un high order component que sirve para darle 
 información al resto de componentes*/
+

@@ -19,7 +19,7 @@ export const AplicationNavbar = () =>{
 
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
                 <Link to="/aplicacion/" className="navbar-brand">Sanz espacio de trabajo</Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,10 @@ export const AplicationNavbar = () =>{
                     <span className="navbar-text">
                             {nombre}
                     </span>
-                    <button className="btn btn-outline-warning mx-3" onClick={handleLogout}>Logout</button>
+                    <button className="btn btn-outline-warning mx-3" onClick={handleLogout}>
+                        <i className="fas fa-sign-out-alt"></i>
+                        <span> Salir</span>
+                    </button>
                 </div>
             </div>
         </nav> 

@@ -9,6 +9,11 @@ export const types = {
     uiSetError : "[UI] Set Error",
     uiRemoveError: "[UI] Remove Error",
 
+    uiOpenModal:"[UI] Open modal",
+    uiCloseModal:"[UI] Close modal",
+
+    eventSetActive:"[event] Set active",
+    eventAddNew:"[event] Add new",
 
     uiStartLoading : "[UI] Start loading",
     uiStopLoading : "[UI] Stop Loading",
