@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 
 import Modal from 'react-modal';
 import DateTimePicker from 'react-datetime-picker';
@@ -7,9 +7,10 @@ import {useForm} from "../../hooks/useForm";
 import {error} from "../../alerts/botons";
 import { useDispatch, useSelector } from 'react-redux';
 import { uiCloseModal } from '../../actions/uiActions';
-import { eventAddNew } from '../../actions/eventsActions';
+import { eventAddNew, eventClearActiveEvent, eventUpdated } from '../../actions/eventsActions';
 
 
+import "./styles.css";
 
 const customStyles = {
   content: {
@@ -29,26 +30,52 @@ const now =  moment().minutes(0).seconds(0).add(1,"hours");
 
 const nowPlus1 = now.clone().add(1,"hours");
 
+
 export const CalendarModal = () => {
-   
+    //Sacar información del store
+    const {activeEvent} = useSelector(store => store.calendar);
+    const {modalOpen} = useSelector(store => store.ui);
+
+    let initEvent;
+    if(activeEvent){
+        initEvent ={
+            title:activeEvent.title,
+            notes:activeEvent.notes,
+            start:activeEvent.start,
+            end:activeEvent.end
+        }
+    }else{
+        initEvent = {
+                title:"",
+                notes:"",
+                start:now.toDate(),
+                end:nowPlus1.toDate()
+        };
+    }
+
+
+       //Custom Hooks for the form
     
+    const [ values,handleInputChange,setValues ] = useForm(initEvent);
+   
     const [dateStart, setdateStart] = useState(now.toDate());
     const [dateEnd, setdateEnd] = useState(nowPlus1.toDate());
     const [titleisValid, setTitleisValid] = useState(true);
-
-    //Sacar información del store
-    const {modalOpen} = useSelector(store => store.ui);
-    
-    //Custom Hooks for the form
-    const [ values,handleInputChange,setValues ] = useForm({
-        title:"Evento",
-        notes:"",
-        start:now.toDate(),
-        end:nowPlus1.toDate()
-    });
+    const dispatch = useDispatch();
 
     const {notes,title,start,end} = values;
+  
+    
 
+
+    useEffect(() => {
+        if(activeEvent){
+            setValues(activeEvent);
+        }else{
+            setValues(initEvent);
+        }
+    }, [activeEvent,setValues]);
+    
 
     const handleStartDateChange = (e) =>{
         setdateStart(e);
@@ -77,24 +104,30 @@ export const CalendarModal = () => {
             return setTitleisValid(false);
         }
 
-        //TODO:Realizar grabación en DB
-        dispatch(eventAddNew({
-            ...values,
-            id:new Date().getTime(),
-            user:{
-                _id:123,
-                name:"Fernando"}
+        if(activeEvent){
+            dispatch(eventUpdated(values));
+
+        }else{
+            dispatch(eventAddNew({
+                ...values,
+                id:new Date().getTime(),
+                user:{
+                    _id:123,
+                    name:"Fernando"}
             }));
+        }
 
         setTitleisValid(true);
         closeModal();
     }
 
-    const dispatch = useDispatch();
+  
 
     const closeModal = () =>{
         //TODO: Cerrar el modal
         dispatch(uiCloseModal());
+        dispatch(eventClearActiveEvent());
+        setValues(initEvent);
     }
 
     return (
@@ -107,16 +140,16 @@ export const CalendarModal = () => {
         className="modal"
         overlayClassName="modal-fondo"
       >
-        <h1>Nuevo evento</h1>
+        <h1>{activeEvent ? "Editar evento" : "Nuevo evento"}</h1>
         <hr/>
         <form className="container" onSubmit={handleSubmitForm}>
             <div className="form-group">
                 <label>Fecha y hora inicio</label>
-                <DateTimePicker onChange={handleStartDateChange} value={dateStart} className="form-control"/>
+                <DateTimePicker onChange={handleStartDateChange} value={initEvent.start} className="form-control"/>
             </div>
             <div className="form-group mt-3">
                 <label>Fecha y hora fin</label>
-                <DateTimePicker onChange={handleEndDateChange} value={dateEnd} minDate={dateStart} className="form-control"/>
+                <DateTimePicker onChange={handleEndDateChange} value={initEvent.end} minDate={initEvent.end} className="form-control"/>
             </div>
             <hr />
             <div className="form-group">

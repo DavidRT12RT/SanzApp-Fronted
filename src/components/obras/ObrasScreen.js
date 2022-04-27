@@ -3,7 +3,11 @@ import { Loading } from './Loading';
 import { useObras } from "../../hooks/useObras";
 import { ObraCard } from "./ObraCard";
 import { ObrasModalForm } from "./ObrasModalForm";
+import { useDispatch } from 'react-redux';
+import { uiOpenModal } from '../../actions/uiActions';
 
+
+import "./assets/style.css";
 
 
 
@@ -12,6 +16,7 @@ export const ObrasScreen = () => {
     const {isLoading,obras} = useObras();
     const [currentPage,setCurrentPage] = useState(0);
     const [search, setsearch] = useState("");
+    const dispatch = useDispatch();
 
     const filtrar = () =>{
         const filtered = obras.filter( obra => obra.titulo.includes(search));
@@ -43,17 +48,16 @@ export const ObrasScreen = () => {
         setCurrentPage(0);
         setsearch(target.value);
     }
-    
-    //Open modal form for make a new service / construction 
-    const [isOpen, setIsOpen] = useState(false)
-    
+
+    const handleClick = () => {
+        dispatch(uiOpenModal());
+    }
    
 
 
     return (
         <div className='mt-5 container'>
             <h1>Lista de obras / servicios Sanz</h1>
-            <ObrasModalForm open={isOpen} onClose={()=> setIsOpen(false)}></ObrasModalForm>
             <hr/>
             <input 
             type="text"
@@ -69,7 +73,7 @@ export const ObrasScreen = () => {
             <button className='btn btn-warning mx-2' onClick={nextPage}>
                 Siguiente
             </button>
-            <button className="btn btn-warning" onClick={()=>setIsOpen(true)}>Crear nueva obra</button>
+            <button className="btn btn-warning" onClick={handleClick}>Crear nueva obra</button>
             <div className="d-flex justify-content-center flex-column mt-5">
                  {
                         obrasFiltradas().map(obra => 
@@ -79,8 +83,8 @@ export const ObrasScreen = () => {
 
             </div>
                    
+            <ObrasModalForm />
             {isLoading &&<Loading/>}
-
         </div>
     )
 };

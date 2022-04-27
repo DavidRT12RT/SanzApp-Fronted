@@ -14,6 +14,9 @@ export const types = {
 
     eventSetActive:"[event] Set active",
     eventAddNew:"[event] Add new",
+    eventClearActiveEvent : "[event] Clear active event",
+    eventUpdated:"[event] Event updated",
+    eventDeleted:"[event] Event deleted",
 
     uiStartLoading : "[UI] Start loading",
     uiStopLoading : "[UI] Stop Loading",

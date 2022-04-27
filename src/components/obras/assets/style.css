@@ -13,17 +13,25 @@
     z-index: 1000;
 }
 
-
-
-.estilosModal{
-    position: fixed; 
-    top:50%;
-    left:50%;
-    width: 700px;
-    height: 900px;
-    overflow-y: scroll;
-    transform: translate(-50%,-50%);
-    background-color: #fff;
-    padding: 50px;
-    z-index: 1000;
+.modal {
+    background: white;
+    border-radius: 5px;
+    color: rgb(51, 51, 51);
+    display: inline;
+    max-height: 820px;
+    max-width: 700px;
+    outline: none;
+    padding: 10px;
 }
+.modal-fondo {
+    background-color: rgba(0, 0, 0, 0.3);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    position: fixed;
+}
+
+
+
+
