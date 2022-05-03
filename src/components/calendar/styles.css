@@ -54,6 +54,7 @@ html,body{
     max-width: 500px;
     outline: none;
     padding: 10px;
+    -webkit-overflow-scrolling: touch;
 }
 
 

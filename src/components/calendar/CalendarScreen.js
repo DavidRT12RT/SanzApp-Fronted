@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {Calendar,momentLocalizer} from "react-big-calendar";//BigCalendar es un componente
 import moment from "moment";
 import "moment/locale/es";
 import { uiOpenModal } from "../../actions/uiActions";
-import { eventClearActiveEvent, setActive } from "../../actions/eventsActions";
+import { eventClearActiveEvent, eventStartLoading, setActive } from "../../actions/eventsActions";
 
 //Estilos del calendario
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -24,18 +24,6 @@ const localizer = momentLocalizer(moment);
 
 //Lista de eventos
 
-const events=[{
-    title:"Cumpleaños del jefe",
-    start:moment().toDate(),
-    end:moment().add(2,"hours").toDate(),
-    bgcolor:"#fafafa",
-    notes:"Compras pastel",
-    user:{
-        uid:"123", 
-        name:"David"
-    }
-}];
-
 
 
 export const CalendarScreen = () => {
@@ -46,6 +34,13 @@ export const CalendarScreen = () => {
     //TODO : Leer del store los eventos
 
     const { events,activeEvent } = useSelector(store => store.calendar);
+    const { uid } = useSelector(store => store.auth);
+
+   
+
+    useEffect(() => {
+      dispatch(eventStartLoading());
+    }, [dispatch]);
     
 
 
@@ -67,7 +62,7 @@ export const CalendarScreen = () => {
   //Funcion se lanaza por medio del componente calendar ya que pasamos la referencia de la función por los props
   const eventStyleGetter = (event,start,end,isSelected) =>{
       const style={
-          backgroundColor:"#367CF7",
+          backgroundColor:(uid === event.user._id) ? "#367CF7" : "#465660",
           borderRadius:"0px",
           opacity:0.8,
           display:"block",

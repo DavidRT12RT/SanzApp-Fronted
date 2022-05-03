@@ -7,7 +7,7 @@ import {useForm} from "../../hooks/useForm";
 import {error} from "../../alerts/botons";
 import { useDispatch, useSelector } from 'react-redux';
 import { uiCloseModal } from '../../actions/uiActions';
-import { eventAddNew, eventClearActiveEvent, eventUpdated } from '../../actions/eventsActions';
+import { eventClearActiveEvent, startAddNew, startEventUpdated } from '../../actions/eventsActions';
 
 
 import "./styles.css";
@@ -27,41 +27,28 @@ const customStyles = {
 Modal.setAppElement("#root");//El id del index.html
 
 const now =  moment().minutes(0).seconds(0).add(1,"hours");
-
 const nowPlus1 = now.clone().add(1,"hours");
 
-
-export const CalendarModal = () => {
-    //Sacar información del store
-    const {activeEvent} = useSelector(store => store.calendar);
-    const {modalOpen} = useSelector(store => store.ui);
-
-    let initEvent;
-    if(activeEvent){
-        initEvent ={
-            title:activeEvent.title,
-            notes:activeEvent.notes,
-            start:activeEvent.start,
-            end:activeEvent.end
-        }
-    }else{
-        initEvent = {
+const initEvent = {
                 title:"",
                 notes:"",
                 start:now.toDate(),
                 end:nowPlus1.toDate()
-        };
-    }
+};
 
-
-       //Custom Hooks for the form
+export const CalendarModal = () => {
     
-    const [ values,handleInputChange,setValues ] = useForm(initEvent);
-   
+    //Sacar información del store
+    const {activeEvent} = useSelector(store => store.calendar);
+    const {modalOpen} = useSelector(store => store.ui);
+    const dispatch = useDispatch();
+
     const [dateStart, setdateStart] = useState(now.toDate());
     const [dateEnd, setdateEnd] = useState(nowPlus1.toDate());
     const [titleisValid, setTitleisValid] = useState(true);
-    const dispatch = useDispatch();
+    const [ values,handleInputChange,setValues ] = useForm(initEvent);
+    
+    
 
     const {notes,title,start,end} = values;
   
@@ -105,16 +92,10 @@ export const CalendarModal = () => {
         }
 
         if(activeEvent){
-            dispatch(eventUpdated(values));
+            dispatch(startEventUpdated(values));
 
         }else{
-            dispatch(eventAddNew({
-                ...values,
-                id:new Date().getTime(),
-                user:{
-                    _id:123,
-                    name:"Fernando"}
-            }));
+            dispatch(startAddNew(values));
         }
 
         setTitleisValid(true);
@@ -140,16 +121,18 @@ export const CalendarModal = () => {
         className="modal"
         overlayClassName="modal-fondo"
       >
-        <h1>{activeEvent ? "Editar evento" : "Nuevo evento"}</h1>
+        
+        <button className="btn btn-danger position-absolute top-0 end-0 px-3" onClick={closeModal}>X</button>
+        <h1 className="text-center col-12">{activeEvent ? "Editar evento" : "Nuevo evento"}</h1>
         <hr/>
         <form className="container" onSubmit={handleSubmitForm}>
             <div className="form-group">
                 <label>Fecha y hora inicio</label>
-                <DateTimePicker onChange={handleStartDateChange} value={initEvent.start} className="form-control"/>
+                <DateTimePicker onChange={handleStartDateChange} value={dateStart} className="form-control"/>
             </div>
             <div className="form-group mt-3">
                 <label>Fecha y hora fin</label>
-                <DateTimePicker onChange={handleEndDateChange} value={initEvent.end} minDate={initEvent.end} className="form-control"/>
+                <DateTimePicker onChange={handleEndDateChange} value={dateEnd}  minDate={dateStart} className="form-control"/>
             </div>
             <hr />
             <div className="form-group">

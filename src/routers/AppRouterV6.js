@@ -14,6 +14,7 @@ import { PublicRoute } from "./PublicRoute";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { startChecking } from "../actions/authActions";
+import { SocketProvider } from "../context/SocketContext";
 
 export const AppRouter = ()=>{
 
@@ -50,7 +51,9 @@ export const AppRouter = ()=>{
               } />
               <Route path="/aplicacion/*" element={
                   <PrivateRoute uid={uid}>
-                      <ApplicationRoutes/>
+                      <SocketProvider>
+                          <ApplicationRoutes/>
+                      </SocketProvider>
                   </PrivateRoute>
                 }
               />

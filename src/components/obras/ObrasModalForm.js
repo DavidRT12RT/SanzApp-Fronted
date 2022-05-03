@@ -88,6 +88,7 @@ export const ObrasModalForm = () => {
 
         <div className="container">
         <div className='py-5 text-center'>
+          <button className="btn btn-danger position-absolute top-0 end-0 px-3" onClick={closeModal}>X</button>
           <img src={require('./assets/logoSanz.png')} alt="Sanz Logo" className='logoSanz mb-4 d-block mx-auto'/>
           <h2>Crear nueva hoja de reporte</h2>
           <p className='lead'>Crear una nueva hoja de reporte de servicio en base a los siguientes aspectos y ir al editor de Obras!</p> 
