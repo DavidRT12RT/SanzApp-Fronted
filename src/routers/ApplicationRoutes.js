@@ -12,6 +12,7 @@ import { MapasApp } from "../components/Mapas/MapasApp";
 import { ProductosScreen } from "../components/productos/ProductosScreen";
 import {ProductoScreen} from "../components/productos/ProductoScreen";
 import { RegistrarProducto } from "../components/productos/RegistrarProducto";
+import { PrivateRoutePorRole } from "./PrivateRoutePorRole";
 
 export const ApplicationRoutes = () => {
     return (
@@ -21,7 +22,11 @@ export const ApplicationRoutes = () => {
                 <Route path="/" element={<AplicationLandingPage />} />
                 <Route path="/aplicacion" element={<AplicationLandingPage />} />
                 <Route path="/almacen" element={<ProductosScreen />} />
-                <Route path="/almacen/registro" element={<RegistrarProducto/>} />
+                <Route path="/almacen/registro" element={
+                    <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ALMACEN_ENCARGADO_ROLE"]}>
+                            <RegistrarProducto/>
+                    </PrivateRoutePorRole>
+                } />
                 <Route path="/almacen/:productoId" element={<ProductoScreen />} />
                 <Route path="/obras" element={<ObrasScreen />} />
                 <Route path="/obra/:obraId" element={<ObraScreen />} />

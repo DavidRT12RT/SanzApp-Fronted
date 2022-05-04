@@ -1,35 +1,46 @@
-import React from 'react';
-import { InformacionProducto } from './components/InformacionProducto';
-import { Registros } from './components/Registros';
-import 'antd/dist/antd.css';
-import { ProductoImagen } from './components/ProductoImagen';
+import React, { useState } from 'react';
+import { Card } from 'antd';
+import { ViewInfo } from './components/ViewInfo';
+import { Link } from 'react-router-dom';
+import { EditInfo } from './components/EditInfo';
 
+const tabList = [
+  {
+    key: 'tab1',
+    tab: 'Información',
+  },
+  {
+    key: 'tab2',
+    tab: 'Editar información',
+  },
+];
 
-
-
+const contentList = {
+  tab1: <ViewInfo/>,
+  tab2:<EditInfo/>,
+};
 
 export const ProductoScreen = () => {
-    return (
-        <div className='container mt-5 p-5 shadow rounded'>
+  const [activeTabKey1, setActiveTabKey1] = useState('tab1');
 
-            <div className="row">
-               <div className="col-lg-9 col-sm-12 ">
-                    <InformacionProducto/>
-                </div>
-                <div className="col-lg-3 col-sm-12 text-center">
-                    <ProductoImagen/>
-                    <span className='text-center mt-5'>Click en la imagen para hacerla mas grande</span>
-                </div>
-                
+  const onTab1Change = key => {
+    setActiveTabKey1(key);
+  };
 
-            </div>
-
-          
-                <div className="mt-5">
-                    <Registros/>
-                </div>
-       
-
-            </div>
-    )
-}
+  return (
+    <div className="container mt-sm-2 mt-lg-4 ">
+      <Card
+        style={{ width: '100%' }}
+        title="Información detallada del producto"
+        extra={<Link to="/aplicacion/almacen/">Regresar a almacen</Link>}
+        tabList={tabList}
+        activeTabKey={activeTabKey1}
+        onTabChange={key => {
+          onTab1Change(key);
+        }}
+      >
+        {contentList[activeTabKey1]}
+      </Card>
+    </div>
+  );
+};

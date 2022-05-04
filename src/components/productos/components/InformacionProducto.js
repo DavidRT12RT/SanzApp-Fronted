@@ -1,7 +1,6 @@
 import React from 'react'
 import { Descriptions, Badge} from 'antd';
 
-
 export const InformacionProducto = () => {
     return (
         <>

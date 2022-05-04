@@ -29,7 +29,7 @@ export const AppRouter = ()=>{
     //Cargando mientras se hace la autenticación automatica
 
     if(checking){
-      return <h5>Espere...</h5>;
+      return <h5>Validando token, Espere...</h5>;
     }
     return (
       <BrowserRouter>

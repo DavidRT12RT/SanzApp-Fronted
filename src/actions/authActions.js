@@ -15,7 +15,6 @@ export const startLogincorreoPassword = (correo, password) => {
         const body = await resp.json();
         let mensaje = "";
 
-        console.log(body);
         if(resp.status == 200){
             localStorage.setItem("token",body.token);
             localStorage.setItem("token-init-date",new Date().getTime());
@@ -23,7 +22,8 @@ export const startLogincorreoPassword = (correo, password) => {
             //dispatch al store para grabar el usuario
             dispatch(login({
                 uid:body.usuario.uid,
-                name:body.usuario.nombre
+                name:body.usuario.nombre,
+                rol:body.usuario.rol
             }));
             success("inicio de sesión con éxito");
             dispatch(uiStopLoading());
@@ -111,7 +111,8 @@ export const startChecking = () =>{
             localStorage.setItem("token-init-date",new Date().getTime());
             dispatch(login({
                 uid:body.uid,
-                name:body.nombre
+                name:body.nombre,
+                rol:body.rol
             }));
 
         }else{
