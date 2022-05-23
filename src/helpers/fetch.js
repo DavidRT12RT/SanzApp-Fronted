@@ -1,7 +1,8 @@
 
 
 //fetch con token y sin token
-const baseUrl = "https://backendsanzconstructora.herokuapp.com/api";
+//const baseUrl = "https://backendsanzconstructora.herokuapp.com/api";
+const baseUrl = "http://localhost:4000/api";
 const fetchSinToken = (endpoint,data,method = "GET") =>{
 
     const url = `${baseUrl}${endpoint}`;
@@ -68,7 +69,34 @@ const fetchConToken = (endpoint,data={},method = "GET") =>{
     }
 }
 
+const fetchConTokenSinJSON = (endpoint,data,method = "POST") =>{
+    const url = `${baseUrl}${endpoint}`;
+    const token = localStorage.getItem('token') || "";
 
+    switch (method) {
+
+        case "POST":
+            return fetch(url,{
+                method,
+                headers:{
+                    'x-token':token
+                },
+                body:data
+            });
+        
+        case "PUT":
+            return fetch(url,{
+                method,
+                headers:{
+                    'x-token':token
+                },
+                body:data,
+            });
+
+        default:
+            break;
+    }
+}
 const fetchEmpleados = async(endpoint="/usuarios",method = "GET") =>{
     const url = `${baseUrl}${endpoint}`;
     const token = localStorage.getItem('token') || "";
@@ -79,5 +107,6 @@ const fetchEmpleados = async(endpoint="/usuarios",method = "GET") =>{
 export {
     fetchSinToken,
     fetchConToken,
-    fetchEmpleados
+    fetchEmpleados,
+    fetchConTokenSinJSON
 }

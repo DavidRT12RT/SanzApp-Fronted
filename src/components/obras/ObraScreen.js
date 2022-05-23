@@ -1,98 +1,99 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
-import { fetchConToken } from '../../helpers/fetch';
-
+import { Steps, Button, message, Space } from 'antd';
+import { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { SocketContext } from '../../context/SocketContext';
 import "./assets/style.css";
+import { InfoDesarollo } from './components/InfoDesarollo';
+import { InfoObra } from './components/InfoObra';
+import { Presupuesto } from './components/Presupuesto';
+
+
 
 export const ObraScreen = () => {
-  const {obraId} = useParams();
-  const imagePath = "https://sanzconstructora.com/SanzInicio/PROYECTOALFA/img/image1.png";
+  const [current, setCurrent] = useState(0);
 
-  fetchConToken(`/obras/${obraId}`,{},"GET")
-    .then(resp => {console.log(resp)});
+  const next = () => {
+    setCurrent(current + 1);
+  };
+
+  const prev = () => {
+    setCurrent(current - 1);
+  };
+  //Rol del usuario
+  const rol = useSelector(state => state.auth.rol);
+
+  //Datos de la obra
+  const [obraInfo, setObraInfo] = useState({});
+
+  //Sockets events
+  const { socket } = useContext(SocketContext);
+  const { obraId } = useParams();
+
+  //Solicitando obra por id
+  useEffect(()=>{
+    socket.emit("obtener-obra-por-id",{obraId},(obra)=>{
+      setObraInfo(obra);
+    });
+  },[]);
+
+  //Escuchar si la obra se actualiza
+  useEffect(() => {
+    socket.on("obra-actualizada",(obra)=>{
+      if(obra._id === obraInfo._id){
+        setObraInfo(obra);
+      }
+    }) 
+  }, [socket,setObraInfo,obraInfo]);
+
+const { Step } = Steps;
+
+const steps = [
+  {
+    title: 'Presupuesto',
+    content: <Presupuesto/>,
+  },
+  {
+    title: 'Desarollo de la obra',
+    //content: <DesarolloInfo obraInfo={obraInfo}/>,
+    content:<InfoDesarollo obraInfo={obraInfo}/>
+  },
+  {
+    title: 'Finalización',
+    content: <InfoObra/>,
+  },
+];
 
   return (
     <div className="container mt-5">
+      <h1>{`${obraInfo.titulo}`}</h1>
+      <span className="lead">Pulsa en los botones para navegar en cada etapa de la obra / servicio.</span>
 
-      <section className="rounded shadow">
+      <Steps current={current} className="mt-5" >
+        {steps.map(item => (
+          <Step key={item.title} title={item.title} />
+        ))}
+      </Steps>
+      <div className="steps-content mt-sm-2 mt-md-4">{steps[current].content}</div>
 
-        <div className="container">
-        <div className='py-5 text-center'>
-          <img src={require('./assets/logoSanz.png')} alt="Sanz Logo" className='logoSanz mb-4 d-block mx-auto'/>
-          <h2>Información sobre la obra / servicio</h2>
-          </div>
-        </div>
-
-        <div className='container'>
-          <small>Fecha: {new Date().getTime()}</small>
-          <hr className='my-4'></hr>
-            <div className='row g-3 mt-3'>
-
-              <div className='col-sm-6'>
-                <label className='form-label'>Nombre de la obra</label>
-                <input type="text" className="form-control" name="titulo" placeholder='Obra de mantenimiento para Santander...' required></input>
-              </div>
-
-              <div className='col-sm-6'>
-                <label className='form-label'>Tipo de reporte</label>
-                <select name="tipoReporte" className='form-control' >
-                  <option>Seleccionar...</option>
-                  <option>Preventivo</option>
-                  <option>Correctivo</option>
-                </select>
-              </div>
-
-              <div className='col-sm-6'>
-                <label className='form-label'>Dirección reginal</label>
-                <input type="text" name="direccionRegional" className="form-control" placeholder='' required></input>
-              </div>
-
-
-              <div className='col-sm-6'>
-                <label className='form-label'>Plaza</label>
-                <input type="text" name="plaza"  className="form-control" placeholder='' required></input>
-              </div>
-
-              <div className='col-sm-6'>
-                <label className='form-label'>Sucursal</label>
-                <input type="text" name="sucursal" className="form-control" placeholder='' required></input>
-              </div>
-
-              <div className='col-sm-6'>
-                <label className='form-label'>No. de Track</label>
-                <input type="text" name="numeroTrack" className="form-control" placeholder='' required></input>
-              </div>
-
-              <div className='col-12'>
-                <label className='form-label'>Descripción del reporte de servicio</label>
-                <textarea type="text" name="descripcion" className="form-control input-large" placeholder='' required></textarea> 
-              </div>
-
-              <div className='col-6'>
-                <label className='form-label'>Trabajos ejecutados</label>
-                <textarea type="text" name="trabajosEjecutados" className="form-control input-large" placeholder='Lista de trabajos ejecutados...' required></textarea> 
-              </div>
-
-              <div className='col-6'>
-                <label className='form-label'>Observaciones</label>
-                <textarea type="text" name="observaciones"  className="form-control input-large" placeholder='Lista de observaciones...' required></textarea> 
-              </div>
-           
-
-              <div className='col-12'>
-                <label className='form-label'>Observaciones del usuario</label>
-                <textarea type="text"  name="observacionUsuario" className="form-control input-large" placeholder='Observaciones del usuario' required></textarea> 
-              </div>
-
-            
-
-              <hr className="my-4"></hr>
-
-              <button className='btn btn-warning btn-lg btn-block mb-2'>Crear obra!</button>
-              </div>
-        </div>
-      </section>
-        </div>
-      
-  )
-}
+      {/* Buttons*/}
+      <div className="steps-action">
+        {current < steps.length - 1 && (
+          <Button type="primary" className='mb-3' onClick={() => next()}>
+            Siguiente etapa 
+          </Button>
+        )}
+        {current === steps.length - 1 && (
+          <Button type="primary" onClick={() => message.success('La obra ha finalizado!')}>
+            Finalizado
+          </Button>
+        )}
+        {current > 0 && (
+          <Button className="mb-3 mx-3" onClick={() => prev()}>
+            Anterior etapa
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+};

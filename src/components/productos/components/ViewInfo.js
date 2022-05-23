@@ -1,36 +1,53 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { InformacionProducto } from './InformacionProducto';
-import { Registros } from './Registros';
+import React from 'react';
 import 'antd/dist/antd.css';
-import { ProductoImagen } from './ProductoImagen';
-import { SocketContext } from '../../../context/SocketContext';
-import { useParams } from 'react-router-dom';
-import { Descriptions, Badge, Input, Tag} from 'antd';
+import { Descriptions, Badge,Tag, Image} from 'antd';
 import { List, Typography, Divider } from "antd";
-import { useSelector } from 'react-redux';
 
-export const ViewInfo = () => {
+export const ViewInfo = ({informacionProducto,ImageProduct}) => {
 
-    const {socket} = useContext(SocketContext);
-    const {productoId} = useParams();
-    const [informacionProducto, setInformacionProducto] = useState({});
-    const rol = useSelector(state => state.auth.rol);
+    const registrosColors = (item = "") =>{
 
-    //Solicitando los productos cuando el componente cargue por primera vez o cargue otra vez
-    useEffect(()=>{
-        socket.emit("obtener-producto-por-id",{productoId},(producto)=>{
-            setInformacionProducto(producto);
-        });
-    },[]);
+        if(item.startsWith("[ENTRADA]") || item.startsWith("[REGISTRO]")){
+                return  <List.Item><Typography.Text type="success">{item}</Typography.Text></List.Item>
 
-    //TODO: Escuchar cuando el producto se actualiza 
-    useEffect(() => {
-      socket.on("producto-actualizado",(producto)=>{
-        if(producto._id === informacionProducto._id){
-          setInformacionProducto(producto);
+        }else if(item.startsWith("[ACTUALIZADO]")){
+            return  <List.Item><Typography.Text type="warning">{item}</Typography.Text></List.Item>
+        }else if(item.startsWith("[ACTUALIZADO-IMAGEN]")){
+            return  <List.Item><Typography.Text type="warning">{item}</Typography.Text></List.Item>
+        }else if(item.startsWith("[ELIMINADO]")){
+                return  <List.Item><Typography.Text type="danger">{item}</Typography.Text></List.Item>
+        }else if(item.startsWith("[SALIDA-POR-OBRA]")){
+                return  <List.Item><Typography.Text mark>{item}</Typography.Text></List.Item>
+        }else if(item.startsWith("[SALIDA-DIRECTA]")){
+                return  <List.Item><Typography.Text mark>{item}</Typography.Text></List.Item>
+        }else{
+            return  <List.Item><Typography.Text type="secondary">{item}</Typography.Text></List.Item>
         }
-      }) 
-    }, [socket,setInformacionProducto,informacionProducto]);
+    }
+
+    const categoriaColor = (categoria) => {
+        switch (categoria) {
+            case "ferreteria":
+                return <Tag color="cyan" key="categoria">{categoria.toUpperCase()}</Tag> 
+            case "vinilos":
+                return <Tag color="green" key="categoria">{categoria.toUpperCase()}</Tag> 
+            case "herramientas":
+                return <Tag color="blue" key="categoria">{categoria.toUpperCase()}</Tag> 
+            case "pisosAzulejos":
+                return <Tag color="orange" key="categoria">{categoria.toUpperCase()}</Tag>
+            case "fontaneria":
+                return <Tag color="red" key="categoria">{categoria.toUpperCase()}</Tag>
+            case "iluminacion":
+                return <Tag color="yellow" key="categoria">{categoria.toUpperCase()}</Tag>
+            case "materialElectrico":
+                return <Tag color="gold" key="categoria">{categoria.toUpperCase()}</Tag>
+            default:
+                return <Tag color="green" key="categoria">{categoria.toUpperCase()}</Tag> 
+                break;
+        }
+    }
+
+
 
     if(informacionProducto === undefined){
         <h1>Cargando...</h1>
@@ -38,49 +55,50 @@ export const ViewInfo = () => {
     }else{
     return (
         <div>
-
+            <h1>Información sobre el producto en almacen</h1>
             <div className="row">
                <div className="col-lg-9 col-sm-12">
                     <Descriptions layout="vertical" bordered>
                         <Descriptions.Item label="Nombre del producto">{informacionProducto.nombre}</Descriptions.Item>
                         <Descriptions.Item label="Cantidad">{informacionProducto.cantidad}</Descriptions.Item>
                         <Descriptions.Item label="Estado">{informacionProducto.estadoProducto}</Descriptions.Item>
-                        <Descriptions.Item label="Categorias">{informacionProducto?.categorias?.map(categoria => <Tag color="green">{categoria.toUpperCase()}</Tag>)}</Descriptions.Item>
+                        <Descriptions.Item label="Categorias">{informacionProducto?.categorias?.map(categoria => categoriaColor(categoria))}</Descriptions.Item>
+                        <Descriptions.Item label="Marca del producto">{informacionProducto.marcaProducto}</Descriptions.Item>
+                        <Descriptions.Item label="Costo del producto">{informacionProducto.costo}</Descriptions.Item>
+                        <Descriptions.Item label="Unidad">{informacionProducto.unidad}</Descriptions.Item>
+                        <Descriptions.Item label="Usuario creador">Carlos Sanchez</Descriptions.Item>
+                        <Descriptions.Item label="ID del producto">{informacionProducto._id}</Descriptions.Item>
+                        <Descriptions.Item label="Estatus" span={3}>
+                            <Badge status={informacionProducto.estatus ? "processing" : "error"} text={informacionProducto.estatus ? "Disponible en almacen" : "NO disponible en almacen"}/>
+                        </Descriptions.Item>
                         <Descriptions.Item label="Fecha de ingreso al sistema">{informacionProducto.fechaRegistro}</Descriptions.Item>
                         <Descriptions.Item label="Ultima revisión en bodega" span={2}>
                             {informacionProducto.fechaRegistro}
                         </Descriptions.Item>
-                        <Descriptions.Item label="Estatus" span={2}>
-                            <Badge status={informacionProducto.estatus ? "processing" : "error"} text={informacionProducto.estatus ? "Disponible en almacen" : "NO disponible en almacen"}/>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="ID del producto">{informacionProducto._id}</Descriptions.Item>
-                        <Descriptions.Item label="Costo del producto">{informacionProducto.costo}</Descriptions.Item>
-                        <Descriptions.Item label="Usuario creador">Carlos Sanchez</Descriptions.Item>
+
+
                         <Descriptions.Item label="Descripción del producto">
                             {informacionProducto.descripcion}
                         </Descriptions.Item>
                     </Descriptions>
                 </div>
                 <div className="col-lg-3 col-sm-12">
-                    <ProductoImagen srcImagen/>
+                    <Divider orientation="left">Imagen del producto</Divider>
+                        <Image
+                            width={300}
+                            height={300}
+                            style={{objectFit:"cover"}}
+                            src={ImageProduct}
+                        />
                 </div>
                 <div className="col-lg-12 col-sm-12">
                     <Divider orientation="left">Movimientos | Registros</Divider>
                     <List
                         header={<div>Información sobre las entradas y salidas de los productos en el almacen</div>}
                         bordered
-                        dataSource={informacionProducto.registros}
-                        renderItem={(item) => (
-                            item.startsWith("[ENTRADA]") || item.startsWith("[REGISTRO]")
-                            ?
-                                <List.Item>
-                                    <Typography.Text type="success">{item}</Typography.Text> 
-                                </List.Item>
-                            : 
-                                <List.Item>
-                                    <Typography.Text type="danger">{item}</Typography.Text>
-                                </List.Item>
-                        )}
+                        dataSource={informacionProducto?.registros}
+                        renderItem={(item) => registrosColors(item)} 
+                        style={{maxHeight:"500px",overflowY:"scroll"}}
                     />
                 </div>
                 

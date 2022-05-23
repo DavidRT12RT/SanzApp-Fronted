@@ -29,7 +29,8 @@ export const confirmation = (mensaje) =>{
             showCancelButton:true,
             confirmButtonColor: '#ffc107',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Si crear!'})
+            cancelButtonText:"Cancelar",
+            confirmButtonText: 'Adelante'})
             .then((result)=>{
                 if(result.isConfirmed){
                     resolve(true);

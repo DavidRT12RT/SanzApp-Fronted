@@ -1,28 +1,33 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { Steps } from 'antd';
+import { UserOutlined, SolutionOutlined, LoadingOutlined, SmileOutlined } from '@ant-design/icons';
 
-export const ObraCard = ({titulo,situacionReporte,plaza,sucursal,tipoReporte,numeroTrack,observaciones,_id,fecha}) => {
+const { Step } = Steps;
 
-    const imagePath = "https://sanzconstructora.com/SanzInicio/PROYECTOALFA/img/image1.png";
-    
+
+export const ObraCard = ({titulo,situacionReporte,plaza,sucursal,tipoReporte,numeroTrack,observaciones,_id,fecha,descripcion}) => {
+
     return (
-        <div className="card mb-3 shadow" >
-        <div className="row g-0">
-    <div className="col-md-4">
-      <img src={imagePath} className="img-fluid rounded-start" alt={_id}/>
-    </div>
-    <div className="col-md-8">
-      <div className="card-body">
-        <h1 className="card-title">{titulo}</h1>
-        <p className="card-text">Situación del reporte: {situacionReporte}</p>
-        <p className="card-text">Numero track: {numeroTrack}</p>
-        <p className="card-text">Plaza: {plaza}</p>
-        <p className="card-text">Tipo reporte {tipoReporte}</p>
-        <p className="card-text"><small className="text-muted">{fecha}</small></p>
-        <Link to={`/aplicacion/obra/${_id}`} className='btn btn-warning'>Ver datos completos de la obra</Link>
-      </div>
-    </div>
-  </div>
-</div>     
-  )
+      <>
+        <div className="p-5 mb-5 rounded shadow">
+          <h1 className>{titulo}</h1>
+          <div className="mt-3">
+            <p className="lead">{tipoReporte} {numeroTrack}</p>
+            <h5 className=''>{descripcion}</h5>
+          </div>
+          <div className="mt-5">
+            <Steps>
+              <Step status="finish" title="Presupuesto con el cliente" icon={<UserOutlined />} />
+              <Step status="process" title="Desarollo de la obra" icon={<LoadingOutlined />} />
+              <Step status="wait" title="Finalizado" icon={<SmileOutlined />} />
+            </Steps>
+          </div>
+            <div className="mt-5">
+              <Link to={`/aplicacion/obras/${_id}`} className='btn btn-primary'>Ver detalles completos de la obra</Link>
+              <Link to={`/aplicacion/obra/editor/${_id}`} className="btn btn-primary ms-2">Editar obra</Link>
+            </div>
+          </div>
+          </>
+    ) 
 }

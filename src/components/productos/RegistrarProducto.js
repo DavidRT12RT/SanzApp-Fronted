@@ -1,18 +1,18 @@
-import { Button, DatePicker, Form, Input, InputNumber, Select, Space, Tag ,Upload} from 'antd'
-import { Option } from 'antd/lib/mentions'
+import { DatePicker, Form, Input, InputNumber, Select, Space, Tag } from 'antd'
 import React, { useContext, useState } from 'react'
 import { Row, Col } from 'antd';
-import { UploadOutlined, InboxOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../context/SocketContext';
 import { useSelector } from 'react-redux';
 import { confirmation, error, success } from '../../alerts/botons';
 import moment from "moment";
 
 export const RegistrarProducto = () => {
+  
   const [form] = Form.useForm();
   const [value, setValue] = useState(false);
 
+  const navigate = useNavigate();
 
   //Socket communication
   const { socket } = useContext(SocketContext);
@@ -23,7 +23,6 @@ export const RegistrarProducto = () => {
   //Crear un nuevo producto
   const onFinish = async ( values ) =>{
     setValue(true);
-    //Pregunta de confimación sobre la creación del nuevo producto
     const resp = await confirmation();
 
     if(resp){
@@ -32,6 +31,7 @@ export const RegistrarProducto = () => {
       socket.emit("producto-nuevo",{...values,uid,name},(confirmacion)=>{
         if(confirmacion.status === 201){
           success(confirmacion.msg);
+          navigate(`/aplicacion/almacen/${confirmacion.idProducto}`); 
         }else{
           error(confirmacion.msg);
         }
@@ -82,20 +82,26 @@ export const RegistrarProducto = () => {
               <Input placeholder="Comex"/>
             </Form.Item>
           </Col>
-          <Col span={24}>
-            <Form.Item label="Imagen del producto" rules={[{required:true,message:"Selecciona una imagen del producto!",whitespace:true}]} tooltip="Toma una imagen clara del producto donde se observe el nombre y se pueda ver el estado del mismo (Preferiblemente en el sol)">
-              <Form.Item name="dragger" valuePropName="fileList" getValueFromEvent noStyle >
-                <Upload.Dragger name="files" action="/upload.do">
-                  <p className="ant-upload-drag-icon">
-                    <InboxOutlined />
-                  </p>
-                  <p className="ant-upload-text">Click or arrastra un archivo de imagen</p>
-                  <p className="ant-upload-hint">Soporte para solo una imagen</p>
-                </Upload.Dragger>
-              </Form.Item>
-            </Form.Item>
+
+
+
+
+          <Col span={12}>
+            <Form.Item
+              name="unidad"
+              rules={[{ required: true, message: 'Porfavor selecciona la unidad del producto'}]}
+              tooltip="¿Como se mide el producto?"
+              label="Unidad del producto"
+            >
+              <Select placeholder="Metro,Kilogramo,Pieza,etc.">
+	              <Select.Option value="Metro">Metro</Select.Option>
+                <Select.Option value="Kilogramo">Kilogramo</Select.Option>
+                <Select.Option value="Pieza">Pieza</Select.Option>
+                <Select.Option value="Litro">Litro</Select.Option>
+            </Select>
+          </Form.Item>
           </Col>
-         
+
             <Col span={12}>
             <Form.Item
               name="categorias"
@@ -114,6 +120,7 @@ export const RegistrarProducto = () => {
             </Select>
           </Form.Item>
           </Col>
+
           <Col span={12}>
             <Form.Item 
                 label="Cantidad en bodega :" 
@@ -123,6 +130,18 @@ export const RegistrarProducto = () => {
                 <InputNumber style={{width: "100%"}} min={1} />
             </Form.Item>
           </Col>
+
+          <Col span={12}>
+            <Form.Item 
+                label="Costo del producto " 
+                name="costo"
+                tooltip="Ingresa el costo del producto medio"
+
+                >
+                <InputNumber style={{width: "100%"}} defaultValue={100}/>
+            </Form.Item>
+          </Col>
+
           <Col span={24}>
             <Form.Item 
                 label="Descripción del producto"
@@ -139,16 +158,7 @@ export const RegistrarProducto = () => {
               <Input.TextArea allowClear showCount minLength={20} maxLength={60} style={{width:"100%"}} placeholder="Descripción del producto" />
             </Form.Item>
           </Col>
-          <Col span={12}>
-            <Form.Item 
-                label="Costo del producto " 
-                name="costo"
-                tooltip="Ingresa el costo del producto medio"
 
-                >
-                <InputNumber style={{width: "100%"}} />
-            </Form.Item>
-          </Col>
           <Col span={12}>
             <Form.Item
             name="estadoProducto"
@@ -166,11 +176,8 @@ export const RegistrarProducto = () => {
             </Select>
             </Form.Item>
           </Col>
-          <Col span={12}>
-            <Form.Item name="fechaRegistro" label="Fecha">
-              <DatePicker style={{width:"100%"}}/>
-            </Form.Item>
-          </Col>
+          
+
 
           <Col span={12}>
             <Form.Item

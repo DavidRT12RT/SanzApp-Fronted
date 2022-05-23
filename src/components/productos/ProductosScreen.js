@@ -1,39 +1,39 @@
 import React, { useContext, useEffect, useState } from 'react'
-
-
 import 'antd/dist/antd.css';
-import { Button, Input, Row, Col, Space, Table, Tag,notification } from 'antd';
+import {Input, Space, Table, Tag } from 'antd';
 import {SearchOutlined} from "@ant-design/icons";
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { SocketContext } from '../../context/SocketContext';
 import { useSelector } from 'react-redux';
 
 
 export const ProductosScreen = () => {
 
-    const navigate = useNavigate();
-    const handleClick = (_id,key) =>{
-        notification.close(key);    
-        return navigate(`/aplicacion/almacen/${_id}`);
-    }
 
-    const openNotification = (topRight,_id,nombre) => {
-        const key = `open${Date.now()}`;
-        const btn = (
-            <button className='btn btn-primary' onClick={()=>handleClick(_id,key)}>Mas detalles sobre el producto</button>
-        );
-        notification.open({
-            message: "Notificación de almacen",
-            description:
-                `${nombre} se ha agreado al almacen!`,
-            btn,
-            key,
-        });
-    };
     const { Search } = Input;
     const rol = useSelector(store=> store.auth.rol);
 
-
+    const categoriaColor = (categoria) => {
+        switch (categoria) {
+            case "ferreteria":
+                return <Tag color="cyan" key="categoria">{categoria.toUpperCase()}</Tag> 
+            case "vinilos":
+                return <Tag color="green" key="categoria">{categoria.toUpperCase()}</Tag> 
+            case "herramientas":
+                return <Tag color="blue" key="categoria">{categoria.toUpperCase()}</Tag> 
+            case "pisosAzulejos":
+                return <Tag color="orange" key="categoria">{categoria.toUpperCase()}</Tag>
+            case "fontaneria":
+                return <Tag color="red" key="categoria">{categoria.toUpperCase()}</Tag>
+            case "iluminacion":
+                return <Tag color="yellow" key="categoria">{categoria.toUpperCase()}</Tag>
+            case "materialElectrico":
+                return <Tag color="gold" key="categoria">{categoria.toUpperCase()}</Tag>
+            default:
+                return <Tag color="green" key="categoria">{categoria.toUpperCase()}</Tag> 
+                break;
+        }
+    }
     const botonEditar = () =>{
         if(rol === "ADMIN_ROLE" || rol === "ALMACEN_ENCARGADO_ROLE"){
                 return (
@@ -62,8 +62,6 @@ export const ProductosScreen = () => {
         socket.on("producto-nuevo",(producto)=>{
             const {nombre,cantidad,categorias,_id} = producto;
             setValuesTable([...dataSource,{nombre,cantidad,categorias,_id}]);
-            //notificación sobre el producto nuevo agregado
-            openNotification("topRight",_id,nombre);
         });
 
         return () => {socket.off("producto-nuevo");}
@@ -129,7 +127,8 @@ export const ProductosScreen = () => {
             <>
                 {
                     categorias.map(categoria => {
-                        return (<Tag color="green" key="categoria">{categoria.toUpperCase()}</Tag>);
+                        //return (<Tag color="green" key="categoria">{categoria.toUpperCase()}</Tag>);
+                        return categoriaColor(categoria);
                     })
                 }
             </>
