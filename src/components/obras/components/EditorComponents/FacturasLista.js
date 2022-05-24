@@ -5,6 +5,7 @@ import "../../assets/facturasLista.css";
 import { DownOutlined, UserOutlined,UploadOutlined } from '@ant-design/icons';
 import { Table, Tag, Modal,Upload } from 'antd';
 import { fetchConTokenSinJSON } from '../../../../helpers/fetch';
+import { resolveOnChange } from 'antd/lib/input/Input';
 
 
 export const FacturasLista = ({socket,obraInfo}) => {
@@ -58,17 +59,22 @@ export const FacturasLista = ({socket,obraInfo}) => {
         }
         setUploading(true);
         //Making the http post 
+        let body;
         try {
             const resp = await fetchConTokenSinJSON(`/uploads/obras/obra/${obraId}/facturas`,formData,"POST");
-            message.success("Subida con exito!");
+            body = await resp.json();
+            if(resp.status === 200){
+                message.success("Subida con exito!");
+            }else{
+                message.error(body.msg);
+            }
             handleCancel();
             //Quitando los archivos del filesList
             setFilesList([]);
             //Quitando los archivos del upload list del upload
             
         } catch (error) {
-            console.log(error);
-            message.error("Fallo a la subidad!");
+            message.error(body);
         }
         setUploading(false);
     }

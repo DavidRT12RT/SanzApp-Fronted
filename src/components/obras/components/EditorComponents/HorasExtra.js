@@ -8,43 +8,24 @@ const { Option } = Select;
 export const HorasExtra = ({obraInfo,socket}) => {
 
     const [dataSource, setDataSource] = useState([]);
-    const [data, setData] = useState([]);
+    const [currentFatherRow, setCurrentFatherRow] = useState(null);
     const [editingRow, setEditingRow] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [empleadosObra, setEmpleadosObra] = useState([]);
-    const [currentExpandedRow, setCurrentExpandedRow] = useState(null);
     const [form] = Form.useForm();
     const { obraId } = useParams();
 
     
-   
     /*NOTA 
         En nuestra tabla tenemos el prop expandable el cual recibe una función la cual recibe los valores record,index,etc.
         esta función obtendra el valor de cada fila y con eso nosotros solo destructuramos el valor registros de la fila osea record
         y ese sera el dataSource de nuestra tabla con las columnas 
     */
 
-    const menu = (
-    <Menu
-        items={[
-        {
-            key: '1',
-            label: 'Editar',
-        },
-        {
-            key: '2',
-            label: 'Guardar',
-        },
-        ]}
-    />
-    );
-
     const expandedRowRender = (record,index,indent,expanded) => {
-        //console.log(record,index,indent,expanded);
-
         const columns = [
         {
-            title: 'Fecha',
+            title: 'Fecha de registro',
             dataIndex: 'fecha',
             key: 'date',
         },
@@ -52,64 +33,124 @@ export const HorasExtra = ({obraInfo,socket}) => {
             title: 'Motivo',
             dataIndex: 'motivo',
             key: 'motivo',
+            render:(text,record) => {
+                if(editingRow === record.key){
+                    return (
+                        <Form.Item name="motivo" rules={[{required:true,message:"Tiene que tener un valor este campo"}]}>
+                            <Input/>
+                        </Form.Item>
+                    )
+                }else{
+                    return <p>{text}</p>
+                }
+            }
         },
         {
             title:"Horas",
             dataIndex:"horas",
-            key:"horas"
+            key:"horas",
+            render:(text,record) =>{
+                if(editingRow === record.key){
+                    return (
+                    <Form.Item name="horas" rules={[{required:true,message:"Tiene que tener un valor este campo!"}]}>
+                        <InputNumber style={{width: "100%"}} min={1} />
+                    </Form.Item>
+                    )
+                }else{
+                    return <p>{text}</p>
+                }
+            }
         },
         {
             title: 'Estatus',
             key: 'estatus',
             dataIndex:"estatus",
             render: (text,record) => {
-                if(text){
-                    return (<span><Badge status="success"/>Pagadas</span>)
+                if(editingRow === record.key){
+                    return (
+                        <Form.Item name="estatus" rules={[{required: true,message: 'El producto necesita tener este parametro'},]}>
+                            <Select>
+                                <Select.Option value={true}>Pagadas</Select.Option>
+                                <Select.Option value={false}>NO pagadas</Select.Option>
+                            </Select>
+                        </Form.Item>
+                    )
                 }else{
-                    return (<span><Badge status="error"></Badge>NO Pagadas</span>)
+                    if(text){
+                        return (<span><Badge status="success"/>Pagadas</span>)
+                    }else{
+                        return (<span><Badge status="error"></Badge>NO Pagadas</span>)
+                    }
                 }
-            }
+           }
         },
         {
-            title: 'Menu',
-            dataIndex: 'operation',
-            key: 'operation',
-            render: () => (
-            <Space size="middle">
-                <Dropdown overlay={menu}>
-                <a>
-                    Acciones <DownOutlined />
-                </a>
-                </Dropdown>
-            </Space>
-            ),
+            title:"Acciones",
+            render:(_,record) => {
+                return (
+                <>
+                    <Button
+                        type="link"
+                        onClick={() => {
+                            if(editingRow != null){
+                                setEditingRow(null);
+                            }else{
+                                setEditingRow(record.key);
+                                form.setFieldsValue({
+                                    horas:record.horas,
+                                    pagadas:record.pagadas,
+                                    motivo:record.motivo,
+                                    estatus:record.estatus
+                                });
+                            }
+                       }}
+                    >
+                        Editar registro
+                    </Button>
+
+                    <Button type="link" htmlType="submit">
+                       {editingRow && "Realizar cambios" }
+                    </Button>
+                   
+                </>
+                );
+            },
         },
         ];
 
 
-        return <Table columns={columns} dataSource={record.registros} pagination={false} with="100%"/>;
+        return <Form form = {form} onFinish={(values)=>{onFinish(values,record)}}><Table columns={columns} dataSource={record.registros} pagination={false} with="100%"/></Form>;
     };
 
     useEffect(() => {
+        for(let index = 0;index < obraInfo.horasExtra.length; index++){
+            //Por cada elemento de horas extra añadimos un elemento key 
+            obraInfo.horasExtra[index].key = obraInfo.horasExtra[index]._id;
+            for (let j = 0; j < obraInfo.horasExtra[index].registros.length; j++) {
+                //Por cada registro del element añadimos un elemento key
+                obraInfo.horasExtra[index].registros[j].key = obraInfo.horasExtra[index].registros[j]._id;
+            }
+        }
         setEmpleadosObra(obraInfo.empleados);
-        obraInfo.horasExtra.map(element => element.key = element._id);
         setDataSource(obraInfo.horasExtra);
     }, []);
    
     
 
     useEffect(() => {
-        obraInfo.horasExtra.map(element => element.key = element._id);
+        
+        for(let index = 0;index < obraInfo.horasExtra.length; index++){
+            //Por cada elemento de horas extra añadimos un elemento key 
+            obraInfo.horasExtra[index].key = obraInfo.horasExtra[index]._id;
+            for (let j = 0; j < obraInfo.horasExtra[index].registros.length; j++) {
+                //Por cada registro del element añadimos un elemento key
+                obraInfo.horasExtra[index].registros[j].key = obraInfo.horasExtra[index].registros[j]._id;
+            }
+        }
         setDataSource(obraInfo.horasExtra);
         setEmpleadosObra(obraInfo.empleados);
     }, [obraInfo]);
 
-    useEffect(() => {
-        if(currentExpandedRow != null){
-            const data = obraInfo.horasExtra.find(element => element.key === currentExpandedRow);
-            setData(data.registros); 
-        }
-    }, [currentExpandedRow]);
     
    
     const showModal = () => {
@@ -124,35 +165,24 @@ export const HorasExtra = ({obraInfo,socket}) => {
         setIsModalVisible(false);
     };
 
-    const onFinish = ( values ) =>{
+    const onFinish = ( newData ) =>{
 
-        //Pequeña validación para checar si los datos son los mismo y si es asi NO enviar la petición
-        for (let index = 0; index < dataSource.length; index++) {
-            if(dataSource[index].key === editingRow){
-                if(dataSource[index].trabajador === values.trabajador && dataSource[index].horas === values.horas && dataSource[index].pagadas === values.pagadas && dataSource[index].motivo === values.motivo){
-                    setEditingRow(null);
-                    return;
+        /*
+        newData.map(element => {
+            element.registros.map(element => {
+                if(element.key === editingRow){
+                    //Tengo al elemento que quiero cambiar
+                    element.estatus = values.estatus;
+                    element.horas = values.horas;
+                    element.motivo = values.motivo;
                 }
-            }
-        }
-
-        const newData = dataSource.map(element => {
-            if(element.key === editingRow){
-                //Es el elemento que queremos cambiar!
-                element.trabajador = values.trabajador;
-                element.motivo = values.motivo;
-                element.pagadas = values.pagadas;
-                element.horas = values.horas;
-            }
-            delete element.key;
-            return element;
+            });
         });
-        //setDataSource(newData);
-        setEditingRow(null);
-        //TODO
-        socket.emit("actualizar-horas-extra-a-obra",{newData,obraId},(confirmacion)=>{
+        */
+        socket.emit("actualizar-horas-extra-a-obra",{newData,obraId,editingRow},(confirmacion)=>{
             confirmacion ? message.success(confirmacion.msg) : message.error(confirmacion.msg);
         });
+        setEditingRow(null);
     }
 
     const handleAddNewRegister = (values) => {
@@ -190,7 +220,7 @@ export const HorasExtra = ({obraInfo,socket}) => {
         },
         {
             title:"Cantidad de horas extra totales",
-            dataIndex:"horas",
+            dataIndex:"horasTotales",
             with:"50%",
             render: (text,record) => {
                 if(editingRow === record.key){
@@ -206,7 +236,19 @@ export const HorasExtra = ({obraInfo,socket}) => {
         },
         {
             title:"Cantidad de registros",
-            dataIndex:"cantidadRegistros",
+            dataIndex:"numeroRegistros",
+        },
+        {
+            title:"Horas totales pagadas",
+            dataIndex:"pagadasTodas",
+            render:(text,record) =>{
+                if(text){
+                    return (<span><Badge status="success"/>Pagadas</span>)
+                }else{
+                    return (<span><Badge status="error"></Badge>NO Pagadas</span>)
+                }
+
+            }
         }
         /*
         {
@@ -260,7 +302,6 @@ export const HorasExtra = ({obraInfo,socket}) => {
             </Button>
         }
             <div>
-                <Form form = {form} onFinish={onFinish}>
                     <Table
                         columns = {columns}
                         dataSource = {dataSource}
@@ -269,23 +310,22 @@ export const HorasExtra = ({obraInfo,socket}) => {
                                     expandedRowRender,
                                     /*
                                     onExpand:(expanded,record)=>{
-                                        if(currentExpandedRow === null){
-                                            const { key } = record;
-                                            setCurrentExpandedRow(key);
-                                        }else{
-                                            setCurrentExpandedRow(null);
+                                        if(expanded){
+                                            const { key } = record
+                                            setCurrentFatherRow(key);
                                         }
-                                    },
+                                    }
                                     */
                             }
                         }
                         className="fix"
                         with="100%"
                     />
-                </Form>
             </div>
 
         <Modal title="Agregar un nuevo registro!" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
+            <h4>Agregar un nuevo registro</h4>
+            <p className="lead">Añade y administra las horas extra de los trabajadores en la obra!</p>
             <Form form = {form} onFinish={handleAddNewRegister} layout="vertical">
                 <Form.Item
                     label="Nombre del empleado"
