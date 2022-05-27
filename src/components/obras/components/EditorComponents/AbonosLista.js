@@ -1,33 +1,35 @@
+
+
 import React,{ useState,useEffect } from 'react'
 import "../../assets/facturasLista.css";
 import { DownOutlined,UploadOutlined ,CopyOutlined } from '@ant-design/icons';
 import { fetchConToken, fetchConTokenSinJSON } from '../../../../helpers/fetch';
-import { Button, Card, Col, Divider, Dropdown, Menu, message, Row, Space, Statistic,Table,Modal,Upload,Input} from 'antd';
+import { Button, Card, Col, Divider, Dropdown, Menu, message, Row, Space, Statistic,Table,Modal,Upload,Input, Form, InputNumber} from 'antd';
 
 
-export const FacturasLista = ({socket,obraInfo}) => {
+export const AbonosLista = ({socket,obraInfo}) => {
     
     const {_id:obraId} = obraInfo;
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [filesList, setFilesList] = useState([]);
     const [uploading, setUploading] = useState(false);
-    const [dataFacturas, setDataFacturas] = useState([]);
-    const [obraInfoFacturas, setObraInfoFacturas] = useState({});
+    const [dataAbonos, setDataAbonos] = useState([]);
+    const [obraInfoAbonos, setObraInfoAbonos] = useState({});
 
     //Seteamos la data cada vez que el componente se monte por primera vez
     useEffect(() => {
-        obraInfo.facturas.registros.map(element => element.key = element._id);
-        setDataFacturas(obraInfo.facturas.registros);
+        obraInfo.abonos.registros.map(element => element.key = element._id);
+        setDataAbonos(obraInfo.abonos.registros);
 
-        setObraInfoFacturas(obraInfo.facturas);
+        setObraInfoAbonos(obraInfo.abonos);
     }, []);
 
     //Seteamos la data cada vez que la obraInfo se actualize por algun socket de un cliente
     useEffect(() => {
-        obraInfo.facturas.registros.map(element => element.key = element._id);
-        setDataFacturas(obraInfo.facturas.registros);
+        obraInfo.abonos.registros.map(element => element.key = element._id);
+        setDataAbonos(obraInfo.abonos.registros);
 
-        setObraInfoFacturas(obraInfo.facturas);
+        setObraInfoAbonos(obraInfo.abonos);
     }, [obraInfo]);
     
     
@@ -46,20 +48,22 @@ export const FacturasLista = ({socket,obraInfo}) => {
     const handleSearch = (value) =>{
         //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
         if(value.length == 0){
-            return setDataFacturas(obraInfo.facturas.registros);
+            return setDataAbonos(obraInfo.abonos.registros);
         }
 
-        const resultadosBusqueda = obraInfo.facturas.registros.filter((elemento)=>{
-            if(elemento.descripcionFactura.toLowerCase().includes(value.toLowerCase())){
+        const resultadosBusqueda = obraInfo.abonos.registros.filter((elemento)=>{
+            if(elemento.concepto.toLowerCase().includes(value.toLowerCase())){
                 return elemento;
             }
         });
 
-        return setDataFacturas(resultadosBusqueda);
+        return setDataAbonos(resultadosBusqueda);
     }
 
 
-    const handleUpload = async () =>{
+    const handleUpload =  async (values) =>{
+
+        values.obraId = obraId;
         const formData = new FormData();
 
         filesList.forEach(file => {
@@ -72,35 +76,27 @@ export const FacturasLista = ({socket,obraInfo}) => {
             }
         });
 
-        //Verificación que esten los 2 archivos 
-        if(filesList.length < 2){
+        //Verificación que este por lo menos 2 archivos!
+        if(filesList.length < 1){
             return message.error("Se necesita 2 archivos, el archivo PDF y XML para generar una nueva factura!");
         }
-        //Verificación que los dos archivos no sean iguales
-        if(filesList[0].type == filesList[1].type){
-            return message.error("Los dos archivos son de la misma extensión se necesitan los PDF y XML");
-        }
         setUploading(true);
-        //Making the http post 
-        let body;
-        try {
-            const resp = await fetchConTokenSinJSON(`/uploads/obras/obra/${obraId}/facturas`,formData,"POST");
-            body = await resp.json();
-            if(resp.status === 200){
-                message.success("Subida con exito!");
-            }else{
-                message.error(body.msg);
+        //Making the socket petition firts if this is ok then execute the http request
+        let flag = false;
+        socket.emit("añadir-abono-obra",values,async(confirmacion)=>{
+            //confirmacion.ok ? flag = true : flag = false;
+            if(confirmacion.ok){
+                const resp = await fetchConTokenSinJSON(`/uploads/obras/obra/${obraId}/abonos`,formData,"POST")
+                if(resp.status === 200){
+                    message.success("Se creo el abono correctamente!");
+                }else{
+                    message.error("No se pudo crear el abono!");
+                }
             }
-            handleCancel();
-            //Quitando los archivos del filesList
-            setFilesList([]);
-            //Quitando los archivos del upload list del upload
-            
-            //Avisando a todos incluyendome a mi que las facturas se han actualizado!
-            socket.emit("actualizar-facturas-obra",{obraId});
-        } catch (error) {
-            message.error(body);
-        }
+       });
+        handleCancel();
+        //Quitando los archivos del filesList
+        setFilesList([]);
         setUploading(false);
     }
 
@@ -133,6 +129,7 @@ export const FacturasLista = ({socket,obraInfo}) => {
     const menuDescargar = (record) => {
 
         const {folioFactura,nombrePDF,nombreXML} = record
+        console.log(record);
         return (
         <Menu 
             items={[
@@ -145,21 +142,19 @@ export const FacturasLista = ({socket,obraInfo}) => {
 
     const columns = [
         {
-            title: 'Importe total factura',
-            dataIndex: 'importeFactura',
-            key: 'importeFactura',
-            sorter: (a, b) => a.importeFactura - b.importeFactura,
-            sortDirections: ['descend', 'ascend'],
+            title: 'Beneficiario',
+            dataIndex: 'beneficiario',
+            key: 'beneficiario',
         },
         {
-            title: 'Descripción o motivo de la factura',
-            dataIndex: 'descripcionFactura',
-            key: 'descripcionFactura',
+            title: 'Categoria',
+            dataIndex: 'categoria',
+            key: 'categoria',
         },
         {
-            title: 'Fecha de la factura',
-            dataIndex: 'fechaFactura',
-            key: 'fechaFactura',
+            title: 'concepto',
+            dataIndex: 'concepto',
+            key: 'concepto',
             responsive:["sm"],
         },
         {
@@ -195,8 +190,8 @@ export const FacturasLista = ({socket,obraInfo}) => {
         },
         beforeUpload: file => {
             //Checar si el archivo es PDF O XML
-            const isPDForXML = file.type === "application/pdf" || file.type === "text/xml";
-            if(isPDForXML){
+            const isPDF = file.type === "application/pdf";
+            if(isPDF){
                 //Verificar que el fileList sea menos a 2 
                 if(filesList.length < 2){
                     setFilesList(files => [...files,file]);
@@ -219,16 +214,16 @@ export const FacturasLista = ({socket,obraInfo}) => {
     return (
         <>
             <div>
-                <h1>Gastos de la obra</h1>
-                <p className="lead">En esta sección se encontraran todas las facturas de la obra junto a su
-                    respectivo documento PDF y XML.
+                <h1>Abonos de la obra</h1>
+                <p className="lead">
+                    En esta sección se encuentran todos los abonos con su respectivo documento PDF.
                 </p>
                 <Divider/>
                 
                 {/*Buscador con autocompletado*/}
                     <Input.Search 
                         size="large" 
-                        placeholder="Busca una factura por su descripción o concepto" 
+                        placeholder="Buscar un abono por su concepto..." 
                         enterButton
                         onSearch={handleSearch}
                         className="search-bar-class"
@@ -239,8 +234,8 @@ export const FacturasLista = ({socket,obraInfo}) => {
                     <Col xs={24} md={8}>
                         <Card>
                             <Statistic
-                                title="Total de gastos"
-                                value={obraInfoFacturas.totalFacturas}
+                                title="Total de abonos"
+                                value={obraInfoAbonos.cantidadTotal}
                                 precision={2}
                                 valueStyle={{
                                 color: '#3f8600',
@@ -255,7 +250,7 @@ export const FacturasLista = ({socket,obraInfo}) => {
                         <Card>
                             <Statistic
                                 title="Numero de registros"
-                                value={obraInfoFacturas.numeroFacturas}
+                                value={obraInfoAbonos.numeroRegistros}
                                 valueStyle={{
                                 color: '#3f8600',
                                 }}
@@ -267,24 +262,52 @@ export const FacturasLista = ({socket,obraInfo}) => {
                 </Row>
 
                 {/*Tabla con facturas*/}
-                <Button type="primary" className="my-3" onClick={showModal}>Agregar nueva factura!</Button>
+                <Button type="primary" className="my-3" onClick={showModal}>Agregar nuevo abono!</Button>
 
-                <Table columns={columns} dataSource={dataFacturas} bordered style={{width:"100vw"}}/>
+                <Table columns={columns} dataSource={dataAbonos} bordered style={{width:"100vw"}}/>
 
                 <Modal title="Agregar factura" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
-                        <h1>Subir nueva factura al sistema</h1>
-                        <p className="lead">Para poder realizar esta operación nesecitaras el documento XML y PDF.</p>
-                        <Upload {...props} className="upload-list-inline" >
-                            <Button icon={<UploadOutlined/>}>Selecciona el archivo</Button>
-                        </Upload>
-                   <Button 
-                        type="primary" 
-                        onClick={handleUpload}
-                        disabled={filesList.length === 0}
-                        loading={uploading}
-                    >
-                        {uploading ? "Subiendo..." : "Comienza a subir!"}     
-                    </Button>
+                        <h1>Subir un nuevo abono al sistema!</h1>
+                        <p className="lead">Para poder realizar esta acción necesitaras el documento PDF del abono y llenar el siguiente formulario!</p>
+                            <Form onFinish={handleUpload} layout="vertical">
+                                <Row gutter={16}>
+                                    <Col xs={24} lg={12}>
+                                        <Form.Item name="concepto" label="Concepto del abono">
+                                            <Input size="large"></Input>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={24} lg={12}>
+                                        <Form.Item name="categoria" label="Categoria del abono">
+                                            <Input size="large"></Input>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={24} lg={12}>
+                                        <Form.Item name="cantidad" label="Cantidad total del abono">
+                                            <InputNumber size="large" style={{width:"100%"}}/>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={24} lg={12}>
+                                        <Form.Item name="beneficiario" label="Beneficiario del abono">
+                                            <Input size="large" style={{width:"100%"}}/>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={24}>
+                                        <Upload {...props} className="upload-list-inline" >
+                                            <Button icon={<UploadOutlined/>}>Selecciona el archivo del abono</Button>
+                                        </Upload>
+                                    </Col>
+                                    <Button 
+                                        type="primary" 
+                                        disabled={filesList.length === 0}
+                                        loading={uploading}
+                                        htmlType="submit"
+                                    >
+                                        {uploading ? "Subiendo..." : "Comienza a subir!"}     
+                                    </Button>
+                               </Row>
+                           </Form>
+
+
                </Modal>
             </div>
         </>

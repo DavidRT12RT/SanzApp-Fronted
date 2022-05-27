@@ -1,8 +1,8 @@
-import { List, Avatar, Button, Modal, Form, Input, Divider, Select } from 'antd';
+import { List, Avatar, Button, Modal, Form, Input, Divider, Select, Dropdown, Menu } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { confirmation } from '../../../../alerts/botons';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined,DownOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
 
@@ -27,18 +27,26 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
             
             return () => {form.resetFields()}
         }, [actualRow,form]);
-        
+       
 
         useEffect(() => {
             socket.emit("obtener-empleados-en-obra-por-id",{obraId},(empleados)=>{
                 setEmpleadosObra(empleados);
             });
+
+            const data = obraInfo.trabajosEjecutados.map((element,index)=>{
+                element.key = index;
+            });
+
+            setListData(data);
+
         }, []);
 
         //Si la información de la obra se actualizo
         useEffect(()=>{
             //Seteo los trabajos que se han ejecutado
             obraInfo.trabajosEjecutados.map((element,index) => {
+                console.log("elemento",element);
                 element.avatar="https://joeschmoe.io/api/v1/random"
                 element.key = index;
             });
@@ -54,7 +62,6 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
             });
         }, [listData]);
     
-
     
 
         const showModal = () => {
@@ -85,8 +92,13 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
         const onFinish = async (values) =>{
             try {
                 await confirmation("Editaras la información de el trabajo realizado y no podras regresar a la información anterior"); 
-
-               //TODO:buscar obra y actualizar!
+                //Encontrar ID del trabajador y agregarlo al objecto que se agrara a la lista de tareas
+                const {_id:empleadoId} = empleadosObra.find(element => {
+                    if(element.nombre === values.trabajador){
+                        return element;
+                    }
+                });
+                values.empleadoId = empleadoId;
                const trabajosRealizadosUpdated = listData.map(element => {
                    if(element.key == actualRow){
                        return element = values;
@@ -125,6 +137,13 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
         const handleAddNewElement = async (values) =>{
             try {
                 await confirmation("Agregaras un nuevo trabajo a lista"); 
+                //Encontrar ID del trabajador y agregarlo al objecto que se agrara a la lista de tareas
+                const {_id:empleadoId} = empleadosObra.find(element => {
+                    if(element.nombre=== values.trabajador){
+                        return element;
+                    }
+                });
+                values.empleadoId = empleadoId;
                 listData.unshift(values);
                 const trabajosRealizadosUpdated = listData;
                 socket.emit("actualizar-trabajo",{obraId,trabajosRealizadosUpdated},(nuevosTrabajos)=>{
@@ -140,13 +159,71 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
             }
         }
 
+        const handleSearch = (value) =>{
+            //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
+            if(value.length == 0){
+                return setListData(obraInfo.trabajosEjecutados);
+            }
+
+            const resultadosBusqueda = obraInfo.trabajosEjecutados.filter((elemento)=>{
+                if(elemento.trabajoRealizado.toLowerCase().includes(value.toLowerCase())){
+                    return elemento;
+                }
+            });
+
+            return setListData(resultadosBusqueda);
+        }
+        const handleFilter = ({key:value}) =>{
+         //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
+            if(value == "Limpiar"){
+                return setListData(obraInfo.trabajosEjecutados);
+            }
+
+            const resultadosBusqueda = obraInfo.trabajosEjecutados.filter((elemento)=>{
+                if(elemento.trabajador.toLowerCase().includes(value.toLowerCase())){
+                    return elemento;
+                }
+            });
+
+            return setListData(resultadosBusqueda);
+
+        }
+
+        const menu = (
+            <Menu onClick={handleFilter}>
+                {
+                    empleadosObra.map(empleado => {
+                        return <Menu.Item key={empleado.nombre}>{empleado.nombre}</Menu.Item>
+                    })
+                }
+                <Menu.Divider></Menu.Divider>
+                <Menu.Item key="Limpiar">Limpiar filtros</Menu.Item>
+            </Menu>
+        );
 
         return (
             <>
             <h1>Trabajos ejecutados</h1>
             <p className="lead">En esta sección se mostrara los trabajos ejecutados dentro de la obra donde tambien se podran añadir mas trabajos </p>
             <Divider/>
-            <Button type="primary" style={{marginBottom: 16,}} onClick={showModal2}> Añadir trabajo </Button>
+            {/*Buscador y filtrador*/}
+            <div className="d-flex align-items-center gap-2">
+                <Input.Search 
+                    size="large" 
+                    placeholder="Buscar un trabajo realizado por el titulo del trabajo..." 
+                    enterButton
+                    onSearch={handleSearch}
+                    className="search-bar-class"
+                />
+                <Dropdown overlay={menu} className="">
+                    <Button type="primary" size='large'>
+                        Filtrar por categoria:
+                        <DownOutlined />
+                    </Button>
+                </Dropdown>
+            </div>
+
+            <Button type="primary" style={{marginBottom: 16,}} onClick={showModal2} className="mt-3"> Añadir trabajo </Button>
             <div className="bg-body p-lg-5">
                 <List
                     itemLayout="vertical"
@@ -179,7 +256,7 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
                     */
                 >
                 <List.Item.Meta
-                    avatar={<Avatar src={item.avatar} />}
+                    avatar={<Avatar src={`http://localhost:4000/api/uploads/usuarios/${item.empleadoId}`} />}
                     title={item.trabajoRealizado}
                     description={item.trabajador}
                 />
@@ -238,8 +315,8 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
                 </Modal>
 
                 <Modal title="Añadir trabajo" visible={isModalVisible2} onOk={handleOk2} onCancel={handleCancel2} okText="Salir sin ningun cambio" cancelText={false} footer={null}>
-                    <Form name="basic" onFinish={handleAddNewElement} layout="vertical">
 
+                    <Form name="basic" onFinish={handleAddNewElement} layout="vertical">
                         <Form.Item
                             label="Nombre del empleado"
                             name="trabajador"
@@ -257,7 +334,7 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
                             >
                                 {
                                     empleadosObra.map(empleado => {
-                                        return <Option value={empleado.nombre}>{empleado.nombre}</Option>
+                                        return <Option value={empleado.nombre} key={empleado._id}>{empleado.nombre}</Option>
                                     })
                                 }
                             </Select>

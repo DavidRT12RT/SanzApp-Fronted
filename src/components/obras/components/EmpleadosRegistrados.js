@@ -44,6 +44,7 @@ export const EmpleadosRegistrados = ({obraInfo}) => {
 
     return (
         <>
+        <p className="lead">Empleados registrados en la obra</p>
             <Table
                 columns = {columns} 
                 dataSource = {dataSource} 

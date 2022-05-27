@@ -8,7 +8,6 @@ const { Option } = Select;
 export const HorasExtra = ({obraInfo,socket}) => {
 
     const [dataSource, setDataSource] = useState([]);
-    const [currentFatherRow, setCurrentFatherRow] = useState(null);
     const [editingRow, setEditingRow] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [empleadosObra, setEmpleadosObra] = useState([]);

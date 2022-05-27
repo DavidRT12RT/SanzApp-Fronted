@@ -1,7 +1,30 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Divider, Form, Input, Modal, Table } from "antd";
+import { Button, Divider, Dropdown, Form, Input, Menu, Modal, Table, Tag } from "antd";
 import { useParams } from 'react-router-dom';
 import "../../assets/styleMaterialList.css";
+import { DownOutlined } from '@ant-design/icons';
+
+const categoriaColor = (categoria) => {
+    switch (categoria) {
+        case "ferreteria":
+            return <Tag color="cyan" key="categoria">{categoria.toUpperCase()}</Tag> 
+        case "vinilos":
+            return <Tag color="green" key="categoria">{categoria.toUpperCase()}</Tag> 
+        case "herramientas":
+            return <Tag color="blue" key="categoria">{categoria.toUpperCase()}</Tag> 
+        case "pisosAzulejos":
+            return <Tag color="orange" key="categoria">{categoria.toUpperCase()}</Tag>
+        case "fontaneria":
+            return <Tag color="red" key="categoria">{categoria.toUpperCase()}</Tag>
+        case "iluminacion":
+            return <Tag color="yellow" key="categoria">{categoria.toUpperCase()}</Tag>
+        case "materialElectrico":
+            return <Tag color="gold" key="categoria">{categoria.toUpperCase()}</Tag>
+        default:
+            return <Tag color="green" key="categoria">{categoria.toUpperCase()}</Tag> 
+            break;
+    }
+}
 
 export const MaterialUtilizado = ({obraInfo,socket}) => {
 
@@ -9,10 +32,8 @@ export const MaterialUtilizado = ({obraInfo,socket}) => {
     const [editingRow, setEditingRow] = useState(null);
     const [deletingRow, setDeletingRow] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
-
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
+    const [form] = Form.useForm();
+    const { obraId } = useParams();
 
     const handleOk = () => {
         setIsModalVisible(false);
@@ -22,16 +43,11 @@ export const MaterialUtilizado = ({obraInfo,socket}) => {
         setIsModalVisible(false);
     };
 
-    const [form] = Form.useForm();
-
     useEffect(() => {
         setDataSource(obraInfo.materialUtilizado);
+        console.log(obraInfo.materialUtilizado);
     }, [obraInfo]);
     
-    const { obraId } = useParams();
-
-
-
 
     const onFinish = ( values ) =>{
         const updatedDataSource = [...dataSource];
@@ -122,6 +138,20 @@ export const MaterialUtilizado = ({obraInfo,socket}) => {
                 }
             }
         },
+        {
+            title:"Categorias",
+            key:"categorias",
+            dataIndex:"categorias",
+            render: categorias => 
+            <>
+                {
+                    categorias.map(categoria => {
+                        //return (<Tag color="green" key="categoria">{categoria.toUpperCase()}</Tag>);
+                        return categoriaColor(categoria);
+                    })
+                }
+            </>
+        },
         /*
         {
             title:"Acciones",
@@ -162,11 +192,71 @@ export const MaterialUtilizado = ({obraInfo,socket}) => {
         */
     ];
 
+    const handleSearch = (value) => {
+        //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
+        if(value.length == 0){
+            return setDataSource(obraInfo.materialUtilizado);
+        }
+
+        const resultadosBusqueda = obraInfo.materialUtilizado.filter((elemento)=>{
+            if(elemento.concepto.toLowerCase().includes(value.toLowerCase())){
+                return elemento;
+            }
+        });
+
+        return setDataSource(resultadosBusqueda);
+    }
+
+    const handleFilter = ({key:value}) =>{
+        //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
+        if(value == "Limpiar"){
+            return setDataSource(obraInfo.materialUtilizado);
+        }
+
+        const resultadosBusqueda = obraInfo.materialUtilizado.filter((elemento)=>{
+            if(elemento.categorias.includes(value.toLowerCase())){
+                return elemento;
+            }
+        });
+
+        return setDataSource(resultadosBusqueda);
+    }
+
+    const menu = (
+        <Menu onClick={handleFilter}>
+            <Menu.Item key="ferreteria">Ferreteria</Menu.Item>
+            <Menu.Item key="electrico">Electrico</Menu.Item>
+            <Menu.Item key="herramientas">Herramientas</Menu.Item>
+            <Menu.Item key="vinilos">Vinilos</Menu.Item>
+            <Menu.Item key="pisosAzulejos">Pisos y Azulejos</Menu.Item>
+            <Menu.Item key="fontaneria">Fontaneria</Menu.Item>
+            <Menu.Item key="iluminacion">Iluminación</Menu.Item>
+            <Menu.Divider/>
+            <Menu.Item key="Limpiar">Limpiar filtros</Menu.Item>
+        </Menu>
+    );
+
     return (
         <>
         <h1>Material utilizado</h1>
         <p className="lead">En esta sección se mostrara los materiales utilizados en la obra hasta el momento.</p>
         <Divider/>
+        {/*Buscador y filtrador*/}
+        <div className="d-flex align-items-center gap-2">
+            <Input.Search 
+                size="large" 
+                placeholder="Busca una factura por su descripción o concepto" 
+                enterButton
+                onSearch={handleSearch}
+                className="search-bar-class"
+            />
+            <Dropdown overlay={menu} className="">
+                <Button type="primary" size='large'>
+                    Filtrar por categoria:
+                    <DownOutlined />
+                </Button>
+            </Dropdown>
+        </div>
         {
             /*
             <Button
@@ -185,7 +275,7 @@ export const MaterialUtilizado = ({obraInfo,socket}) => {
                     <Table
                         columns = {columns}
                         dataSource = {dataSource}
-                        className="fix"
+                        className="fix mt-3"
                     />
                 </Form>
             </div>

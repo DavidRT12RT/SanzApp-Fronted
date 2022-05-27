@@ -9,6 +9,7 @@ import { Imagenes } from './components/EditorComponents/Imagenes';
 import { FacturasLista } from './components/EditorComponents/FacturasLista';
 import { TrabajadoresLista } from './components/EditorComponents/TrabajadoresLista';
 import { HorasExtra } from './components/EditorComponents/HorasExtra';
+import { AbonosLista } from './components/EditorComponents/AbonosLista';
 
 const { Content, Footer, Sider } = Layout;
 
@@ -53,7 +54,6 @@ export const EditorObra = () => {
 
        case "3":
           //Trabajadores lista
-          console.log("Componente 3"); 
           return <TrabajadoresLista socket = {socket} obraInfo = {obraInfo} />
         
         case "4":
@@ -62,7 +62,7 @@ export const EditorObra = () => {
         
         case "5":
           //Abonos lista
-          break;
+          return <AbonosLista socket = {socket} obraInfo = {obraInfo}/>
 
         case "6":
           return <TrabajosEjecutados socket = {socket} obraInfo = {obraInfo}/>
@@ -118,7 +118,7 @@ export const EditorObra = () => {
               {
                   key:'4',
                   icon:<FileOutlined/>,
-                  label:'Facturas'
+                  label:'Gastos'
               },
               {
                   key:'5',

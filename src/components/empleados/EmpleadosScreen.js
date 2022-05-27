@@ -54,18 +54,18 @@ export const EmpleadosScreen = () => {
             value={search}
             onChange={onSearchChange}
             />
-            <button className='btn btn-warning' onClick={previousPage}>
+            <button className='btn btn-outline border' onClick={previousPage}>
                 Anterior
             </button>
             &nbsp;
-            <button className='btn btn-warning mx-2' onClick={nextPage}>
+            <button className='btn btn-outline border mx-2' onClick={nextPage}>
                 Siguiente
             </button>
-            <Link to="/registro" className="btn btn-warning">Registrar usuario</Link>
+            <Link to="/registro" className="btn btn-outline border">Registrar usuario</Link>
             <div className="d-flex justify-content-center flex-column mt-5">
                  {
                         empleadosFiltrados().map(empleado => 
-                            <EmpleadoCard key={empleado.uid} {...empleado}/>
+                            <EmpleadoCard key={empleado.uid} empleado={empleado}/>
                         )
                     }
 

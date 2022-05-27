@@ -35,7 +35,9 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
         socket.emit("obtener-empleados-en-obra-por-id",{obraId},(empleados)=>{
             setDataSource(empleados);
         });
+
     }, []);
+
     
 
     const showModal = () =>{
@@ -51,10 +53,7 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
     };
 
 
-    useEffect(() => {
-        setDataSource(obraInfo.empleados);
-    }, [obraInfo]);
-    
+
 
     const onReset = () =>{
        form.resetFields();

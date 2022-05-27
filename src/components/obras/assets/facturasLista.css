@@ -25,5 +25,14 @@
 }
 
 
+@media(max-width:800px){
+  .search-bar-class{
+    width: 100%;
+  }
+}
 
-
+@media(min-width:1001px ){
+  .search-bar-class{
+    width: 50%;
+  }
+}

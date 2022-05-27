@@ -10,90 +10,88 @@ import { RealizarRetiroAlmacen } from './components/RealizarRetiroAlmacen';
 
 
 export const ProductoScreen = () => {
-
-  
-  const {productoId} = useParams();
-  const [informacionProducto, setInformacionProducto] = useState({});
-  const [activeTabKey1, setActiveTabKey1] = useState('tab1');
-  const [ImageProduct, setImageProduct] = useState("");
-  const {socket} = useContext(SocketContext);
+    const {productoId} = useParams();
+    const [informacionProducto, setInformacionProducto] = useState({});
+    const [activeTabKey1, setActiveTabKey1] = useState('tab1');
+    const [ImageProduct, setImageProduct] = useState("");
+    const {socket} = useContext(SocketContext);
 
 
 
-  useEffect(()=>{
+    useEffect(()=>{
 
-    socket.emit("obtener-producto-por-id",{productoId},(producto)=>{
-      setInformacionProducto(producto);
-    });
+        socket.emit("obtener-producto-por-id",{productoId},(producto)=>{
+            setInformacionProducto(producto);
+        });
 
 
-    fetchConToken(`/uploads/productos/${productoId}`).then(resp => {
-      resp.url && setImageProduct(resp.url);
-    });
+        fetchConToken(`/uploads/productos/${productoId}`).then(resp => {
+        resp.url && setImageProduct(resp.url);
+        });
 
-  },[]);
+    },[]);
 
-  useEffect(() => {
+    useEffect(() => {
 
-    socket.on("producto-actualizado",(producto)=>{
-      if(producto._id === informacionProducto._id){
-        setInformacionProducto(producto);
-      }
-    });
+        socket.on("producto-actualizado",(producto)=>{
+        if(producto._id === informacionProducto._id){
+            setInformacionProducto(producto);
+        }
+        });
 
-    //Cada vez que el producto sea actualizado la imagen deberia volverse a renderizar
-    fetchConToken(`/uploads/productos/${productoId}`).then(resp => {
-      resp.url && setImageProduct(resp.url);
-    });
+        //Cada vez que el producto sea actualizado la imagen deberia volverse a renderizar
+        fetchConToken(`/uploads/productos/${productoId}`).then(resp => {
+        resp.url && setImageProduct(resp.url);
+        });
 
-  }, [socket,setInformacionProducto,informacionProducto,fetchConToken,setImageProduct,productoId]);
+    }, [socket,setInformacionProducto,informacionProducto,fetchConToken,setImageProduct,productoId]);
 
-  const tabList = [
+    const tabList = [
+        {
+        key: 'tab1',
+        tab: 'Información',
+        },
+        {
+        key: 'tab2',
+        tab: 'Editar información',
+        },
+        {
+        key:'tab3',
+        tab:"Editar imagen del producto"
+        },
+        {
+        key:'tab4',
+        tab:"Realizar retiro almacen de algun producto"
+        }
+
+    ];
+
+    const onTab1Change = key => {
+        setActiveTabKey1(key);
+    };
+
+    const contentList = 
     {
-      key: 'tab1',
-      tab: 'Información',
-    },
-    {
-      key: 'tab2',
-      tab: 'Editar información',
-    },
-    {
-      key:'tab3',
-      tab:"Editar imagen del producto"
-    },
-    {
-      key:'tab4',
-      tab:"Realizar retiro almacen de algun producto"
-    }
+        tab1: <ViewInfo informacionProducto = {informacionProducto} ImageProduct = {ImageProduct}/>,
+        tab2:<EditInfo informacionProducto = {informacionProducto} setInformacionProducto = {setInformacionProducto} productoId = {productoId} socket = {socket}/>,
+        tab3:<EditarImagen socket = {socket} productoId = {productoId} informacionProducto = {informacionProducto}/>,
+        tab4:<RealizarRetiroAlmacen socket = {socket} productoId = {productoId} informacionProducto = {informacionProducto}/>
+    };
 
-  ];
-
-  const onTab1Change = key => {
-    setActiveTabKey1(key);
-  };
-
-  const contentList = 
-  {
-    tab1: <ViewInfo informacionProducto = {informacionProducto} ImageProduct = {ImageProduct}/>,
-    tab2:<EditInfo informacionProducto = {informacionProducto} setInformacionProducto = {setInformacionProducto} productoId = {productoId} socket = {socket}/>,
-    tab3:<EditarImagen socket = {socket} productoId = {productoId} informacionProducto = {informacionProducto}/>,
-    tab4:<RealizarRetiroAlmacen socket = {socket} productoId = {productoId} informacionProducto = {informacionProducto}/>
-  };
-
-  return (
-    <div className="container mt-sm-2 mt-lg-4 ">
-      <Card
-        style={{ width: '100%' }}
-        title="Información detallada del producto"
-        extra={<Link to="/aplicacion/almacen/">Regresar a almacen</Link>}
-        tabList={tabList}
-        activeTabKey={activeTabKey1}
-        onTabChange={key => {
-          onTab1Change(key);
-        }}
-      >
-        {contentList[activeTabKey1]}
-      </Card>
-    </div>
-  );
+    return (
+        <div className="container mt-sm-2 mt-lg-4 ">
+        <Card
+            style={{ width: '100%' }}
+            title="Información detallada del producto"
+            extra={<Link to="/aplicacion/almacen/">Regresar a almacen</Link>}
+            tabList={tabList}
+            activeTabKey={activeTabKey1}
+            onTabChange={key => {
+            onTab1Change(key);
+            }}
+        >
+            {contentList[activeTabKey1]}
+        </Card>
+        </div>
+    );
 };

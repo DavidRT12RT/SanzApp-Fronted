@@ -8,35 +8,34 @@ import { OtroForm } from './components/OtroForm';
 
 
 export const RegistrarObra = () => {
-  const { Text } = Typography;
-  const tabList = [
-    {
-      key: 'tab1',
-      tab: 'Santander',
-    },
-    {
-      key: 'tab2',
-      tab: 'Banjico',
-    },
-    {
-      key:"tab3",
-      tab:"Otro..."
-    }
-];
+    const { Text } = Typography;
+    const tabList = [
+        {
+          key: 'tab1',
+          tab: 'Santander',
+        },
+        {
+          key: 'tab2',
+          tab: 'Banjico',
+        },
+        {
+          key:"tab3",
+          tab:"Otro..."
+        }
+    ];
+    const contentList = {
+      tab1: <SantanderForm/>,
+      tab2:<Banbanjio/>,
+      tab3:<OtroForm/>,
+    };
 
-  const contentList = {
-    tab1: <SantanderForm/>,
-    tab2:<Banbanjio/>,
-    tab3:<OtroForm/>,
-  };
+    const [activeTabKey1, setActiveTabKey1] = useState('tab1');
 
-  const [activeTabKey1, setActiveTabKey1] = useState('tab1');
-
-  const onTab1Change = key => {
-    setActiveTabKey1(key);
-  };
+    const onTab1Change = key => {
+      setActiveTabKey1(key);
+    };
   
-  return (
+    return (
     <div className='container background mt-5'>
       <h1>¡Vamos a crear una nueva obra!</h1>
       <span className='lead'>¿Que información tendra la obra o servicio?</span>
@@ -67,5 +66,5 @@ export const RegistrarObra = () => {
       </Row>
     </div>
 
-  )
+    )
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 
 export const InfoObra = () => {
-  return (
-    <div>InfoObra</div>
-  )
+	return (
+    	<div>InfoObra</div>
+  	)
 }

@@ -5,8 +5,7 @@ const { Option } = Select;
 
 
 export const SalidaDirecta = ({informacionProducto,socket}) => {
-
-   const [form] = Form.useForm();
+    const [form] = Form.useForm();
     const usuario= useSelector(store => store.auth.name);
 
     const onReset = () =>{
