@@ -44,7 +44,7 @@ export const EmpleadosScreen = () => {
    
     console.log(empleados.length);
     return (
-        <div className='mt-5 container'>
+        <div className='mt-5 container mt-lg-4 mt-sm-2 p-5 shadow rounded '>
             <h1>Listado de empleados Sanz</h1>
             <hr/>
             <input 

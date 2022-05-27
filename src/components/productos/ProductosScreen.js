@@ -139,7 +139,7 @@ export const ProductosScreen = () => {
 
 
     return (
-        <div className="container mt-lg-4 mt-sm-2 p-5">
+        <div className="container mt-lg-4 mt-sm-2 p-5 shadow rounded">
             <h1>Lista de productos en almacen</h1>
             <hr/> 
                 <Search

@@ -25,63 +25,61 @@ export const AplicationNavbar = () =>{
 
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark p-3">
             <div className="container-fluid">
-                <Link to="/aplicacion/" className="navbar-brand">Sanz espacio de trabajo</Link>
+                <Link to="/aplicacion/" className="navbar-brand h6">
+                    <img src={require("../assets/favicon.png")} width="40" height="40"/>
+                    Sanz espacio de trabajo
+                    </Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarText">
-                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul className="navbar-nav me-auto mb-lg-0">
                         
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
-                                "nav-link" + (isActive ? " active" : "")
+                                "nav-link h6" + (isActive ? " active" : "")
                             } to="/aplicacion/" aria-current="page">Inicio</NavLink>
                         </li>
 
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
-                                "nav-link" + (isActive ? " active" : "")
+                                "nav-link h6" + (isActive ? " active" : "")
                             } to="/aplicacion/almacen" aria-current="page">Almacen</NavLink>
                         </li>
 
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
-                                "nav-link" + (isActive ? " active" : "")
+                                "nav-link h6" + (isActive ? " active" : "")
                             } to="/aplicacion/obras" aria-current="page">Obras</NavLink>
                         </li>
                          
                          <li className="nav-item">
                             <NavLink className={({isActive})=>
-                                "nav-link" + (isActive ? " active" : "")
+                                "nav-link h6" + (isActive ? " active" : "")
                             } to="/aplicacion/empleados" aria-current="page">Empleados</NavLink>
                         </li>
 
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
-                                "nav-link" + (isActive ? " active" : "")
+                                "nav-link h6" + (isActive ? " active" : "")
                             } to="/aplicacion/calendario" aria-current="page">Calendario</NavLink>
                         </li>
 
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
-                                "nav-link" + (isActive ? " active" : "")
+                                "nav-link h6" + (isActive ? " active" : "")
                             } to="/aplicacion/camionetas" aria-current="page">Control de camionetas</NavLink>
                         </li>
-
-                       
-
                     </ul>
-                   
-
                     {
                         online
-                        ? <span className="navbar-text text-success">Servidor: Online</span>
-                        : <span className="navbar-text text-danger">Servidor: Offline</span>
+                        ? <span className="navbar-text text-success h6">Servidor: Online</span>
+                        : <span className="navbar-text text-danger h6">Servidor: Offline</span>
                     }
 
-                    <span className="navbar-text ms-2">
+                    <span className="navbar-text ms-2 h6">
                             {nombre}
                            
                     </span>

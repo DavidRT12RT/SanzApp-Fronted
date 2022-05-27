@@ -49,7 +49,7 @@ export const ObrasScreen = () => {
    
 
     return (
-        <div className='mt-5 container'>
+        <div className='mt-5 container p-5 mt-lg-4 mt-sm-2 shadow rounded'>
             <h1>Lista de obras / servicios Sanz</h1>
             <hr/>
             <input 
