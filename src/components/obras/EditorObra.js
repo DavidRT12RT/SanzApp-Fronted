@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Layout, Menu } from 'antd';
-import { EyeOutlined, TeamOutlined, FileOutlined, FileImageOutlined, DollarCircleOutlined, ToolOutlined, TagOutlined, PlusCircleOutlined} from '@ant-design/icons';
+import { EyeOutlined, TeamOutlined, FileOutlined, FileImageOutlined, DollarCircleOutlined, ToolOutlined, TagOutlined, PlusCircleOutlined, AuditOutlined} from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import { MaterialUtilizado } from './components/EditorComponents/MaterialUtilizado';
 import { SocketContext } from '../../context/SocketContext';
@@ -10,7 +10,7 @@ import { FacturasLista } from './components/EditorComponents/FacturasLista';
 import { TrabajadoresLista } from './components/EditorComponents/TrabajadoresLista';
 import { HorasExtra } from './components/EditorComponents/HorasExtra';
 import { AbonosLista } from './components/EditorComponents/AbonosLista';
-
+import { CobrosObra } from './components/EditorComponents/CobrosObra';
 const { Content, Footer, Sider } = Layout;
 
 export const EditorObra = () => {
@@ -72,6 +72,9 @@ export const EditorObra = () => {
 
         case "8":
           return <Imagenes socket = {socket} obraInfo = {obraInfo}/>
+        
+        case "9":
+          return <CobrosObra socket = {socket} obraInfo = {obraInfo}/>
 
         default:
           return <MaterialUtilizado obraInfo = {obraInfo} socket = {socket}/>;
@@ -122,7 +125,7 @@ export const EditorObra = () => {
               },
               {
                   key:'5',
-                  icon:<DollarCircleOutlined />,
+                  icon:<AuditOutlined />,
                   label:'Abonos'
               },
               {
@@ -139,6 +142,11 @@ export const EditorObra = () => {
                   key:'8',
                   icon:<FileImageOutlined />,
                   label:'Imagenes de la obra'
+              },
+              {
+                key:'9',
+                icon:<DollarCircleOutlined />,
+                label:"Cobros de la obra"
               }
 
             ]}

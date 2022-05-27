@@ -29,7 +29,7 @@ export const AplicationNavbar = () =>{
             <div className="container-fluid">
                 <Link to="/aplicacion/" className="navbar-brand h6">
                     <img src={require("../assets/favicon.png")} width="40" height="40"/>
-                    Sanz espacio de trabajo
+                    Sanz Ingenieria Integral
                     </Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>

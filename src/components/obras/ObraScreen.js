@@ -65,7 +65,7 @@ export const ObraScreen = () => {
 	];
 
 	return (
-		<div className="container mt-5">
+		<div className="container mt-5 p-5 shadow rounded">
 		<h1>{`${obraInfo.titulo}`}</h1>
 		<span className="lead">Pulsa en los botones para navegar en cada etapa de la obra / servicio.</span>
 

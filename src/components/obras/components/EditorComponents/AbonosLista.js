@@ -1,5 +1,4 @@
 
-
 import React,{ useState,useEffect } from 'react'
 import "../../assets/facturasLista.css";
 import { DownOutlined,UploadOutlined ,CopyOutlined } from '@ant-design/icons';
@@ -70,42 +69,46 @@ export const AbonosLista = ({socket,obraInfo}) => {
             if(file.type == "application/pdf"){
                 formData.append("archivoPDF",file);
                 //formData.archivoPDF = file;
-            }else if(file.type == "text/xml"){
-                formData.append("archivoXML",file);
-                //formData.archivoXML = file;
             }
         });
 
         //Verificación que este por lo menos 2 archivos!
         if(filesList.length < 1){
-            return message.error("Se necesita 2 archivos, el archivo PDF y XML para generar una nueva factura!");
+            return message.error("Se necesita el archivo PDF del abono!");
         }
         setUploading(true);
-        //Making the socket petition firts if this is ok then execute the http request
-        let flag = false;
-        socket.emit("añadir-abono-obra",values,async(confirmacion)=>{
-            //confirmacion.ok ? flag = true : flag = false;
-            if(confirmacion.ok){
-                const resp = await fetchConTokenSinJSON(`/uploads/obras/obra/${obraId}/abonos`,formData,"POST")
-                if(resp.status === 200){
-                    message.success("Se creo el abono correctamente!");
-                }else{
-                    message.error("No se pudo crear el abono!");
-                }
+        //Primero hacemos la petición para subir la imagen al servidor y con el nombre que nos devolvera se lo mandamos al socket
+        try {
+            const resp = await fetchConTokenSinJSON(`/uploads/obras/obra/${obraId}/abonos`,formData,"POST")
+            if(resp.status === 200){
+                //Subir la información
+                const body = await resp.json();
+                values.rutaArchivo = body.nombre;
+                socket.emit("añadir-abono-obra",values,async(confirmacion)=>{
+                    confirmacion ? message.success(confirmacion.msg) : message.error(confirmacion.msg);
+                });
+            }else{
+                message.error("No se pudo crear el abono!");
             }
-       });
+        } catch (error) {
+            
+        }
+                
         handleCancel();
         //Quitando los archivos del filesList
         setFilesList([]);
         setUploading(false);
     }
 
-    const handleDownloadPDF = async (nombreArchivo,folioFactura) => {
+    const handleDownloadPDF = async (values) => {
+        const { rutaArchivo } = values;
         try {
-            const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/facturas/${folioFactura}/${nombreArchivo}`);
+            const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/abonos/${rutaArchivo}`);
             const bytes = await resp.blob();
             let element = document.createElement('a');
             element.href = URL.createObjectURL(bytes);
+            //Cortamos y obtenemos el nombre
+            const nombreArchivo = rutaArchivo.split("/")[1];
             element.setAttribute('download',nombreArchivo);
             element.click();
         } catch (error) {
@@ -113,28 +116,13 @@ export const AbonosLista = ({socket,obraInfo}) => {
         }
     }
 
-    const handleDownloadXML = async (nombreArchivo,folioFactura) => {
-        try {
-            const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/facturas/${folioFactura}/${nombreArchivo}`);
-            const bytes = await resp.blob();
-            let element = document.createElement('a');
-            element.href = URL.createObjectURL(bytes);
-            element.setAttribute('download',nombreArchivo);
-            element.click();
-        } catch (error) {
-           message.error("No se pudo descargar el archivo del servidor :("); 
-        }
-    }
 
     const menuDescargar = (record) => {
 
-        const {folioFactura,nombrePDF,nombreXML} = record
-        console.log(record);
         return (
         <Menu 
             items={[
-                { key: '1', label: 'Archivo PDF',onClick:()=>{handleDownloadPDF(nombrePDF,folioFactura)}},
-                { key: '2', label: 'Archivo XML',onClick:()=>{handleDownloadXML(nombreXML,folioFactura)}},
+                { key: '1', label: 'Archivo PDF',onClick:()=>{handleDownloadPDF(record)}},
             ]}
         />      
         )
