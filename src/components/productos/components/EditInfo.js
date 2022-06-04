@@ -1,5 +1,5 @@
 import React, {  useEffect, useState } from 'react';
-import { Form, Input, Select ,Row,Col,InputNumber, Space, Upload, message} from 'antd';
+import { Form, Input, Select ,Row,Col,InputNumber, Space, Upload, message, Button} from 'antd';
 import ImgCrop from 'antd-img-crop';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -139,7 +139,7 @@ export const EditInfo = ({informacionProducto,setInformacionProducto,productoId,
 
       return (
         
-        <div className="container">
+        <div>
               <Row gutter={16}>
               <Col xs={24} lg={16}>
               <h1>Editar información sobre producto</h1>
@@ -285,15 +285,11 @@ export const EditInfo = ({informacionProducto,setInformacionProducto,productoId,
                           </Select>
                           </Form.Item>
                         </Col>
-
-                        <Col span={12}>
-                            <Link to="/aplicacion/almacen/" className='btn btn-outline-danger rounded p-md-3 mt-4'><i className="fa-solid fa-xmark"></i>   Cancelar actualización </Link>
-                          </Col>
-
-                          <Col span={12}>
-                            <Space direction="horizontal" style={{width: '100%', justifyContent: 'end'}}>
-                            <button className='btn btn-outline-warning rounded p-md-3 mt-4' type="submit" disabled={BotonSend}>Actualizar información   <i className="fa-solid fa-arrow-right"></i> </button>
-                            </Space>
+                        <Col span={24}>
+							  <div className="d-flex justify-content-between gap-2 flex-wrap">
+								  <Button type="primary" danger size="large"><Link to="/aplicacion/almacen"><i className="fa-solid fa-xmark"></i> Cancelar actualización </Link></Button>
+								  <Button type="primary" size="large" htmlType="submit">Actualizar información <i className="fa-solid fa-arrow-right"></i></Button>
+							  </div>
                           </Col>
                     </Row>
                   </Form>

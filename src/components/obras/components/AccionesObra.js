@@ -93,7 +93,7 @@ export const AccionesObra = ({ obraInfo }) => {
                 />
                 <Dropdown overlay={menu} className="">
                     <Button type="primary" size='large'>
-                        Filtrar por categoria:
+                        Filtrar por empleado
                         <DownOutlined />
                     </Button>
                 </Dropdown>

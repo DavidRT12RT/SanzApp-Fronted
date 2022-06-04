@@ -43,7 +43,7 @@ export const RegistrarProducto = () => {
 
     
     return (
-      <div className="container mt-lg-4 mt-sm-2 p-5">
+      <div className="container mt-lg-5 mt-sm-2 p-5 shadow rounded" style={{height:"100vh"}}>
         <h1>Registro de producto</h1>
         <span>Campos con <Tag color="red">*</Tag>son obligatorios.</span>
         <div className="mt-3">

@@ -1,14 +1,15 @@
 import React from 'react'
-import { List } from "antd";
+import { Avatar, List } from "antd";
 
 export const ObservacionesObra = ({obraInfo}) => {
+    console.log(obraInfo.comentarios);
     return (
       <>
             <p className='lead'>Observaciones</p>
             <List
                 header={<div>Observaciones que se han tenido acerca del servicio que se esta proporcionando</div>}
                 itemLayout="horizontal"
-                dataSource={obraInfo.observaciones}
+                dataSource={obraInfo.comentarios}
                 bordered
                 style={{minHeight:"200px"}}
                 renderItem={item => (
@@ -16,10 +17,11 @@ export const ObservacionesObra = ({obraInfo}) => {
                         key={item._id}
                     >
                     <List.Item.Meta
-                        title={item.observacionTitulo}
-                        description={item.trabajador}
+                        avatar={<Avatar src={item.avatar}/>}
+                        title={item.author}
+                        description={item.datetime}
                     />
-                    {item.observacion}
+                    {item.content}
                     </List.Item>
                 )}
             />

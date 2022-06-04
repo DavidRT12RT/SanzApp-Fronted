@@ -60,9 +60,8 @@ export const AbonosLista = ({socket,obraInfo}) => {
     }
 
 
-    const handleUpload =  async (values) =>{
+    const handleUpload =  async () =>{
 
-        values.obraId = obraId;
         const formData = new FormData();
 
         filesList.forEach(file => {
@@ -80,15 +79,16 @@ export const AbonosLista = ({socket,obraInfo}) => {
         //Primero hacemos la petición para subir la imagen al servidor y con el nombre que nos devolvera se lo mandamos al socket
         try {
             const resp = await fetchConTokenSinJSON(`/uploads/obras/obra/${obraId}/abonos`,formData,"POST")
+            const body = await resp.json();
             if(resp.status === 200){
-                //Subir la información
-                const body = await resp.json();
-                values.rutaArchivo = body.nombre;
-                socket.emit("añadir-abono-obra",values,async(confirmacion)=>{
+                message.success(body.msg);
+                /*
+                socket.emit("añadir-abono-obra",(confirmacion)=>{
                     confirmacion ? message.success(confirmacion.msg) : message.error(confirmacion.msg);
                 });
+                */
             }else{
-                message.error("No se pudo crear el abono!");
+                message.error(body.msg);
             }
         } catch (error) {
             
@@ -101,15 +101,14 @@ export const AbonosLista = ({socket,obraInfo}) => {
     }
 
     const handleDownloadPDF = async (values) => {
-        const { rutaArchivo } = values;
+        const { archivoName } = values;
         try {
-            const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/abonos/${rutaArchivo}`);
+            const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/abonos/${archivoName}`);
             const bytes = await resp.blob();
             let element = document.createElement('a');
             element.href = URL.createObjectURL(bytes);
             //Cortamos y obtenemos el nombre
-            const nombreArchivo = rutaArchivo.split("/")[1];
-            element.setAttribute('download',nombreArchivo);
+            element.setAttribute('download',archivoName);
             element.click();
         } catch (error) {
            message.error("No se pudo descargar el archivo del servidor :("); 
@@ -130,21 +129,31 @@ export const AbonosLista = ({socket,obraInfo}) => {
 
     const columns = [
         {
-            title: 'Beneficiario',
-            dataIndex: 'beneficiario',
-            key: 'beneficiario',
+            title: 'Cuenta abono',
+            dataIndex: 'cuentaAbono',
+            key: 'cuentaAbono',
         },
         {
-            title: 'Categoria',
-            dataIndex: 'categoria',
-            key: 'categoria',
+            title:'Cuenta cargo',
+            dataIndex:'cuentaCargo',
+            key:'cuentaCargo'
         },
         {
-            title: 'concepto',
+            title: 'Concepto',
             dataIndex: 'concepto',
             key: 'concepto',
-            responsive:["sm"],
         },
+        {
+            title:'Importe',
+            dataIndex:'importe',
+            key:'importe',
+        },
+        {
+            title: 'Fecha aplicación',
+            dataIndex: 'fechaAplicacion',
+            key: 'fechaAplicacion',
+        },
+
         {
             title: 'Descargar documentos',
             dataIndex: 'documentos',
@@ -187,7 +196,7 @@ export const AbonosLista = ({socket,obraInfo}) => {
                     message.error("Solo puedes subir 2 archivos en total");
                 }
             }else{
-                message.error("Los archivos tienen que ser PDF o XML!");
+                message.error("El archivo tiene que ser PDF!");
 
             }
             //Deestructuramos el estado actual y añadimos el nuevo archivo
@@ -252,51 +261,23 @@ export const AbonosLista = ({socket,obraInfo}) => {
                 {/*Tabla con facturas*/}
                 <Button type="primary" className="my-3" onClick={showModal}>Agregar nuevo abono!</Button>
 
-                <Table columns={columns} dataSource={dataAbonos} bordered style={{width:"100vw"}}/>
+                <Table columns={columns} dataSource={dataAbonos} bordered />
 
                 <Modal title="Agregar factura" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
                         <h1>Subir un nuevo abono al sistema!</h1>
-                        <p className="lead">Para poder realizar esta acción necesitaras el documento PDF del abono y llenar el siguiente formulario!</p>
-                            <Form onFinish={handleUpload} layout="vertical">
-                                <Row gutter={16}>
-                                    <Col xs={24} lg={12}>
-                                        <Form.Item name="concepto" label="Concepto del abono">
-                                            <Input size="large"></Input>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col xs={24} lg={12}>
-                                        <Form.Item name="categoria" label="Categoria del abono">
-                                            <Input size="large"></Input>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col xs={24} lg={12}>
-                                        <Form.Item name="cantidad" label="Cantidad total del abono">
-                                            <InputNumber size="large" style={{width:"100%"}}/>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col xs={24} lg={12}>
-                                        <Form.Item name="beneficiario" label="Beneficiario del abono">
-                                            <Input size="large" style={{width:"100%"}}/>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={24}>
-                                        <Upload {...props} className="upload-list-inline" >
-                                            <Button icon={<UploadOutlined/>}>Selecciona el archivo del abono</Button>
-                                        </Upload>
-                                    </Col>
-                                    <Button 
-                                        type="primary" 
-                                        disabled={filesList.length === 0}
-                                        loading={uploading}
-                                        htmlType="submit"
-                                    >
-                                        {uploading ? "Subiendo..." : "Comienza a subir!"}     
-                                    </Button>
-                               </Row>
-                           </Form>
-
-
-               </Modal>
+                        <p className="lead">Para poder realizar esta acción necesitaras el documento PDF del abono</p>
+                        <Upload {...props} className="upload-list-inline" >
+                            <Button icon={<UploadOutlined/>}>Selecciona el archivo del abono</Button>
+                        </Upload>
+                        <Button 
+                            type="primary" 
+                            disabled={filesList.length === 0}
+                            loading={uploading}
+                            onClick={handleUpload}
+                        >
+                            {uploading ? "Subiendo..." : "Comienza a subir!"}     
+                        </Button>
+                </Modal>
             </div>
         </>
   )

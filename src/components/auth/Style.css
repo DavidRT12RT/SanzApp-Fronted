@@ -1,4 +1,4 @@
-ody {
+body {
     background: #fff;
     background: linear-gradient(to right, #ffffff, #c4c3bf);
 }
@@ -9,13 +9,26 @@ ody {
     background-position: 100%;
 }
 
-.margin-top{
-    margin-top: 80px;
-}
-
 .bgRegistro {
     background-image: url("./assets//BGRegistro.jpg");
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: 80%;
+    background-position: 100%;
+}
+
+@media(min-width:300px) and (max-width:1000px){
+    .login{
+        height: 100vh;
+        overflow:auto;
+    }
+}
+
+@media(min-width:1001px){
+    .login{
+        height: 80vh;
+        overflow:auto;
+    }
+    .centrar{
+        margin-top:80px;
+    }
 }

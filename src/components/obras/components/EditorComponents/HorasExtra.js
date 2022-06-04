@@ -6,7 +6,8 @@ import "../../assets/styleMaterialList.css";
 const { Option } = Select;
 
 export const HorasExtra = ({obraInfo,socket}) => {
-
+    
+    
     const [dataSource, setDataSource] = useState([]);
     const [editingRow, setEditingRow] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -94,6 +95,7 @@ export const HorasExtra = ({obraInfo,socket}) => {
                             if(editingRow != null){
                                 setEditingRow(null);
                             }else{
+                                console.log(record.key);
                                 setEditingRow(record.key);
                                 form.setFieldsValue({
                                     horas:record.horas,
@@ -166,19 +168,8 @@ export const HorasExtra = ({obraInfo,socket}) => {
 
     const onFinish = ( newData ) =>{
 
-        /*
-        newData.map(element => {
-            element.registros.map(element => {
-                if(element.key === editingRow){
-                    //Tengo al elemento que quiero cambiar
-                    element.estatus = values.estatus;
-                    element.horas = values.horas;
-                    element.motivo = values.motivo;
-                }
-            });
-        });
-        */
         socket.emit("actualizar-horas-extra-a-obra",{newData,obraId,editingRow},(confirmacion)=>{
+            form.resetFields();
             confirmacion ? message.success(confirmacion.msg) : message.error(confirmacion.msg);
         });
         setEditingRow(null);
@@ -187,6 +178,7 @@ export const HorasExtra = ({obraInfo,socket}) => {
     const handleAddNewRegister = (values) => {
         values.obraId = obraId;
         socket.emit("añadir-horas-extra-a-obra",values,(confirmacion)=>{
+            form.resetFields();
             confirmacion ? (handleOk())(message.success(confirmacion.msg)) : message.error(confirmacion.msg);
         });
     } 

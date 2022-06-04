@@ -1,13 +1,11 @@
-
 //import {useNavigate} from "react-router-dom";
-
-
 import {useForm} from "../../hooks/useForm";
 import './Style.css';
 //import "../../Styles/style.css";
 import { Navbar } from "../ui/NavbarBootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import {startRegister } from "../../actions/authActions";
+import { AplicationNavbar } from "../application/ui/AplicationNavbar";
 
 //Note: You must use htmlfor instead of for in label tags when react is use 
     
@@ -45,12 +43,11 @@ export const RegisterScreen = () => {
     
 
     return <>
-        <Navbar/>
-    <div className="w-100 d-md-block container w-75 bg-primary rounded shadow margin-top">
-        <div className="row align-items-lg-stretch">
-            <div className="col bgRegistro d-none d-lg-block col-md-5 col-lg-5 col-xl-6 rounded">
+    <div className="w-100 d-md-block container w-75 bg-primary rounded shadow centrar" style={{height:"100%"}}>
+        <div className="row align-items-lg-stretch login">
+            <div className="col bgRegistro d-none d-lg-block col-md-5 col-lg-5 col-xl-6 rounded" style={{height:"100%"}}>
             </div>
-            <div className="col bg-white p-5 rounded-end">
+            <div className="col bg-white p-5 rounded-end"  style={{height:"100%"}}>
                 <div className="text-end">
                     <img src={require('./assets/logo.png')} width="100" alt="logo"/>
                 </div>

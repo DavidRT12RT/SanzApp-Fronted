@@ -139,8 +139,8 @@ export const ProductosScreen = () => {
 
 
     return (
-        <div className="container mt-lg-4 mt-sm-2 p-5 shadow rounded">
-            <h1>Lista de productos en almacen</h1>
+        <div className="container mt-lg-5 p-5 shadow rounded" style={{height:"100vh"}}>
+            <h1 className="display-5">Lista de productos en almacen</h1>
             <hr/> 
                 <Search
                     placeholder="Buscar un producto en almacen..."
@@ -158,7 +158,7 @@ export const ProductosScreen = () => {
                 </Space>
 
             <div className="mt-3">
-                <Table columns={columns} dataSource={[...dataSource]} style={{maxWidth:"100vw"}}/>
+                <Table columns={columns} dataSource={[...dataSource]} />
             </div>
          
                           

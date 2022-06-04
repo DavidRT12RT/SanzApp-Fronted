@@ -1,5 +1,3 @@
-import {Link, useNavigate} from "react-router-dom";
-
 import {useForm} from "../../hooks/useForm";
 import './Style.css';
 //import "../../Styles/style.css";
@@ -22,7 +20,6 @@ export const LoginScreen = () => {
     const {correo,password} = formValues;
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     //State
     const loading = useSelector((state)=> state.ui.loading);
 
@@ -36,12 +33,11 @@ export const LoginScreen = () => {
     
 
     return <>
-        <Navbar/>
-    <div className="w-100 d-md-block container w-75 bg-primary rounded shadow margin-top">
-        <div className="row align-items-lg-stretch">
-            <div className="col bg d-none d-lg-block col-md-5 col-lg-5 col-xl-6 rounded">
+    <div className="w-100 d-md-block container w-75 bg-primary rounded shadow centrar" style={{height:"100%"}}>
+        <div className="row align-items-center login">
+            <div className="col bg d-none d-lg-block col-md-5 col-lg-5 col-xl-6 rounded" style={{height:"100%"}}>
             </div>
-            <div className="col bg-white p-5 rounded-end">
+            <div className="col bg-white p-5 rounded-end" style={{height:"100%"}}>
                 <div className="text-end">
                     <img src={require('./assets/logo.png')} width="100" alt="logo"/>
                 </div>
@@ -81,12 +77,7 @@ export const LoginScreen = () => {
                     <div className="d-grid mt-5">
                         <button type="submit" className="btn btn-warning" id="btnEnviar" disabled={loading}>Login</button>
                     </div>
-                    <span className="w-100 mt-5 d-flex justify-content-center">No tienes cuenta? </span>
-                    <div className="d-flex justify-content-center px-5 w-auto">
-                        <span className="mx-2"><Link to="/registro">Registrate</Link></span>
-                    </div>
                 </form>
-                
             </div>
         </div>
     </div> 

@@ -45,11 +45,11 @@ export const EditarImagen = ({productoId,socket}) => {
 
 
     return (
-        <div>
+        <div style={{height:"100vh"}}>
             <h1>Editar imagen de la obra</h1>
             <p className="lead">Arrastra la imagen y esta se subira automaticamente!</p>
             <span className="mb-3">NOTA: Si ya existe una imagen registrada esta sera eliminada y reemplazada.</span>
-            <Dragger {...props}>
+            <Dragger {...props} style={{maxHeight:"200px"}}>
                 <p className="ant-upload-drag-icon">
                     <InboxOutlined />
                 </p>

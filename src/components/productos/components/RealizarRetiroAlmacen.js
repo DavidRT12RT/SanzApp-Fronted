@@ -8,7 +8,7 @@ export const RealizarRetiroAlmacen = ({socket,informacionProducto,productoId}) =
 
     return (
     <>
-        <div>
+        <div style={{height:"100vh"}}>
             <Tabs type="card">
 
                 <TabPane tab="Salida directa" key="1">

@@ -1,76 +1,126 @@
-import React, { useState } from 'react'
+import { Avatar, Button, Card, Divider, Dropdown, Input, Menu, Statistic, Table, Tag } from 'antd';
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useEmpleados } from '../../hooks/useEmpleados'
-import { EmpleadoCard } from './EmpleadoCard';
 import { Loading } from './Loading';
+import { DownOutlined } from '@ant-design/icons';
+import Meta from 'antd/lib/card/Meta';
+
 
 export const EmpleadosScreen = () => {
 
-    const {isLoading,empleados}  = useEmpleados();
-    const [currentPage,setCurrentPage] = useState(0);
-    const [search, setsearch] = useState("");
+    const {isLoading,empleados,empleadosEstadoInfo}  = useEmpleados();
+    const { rol } = useSelector(store => store.auth);
+    const [empleadosInfo, setEmpleadosInfo] = useState([]);
 
-    const filtrar = () =>{
-        const filtered = empleados.filter(empleado => empleado.nombre.includes(search));
-        return filtered.slice(currentPage,currentPage + 5);
-    }
+    useEffect(() => {
+        empleados.map(empleado => empleado.key = empleado.uid);
+        setEmpleadosInfo(empleados);        
+    }, [empleados]);
 
-    const empleadosFiltrados = () =>{
-        if(search.length === 0){
-            return empleados.slice(currentPage,currentPage + 5);
-        }else{
-            const empleadosFiltradosPorExpresionRegular = filtrar();
-            return empleadosFiltradosPorExpresionRegular;
+    const columns = [
+        {
+            title:"Nombre del empleado",
+            dataIndex:"nombre",
+            render:(text,record)=>{
+                return (
+                    <>
+                        <Meta
+                            avatar={<Avatar src={`http://localhost:4000/api/uploads/usuarios/${record.uid}`} />}
+                            title={text}
+                            description={record.correo}
+                        />
+                    </>
+                )
+            }
+        },
+        {
+            title:"Total de obras trabajadas",
+            dataIndex:"obrasTrabajadas",
+            render:(text,record)=>{
+                return <span>{text.numeroTotal}</span>
+            }
+        },
+        {
+            title:"Estado del empleado",
+            dataIndex:"estado",
+            render:(text,record)=>{
+                return text ? <Tag color="green">Activo</Tag> : <Tag color="red">Desactivado</Tag>
+            }
+        },
+        {
+            title:"Acciones",
+            render:(text,record)=>{
+                return <Button type="primary"><Link to={`/aplicacion/empleados/${record.uid}`}>Ver mas detalles del empleado</Link></Button>
+            }
         }
-    }
+        
+    ];
     
-    const previousPage = () =>{
-        if(currentPage > 0) 
-            setCurrentPage(currentPage - 5);
-    }
+    const menu = (
+        <Menu>
+            <Menu.Item key={1}>Mas obras trabajadas</Menu.Item>
+            <Menu.Item key={2}>Fecha de ingreso</Menu.Item>
+            <Menu.Item key={3}>Por role</Menu.Item>
+            <Menu.Divider/>
+            <Menu.Item key="Limpiar">Limpiar filtros</Menu.Item>
+        </Menu>
+    );
 
-    const nextPage = () =>{
-        const empleadosFiltradosPorExpresionRegular = filtrar();
-        console.log(empleadosFiltradosPorExpresionRegular);
-        if(empleadosFiltradosPorExpresionRegular.length > currentPage +1 ){
-            setCurrentPage(currentPage + 5);
-       }
-    }
+    const menuReporte = (
+        <Menu>
+            <Menu.Item key={1}>Crear reporte de usuarios en general</Menu.Item>
+            <Menu.Item key={2}>Crear reporte de empleados en obras</Menu.Item>
+        </Menu>
+    );
 
-    const onSearchChange = ({target}) =>{
-        setCurrentPage(0);
-        setsearch(target.value);
-    }
-   
-    console.log(empleados.length);
     return (
-        <div className='mt-5 container mt-lg-4 mt-sm-2 p-5 shadow rounded '>
-            <h1>Listado de empleados Sanz</h1>
-            <hr/>
-            <input 
-            type="text"
-            className="mb-3 form-control"
-            placeholder="Buscar empleado..."
-            value={search}
-            onChange={onSearchChange}
-            />
-            <button className='btn btn-outline border' onClick={previousPage}>
-                Anterior
-            </button>
-            &nbsp;
-            <button className='btn btn-outline border mx-2' onClick={nextPage}>
-                Siguiente
-            </button>
-            <Link to="/registro" className="btn btn-outline border">Registrar usuario</Link>
-            <div className="d-flex justify-content-center flex-column mt-5">
-                 {
-                        empleadosFiltrados().map(empleado => 
-                            <EmpleadoCard key={empleado.uid} empleado={empleado}/>
-                        )
-                    }
-
+        <div className="mt-lg-5 container p-5 shadow rounded">
+            <div className="d-flex justify-content-between align-items-center flex-wrap">
+                <h1 className="display-5">Registro total de empleados</h1>
+                <div className="d-flex justify-content-center align-items-center gap-2">
+                    <Dropdown overlay={menuReporte}>
+                        <Button onClick={(e)=> e.preventDefault()}>...</Button>
+                    </Dropdown>
+                    {(rol === "ADMIN_ROLE" || rol === "INGE_ROLE") && <Button type="primary" rounded><Link to="/aplicacion/registro">Registrar un usuario nuevo</Link></Button>}
+                </div>
             </div>
-                   
+            {/*Tarjetas de información*/}
+            <div className="d-flex justify-content-start flex-wrap mt-3 gap-2">
+                <Card style={{width:"300px"}}>
+                    <Statistic
+                        title="Numero de empleados activos"
+                        value={empleadosEstadoInfo.empleadosActivos}
+                        precision={0}
+                        prefix="Total:"
+                    />
+                </Card>
+                <Card style={{width:"300px"}}>
+                    <Statistic
+                        title="Numero de empleados desactivados"
+                        value={empleadosEstadoInfo.empleadosDesactivados}
+                        precision={0}
+                        prefix="Total:"
+                    />
+                </Card>
+            </div>
+            <Divider/>
+            <div className="d-flex justify-content-center align-items-center flex-wrap gap-2 mt-4">
+                <Input.Search 
+                    size="large" 
+                    style={{width:"100%"}}
+                    placeholder="Busca una empleado por su nombre" 
+                    enterButton
+                    className="search-bar-class mb-3"
+                />
+            </div>
+            <div className="d-flex justify-content-start gap-2 flex-wrap">
+                <Dropdown overlay={menu} className="d-flex justify-content-center align-items-center">
+                    <Button type="primary" size="large">Filtrar obra por: <DownOutlined /></Button>
+                </Dropdown>
+            </div>
+            <Table columns={columns} dataSource={empleadosInfo} className="mt-3" size="large"/>
             {isLoading &&<Loading/>}
         </div>
     )

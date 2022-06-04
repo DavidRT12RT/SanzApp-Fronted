@@ -26,16 +26,14 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
     //Estar al tanto por si la información de la obra cambia
     useEffect(()=>{
         setDataSource(obraInfo.empleados);
-
     },[obraInfo]);
 
     //Obtener todos los empleados que YA esten trabajando en la obra con su rol
-
     useEffect(() => {
         socket.emit("obtener-empleados-en-obra-por-id",{obraId},(empleados)=>{
+            empleados.map(empleado=>empleado.key = empleado._id);
             setDataSource(empleados);
         });
-
     }, []);
 
     

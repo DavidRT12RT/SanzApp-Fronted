@@ -1,292 +1,60 @@
-import React,{ useState,useEffect } from 'react'
-import "../../assets/facturasLista.css";
-import { DownOutlined,UploadOutlined ,CopyOutlined } from '@ant-design/icons';
-import { fetchConToken, fetchConTokenSinJSON } from '../../../../helpers/fetch';
-import { Button, Card, Col, Divider, Dropdown, Menu, message, Row, Space, Statistic,Table,Modal,Upload,Input} from 'antd';
+import { Card } from 'antd';
+import React,{ useState } from 'react'
+
+import { GastosComprobables } from './GastosComponents/GastosComprobables';
+import { GastosNOComprobables } from './GastosComponents/GastosNOComprobables';
+import { GastosOficina } from './GastosComponents/GastosOficina';
+import { GastosResumen } from './GastosComponents/GastosResumen';
 
 
 export const FacturasLista = ({socket,obraInfo}) => {
-    
-    const {_id:obraId} = obraInfo;
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [filesList, setFilesList] = useState([]);
-    const [uploading, setUploading] = useState(false);
-    const [dataFacturas, setDataFacturas] = useState([]);
-    const [obraInfoFacturas, setObraInfoFacturas] = useState({});
-
-    //Seteamos la data cada vez que el componente se monte por primera vez
-    useEffect(() => {
-        obraInfo.facturas.registros.map(element => element.key = element._id);
-        setDataFacturas(obraInfo.facturas.registros);
-
-        setObraInfoFacturas(obraInfo.facturas);
-    }, []);
-
-    //Seteamos la data cada vez que la obraInfo se actualize por algun socket de un cliente
-    useEffect(() => {
-        obraInfo.facturas.registros.map(element => element.key = element._id);
-        setDataFacturas(obraInfo.facturas.registros);
-
-        setObraInfoFacturas(obraInfo.facturas);
-    }, [obraInfo]);
-    
-    
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-
-    const handleOk = () => {
-        setIsModalVisible(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
-
-    const handleSearch = (value) =>{
-        //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
-        if(value.length == 0){
-            return setDataFacturas(obraInfo.facturas.registros);
-        }
-
-        const resultadosBusqueda = obraInfo.facturas.registros.filter((elemento)=>{
-            if(elemento.descripcionFactura.toLowerCase().includes(value.toLowerCase())){
-                return elemento;
-            }
-        });
-
-        return setDataFacturas(resultadosBusqueda);
-    }
+    const [activeTabKey1, setActiveTabKey1] = useState('tab1');
 
 
-    const handleUpload = async () =>{
-        const formData = new FormData();
-
-        filesList.forEach(file => {
-            if(file.type == "application/pdf"){
-                formData.append("archivoPDF",file);
-                //formData.archivoPDF = file;
-            }else if(file.type == "text/xml"){
-                formData.append("archivoXML",file);
-                //formData.archivoXML = file;
-            }
-        });
-
-        //Verificación que esten los 2 archivos 
-        if(filesList.length < 2){
-            return message.error("Se necesita 2 archivos, el archivo PDF y XML para generar una nueva factura!");
-        }
-        //Verificación que los dos archivos no sean iguales
-        if(filesList[0].type == filesList[1].type){
-            return message.error("Los dos archivos son de la misma extensión se necesitan los PDF y XML");
-        }
-        setUploading(true);
-        //Making the http post 
-        let body;
-        try {
-            const resp = await fetchConTokenSinJSON(`/uploads/obras/obra/${obraId}/facturas`,formData,"POST");
-            body = await resp.json();
-            if(resp.status === 200){
-                message.success("Subida con exito!");
-            }else{
-                message.error(body.msg);
-            }
-            handleCancel();
-            //Quitando los archivos del filesList
-            setFilesList([]);
-            //Quitando los archivos del upload list del upload
-            
-            //Avisando a todos incluyendome a mi que las facturas se han actualizado!
-            socket.emit("actualizar-facturas-obra",{obraId});
-        } catch (error) {
-            message.error(body);
-        }
-        setUploading(false);
-    }
-
-    const handleDownloadPDF = async (nombreArchivo,folioFactura) => {
-        try {
-            const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/facturas/${folioFactura}/${nombreArchivo}`);
-            const bytes = await resp.blob();
-            let element = document.createElement('a');
-            element.href = URL.createObjectURL(bytes);
-            element.setAttribute('download',nombreArchivo);
-            element.click();
-        } catch (error) {
-           message.error("No se pudo descargar el archivo del servidor :("); 
-        }
-    }
-
-    const handleDownloadXML = async (nombreArchivo,folioFactura) => {
-        try {
-            const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/facturas/${folioFactura}/${nombreArchivo}`);
-            const bytes = await resp.blob();
-            let element = document.createElement('a');
-            element.href = URL.createObjectURL(bytes);
-            element.setAttribute('download',nombreArchivo);
-            element.click();
-        } catch (error) {
-           message.error("No se pudo descargar el archivo del servidor :("); 
-        }
-    }
-
-    const menuDescargar = (record) => {
-
-        const {folioFactura,nombrePDF,nombreXML} = record
-        return (
-        <Menu 
-            items={[
-                { key: '1', label: 'Archivo PDF',onClick:()=>{handleDownloadPDF(nombrePDF,folioFactura)}},
-                { key: '2', label: 'Archivo XML',onClick:()=>{handleDownloadXML(nombreXML,folioFactura)}},
-            ]}
-        />      
-        )
-    }
-
-    const columns = [
-        {
-            title: 'Importe total factura',
-            dataIndex: 'importeFactura',
-            key: 'importeFactura',
-            sorter: (a, b) => a.importeFactura - b.importeFactura,
-            sortDirections: ['descend', 'ascend'],
-        },
-        {
-            title: 'Descripción o motivo de la factura',
-            dataIndex: 'descripcionFactura',
-            key: 'descripcionFactura',
-        },
-        {
-            title: 'Fecha de la factura',
-            dataIndex: 'fechaFactura',
-            key: 'fechaFactura',
-            responsive:["sm"],
-        },
-        {
-            title: 'Descargar documentos',
-            dataIndex: 'documentos',
-            key: 'tags',
-            render: (text,record) => {
-                return (
-                    <Space size="middle">
-                        <Dropdown overlay={menuDescargar(record)}>
-                            <a>
-                                Descargar <DownOutlined />
-                            </a>
-                        </Dropdown>
-                    </Space>
-                )
+    const tabList = [
+            {
+            key: 'tab1',
+            tab: 'Gastos comprobables',
             },
-        }
-    ];
-
-
-    const props = {
-        multiple:true,
-        onRemove : file => {
-            setFilesList(files => {
-                const index = files.indexOf(file);
-                const newFileList = files.slice();
-                newFileList.splice(index,1);
-                setFilesList(newFileList);
-            });
-            /*Podemos tener mas logica de lo comun es nuestro useState tal que asi, 
-             con un callback y al final llamar a la misma función*/
-        },
-        beforeUpload: file => {
-            //Checar si el archivo es PDF O XML
-            const isPDForXML = file.type === "application/pdf" || file.type === "text/xml";
-            if(isPDForXML){
-                //Verificar que el fileList sea menos a 2 
-                if(filesList.length < 2){
-                    setFilesList(files => [...files,file]);
-                }else{
-                    message.error("Solo puedes subir 2 archivos en total");
-                }
-            }else{
-                message.error("Los archivos tienen que ser PDF o XML!");
-
+            {
+            key: 'tab2',
+            tab: 'Gastos NO comprobables',
+            },
+            {
+            key:'tab3',
+            tab:"Gastos de oficina"
+            },
+            {
+            key:'tab4',
+            tab:"Resumen de gastos"
             }
-            //Deestructuramos el estado actual y añadimos el nuevo archivo
-            return false;
-        },
-        listType:"picture",
-        maxCount:2,
-        fileList : filesList
+
+        ];
+
+    const onTab1Change = key => {
+         setActiveTabKey1(key);
     };
 
+    const contentList = 
+        {
+            tab1:<GastosComprobables obraInfo={obraInfo} socket={socket}/>,
+            tab2:<GastosNOComprobables obraInfo={obraInfo} socket={socket}/>,
+            tab3:<GastosOficina obraInfo={obraInfo} socket={socket}/>,
+            tab4:<GastosResumen obraInfo={obraInfo} socket={socket}/>
+        };
 
     return (
         <>
-            <div>
-                <h1>Gastos de la obra</h1>
-                <p className="lead">En esta sección se encontraran todas las facturas de la obra junto a su
-                    respectivo documento PDF y XML.
-                </p>
-                <Divider/>
-                
-                {/*Buscador con autocompletado*/}
-                    <Input.Search 
-                        size="large" 
-                        placeholder="Busca una factura por su descripción o concepto" 
-                        enterButton
-                        onSearch={handleSearch}
-                        className="search-bar-class"
-                    />
-
-                {/*Tarjetas*/}
-                <Row gutter={16} className="mt-3">
-                    <Col xs={24} md={8}>
-                        <Card>
-                            <Statistic
-                                title="Total de gastos"
-                                value={obraInfoFacturas.totalFacturas}
-                                precision={2}
-                                valueStyle={{
-                                color: '#3f8600',
-                                
-                                }}
-                                //suffix={<ArrowUpOutlined />}
-                                prefix="$"
-                            />
-                        </Card>
-                    </Col>
-                    <Col xs={24} md={8} className="mt-3 mt-md-0">
-                        <Card>
-                            <Statistic
-                                title="Numero de registros"
-                                value={obraInfoFacturas.numeroFacturas}
-                                valueStyle={{
-                                color: '#3f8600',
-                                }}
-                                prefix={<CopyOutlined/>}
-                                //suffix="%"
-                                />
-                        </Card>
-                    </Col>
-                </Row>
-
-                {/*Tabla con facturas*/}
-                <Button type="primary" className="my-3" onClick={showModal}>Agregar nueva factura!</Button>
-
-                <Table columns={columns} dataSource={dataFacturas} bordered style={{width:"100vw"}}/>
-
-                <Modal title="Agregar factura" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
-                        <h1>Subir nueva factura al sistema</h1>
-                        <p className="lead">Para poder realizar esta operación nesecitaras el documento XML y PDF.</p>
-                        <Upload {...props} className="upload-list-inline" >
-                            <Button icon={<UploadOutlined/>}>Selecciona el archivo</Button>
-                        </Upload>
-                   <Button 
-                        type="primary" 
-                        onClick={handleUpload}
-                        disabled={filesList.length === 0}
-                        loading={uploading}
-                    >
-                        {uploading ? "Subiendo..." : "Comienza a subir!"}     
-                    </Button>
-               </Modal>
-            </div>
+            <Card
+                className="p-lg-3 shadow"
+                tabList={tabList}
+                activeTabKey={activeTabKey1}
+                onTabChange={key => {
+                onTab1Change(key);
+                }}
+            >
+                {contentList[activeTabKey1]}
+            </Card>
         </>
-  )
+    )
 }

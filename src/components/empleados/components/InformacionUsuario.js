@@ -1,121 +1,32 @@
-import { Button, Col, Form, Image, Input, message, Row, Select } from 'antd';
-import React, { useEffect, useState } from 'react'
+import { Avatar, Card, Tag } from 'antd'
+import React from 'react'
+const { Meta } = Card;
 
-export const InformacionUsuario = ({usuarioInfo,socket}) => {
-    const [form] = Form.useForm();
-    const {uid:usuarioId} = usuarioInfo;
-    const [fields, setFields] = useState([
-        {
-          name: ['nombre'],
-          value:"",
-        },
-        {
-            name:["rol"],
-            value:""
-        },
-        {
-            name:["telefono"],
-            value:""
-        },
-        {
-            name:["correo"],
-            value:""
-        },
-        {
-            name:["estado"],
-            value:""
-        }
-    ]);
 
-    useEffect(() => {
-        setFields([
-            {
-                name: ['nombre'],
-                value:usuarioInfo.nombre,
-            },
-            {
-                name:["correo"],
-                value:usuarioInfo.correo
-            },
-            {
-                name:["estado"],
-                value:(usuarioInfo.estado ? "Activo" : "No activo")
-            },
-            {
-                name:["rol"],
-                value:usuarioInfo.rol
-            },
-            {
-                name:["telefono"],
-                value:usuarioInfo.telefono
-            },
-
-        ])
-    }, [usuarioInfo]);
-
-   
-
-    const handleEditInfoUser = (values) => {
-        //Verificar que los valores NO sean los mismos
-            values.usuarioId = usuarioId;
-            values.estado = values.estado == "Activo" ? true : false;
-            socket.emit("actualizar-informacion-usuario",{values},(confirmacion)=>{
-                if (confirmacion.ok) {
-                    message.success(confirmacion.msg);
-                    //Setear nuevos valores!
-                }else{
-                    message.error(confirmacion.msg);
-                }
-            });
-    }
-
+export const InformacionUsuario = ({usuarioInfo}) => {
+    console.log(usuarioInfo);
     return (
-          <div className='mt-3'>
-              <h1>Información del usuario</h1>
-              <p className="lead">Aqui se mostrar información basica sobre el usuario que puede solo ser editaba por usuarios con rol Administrativo.</p>
-                <Row gutter={16}>
-                    <Col xs={24} lg={12}>
-                        <Image width={200} height={200} src={`http://localhost:4000/api/uploads/usuarios/${usuarioId}`} style={{objectFit:"cover"}} />
-                    </Col>
-                    <Col xs={24} lg={12} className="d-flex align-items-center mt-3 mt-lg-0">
-                        <div>
-                            <h4>{usuarioInfo.nombre}</h4>
-                            <span>{usuarioInfo.rol}</span>
-                        </div>
-                    </Col>
-                </Row>
-                <Form 
-                    layout='vertical' 
-                    fields={fields} 
-                    onFinish={handleEditInfoUser} 
-                >                       
-                    <Row className="mt-5" gutter={16}>
-                        {/*Formulario*/}
-                        <Col xs={24} lg={12}>
-                            <Form.Item name="nombre" label="Nombre del usuario"><Input size='large'/></Form.Item>
-                        </Col>
-                        <Col xs={24} lg={12}>
-                            <Form.Item label="Correo del usuario" name="correo"><Input size='large'/></Form.Item>
-                        </Col>
-                        <Col xs={24} lg={12}>
-                            <Form.Item label="Telefono del usuario" name="telefono"><Input size='large'/></Form.Item>
-                        </Col>
-                        <Col xs={24} lg={12}>
-
-                            <Form.Item name="estado" label="Estado del usuario">
-                                <Select size="large">
-                                    <Select.Option value="Activo">Activo</Select.Option>
-                                    <Select.Option value="No activo">No activo</Select.Option>
-                                </Select>
-                          </Form.Item>
-
-                        </Col>
-
-                        <Col span={24} className="d-flex justify-content-start">
-                            <Button type="primary" size='large' htmlType='submit'>Editar información</Button>
-                        </Col>
-                    </Row>
-                </Form>
-        </div>
+        <>
+            <div>
+                <h6 className="text-muted">Información de contacto</h6>
+                <div className="row mt-4">
+                    <h6 className="fw-bold col-6">Numero de telefono:</h6>
+                    <p className="text-primary col-6">{usuarioInfo.telefono}</p>
+                    <h6 className="fw-bold col-6">Correo electronico:</h6>
+                    <p className="text-bold col-6">{usuarioInfo.correo}</p>
+                </div>
+                <h6 className="text-muted mt-4">Información basica</h6>
+                <div className="row mt-4">
+                    <h6 className="fw-bold col-6">Fecha de registro en el sistema:</h6>
+                    <p className="text-bold col-6">{usuarioInfo.fechaRegistro}</p>
+                    <h6 className="fw-bold col-6">Numero de seguro social:</h6>
+                    <p className="text-bold col-6">{usuarioInfo.NSS}</p>
+                    <h6 className="fw-bold col-6">RFC:</h6>
+                    <p className="text-bold col-6">{usuarioInfo.RFC}</p>
+                    <h6 className="fw-bold col-6">Estado del usuario:</h6>
+                    {usuarioInfo.estado ? <p className="col-6"><Tag color="green">Activo</Tag></p> : <p className="col-6"><Tag color="green">Desactivado</Tag></p>}
+                </div>
+            </div>
+        </>
     )
 }

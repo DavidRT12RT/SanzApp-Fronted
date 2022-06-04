@@ -5,12 +5,16 @@ export const useEmpleados = () => {
 
     const [isLoading,setisloading] = useState(true);
     const [empleados, setEmpleados] = useState([]);
+    const [empleadosEstadoInfo, setEmpleadosInfo] = useState({});
 
     useEffect(() => {
         //Carga de empleados
         fetchConToken("/usuarios",{},"GET")
             .then(response => response.json())
-            .then(resp => setEmpleados(resp.usuarios));
+            .then(resp => {
+                setEmpleados(resp.usuarios);
+                setEmpleadosInfo({empleadosActivos:resp.empleadosActivos,empleadosDesactivados:resp.empleadosDesactivados});
+            });
         setisloading(false);
     }, []);
 
@@ -18,6 +22,7 @@ export const useEmpleados = () => {
     
     return {
         isLoading,
-        empleados
+        empleados,
+        empleadosEstadoInfo
     }
 }

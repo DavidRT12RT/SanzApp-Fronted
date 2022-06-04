@@ -9,7 +9,6 @@ import { Features } from "../components/features/Features";
 import { Contact } from "../components/contact/Contact";
 import { Component404 } from "../components/component404/Component404";
 import { LoginScreen } from "../components/auth/LoginScreen";
-import { RegisterScreen } from "../components/auth/RegisterScreen";
 import { PublicRoute } from "./PublicRoute";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
@@ -44,11 +43,6 @@ export const AppRouter = ()=>{
                         <LoginScreen/>
                     </PublicRoute>
                 } />
-              <Route path="/registro" element={
-              <PrivateRoute uid={uid}>
-                  <RegisterScreen/>
-              </PrivateRoute>
-              } />
               <Route path="/aplicacion/*" element={
                   <PrivateRoute uid={uid}>
                       <SocketProvider>

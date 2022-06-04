@@ -7,7 +7,7 @@ import { SocketContext } from '../../context/SocketContext';
 import { fetchConToken } from '../../helpers/fetch';
 import { EditarImagen } from './components/EditarImagen';
 import { RealizarRetiroAlmacen } from './components/RealizarRetiroAlmacen';
-
+import "./style.css";
 
 export const ProductoScreen = () => {
     const {productoId} = useParams();
@@ -72,16 +72,15 @@ export const ProductoScreen = () => {
 
     const contentList = 
     {
-        tab1: <ViewInfo informacionProducto = {informacionProducto} ImageProduct = {ImageProduct}/>,
+        tab1:<ViewInfo informacionProducto = {informacionProducto} ImageProduct = {ImageProduct}/>,
         tab2:<EditInfo informacionProducto = {informacionProducto} setInformacionProducto = {setInformacionProducto} productoId = {productoId} socket = {socket}/>,
         tab3:<EditarImagen socket = {socket} productoId = {productoId} informacionProducto = {informacionProducto}/>,
         tab4:<RealizarRetiroAlmacen socket = {socket} productoId = {productoId} informacionProducto = {informacionProducto}/>
     };
 
     return (
-        <div className="container mt-sm-2 mt-lg-4 ">
         <Card
-            style={{ width: '100%' }}
+            className="cardProduct p-3 p-lg-5 shadow"
             title="Información detallada del producto"
             extra={<Link to="/aplicacion/almacen/">Regresar a almacen</Link>}
             tabList={tabList}
@@ -92,6 +91,5 @@ export const ProductoScreen = () => {
         >
             {contentList[activeTabKey1]}
         </Card>
-        </div>
     );
 };

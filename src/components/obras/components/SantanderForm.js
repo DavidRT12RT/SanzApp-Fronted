@@ -14,9 +14,11 @@ export const SantanderForm = () => {
             if(resp.status === 200){
                 message.success("Obra creada con exito!");
                 navigate(`/aplicacion/obra/editor/${body.obra._id}`);
-            }
+            }else{
+				message.error(body.msg);
+			}
 		} catch (error) {
-            console.log(error); 
+			message.error("Error en el proceso...");
 		}
 	}
 
@@ -164,10 +166,10 @@ export const SantanderForm = () => {
 								    label="Estado reporte"
 								    tooltip="Marca en que estado se encuentra el reporte"
 						    >
-							    <Select placeholder="Nuevo">
-								    <Select.Option value="nuevo">Nuevo</Select.Option>
-								    <Select.Option value="enProceso">En proceso</Select.Option>
-								    <Select.Option value="finalizado">Finalizado</Select.Option>
+							    <Select placeholder="Presupuesto con el cliente...">
+								    <Select.Option value={1}>Presupuesto con el cliente</Select.Option>
+								    <Select.Option value={2}>En desarollo</Select.Option>
+								    <Select.Option value={3}>Finalizado</Select.Option>
 							    </Select>
 					        </Form.Item>
 				        </Col>

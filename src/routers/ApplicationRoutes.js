@@ -3,6 +3,7 @@ import {Component404} from "../components/component404/Component404";
 import { AplicationLandingPage } from "../components/application/AplicationLandingPage";
 import { notification } from 'antd';
 //Components
+import { RegisterScreen } from "../components/auth/RegisterScreen";
 import {AplicationNavbar} from "../components/application/ui/AplicationNavbar";
 import { EmpleadosScreen } from "../components/empleados/EmpleadosScreen";
 import { ObrasScreen } from "../components/obras/ObrasScreen";
@@ -18,6 +19,9 @@ import { useContext, useEffect } from "react";
 import { SocketContext } from "../context/SocketContext";
 import { RegistrarObra } from "../components/obras/RegistrarObra";
 import { EditorObra } from "../components/obras/EditorObra";
+import { GestionCamionetas } from "../components/camionetas/GestionCamionetas";
+import { CamionetaScreen } from "../components/camionetas/CamionetaScreen";
+import { RegistrarCamioneta } from "../components/camionetas/RegistrarCamioneta";
 
 export const ApplicationRoutes = () => {
 
@@ -71,21 +75,49 @@ export const ApplicationRoutes = () => {
                 <Route path="/almacen/:productoId" element={<ProductoScreen />} />
                 <Route path="/obras" element={<ObrasScreen />} />
                 <Route path="/obras/registro" element={
-                    <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","INGENIERO_ROLE"]}>
+                    <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","INGE_ROLE"]}>
                         <RegistrarObra/>
                     </PrivateRoutePorRole>
                 }/>
-                <Route path="/obra/editor/:obraId" element={
-                    <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","INGENIERO_ROLE"]}>
+                <Route path="/obras/editor/:obraId" element={
+                    <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","INGE_ROLE"]}>
                         <EditorObra/>
                     </PrivateRoutePorRole>
                 }/>
 
                 <Route path="/obras/:obraId" element={<ObraScreen />} />
                 <Route path="/calendario" element={<CalendarScreen/>} />
-                <Route path="/camionetas" element={<MapasApp/>} />
-                <Route path="/empleados" element={<EmpleadosScreen/>} />
-                <Route path="/empleado/:empleadoId" element={<EmpleadoScreen/>} />
+                <Route path="/camionetas/registro" element={
+                    <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
+                        <RegistrarCamioneta/>
+                    </PrivateRoutePorRole>
+                }/>
+                <Route path="/camionetas/localizacion" element={<MapasApp/>} />
+                <Route path="/camionetas/gestion" element={
+                    <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
+                        <GestionCamionetas/>
+                    </PrivateRoutePorRole>
+                }/>
+                <Route path="/camionetas/gestion/:camionetaId" element={
+                    <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
+                        <CamionetaScreen/>
+                    </PrivateRoutePorRole>
+                }/>
+                <Route path="/registro" element={
+                    <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
+                        <RegisterScreen/>
+                    </PrivateRoutePorRole>
+                }/>
+                <Route path="/empleados" element={
+                    <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
+                        <EmpleadosScreen/>
+                    </PrivateRoutePorRole>
+                }/>
+                <Route path="/empleados/:empleadoId" element={
+                    <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
+                        <EmpleadoScreen/>
+                    </PrivateRoutePorRole>
+                } />
                 <Route path="/*" element={<Component404 />} />
             </Routes>
         </>

@@ -42,23 +42,21 @@ export const AbonosList = ({obraInfo}) => {
         return setDataAbonos(resultadosBusqueda);
     }
 
-    
+
     const handleDownloadPDF = async (values) => {
-        const { rutaArchivo } = values;
+        const { archivoName } = values;
         try {
-            const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/abonos/${rutaArchivo}`);
+            const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/abonos/${archivoName}`);
             const bytes = await resp.blob();
             let element = document.createElement('a');
             element.href = URL.createObjectURL(bytes);
             //Cortamos y obtenemos el nombre
-            const nombreArchivo = rutaArchivo.split("/")[1];
-            element.setAttribute('download',nombreArchivo);
+            element.setAttribute('download',archivoName);
             element.click();
         } catch (error) {
            message.error("No se pudo descargar el archivo del servidor :("); 
         }
     }
-
 
     const menuDescargar = (record) => {
 
@@ -71,25 +69,29 @@ export const AbonosList = ({obraInfo}) => {
         )
     }
 
-
-
     const columns = [
         {
-            title: 'Beneficiario',
-            dataIndex: 'beneficiario',
-            key: 'beneficiario',
+            title: 'Cuenta abono',
+            dataIndex: 'cuentaAbono',
+            key: 'cuentaAbono',
         },
         {
-            title: 'Categoria',
-            dataIndex: 'categoria',
-            key: 'categoria',
+            title:'Cuenta cargo',
+            dataIndex:'cuentaCargo',
+            key:'cuentaCargo'
         },
         {
-            title: 'concepto',
+            title: 'Concepto',
             dataIndex: 'concepto',
             key: 'concepto',
             responsive:["sm"],
         },
+        {
+            title: 'Fecha aplicación',
+            dataIndex: 'fechaAplicacion',
+            key: 'fechaAplicacion',
+        },
+
         {
             title: 'Descargar documentos',
             dataIndex: 'documentos',

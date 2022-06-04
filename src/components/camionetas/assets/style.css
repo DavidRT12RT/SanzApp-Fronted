@@ -1,0 +1,16 @@
+.bgRegistro{
+
+    background-image: url("./fondoRegistro.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 35%;
+}
+
+@media(min-width:300px) and (max-width:1000px){
+    .bgRegistro{
+        display:none;
+    }
+    .especial{
+        height:100vh;
+    }
+}
