@@ -140,7 +140,7 @@ export const ProductosScreen = () => {
 
     return (
         <div className="container mt-lg-5 p-5 shadow rounded" style={{height:"100vh"}}>
-            <h1 className="display-5">Lista de productos en almacen</h1>
+            <h1 className="display-5 fw-bold">Lista de productos en almacen</h1>
             <hr/> 
                 <Search
                     placeholder="Buscar un producto en almacen..."

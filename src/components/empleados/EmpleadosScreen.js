@@ -1,11 +1,12 @@
 import { Avatar, Button, Card, Divider, Dropdown, Input, Menu, Statistic, Table, Tag } from 'antd';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useEmpleados } from '../../hooks/useEmpleados'
 import { Loading } from './Loading';
 import { DownOutlined } from '@ant-design/icons';
 import Meta from 'antd/lib/card/Meta';
+import { SocketContext } from '../../context/SocketContext';
 
 
 export const EmpleadosScreen = () => {
@@ -13,12 +14,27 @@ export const EmpleadosScreen = () => {
     const {isLoading,empleados,empleadosEstadoInfo}  = useEmpleados();
     const { rol } = useSelector(store => store.auth);
     const [empleadosInfo, setEmpleadosInfo] = useState([]);
+    const { socket } = useContext(SocketContext);
 
     useEffect(() => {
         empleados.map(empleado => empleado.key = empleado.uid);
         setEmpleadosInfo(empleados);        
     }, [empleados]);
 
+ /*
+	useEffect(() => {
+		socket.on("usuario-informacion-actualizada",(usuario)=>{
+            const empleadosArrayUpdated = empleados;
+            empleadosArrayUpdated.map(element => {
+                if(element.uid == usuario.uid){
+                    element = usuario;
+                    element.key = usuario.uid;
+                }
+            });
+            setEmpleadosInfo(empleadosArrayUpdated);
+		});
+	}, [socket,setEmpleadosInfo]);
+*/
     const columns = [
         {
             title:"Nombre del empleado",
@@ -75,53 +91,57 @@ export const EmpleadosScreen = () => {
         </Menu>
     );
 
-    return (
-        <div className="mt-lg-5 container p-5 shadow rounded">
-            <div className="d-flex justify-content-between align-items-center flex-wrap">
-                <h1 className="display-5">Registro total de empleados</h1>
-                <div className="d-flex justify-content-center align-items-center gap-2">
-                    <Dropdown overlay={menuReporte}>
-                        <Button onClick={(e)=> e.preventDefault()}>...</Button>
-                    </Dropdown>
-                    {(rol === "ADMIN_ROLE" || rol === "INGE_ROLE") && <Button type="primary" rounded><Link to="/aplicacion/registro">Registrar un usuario nuevo</Link></Button>}
+    if(isLoading){
+        return <Loading/>
+    }else{
+        return (
+            <div className="mt-lg-5 container p-5 shadow rounded">
+                <div className="d-flex justify-content-between align-items-center flex-wrap">
+                    <h1 className="display-5 fw-bold">Registro total de empleados</h1>
+                    <div className="d-flex justify-content-center align-items-center gap-2">
+                        <Dropdown overlay={menuReporte}>
+                            <Button onClick={(e)=> e.preventDefault()}>...</Button>
+                        </Dropdown>
+                        {(rol === "ADMIN_ROLE" || rol === "INGE_ROLE") && <Button type="primary" rounded><Link to="/aplicacion/registro">Registrar un usuario nuevo</Link></Button>}
+                    </div>
                 </div>
-            </div>
-            {/*Tarjetas de información*/}
-            <div className="d-flex justify-content-start flex-wrap mt-3 gap-2">
-                <Card style={{width:"300px"}}>
-                    <Statistic
-                        title="Numero de empleados activos"
-                        value={empleadosEstadoInfo.empleadosActivos}
-                        precision={0}
-                        prefix="Total:"
+                {/*Tarjetas de información*/}
+                <div className="d-flex justify-content-start flex-wrap mt-3 gap-2">
+                    <Card style={{width:"300px"}}>
+                        <Statistic
+                            title="Numero de empleados activos"
+                            value={empleadosEstadoInfo.empleadosActivos}
+                            precision={0}
+                            prefix="Total:"
+                        />
+                    </Card>
+                    <Card style={{width:"300px"}}>
+                        <Statistic
+                            title="Numero de empleados desactivados"
+                            value={empleadosEstadoInfo.empleadosDesactivados}
+                            precision={0}
+                            prefix="Total:"
+                        />
+                    </Card>
+                </div>
+                <Divider/>
+                <div className="d-flex justify-content-center align-items-center flex-wrap gap-2 mt-4">
+                    <Input.Search 
+                        size="large" 
+                        style={{width:"100%"}}
+                        placeholder="Busca una empleado por su nombre" 
+                        enterButton
+                        className="search-bar-class mb-3"
                     />
-                </Card>
-                <Card style={{width:"300px"}}>
-                    <Statistic
-                        title="Numero de empleados desactivados"
-                        value={empleadosEstadoInfo.empleadosDesactivados}
-                        precision={0}
-                        prefix="Total:"
-                    />
-                </Card>
+                </div>
+                <div className="d-flex justify-content-start gap-2 flex-wrap">
+                    <Dropdown overlay={menu} className="d-flex justify-content-center align-items-center">
+                        <Button type="primary" size="large">Filtrar obra por: <DownOutlined /></Button>
+                    </Dropdown>
+                </div>
+                <Table columns={columns} dataSource={empleadosInfo} className="mt-3" size="large"/>
+                {isLoading &&<Loading/>}
             </div>
-            <Divider/>
-            <div className="d-flex justify-content-center align-items-center flex-wrap gap-2 mt-4">
-                <Input.Search 
-                    size="large" 
-                    style={{width:"100%"}}
-                    placeholder="Busca una empleado por su nombre" 
-                    enterButton
-                    className="search-bar-class mb-3"
-                />
-            </div>
-            <div className="d-flex justify-content-start gap-2 flex-wrap">
-                <Dropdown overlay={menu} className="d-flex justify-content-center align-items-center">
-                    <Button type="primary" size="large">Filtrar obra por: <DownOutlined /></Button>
-                </Dropdown>
-            </div>
-            <Table columns={columns} dataSource={empleadosInfo} className="mt-3" size="large"/>
-            {isLoading &&<Loading/>}
-        </div>
-    )
+        )
+    }
 };

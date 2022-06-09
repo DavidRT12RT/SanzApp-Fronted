@@ -199,7 +199,7 @@ export const ObrasScreen = () => {
     return (
         <div className="container mt-lg-5 p-5 shadow rounded">
             <div className="d-flex justify-content-between align-items-center flex-wrap">
-                <h1 className="display-5">Registro total de obras en Sanz</h1>
+                <h1 className="display-5 fw-bold">Registro total de obras en Sanz</h1>
                 <div className="d-flex justify-content-center align-items-center gap-2">
                     <Dropdown overlay={menu}>
                         <Button onClick={(e)=> e.preventDefault()}>...</Button>

@@ -24,7 +24,7 @@ export const InformacionUsuario = ({usuarioInfo}) => {
                     <h6 className="fw-bold col-6">RFC:</h6>
                     <p className="text-bold col-6">{usuarioInfo.RFC}</p>
                     <h6 className="fw-bold col-6">Estado del usuario:</h6>
-                    {usuarioInfo.estado ? <p className="col-6"><Tag color="green">Activo</Tag></p> : <p className="col-6"><Tag color="green">Desactivado</Tag></p>}
+                    {usuarioInfo.estado ? <p className="col-6"><Tag color="green">Activo</Tag></p> : <p className="col-6"><Tag color="red">Desactivado</Tag></p>}
                 </div>
             </div>
         </>

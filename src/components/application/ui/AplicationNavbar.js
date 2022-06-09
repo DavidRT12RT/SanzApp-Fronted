@@ -66,7 +66,7 @@ export const AplicationNavbar = () =>{
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/aplicacion/calendario" aria-current="page">Calendario</NavLink>
+                            } to="/aplicacion/calendario" aria-current="page">Calendario general</NavLink>
                         </li>
                         <li className="nav-item">
                             <NavLink className={({isActive})=>

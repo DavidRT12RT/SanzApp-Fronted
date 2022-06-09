@@ -3,21 +3,24 @@ import React, { useState } from 'react'
 import "./assets/style.css";
 import { UploadOutlined } from "@ant-design/icons";
 import { fetchConTokenSinJSON } from '../../helpers/fetch';
+import { useNavigate } from 'react-router-dom';
 
 export const RegistrarCamioneta = () => {
 
     const [filesList, setFilesList] = useState([]);
     const [uploading, setUploading] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-
+    const navigate = useNavigate();
 
 
 
 	const handledAddNewCamioneta = async (values) => {
+        values.fechaCompra = values.fechaCompra.toDate();
         const formData = new FormData();
         formData.append("marca",values.marca);
         formData.append("modelo",values.modelo);
         formData.append("fechaCompra",values.fechaCompra);
+        formData.append("placa",values.placa);
         filesList.forEach(file => {
             formData.append("archivo",file);
         });
@@ -29,17 +32,18 @@ export const RegistrarCamioneta = () => {
         try {
             const resp = await fetchConTokenSinJSON("/camionetas",formData,"POST")
             const body = await resp.json();
+            //Quitando los archivos del filesList
+            setFilesList([]);
+            setUploading(false);
             if(resp.status === 200){
                 message.success(body.msg);
+                return navigate(`/aplicacion/camionetas/gestion/${body.camioneta.uid}`);
             }else{
                 message.error(body.msg);
             }
         } catch (error) {
             
         }
-        //Quitando los archivos del filesList
-        setFilesList([]);
-        setUploading(false);
 	}
 
     const props = {
@@ -76,7 +80,7 @@ export const RegistrarCamioneta = () => {
 				<div className="col-6 bgRegistro">
 				</div>
 				{/*Formulario screen*/}
-				<div className="col-sm-12 col-lg-6 p-5">
+				<div className="col-sm-12 col-lg-12 p-5">
 					<Form layout="vertical" onFinish={handledAddNewCamioneta}>
 						<div className="d-flex justify-content-end">
                 			<img src={require("../auth/assets/logo.png")} width="100" alt="logo"/>
@@ -88,13 +92,16 @@ export const RegistrarCamioneta = () => {
 						<Form.Item label="Modelo de la camioneta" name="modelo" style={{width:"100%"}}>
 							<Input size="large"/>
 						</Form.Item>
+                        <Form.Item label="Placa de la camioneta" name="placa" style={{width:"100%"}}>
+                            <Input size="large"/>
+                        </Form.Item>
 						<Form.Item label="Fecha de compra de la camioneta" name="fechaCompra" style={{width:"100%"}}>
 							<DatePicker style={{width:"100%"}} size="large"/>
 						</Form.Item>
                         <Upload {...props} className="upload-list-inline" style={{width:"100%"}}>
-							<div className="d-flex justify-content-center flex-wrap gap-2">
+							<div className="d-flex justify-content-center align-items-center flex-wrap gap-2">
 	                            <Button icon={<UploadOutlined/>} size="large">Selecciona la imagen de la camioneta</Button>
-								<span className="text-muted text-center">(Podras cambiar la imagen despues en los ajustes de la camioneta...)</span>
+								<span className="text-muted">(Podras cambiar la imagen despues en los ajustes de la camioneta...)</span>
 							</div>
                        	</Upload>
                         <Button 

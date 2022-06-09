@@ -3,7 +3,11 @@ import React,{ useState,useEffect } from 'react'
 import "../../assets/facturasLista.css";
 import { DownOutlined,UploadOutlined ,CopyOutlined } from '@ant-design/icons';
 import { fetchConToken, fetchConTokenSinJSON } from '../../../../helpers/fetch';
-import { Button, Card, Col, Divider, Dropdown, Menu, message, Row, Space, Statistic,Table,Modal,Upload,Input, Form, InputNumber} from 'antd';
+import { Button, Card, Col, Divider, Dropdown, Menu, message, Row, Space, Statistic,Table,Modal,Upload,Input, Form, InputNumber, DatePicker} from 'antd';
+import moment from 'moment';
+import locale from "antd/es/date-picker/locale/es_ES"
+const { RangePicker } = DatePicker;
+//const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
 
 
 export const AbonosLista = ({socket,obraInfo}) => {
@@ -47,6 +51,7 @@ export const AbonosLista = ({socket,obraInfo}) => {
     const handleSearch = (value) =>{
         //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
         if(value.length == 0){
+            setObraInfoAbonos(obraInfo.abonos);
             return setDataAbonos(obraInfo.abonos.registros);
         }
 
@@ -55,10 +60,43 @@ export const AbonosLista = ({socket,obraInfo}) => {
                 return elemento;
             }
         });
-
+        let cantidadTotal = 0,numeroRegistros = 0;
+        resultadosBusqueda.map(element => {
+            cantidadTotal += element.importe;
+            numeroRegistros += 1;
+        });
+        setObraInfoAbonos({cantidadTotal,numeroRegistros});
         return setDataAbonos(resultadosBusqueda);
     }
+    const onChangeDate = (value, dateString) => {
+        //console.log('Selected Time: ', value);//Estancias de moment
+        //console.log('Formatted Selected Time: ', dateString);//fechas en string
 
+        //Se borraron las fechas
+        if(value === null){
+            setDataAbonos(obraInfo.abonos.registros);
+            setObraInfoAbonos(obraInfo.abonos);
+            return;
+        }
+        const resultadosBusqueda = obraInfo.abonos.registros.filter(element => {
+            //element.fechaFactura = element.fechaFactura.slice(0,10);
+            const date = moment(element.fechaAplicacion,['DD/MM/YYYY', 'DD/MM/YY']);
+            //A diferencia que las factuas de gasolina aqui compara 2 instancias de moment
+            if(date.isBetween(value[0],value[1])){
+                return element;
+            }else{
+                console.log(element.fechaAplicacion);
+            }
+        });
+
+        let cantidadTotal = 0,numeroRegistros = 0;
+        resultadosBusqueda.map(element => {
+            cantidadTotal += element.importe;
+            numeroRegistros += 1;
+        });
+        setObraInfoAbonos({cantidadTotal,numeroRegistros});
+        return setDataAbonos(resultadosBusqueda);
+    };
 
     const handleUpload =  async () =>{
 
@@ -218,13 +256,18 @@ export const AbonosLista = ({socket,obraInfo}) => {
                 <Divider/>
                 
                 {/*Buscador con autocompletado*/}
-                    <Input.Search 
-                        size="large" 
-                        placeholder="Buscar un abono por su concepto..." 
-                        enterButton
-                        onSearch={handleSearch}
-                        className="search-bar-class"
-                    />
+
+                    <div className="d-flex align-items-center justify-content-start gap-2 mt-4 flex-wrap">
+                        <Input.Search 
+                            size="large" 
+                            placeholder="Buscar un abono por su concepto..." 
+                            enterButton
+                            onSearch={handleSearch}
+                            className="search-bar-class"
+                        />
+                        <RangePicker onChange={onChangeDate} size="large" locale={locale}/>
+                    </div>
+                    
 
                 {/*Tarjetas*/}
                 <Row gutter={16} className="mt-3">

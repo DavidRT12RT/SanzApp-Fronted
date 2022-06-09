@@ -16,7 +16,7 @@ export const useCamionetas = () => {
             })
         setIsLoading(false);
     }, [])
-   
+    
     return {
         isLoading,
         camionetas,

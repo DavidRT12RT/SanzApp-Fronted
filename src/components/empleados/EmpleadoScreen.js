@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Avatar, Button, Card, Divider, message, Rate, Tabs, Tag } from 'antd';
+import { Avatar, Button, Card, Divider, Form, message, Modal, Rate, Select, Tabs, Tag } from 'antd';
 import { UserOutlined, CopyOutlined,SaveOutlined, FileImageOutlined } from '@ant-design/icons';
 import { SocketContext } from '../../context/SocketContext';
 import { EditarInformacionUsuario } from './components/EditarInformacionUsuario';
@@ -8,17 +8,28 @@ import { EditarImagenUsuario } from './components/EditarImagenUsuario';
 import "./components/style.css";
 import { ObrasTrabajadas } from './components/ObrasTrabajadas';
 import { InformacionUsuario } from './components/InformacionUsuario';
+import { useSelector } from 'react-redux';
 const { TabPane } = Tabs;
+const { Option } = Select;
 
 export const EmpleadoScreen = () => {
+	const { rol } = useSelector(store => store.auth);
 	const { empleadoId:usuarioId } = useParams();
     const { socket } = useContext(SocketContext);
+    const [form] = Form.useForm();
 	const [usuarioInfo, setUsuarioInfo] = useState();
+	//Obras en desarollo por si quieren agregar un usuario a una obra desde usuarios
+	const [obrasDesarollo, setObrasDesarollo] = useState([]);
+  	const [isModalVisible, setIsModalVisible] = useState(false);
     const [activeTabKey1, setActiveTabKey1] = useState('tab1');
 
 	useEffect(() => {
 		socket.emit("obtener-usuario-por-id",{usuarioId},(usuario)=>{
 			setUsuarioInfo(usuario);
+		});
+		socket.emit("obtener-obras-en-desarollo",{},(obras)=>{
+			console.log(obras);
+			setObrasDesarollo(obras);
 		});
 	}, []);
 
@@ -74,6 +85,26 @@ export const EmpleadoScreen = () => {
 		})
 	}
 	
+	const handledChangeUserState = () =>{
+
+		socket.emit("cambiar-estado-usuario",usuarioInfo.uid,(confirmacion)=>{
+			(confirmacion.ok) ? message.success(confirmacion.msg) : message.error(confirmacion.msg);
+		});
+	}
+
+	const handledAddEmployerObra = (values) =>{
+		values.empleadoID = usuarioId;
+        socket.emit("agregar-empleado-obra",values,(confirmacion)=>{
+            if(confirmacion.ok){
+                message.success(confirmacion.msg);
+        		form.resetFields();
+				return setIsModalVisible(false);
+            }else{
+                message.error(confirmacion.msg);
+            }
+        });
+	}
+
 	if(usuarioInfo == undefined){
 		return <h5>Cargando información</h5>
 	}else{
@@ -95,7 +126,7 @@ export const EmpleadoScreen = () => {
 								<h1 className="display-6 fw-bold me-2">{usuarioInfo.nombre}</h1>
 								{usuarioInfo.alias && <span>({usuarioInfo.alias})</span>}
 							</div>
-							<Button type="primary">Editar información</Button>
+							{rol === ("ADMIN_ROLE" || "ADMINISTRADOR_ROLE") && <Button type="primary">Editar información</Button>}
 						</div>
 						<p className="fw-bold text-primary mt-3 mt-lg-0">{usuarioInfo.rol}</p>
 						<div className="row">
@@ -103,8 +134,8 @@ export const EmpleadoScreen = () => {
 							<Rate className="ms-2 col-12 mt-2" disabled defaultValue={5}>5</Rate>
 						</div>
 						<div className="d-flex justify-content-start gap-4 mt-4">
-							<Button type="primary">Añadir a una obra</Button>
-							<Button type="primary" danger>Desabilitar usuario</Button>
+							{rol === ("ADMIN_ROLE" || "ADMINISTRADOR_ROLE") && <Button type="primary" onClick={()=>{setIsModalVisible(true)}}>Añadir a una obra</Button>}
+							{rol === ("ADMIN_ROLE" || "ADMINISTRADOR_ROLE") && (usuarioInfo.estado) ? <Button type="primary" danger onClick={handledChangeUserState}>Desabilitar usuario</Button> : <Button type="primary" style={{backgroundColor:"orange",border:"orange"}} onClick={handledChangeUserState}>Activar usuario</Button>}
 						</div>
 						<Card
 						    bordered={false}
@@ -118,7 +149,56 @@ export const EmpleadoScreen = () => {
         				>
             				{contentList[activeTabKey1]}
         				</Card>
-
+      					<Modal title="Agregar un empleado a una obra" visible={isModalVisible} onOk={()=>{setIsModalVisible(false)}} onCancel={()=>{setIsModalVisible(false)}} footer={null}>
+						    <h1>Agregar un empleado a una obra en desarollo</h1>
+							<p className="lead">Agregar un empleado a una obra en desarollo</p>
+							<Form form={form} onFinish={handledAddEmployerObra} layout="vertical">
+								<Form.Item
+                            		label="Rol que empañara el empleado en la obra"
+                            		name="rolEmpleado"
+                            		tooltip="Especifica el rol que tendra el empleado en la obra..."
+                            		rules={[
+                                		{
+                                    		required:true,
+                                    		message:"Debes ingresar el rol del empleado en la obra!"
+                                		}
+                            		]}
+								>
+								    <Select
+                                	 	placeholder="Rol del empleado..."
+                                		allowClear
+                            		>
+                                		<Option value="encargado-rol" key={1}>Encarga de obra</Option>
+                                		<Option value="maestro-obra-rol" key={2}>Maestro de obra</Option>
+										<Option value="albañil-rol" key={3}>Albañil</Option>
+                                		<Option value="jefe-piso-rol" key={4}>Jefe de piso</Option>
+                            		</Select>
+                        		</Form.Item>
+								<Form.Item 
+									label="Obra la cual el empleado sera añadido" 
+									name="obraId" 
+									tooltip="Especifica la obra"
+									rules={[
+										{
+											required:true,
+											message:"Debes ingresar la obra!"
+										}
+									]}
+								>
+									<Select placeholder ="Obra a agregar..."
+										allowClear
+									>
+										{obrasDesarollo.map(element => {
+											return <Option value={element._id} key={element._id}>{element.titulo}</Option>
+										})}
+									</Select>
+								</Form.Item>
+                        		<div className="d-flex justify-content-start gap-2">
+                            		<Button type="primary" htmlType="submit">Registrar empleado en la obra!</Button>
+									<Button className="mx-2" htmlType='button' onClick={()=>{form.resetFields()}}>Borrar información</Button>
+                        		</div>
+                   			</Form>
+      					</Modal>
 					</div>
 				</div>
 			</div>

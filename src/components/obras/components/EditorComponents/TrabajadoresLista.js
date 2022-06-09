@@ -11,10 +11,6 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
     const [empleados, setEmpleados] = useState([]);
     const [form] = Form.useForm();
     const { obraId } = useParams();
-    //Select row
-    const [selectedRows, setSelectedRows] = useState([]);
-
-    const disabledButton = selectedRows.length > 0 ? false : true;
 
     //Obtener TODOS los empleados activos
     useEffect(() => {
@@ -25,6 +21,7 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
 
     //Estar al tanto por si la información de la obra cambia
     useEffect(()=>{
+        obraInfo.empleados.map(empleado=>empleado.key = empleado._id);
         setDataSource(obraInfo.empleados);
     },[obraInfo]);
 
@@ -50,9 +47,6 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
         setIsModalVisible(false);
     };
 
-
-
-
     const onReset = () =>{
        form.resetFields();
     }
@@ -70,32 +64,12 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
         form.resetFields();
     }
     
-    const rowSelection = {
-        /*
-        onSelect: (record, selected, selectedRows) => {
-            //console.log("Seleccionaste una celda","record",record, "selected",selected, "selectedrow",selectedRows);
-            setSelectedRow(prevState => [...prevState,record]);
-        },
-        onSelectAll: (selected, selectedRows, changeRows) => {
-            setSelectedRow([...selectedRows]);
-        },
-        */
-        onChange: (selectedRowKeys, selectedRows) => {
-            //console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            //setSelectedRow([...selectedRows]);
-            setSelectedRows([...selectedRowKeys]);
-        },
-    };
 
-    const handleDelete = () => {
+    const handleDelete = (record) => {
 
-        //Confirmación si lo quiere eliminar realmente
-        const employersArrayUpdated = dataSource.filter(element => {
-            if(!selectedRows.includes(element.key)){
-                return element;
-            }
-        });
-        socket.emit("eliminar-empleado-en-obra",{obraId,employersArrayUpdated},(confirmacion)=>{
+        //TODO Confirmación si lo quiere eliminar realmente
+        const { _id:empleadoID } = record;
+        socket.emit("eliminar-empleado-en-obra",{obraId,empleadoID},(confirmacion)=>{
             if(confirmacion.ok){
                 message.success(confirmacion.msg);
             }else{
@@ -130,6 +104,14 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
             key:"rol",
             with:"33%"
         },
+        {
+            title:"Acciones",
+            render:(text,record) => {
+                return (
+                    <Button type="primary" danger onClick={()=>{handleDelete(record)}}>Eliminar empleado</Button>
+                )
+            }
+        }
     ];
 
     return (
@@ -147,21 +129,12 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
             >
                 Añadir empleado
             </Button>
-            <Button
-                onClick={handleDelete}
-                type="primary"
-                danger
-                disabled={disabledButton}
-            >
-                Eliminar empleado
-            </Button>
 
         <Table 
             columns = {columns} 
             dataSource = {dataSource} 
             className="fix" 
             style={{overflowX:"auto"}} 
-            rowSelection={{...rowSelection}} 
             bordered/>
 
         <Modal title="Agregar empleado a la obra" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
@@ -217,7 +190,7 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
                         <div className="d-flex justify-content-start gap-2">
                             <Button type="primary" htmlType="submit">Registrar empleado en la obra!</Button>
                             <Button className="mx-2" htmlType='button' onClick={onReset}>Borrar información</Button>
-                            </div>
+                        </div>
                    </Form>
         </Modal>
         </>

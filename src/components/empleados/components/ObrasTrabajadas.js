@@ -85,6 +85,7 @@ export const ObrasTrabajadas = ({usuarioInfo}) => {
             <Menu.Item key="Limpiar">Limpiar filtros</Menu.Item>
         </Menu>
     );
+
     return (
         <div style={{height:"100%"}}>
             <h6 className="text-muted">Total de obras trabajadas</h6>

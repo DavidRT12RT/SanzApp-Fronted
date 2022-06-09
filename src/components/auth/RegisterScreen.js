@@ -43,11 +43,9 @@ export const RegisterScreen = () => {
     
 
     return <>
-    <div className="w-100 d-md-block container w-75 bg-primary rounded shadow centrar" style={{height:"100%"}}>
-        <div className="row align-items-lg-stretch login">
-            <div className="col bgRegistro d-none d-lg-block col-md-5 col-lg-5 col-xl-6 rounded" style={{height:"100%"}}>
-            </div>
-            <div className="col bg-white p-5 rounded-end"  style={{height:"100%"}}>
+    <div className="d-md-block container bg-primary rounded shadow">
+        <div className="row align-items-lg-stretch login" style={{height:"100%"}}>
+            <div className="col-12 bg-white p-5 rounded-end">
                 <div className="text-end">
                     <img src={require('./assets/logo.png')} width="100" alt="logo"/>
                 </div>

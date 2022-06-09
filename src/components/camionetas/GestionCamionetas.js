@@ -11,13 +11,16 @@ export const GestionCamionetas = () => {
 
 	const { isLoading,camionetas,camionetasInfo } = useCamionetas();
 	const [camionetasInformacion, setCamionetasInformacion] = useState([]);
+	const [camionetasEstadoInfo, setCamionetasEstadoInfo] = useState();
 	const { rol } = useSelector(store => store.auth);
 
 	useEffect(() => {
 		camionetas.map(camioneta => camioneta.key = camioneta.uid);
 		setCamionetasInformacion(camionetas);
-	}, [camionetas]);
-	
+		setCamionetasEstadoInfo(camionetasInfo);
+	}, [camionetas,setCamionetasInformacion,setCamionetasEstadoInfo,camionetasInfo]);
+
+
 	const columns = [
 		{
 			title:"Marca de la camioneta",
@@ -58,54 +61,58 @@ export const GestionCamionetas = () => {
 		</Menu>
 	);
 
-	return (
-		<div className="mt-lg-5 container p-5 shadow rounded">
-			<div className="d-flex justify-content-between align-items-center flex-wrap">
-				<h1 className="display-5">Registro total de camionetas</h1>
-				<div className="d-flex justify-content-center align-items-center gap-2">
-                	<Dropdown overlay={menuReporte}>
-                        <Button onClick={(e)=> e.preventDefault()}>...</Button>
-                    </Dropdown>
-                    {(rol === "ADMIN_ROLE" || rol === "INGE_ROLE") && <Button type="primary" rounded><Link to="/aplicacion/camionetas/registro">Registrar una nueva camioneta</Link></Button>}
-                </div>
+	if(isLoading){
+		return <Loading/>
+	}
+	else{
+		return (
+			<div className="mt-lg-5 container p-5 shadow rounded">
+				<div className="d-flex justify-content-between align-items-center flex-wrap">
+					<h1 className="display-5 fw-bold">Registro total de camionetas</h1>
+					<div className="d-flex justify-content-center align-items-center gap-2">
+                		<Dropdown overlay={menuReporte}>
+                        	<Button onClick={(e)=> e.preventDefault()}>...</Button>
+                    	</Dropdown>
+                    	{(rol === "ADMIN_ROLE" || rol === "INGE_ROLE") && <Button type="primary" rounded><Link to="/aplicacion/camionetas/registro">Registrar una nueva camioneta</Link></Button>}
+                	</div>
+				</div>
+            	{/*Tarjetas de información*/}
+            	<div className="d-flex justify-content-start flex-wrap mt-3 gap-2">
+                	<Card style={{width:"300px"}}>
+                    	<Statistic
+                        	title="Numero total de camionetas registradas"
+                        	value={camionetasEstadoInfo.camionetasTotales}
+                        	precision={0}
+                        	prefix="Total:"
+                    	/>
+                	</Card>
+                	<Card style={{width:"300px"}}>
+                    	<Statistic
+                        	title="Numero total de facturas de gasolina hechas este mes"
+                        	value={23}
+                        	precision={0}
+                        	prefix="Total:"
+                    	/>
+                	</Card>
+            	</div>
+            	<Divider/>
+            	<div className="d-flex justify-content-center align-items-center flex-wrap gap-2 mt-4">
+                	<Input.Search 
+                    	size="large" 
+                    	style={{width:"100%"}}
+                    	placeholder="Busca una camioneta por marca o modelo" 
+                    	enterButton
+                    	className="search-bar-class mb-3"
+                	/>
+            	</div>
+            	<div className="d-flex justify-content-start gap-2 flex-wrap">
+                	<Dropdown overlay={menu} className="d-flex justify-content-center align-items-center">
+                    	<Button type="primary" size="large">Filtrar por marca: <DownOutlined /></Button>
+                	</Dropdown>
+            	</div>
+            	<Table columns={columns} dataSource={camionetasInformacion} className="mt-3" size="large"/>
 			</div>
-            {/*Tarjetas de información*/}
-            <div className="d-flex justify-content-start flex-wrap mt-3 gap-2">
-                <Card style={{width:"300px"}}>
-                    <Statistic
-                        title="Numero total de camionetas registradas"
-                        value={23}
-                        precision={0}
-                        prefix="Total:"
-                    />
-                </Card>
-                <Card style={{width:"300px"}}>
-                    <Statistic
-                        title="Numero total de facturas de gasolina hechas este mes"
-                        value={23}
-                        precision={0}
-                        prefix="Total:"
-                    />
-                </Card>
-            </div>
-            <Divider/>
-            <div className="d-flex justify-content-center align-items-center flex-wrap gap-2 mt-4">
-                <Input.Search 
-                    size="large" 
-                    style={{width:"100%"}}
-                    placeholder="Busca una camioneta por marca o modelo" 
-                    enterButton
-                    className="search-bar-class mb-3"
-                />
-            </div>
-            <div className="d-flex justify-content-start gap-2 flex-wrap">
-                <Dropdown overlay={menu} className="d-flex justify-content-center align-items-center">
-                    <Button type="primary" size="large">Filtrar por marca: <DownOutlined /></Button>
-                </Dropdown>
-            </div>
-            <Table columns={columns} dataSource={camionetasInformacion} className="mt-3" size="large"/>
-            {isLoading &&<Loading/>}
-		</div>
-	)
+		)
+	}
 }
 	
