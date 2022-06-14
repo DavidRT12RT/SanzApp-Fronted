@@ -3,13 +3,21 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { SocketContext } from '../../context/SocketContext';
 import { FacturasGeneralOficina } from './components/FacturasGeneralOficina';
-
+import moment from 'moment';
+import locale from "antd/es/date-picker/locale/es_ES"
 
 export const GestionOficina = () => {
+    const startOfMonth = moment().startOf('month').locale('es').format("YYYY-MM-DD");
+    const endOfMonth   = moment().endOf('month').locale('es').format("YYYY-MM-DD");
     const [activeTabKey1, setActiveTabKey1] = useState('tab1');
     const { rol } = useSelector(store => store.auth);
     const [oficinaInfo, setOficinaInfo] = useState(null);
+    //const [oficinaInfoGastosMes,setOficinaInfoGastosMes] = useState({});
     const { socket } = useContext(SocketContext);
+    //const colecciones = ["Agua","Luz","Gas","Luz","Material","Otros","Papeleria","Predial"];
+    //let totalMes = 0,numeroRegistrosMes = 0;
+
+
 
     //Obtener información de la oficina cuando el componente se monte
     useEffect(() => {
@@ -24,12 +32,13 @@ export const GestionOficina = () => {
             setOficinaInfo(oficina);
         });
     }, [socket,setOficinaInfo]);
-    
+
+
+
     const menuReporte = (
         <Menu>
-            <Menu.Item key={1}>Gastos en este mes</Menu.Item>
-            <Menu.Item key={2}>Gastos de papeleria</Menu.Item>
-            <Menu.Item key={3}>Gastos en otras cosas...</Menu.Item>
+            <Menu.Item key={1}>Reporte de gastos de este mes</Menu.Item>
+            <Menu.Item key={2}>Reporte de gastos de una cierta colección este mes</Menu.Item>
             <Menu.Divider/>
             <Menu.Item key="Limpiar">Limpiar filtros</Menu.Item>
         </Menu>
@@ -85,7 +94,7 @@ export const GestionOficina = () => {
         return <h1>Loading</h1>
     }else{
         return (
-            <div className="container mt-lg-5 p-5 shadow rounded">
+            <div className="container p-5 shadow rounded">
                 <div className="d-flex justify-content-between align-items-center flex-wrap">
                     <h1 className="display-5 fw-bold">Gestion de gastos de oficina</h1>
                     <div className="d-flex justify-content-center align-items-center gap-2">
@@ -97,7 +106,7 @@ export const GestionOficina = () => {
                     <div className="d-flex justify-content-start flex-wrap mt-3 gap-2">
                         <Card style={{width:"300px"}}>
                             <Statistic
-                                title="Numero de facturas registradas totales"
+                                title="Numero de facturas registradas totales de todas las categorias"
                                 value={oficinaInfo.gastos.registrosTotales}
                                 precision={0}
                                 prefix="Total:"
@@ -105,17 +114,9 @@ export const GestionOficina = () => {
                         </Card>
                         <Card style={{width:"300px"}}>
                             <Statistic
-                                title="Gasto totales de oficina"
+                                title="Gasto totales de oficina de todas las categorias"
                                 value={oficinaInfo.gastos.gastosTotales}
                                 precision={2}
-                                prefix="Total:"
-                            />
-                        </Card>
-                        <Card style={{width:"300px"}}>
-                            <Statistic
-                                title="Numero de facturas registradas este mes"
-                                value={223}
-                                precision={0}
                                 prefix="Total:"
                             />
                         </Card>

@@ -27,9 +27,11 @@ export const EditarInformacionGeneral = ({camionetaInfo,socket,setIsModalVisible
             <Form.Item label="Placa de la camioneta" name="placa" initialValue={camionetaInfo.placa} rules={[{required:true,message:"Se requiere este campo!"}]}>
                 <Input/>
             </Form.Item>
+            {/*
             <Form.Item label="Fecha de compra" name="fechaCompra"  rules={[{required:true,message:"Se requiere este campo!"}]}>
                 <DatePicker style={{width:"100%"}} locale={locale}/>
             </Form.Item>
+            */}
             <div className="d-flex justify-content-start gap-2 flex-wrap">
                 <Button type="primary" danger onClick={()=>{setIsModalVisible(false)}}>Cancelar</Button>
                 <Button type="primary" htmlType="submit">Editar información</Button>

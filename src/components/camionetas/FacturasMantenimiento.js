@@ -1,4 +1,4 @@
-import { Button, Card, DatePicker, Dropdown, Form, Input, Menu, message, Modal, Space, Statistic, Table, Upload } from 'antd'
+import { Button, Card, DatePicker, Divider, Drawer, Dropdown, Form, Input, Menu, message, Modal, Space, Statistic, Table, Upload } from 'antd'
 import { DownOutlined, UploadOutlined } from '@ant-design/icons';
 import { fetchConToken, fetchConTokenSinJSON } from '../../helpers/fetch';
 import React, { useEffect, useState } from 'react'
@@ -11,19 +11,34 @@ const { confirm } = Modal;
 
 export const FacturasMantenimiento = ({camionetaInfo,socket}) => {
 
+    const startOfMonth = moment().startOf('month').locale('es').format("YYYY-MM-DD");
+    const endOfMonth   = moment().endOf('month').locale('es').format("YYYY-MM-DD");
     const { uid:camionetaId } = camionetaInfo;
     const [facturasMantenimiento,setFacturasMantenimiento] = useState([]);
     const [informacionFacturas, setInformacionFacturas] = useState();
+    const [informacionFacturasTotal,setInformacionFacturasTotal] = useState();
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isDrawerVisible,setIsDrawerVisible] = useState(false);
+    const [facturaActual,setFacturaActual] = useState({});
     const [uploading, setUploading] = useState(false);
     const [filesList, setFilesList] = useState([]);
 
 
     useEffect(() => {
         camionetaInfo.gastos.facturasMantenimiento.registros.map(registro => registro.key = registro.folioFactura);
-        setFacturasMantenimiento(camionetaInfo.gastos.facturasMantenimiento.registros);
-        //Información de las facturas como numero total de registros , cantidad total ,etc.
-        setInformacionFacturas(camionetaInfo.gastos.facturasMantenimiento);
+        const facturasMes = camionetaInfo.gastos.facturasMantenimiento.registros.filter(element => {
+            if(moment(element.fechaFactura).isBetween(startOfMonth,endOfMonth)){
+                return element;
+            }
+        });
+        let total = 0,numeroRegistros = 0;
+        facturasMes.map(element => {
+            total += element.importeFactura;
+            numeroRegistros += 1;
+        });
+        setInformacionFacturas({total,numeroRegistros});
+        setFacturasMantenimiento(facturasMes);
+        setInformacionFacturasTotal(camionetaInfo.gastos.facturasMantenimiento);
     }, [camionetaInfo]);
     
     const handleDownloadPDF = async (nombreArchivo,folioFactura) => {
@@ -84,6 +99,19 @@ export const FacturasMantenimiento = ({camionetaInfo,socket}) => {
             />      
         )
     }
+    const menuVisualizar = (record) => {
+        const { folioFactura,nombrePDF,nombreXML } = record;
+        return (
+            <Menu 
+                items={[
+                    {key:'1',label:'Archivo PDF',onClick:()=>{
+                        setIsDrawerVisible(true);
+                        setFacturaActual({nombreArchivo:nombrePDF,folioFactura});
+                    }}
+                ]}
+            />
+        )
+    }
 
     const menu = (
         <Menu>
@@ -94,9 +122,18 @@ export const FacturasMantenimiento = ({camionetaInfo,socket}) => {
     const handleSearch = (value) =>{
         //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
         if(value.length == 0){
-            setFacturasMantenimiento(camionetaInfo.gastos.facturasMantenimiento.registros);
-            setInformacionFacturas(camionetaInfo.gastos.facturasMantenimiento);
-            return; 
+            const facturasMes = camionetaInfo.gastos.facturasMantenimiento.registros.filter(element => {
+                if(moment(element.fechaFactura).isBetween(startOfMonth,endOfMonth)){
+                    return element;
+                }
+            });
+            let total = 0,numeroRegistros = 0;
+            facturasMes.map(element => {
+                total += element.importeFactura;
+                numeroRegistros +=1;
+            });
+            setInformacionFacturas({total,numeroRegistros});
+            setFacturasMantenimiento(facturasMes);
         }
 
         const resultadosBusqueda = camionetaInfo.gastos.facturasMantenimiento.registros.filter(elemento => {
@@ -119,15 +156,27 @@ export const FacturasMantenimiento = ({camionetaInfo,socket}) => {
 
         //Se borraron las fechas
         if(value === null){
-            setFacturasMantenimiento(camionetaInfo.gastos.facturasMantenimiento.registros);
-            setInformacionFacturas(camionetaInfo.gastos.facturasMantenimiento);
-            return; 
+            const facturasMes = camionetaInfo.gastos.facturasGasolina.registros.filter(element => {
+                if(moment(element.fechaFactura).isBetween(startOfMonth,endOfMonth)){
+                    return element;
+                }
+            });
+
+            let total = 0,numeroRegistros = 0;
+            facturasMes.map(element => {
+                total += element.importeFactura;
+                numeroRegistros += 1;
+            });
+            setInformacionFacturas({total,numeroRegistros});
+            setFacturasMantenimiento(facturasMes);
+            return;
         }
         const resultadosBusqueda = camionetaInfo.gastos.facturasMantenimiento.registros.filter(element => {
             //element.fechaFactura = element.fechaFactura.slice(0,10);
             if(moment(element.fechaFactura).isBetween(dateString[0],dateString[1])){
                 return element;
             }
+
         });
 
         let total = 0,numeroRegistros = 0;
@@ -237,11 +286,17 @@ export const FacturasMantenimiento = ({camionetaInfo,socket}) => {
             dataIndex: 'fechaFactura',
             key: 'fechaFactura',
         },
-        {
-            title:'Acciones',
+       {
+            title:'Ver documentos',
             render:(text,record) => {
                 return (
-                    <Button type="primary" danger onClick={()=>{handleDeleteFactura(record.folioFactura)}}>Eliminar factura</Button>
+                    <Space size="middle">
+                        <Dropdown overlay={menuVisualizar(record)}>
+                            <a>
+                                Visualizar documentos <DownOutlined/>
+                            </a>
+                        </Dropdown>
+                    </Space>
                 )
             }
         },
@@ -260,7 +315,15 @@ export const FacturasMantenimiento = ({camionetaInfo,socket}) => {
                     </Space>
                 )
             },
-        }
+        },
+        {
+            title:'Acciones',
+            render:(text,record) => {
+                return (
+                    <Button type="primary" danger onClick={()=>{handleDeleteFactura(record.folioFactura)}}>Eliminar factura</Button>
+                )
+            }
+        },
     ];
 
 
@@ -274,11 +337,12 @@ export const FacturasMantenimiento = ({camionetaInfo,socket}) => {
                         <h6 className="text-muted">Total de facturas de mantenimiento</h6>
                         <Button type="primary" className="my-3" onClick={()=>{setIsModalVisible(true)}}>Agregar nueva factura!</Button>
                     </div>
+                    <span>(Por defecto se mostraran solo se mostraran las facturas de este mes, <br/>si deseas puedes cambiar esto en la editor de fecha de abajo)</span>
                     {/*Información sobre las facturas totales*/}
-                    <div className="d-flex justify-content-start align-items-center flex-wrap gap-2">
+                    <div className="d-flex justify-content-start align-items-center flex-wrap gap-2 mt-3">
                         <Card>
                             <Statistic
-                                title="Numero de facturas de mantenimiento"
+                                title="Numero de facturas TOTALES"
                                 value={informacionFacturas.numeroRegistros}
                                 precision={0}
                                 prefix="Total:"
@@ -286,14 +350,36 @@ export const FacturasMantenimiento = ({camionetaInfo,socket}) => {
                         </Card>
                         <Card>
                             <Statistic
-                                title="Cantidad total de las facturas"
+                                title="Cantidad total de las facturas TOTALES"
                                 value={informacionFacturas.total}
                                 precision={2}
                                 prefix="$"
                             />
                         </Card>
                     </div>
-                {/*Buscador con autocompletado*/}
+
+                    <Divider/>
+                    {/*Información sobre las facturas de este mes*/}
+                    <div className="d-flex justify-content-start align-items-center flex-wrap gap-2 mt-3">
+                        <Card>
+                            <Statistic
+                                title="Numero de facturas registradas este mes"
+                                value={informacionFacturas.numeroRegistros}
+                                precision={0}
+                                prefix="Total:"
+                            />
+                        </Card>
+                        <Card>
+                            <Statistic
+                                title="Cantidad total de las facturas este mes:"
+                                value={informacionFacturas.total}
+                                precision={0}
+                                prefix="Total:"
+                            />
+                        </Card>
+                    </div>
+
+                    {/*Buscador con autocompletado*/}
                     <div className="d-flex align-items-center gap-2 mt-4">
                         <Input.Search 
                             placeholder="Busca una factura por su descripción o concepto" 
@@ -328,6 +414,9 @@ export const FacturasMantenimiento = ({camionetaInfo,socket}) => {
                             {uploading ? "Subiendo..." : "Comienza a subir!"}     
                         </Button>
                 </Modal>
+                <Drawer width={640} closable={false} title="Visualizar archivo" placement="left" visible={isDrawerVisible} onClose={()=>{setIsDrawerVisible(false)}}>
+                    <iframe type="text/plain" src={`http://localhost:4000/api/uploads/camionetas/camioneta/${camionetaId}/gastos/mantenimiento/${facturaActual.folioFactura}/${facturaActual.nombreArchivo}`} style={{height:"100%",width:"100%"}} frameBorder="0" allowFullScreen></iframe>
+                </Drawer>
             </div>
             </>
         )

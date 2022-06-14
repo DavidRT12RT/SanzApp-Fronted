@@ -94,7 +94,7 @@ export const CalendarScreen = () => {
   }
 
   return (
-    <div className='calendar-screen mt-3'>
+    <div className='calendar-screen'>
       <Calendar
             localizer={localizer}
             events={events}
