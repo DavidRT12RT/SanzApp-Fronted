@@ -86,14 +86,6 @@ export const GestionCamionetas = () => {
                         	prefix="Total:"
                     	/>
                 	</Card>
-                	<Card style={{width:"300px"}}>
-                    	<Statistic
-                        	title="Numero total de facturas de gasolina hechas este mes"
-                        	value={23}
-                        	precision={0}
-                        	prefix="Total:"
-                    	/>
-                	</Card>
             	</div>
             	<Divider/>
             	<div className="d-flex justify-content-center align-items-center flex-wrap gap-2 mt-4">
