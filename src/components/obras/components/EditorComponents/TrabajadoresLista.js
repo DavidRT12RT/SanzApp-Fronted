@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Divider, Form, Input, message, Modal, Select, Table } from "antd";
+import { Avatar, Button, Col, Divider, Drawer, Form, Input, message, Modal, Row, Select, Table } from "antd";
 import { useParams } from 'react-router-dom';
 import "../../assets/styleMaterialList.css";
+import "../../assets/styleTrabajadoresLista.css";
+
 const { Option } = Select;
 
 export const TrabajadoresLista =  ({obraInfo,socket}) => {
@@ -11,13 +13,10 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
     const [empleados, setEmpleados] = useState([]);
     const [form] = Form.useForm();
     const { obraId } = useParams();
-
-    //Obtener TODOS los empleados activos
-    useEffect(() => {
-        socket.emit("obtener-empleados-activos",{},(empleados)=>{ 
-            setEmpleados(empleados);
-        }); 
-    }, []);
+    //Drawer
+    const [isVisibleDrawer, setIsVisibleDrawer] = useState(false);
+    const [empleadoId, setEmpleadoId] = useState(null);
+    const [informacionEmpleado, setInformacionEmpleado] = useState();
 
     //Estar al tanto por si la información de la obra cambia
     useEffect(()=>{
@@ -25,15 +24,25 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
         setDataSource(obraInfo.empleados);
     },[obraInfo]);
 
+    //Cada vez que cambie el el empleadoId buscaremos información sobre el empleado y la setearemos en otro estado
+    useEffect(() => {
+        socket.emit("obtener-usuario-por-id",{usuarioId:empleadoId},(usuario)=>{
+            setInformacionEmpleado(usuario);
+        });
+    }, [empleadoId,setInformacionEmpleado]);
+
     //Obtener todos los empleados que YA esten trabajando en la obra con su rol
     useEffect(() => {
         socket.emit("obtener-empleados-en-obra-por-id",{obraId},(empleados)=>{
             empleados.map(empleado=>empleado.key = empleado._id);
             setDataSource(empleados);
         });
-    }, []);
 
-    
+        socket.emit("obtener-empleados-activos",{},(empleados)=>{ 
+            empleados.map(element => element.key = element.uid);
+            setEmpleados(empleados);
+        }); 
+    }, []);
 
     const showModal = () =>{
         setIsModalVisible(true);
@@ -70,11 +79,7 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
         //TODO Confirmación si lo quiere eliminar realmente
         const { _id:empleadoID } = record;
         socket.emit("eliminar-empleado-en-obra",{obraId,empleadoID},(confirmacion)=>{
-            if(confirmacion.ok){
-                message.success(confirmacion.msg);
-            }else{
-                message.error(confirmacion.msg);
-            }
+            confirmacion.ok ? message.success(confirmacion.msg) : message.error(confirmacion.msg);
             //(confirmacion.ok) ? message.success(confirmacion.msg)(handleOk()) : message.error(confirmacion.msg);
         });
     }
@@ -84,18 +89,6 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
             title:"Nombre empleado",
             dataIndex:"nombre",
             key:"nombre",
-            with:"33%"
-        },
-        {
-            title:"Correo electronico",
-            dataIndex:"correo",
-            key:"correo",
-            with:"33%"
-        },
-        {
-            title:"Telefono",
-            dataIndex:"telefono",
-            key:"telefono",
             with:"33%"
         },
         {
@@ -111,9 +104,56 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
                     <Button type="primary" danger onClick={()=>{handleDelete(record)}}>Eliminar empleado</Button>
                 )
             }
-        }
+        },
+        {
+            title:"Detalles",
+            dataIndex:"_id",
+            key:"_id",
+            render:(text,record) => {
+                return (
+                    <a href="#" onClick={(event)=>{
+                        event.preventDefault();
+                        setEmpleadoId(record._id);
+                        setIsVisibleDrawer(true);
+                    }}>Ver mas detalles</a>
+                )
+            }
+        },
     ];
 
+    const DescriptionItem = ({ title, content }) => (
+        <div className="site-description-item-profile-wrapper">
+            <p className="site-description-item-profile-p-label">{title}:</p>
+            {content}
+        </div>
+    );
+   
+    const renderizarHabilidades = () => {
+		return informacionEmpleado.habilidades.map(elemento=>{
+			return <p className="fw-bold">{elemento}</p>
+		})
+    }
+    const ShowDrawer = () => (
+        <Drawer width={640} placement="right" closable={false} onClose={()=>{setIsVisibleDrawer(false)}} visible={isVisibleDrawer}>
+            <p className="site-description-item-profile-p" style={{marginBottom: 24,}}>Perfil del usuario</p>
+            <Avatar shape="square" src={`http://localhost:4000/api/uploads/usuarios/${informacionEmpleado.uid}`} style={{width:"250px",height:"250px",marginBottom:24}}/>
+            <p className="site-description-item-profile-p fw-bold">Personal</p>
+            <Row>
+                <Col span={12}><DescriptionItem title="Nombre" content={informacionEmpleado.nombre}/></Col>
+                <Col span={12}><DescriptionItem title="Edad" content={23}/></Col>
+                <p>Habilidades:</p>
+                <Col span={24} className="d-flex flex-wrap gap-4">
+                    {informacionEmpleado.habilidades.length > 0 ? renderizarHabilidades() : <p>Ninguna habilidades registrada por el momento...</p>}
+                </Col>
+            </Row>
+            <Divider/>
+            <p className="site-description-item-profile-p fw-bold">Información de contacto</p>
+            <Row>
+                <Col span={24}><DescriptionItem title="Correo electronico" content={informacionEmpleado.correo}/></Col>
+                <Col span={24}><DescriptionItem title="Numero de telefono" content={informacionEmpleado.telefono}/></Col>
+            </Row>
+        </Drawer>
+    )
     return (
         <>
         <h1>Trabajadores de la obra</h1>
@@ -193,6 +233,7 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
                         </div>
                    </Form>
         </Modal>
+        {informacionEmpleado && <ShowDrawer/>}
         </>
     )
 }

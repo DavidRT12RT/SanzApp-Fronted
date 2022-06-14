@@ -22,6 +22,7 @@ import { EditorObra } from "../components/obras/EditorObra";
 import { GestionCamionetas } from "../components/camionetas/GestionCamionetas";
 import { CamionetaScreen } from "../components/camionetas/CamionetaScreen";
 import { RegistrarCamioneta } from "../components/camionetas/RegistrarCamioneta";
+import { GestionOficina } from "../components/oficina/GestionOficina";
 
 export const ApplicationRoutes = () => {
 
@@ -66,6 +67,7 @@ export const ApplicationRoutes = () => {
             <Routes>
                 <Route path="/" element={<AplicationLandingPage />} />
                 <Route path="/aplicacion" element={<AplicationLandingPage />} />
+
                 <Route path="/almacen" element={<ProductosScreen />} />
                 <Route path="/almacen/registro" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ALMACEN_ENCARGADO_ROLE"]}>
@@ -87,6 +89,7 @@ export const ApplicationRoutes = () => {
 
                 <Route path="/obras/:obraId" element={<ObraScreen />} />
                 <Route path="/calendario" element={<CalendarScreen/>} />
+                <Route path="/oficina/gestion/" element={<GestionOficina/>}/>
                 <Route path="/camionetas/registro" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
                         <RegistrarCamioneta/>

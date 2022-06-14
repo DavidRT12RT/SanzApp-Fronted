@@ -4,6 +4,8 @@ import "./assets/style.css";
 import { UploadOutlined } from "@ant-design/icons";
 import { fetchConTokenSinJSON } from '../../helpers/fetch';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
+import locale from "antd/es/date-picker/locale/es_ES"
 
 export const RegistrarCamioneta = () => {
 
@@ -42,7 +44,6 @@ export const RegistrarCamioneta = () => {
                 message.error(body.msg);
             }
         } catch (error) {
-            
         }
 	}
 
@@ -96,7 +97,7 @@ export const RegistrarCamioneta = () => {
                             <Input size="large"/>
                         </Form.Item>
 						<Form.Item label="Fecha de compra de la camioneta" name="fechaCompra" style={{width:"100%"}}>
-							<DatePicker style={{width:"100%"}} size="large"/>
+							<DatePicker style={{width:"100%"}} size="large" locale={locale}/>
 						</Form.Item>
                         <Upload {...props} className="upload-list-inline" style={{width:"100%"}}>
 							<div className="d-flex justify-content-center align-items-center flex-wrap gap-2">

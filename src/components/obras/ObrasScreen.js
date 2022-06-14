@@ -151,7 +151,7 @@ export const ObrasScreen = () => {
         },
         {
             title:"Fecha de creación",
-            dataIndex:"fecha"
+            dataIndex:"fechaCreacion"
         },
         {
             title:"Nombre de la obra",

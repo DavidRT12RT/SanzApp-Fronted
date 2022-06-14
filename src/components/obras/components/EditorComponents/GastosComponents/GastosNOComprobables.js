@@ -3,6 +3,10 @@ import { Button, Card, Col, Divider,message, Row, Statistic,Table,Modal,Upload,I
 import { CopyOutlined } from '@ant-design/icons';
 import "../../../assets/facturasLista.css";
 import TextArea from 'antd/lib/input/TextArea';
+import moment from 'moment';
+import locale from "antd/es/date-picker/locale/es_ES"
+const { RangePicker } = DatePicker;
+
 
 export const GastosNOComprobables = ({obraInfo,socket}) => {
     const {_id:obraId} = obraInfo;
@@ -11,15 +15,9 @@ export const GastosNOComprobables = ({obraInfo,socket}) => {
     const [dataFacturas, setDataFacturas] = useState([]);
     const [obraInfoFacturas, setObraInfoFacturas] = useState({});
     
-    //Seteamos la data cada vez que el componente se monte por primera vez
-    useEffect(() => {
-        obraInfo.facturas.registros.map(element => element.key = element._id);
-        setDataFacturas(obraInfo.facturas.registros);
+    /*Seteamos la data cada vez que la obraInfo se actualize por algun socket de un cliente o cuando el 
+    componente se cargue por primera vez*/
 
-        setObraInfoFacturas(obraInfo.facturas);
-    }, []);
-
-    //Seteamos la data cada vez que la obraInfo se actualize por algun socket de un cliente
     useEffect(() => {
         obraInfo.gastos.NoComprobables.registros.map(element => element.key = element._id);
         setDataFacturas(obraInfo.gastos.NoComprobables.registros);
@@ -43,6 +41,7 @@ export const GastosNOComprobables = ({obraInfo,socket}) => {
     const handleSearch = (value) =>{
         //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
         if(value.length == 0){
+            setObraInfoFacturas(obraInfo.gastos.NoComprobables);
             return setDataFacturas(obraInfo.gastos.NoComprobables.registros);
         }
 
@@ -51,15 +50,43 @@ export const GastosNOComprobables = ({obraInfo,socket}) => {
                 return element;
             }
         });
-
+        let numeroGastos = 0,totalGastos = 0;
+        resultadosBusqueda.map(element => {
+            numeroGastos += 1;
+            totalGastos += element.importeGasto;
+        });
+        setObraInfoFacturas({numeroGastos,totalGastos});
         return setDataFacturas(resultadosBusqueda);
     }
 
+    const onChangeDate = (value, dateString) => {
+        //console.log('Selected Time: ', value);//Estancias de moment
+        //console.log('Formatted Selected Time: ', dateString);//fechas en string
+
+        //Se borraron las fechas
+        if(value === null){
+            setObraInfoFacturas(obraInfo.gastos.NoComprobables);
+            return setDataFacturas(obraInfo.gastos.NoComprobables.registros);
+        }
+        const resultadosBusqueda = obraInfo.gastos.NoComprobables.registros.filter(element => {
+            //element.fechaFactura = element.fechaFactura.slice(0,10);
+            if(moment(element.fechaGasto).isBetween(dateString[0],dateString[1])){
+                return element;
+            }
+        });
+        let numeroGastos = 0,totalGastos = 0;
+        resultadosBusqueda.map(element => {
+            numeroGastos += 1;
+            totalGastos += element.importeGasto;
+        });
+        setObraInfoFacturas({numeroGastos,totalGastos});
+        return setDataFacturas(resultadosBusqueda);
+    };
 
     const handleUpload = async (values) => {
 
         //Pasando la fecha a un string
-        values.fechaGasto = values.fechaGasto.toString();
+        values.fechaGasto = moment(values.fechaGasto,"DD/MM/YYYY");
         values.obraId = obraId;
         values.importeGasto = parseFloat(values.importeGasto);
         setUploading(true);
@@ -108,6 +135,7 @@ export const GastosNOComprobables = ({obraInfo,socket}) => {
                 <Divider/>
                 
                 {/*Buscador con autocompletado*/}
+                <div className="d-flex justify-content-start align-items-center flex-wrap gap-2">
                     <Input.Search 
                         size="large" 
                         placeholder="Busca un gasto por su concepto" 
@@ -115,7 +143,9 @@ export const GastosNOComprobables = ({obraInfo,socket}) => {
                         onSearch={handleSearch}
                         className="search-bar-class"
                     />
+                    <RangePicker onChange={onChangeDate} size="large" locale={locale}/>
 
+                </div>
                 {/*Tarjetas*/}
                 <Row gutter={16} className="mt-3">
                     <Col xs={24} md={8}>
@@ -167,7 +197,7 @@ export const GastosNOComprobables = ({obraInfo,socket}) => {
                                 <InputNumber min={0} style={{width:"100%"}}/>
                             </Form.Item>
                             <Form.Item name="fechaGasto" label="Fecha del gasto">
-                                <DatePicker style={{width:"100%"}}/>
+                                <DatePicker style={{width:"100%"}} format={['DD/MM/YYYY', 'DD/MM/YY']} locale={locale}/>
                             </Form.Item>
                             <Button type="primary" htmlType="submit" loading={uploading}>
                                 {uploading ? "Subiendo al servidor..." : "Registrar gasto"}     

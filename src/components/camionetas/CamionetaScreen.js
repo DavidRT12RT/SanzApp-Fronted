@@ -35,6 +35,15 @@ export const CamionetaScreen = () => {
     }, []);
 
 
+    useEffect(() => {
+        socket.on("camioneta-actualizada",(camioneta)=>{
+            if(camioneta.uid === camionetaId){
+                setCamionetaInfo(camioneta);
+            }
+        });
+    }, [socket,setCamionetaInfo,camionetaId]);
+    
+
 	const tabList = [
 
         {
@@ -75,11 +84,9 @@ export const CamionetaScreen = () => {
 
     const contentEditList = 
         {
-            tab1:<EditarInformacionGeneral socket={socket} camionetaInfo={camionetaInfo}/>,
-            tab2:<EditarImagenPrincipal socket={socket} camionetaInfo={camionetaInfo}/>
+            tab1:<EditarInformacionGeneral socket={socket} camionetaInfo={camionetaInfo} setIsModalVisible={setIsModalVisible}/>,
+            tab2:<EditarImagenPrincipal socket={socket} camionetaInfo={camionetaInfo} setIsModalVisible={setIsModalVisible}/>
         };
-
-
 
     if(camionetaInfo === undefined) {
         return <h1>Cargando...</h1>
@@ -135,7 +142,6 @@ export const CamionetaScreen = () => {
                             {/*Acuerdate que podemos acceder a las propiedades de un objecto con . o [] pero la ultima forma se computa*/}
                             {contentEditList[activeTabKey2]}
                         </Card>
-        
                     </Modal>
             </>
         )

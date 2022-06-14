@@ -5,11 +5,15 @@ import React, { useEffect, useState } from 'react'
 import { Loading } from '../empleados/Loading';
 import moment from 'moment';
 import locale from "antd/es/date-picker/locale/es_ES"
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+const { confirm } = Modal;
 const { RangePicker } = DatePicker;
 
 
 export const  FacturasGasolina = ({camionetaInfo,socket}) => {
 
+    const startOfMonth = moment().startOf('month').locale('es').format("YYYY-MM-DD");
+    const endOfMonth   = moment().endOf('month').locale('es').format("YYYY-MM-DD");
     const { uid:camionetaId } = camionetaInfo;
     const [facturasGasolina, setFacturasGasolina] = useState([]);
     const [informacionFacturas, setInformacionFacturas] = useState();
@@ -21,13 +25,25 @@ export const  FacturasGasolina = ({camionetaInfo,socket}) => {
     useEffect(() => {
         camionetaInfo.gastos.facturasGasolina.registros.map(registro => registro.key = registro.folioFactura);
         setFacturasGasolina(camionetaInfo.gastos.facturasGasolina.registros);
-        //Información de las facturas como numero total de registros , cantidad total ,etc.
-        setInformacionFacturas(camionetaInfo.gastos.facturasGasolina);
+        const facturasMes = camionetaInfo.gastos.facturasGasolina.registros.filter(element => {
+           if(moment(element.fechaFactura).isBetween(startOfMonth,endOfMonth)){
+                return element;
+            }
+        });
+
+        let total = 0,numeroRegistros = 0;
+        facturasMes.map(element => {
+            total += element.importeFactura;
+            numeroRegistros += 1;
+        });
+        setInformacionFacturas({total,numeroRegistros});
+        setFacturasGasolina(facturasMes);
     }, [camionetaInfo]);
+
 
     const handleDownloadPDF = async (nombreArchivo,folioFactura) => {
         try {
-            const resp = await fetchConToken(`/uploads/facturas/camionetas/${camionetaId}/gasolina/${folioFactura}/${nombreArchivo}`);
+            const resp = await fetchConToken(`/uploads/camionetas/camioneta/${camionetaId}/gastos/gasolina/${folioFactura}/${nombreArchivo}`);
             const bytes = await resp.blob();
             let element = document.createElement('a');
             element.href = URL.createObjectURL(bytes);
@@ -40,7 +56,7 @@ export const  FacturasGasolina = ({camionetaInfo,socket}) => {
 
     const handleDownloadXML = async (nombreArchivo,folioFactura) => {
         try {
-            const resp = await fetchConToken(`/uploads/facturas/camionetas/${camionetaId}/gasolina/${folioFactura}/${nombreArchivo}`);
+            const resp = await fetchConToken(`/uploads/camionetas/camioneta/${camionetaId}/gastos/gasolina/${folioFactura}/${nombreArchivo}`);
             const bytes = await resp.blob();
             let element = document.createElement('a');
             element.href = URL.createObjectURL(bytes);
@@ -50,6 +66,29 @@ export const  FacturasGasolina = ({camionetaInfo,socket}) => {
            message.error("No se pudo descargar el archivo del servidor :("); 
         }
     }
+
+    const handleDeleteFactura = (folioFactura) => {
+        //Preguntarle si esta seguro de que quiere borrar la factura
+        confirm({
+            title:"¿Seguro quieres eliminar la factura?",
+            icon:<ExclamationCircleOutlined />,
+            content:"Al borrar la factura se borrara de igual forma el abono que este en ella y NO se podra recuperar de ninguna forma",
+			okText:"Borrar factura",
+			cancelText:"Volver atras",
+            async onOk(){
+                try {
+                    const resp = await fetchConToken(`/uploads/camionetas/camioneta/${camionetaInfo.uid}/gastos/gasolina/${folioFactura}`,{},"DELETE"); 
+                    const body = await resp.json();
+                    resp.status === 200 ? message.success(body.msg) : message.error(body.msg);
+                    socket.emit("camioneta-actualizada",camionetaId);
+                } catch (error) {
+                    message.error("No se pudo eliminar la factura del servidor!"); 
+                }
+           	},
+        });
+    }
+
+
 
     const menuDescargar = (record) => {
         const {folioFactura,nombrePDF,nombreXML} = record
@@ -72,9 +111,18 @@ export const  FacturasGasolina = ({camionetaInfo,socket}) => {
     const handleSearch = (value) =>{
         //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
         if(value.length == 0){
-            setFacturasGasolina(camionetaInfo.gastos.facturasGasolina.registros);
-            setInformacionFacturas(camionetaInfo.gastos.facturasMantenimiento);
-            return; 
+            const facturasMes = camionetaInfo.gastos.facturasGasolina.registros.filter(element => {
+                if(moment(element.fechaFactura).isBetween(startOfMonth,endOfMonth)){
+                    return element;
+                }
+            });
+            let total = 0,numeroRegistros = 0;
+            facturasMes.map(element => {
+                total += element.importeFactura;
+                numeroRegistros += 1;
+            });
+            setInformacionFacturas({total,numeroRegistros});
+            setFacturasGasolina(facturasMes);
         }
 
         const resultadosBusqueda = camionetaInfo.gastos.facturasGasolina.registros.filter(elemento => {
@@ -96,11 +144,22 @@ export const  FacturasGasolina = ({camionetaInfo,socket}) => {
         //console.log('Formatted Selected Time: ', dateString);//fechas en string
 
         //Se borraron las fechas
+
         if(value === null){
-            setFacturasGasolina(camionetaInfo.gastos.facturasGasolina.registros);
-            setInformacionFacturas(camionetaInfo.gastos.facturasGasolina);
-            return;
+            const facturasMes = camionetaInfo.gastos.facturasGasolina.registros.filter(element => {
+                if(moment(element.fechaFactura).isBetween(startOfMonth,endOfMonth)){
+                    return element;
+                }
+            });
+            let total = 0,numeroRegistros = 0;
+            facturasMes.map(element => {
+                total += element.importeFactura;
+                numeroRegistros += 1;
+            });
+            setInformacionFacturas({total,numeroRegistros});
+            setFacturasGasolina(facturasMes);
         }
+
         const resultadosBusqueda = camionetaInfo.gastos.facturasGasolina.registros.filter(element => {
             //element.fechaFactura = element.fechaFactura.slice(0,10);
             if(moment(element.fechaFactura).isBetween(dateString[0],dateString[1])){
@@ -218,6 +277,14 @@ export const  FacturasGasolina = ({camionetaInfo,socket}) => {
             key: 'fechaFactura',
         },
         {
+            title:'Acciones',
+            render:(text,record) => {
+                return (
+                    <Button type="primary" danger onClick={()=>{handleDeleteFactura(record.folioFactura)}}>Eliminar factura</Button>
+                )
+            }
+        },
+        {
             title: 'Descargar documentos',
             dataIndex: 'documentos',
             key: 'tags',
@@ -245,8 +312,9 @@ export const  FacturasGasolina = ({camionetaInfo,socket}) => {
                         <h6 className="text-muted">Total de facturas de gasolina</h6>
                         <Button type="primary" className="my-3" onClick={()=>{setIsModalVisible(true)}}>Agregar nueva factura!</Button>
                     </div>
+                    <span>(Por defecto se mostraran solo se mostraran las facturas de este mes, <br/>si deseas puedes cambiar esto en la editor de fecha de abajo)</span>
                     {/*Información sobre las facturas totales*/}
-                    <div className="d-flex justify-content-start align-items-center flex-wrap gap-2">
+                    <div className="d-flex justify-content-start align-items-center flex-wrap gap-2 mt-3">
                         <Card>
                             <Statistic
                                 title="Numero de facturas de gasolina"
@@ -290,7 +358,7 @@ export const  FacturasGasolina = ({camionetaInfo,socket}) => {
                             <Upload {...props} className="upload-list-inline" >
                                 <Button icon={<UploadOutlined/>}>Selecciona el archivo</Button>
                             </Upload>
-                    <Button 
+                        <Button 
                             type="primary" 
                             onClick={handleUpload}
                             disabled={filesList.length === 0}

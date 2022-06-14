@@ -91,6 +91,22 @@ export const EmpleadosScreen = () => {
         </Menu>
     );
 
+    const handleSearch = (value) => {
+        if(value.length === 0) {
+            return setEmpleadosInfo(empleados);
+        }
+        const resultadosBusqueda = empleados.filter(element => {
+            if(element.nombre.toLowerCase().includes(value.toLowerCase())){
+                return element;
+            }
+        });
+        setEmpleadosInfo(resultadosBusqueda);
+    }
+
+    const handleFilter = () => {
+
+    }
+
     if(isLoading){
         return <Loading/>
     }else{
@@ -131,12 +147,13 @@ export const EmpleadosScreen = () => {
                         style={{width:"100%"}}
                         placeholder="Busca una empleado por su nombre" 
                         enterButton
+                        onSearch={handleSearch}
                         className="search-bar-class mb-3"
                     />
                 </div>
                 <div className="d-flex justify-content-start gap-2 flex-wrap">
                     <Dropdown overlay={menu} className="d-flex justify-content-center align-items-center">
-                        <Button type="primary" size="large">Filtrar obra por: <DownOutlined /></Button>
+                        <Button type="primary" size="large">Filtrar busqueda por: <DownOutlined /></Button>
                     </Dropdown>
                 </div>
                 <Table columns={columns} dataSource={empleadosInfo} className="mt-3" size="large"/>

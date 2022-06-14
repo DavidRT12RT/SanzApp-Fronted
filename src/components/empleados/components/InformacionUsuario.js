@@ -4,7 +4,6 @@ const { Meta } = Card;
 
 
 export const InformacionUsuario = ({usuarioInfo}) => {
-    console.log(usuarioInfo);
     return (
         <>
             <div>

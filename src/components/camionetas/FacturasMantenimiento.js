@@ -5,7 +5,9 @@ import React, { useEffect, useState } from 'react'
 import { Loading } from '../empleados/Loading';
 import moment from 'moment';
 import locale from "antd/es/date-picker/locale/es_ES"
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 const { RangePicker } = DatePicker;
+const { confirm } = Modal;
 
 export const FacturasMantenimiento = ({camionetaInfo,socket}) => {
 
@@ -26,7 +28,7 @@ export const FacturasMantenimiento = ({camionetaInfo,socket}) => {
     
     const handleDownloadPDF = async (nombreArchivo,folioFactura) => {
         try {
-            const resp = await fetchConToken(`/uploads/facturas/camionetas/${camionetaId}/mantenimiento/${folioFactura}/${nombreArchivo}`);
+            const resp = await fetchConToken(`/uploads/camionetas/camioneta/${camionetaId}/gastos/mantenimiento/${folioFactura}/${nombreArchivo}`);
             const bytes = await resp.blob();
             let element = document.createElement('a');
             element.href = URL.createObjectURL(bytes);
@@ -39,7 +41,7 @@ export const FacturasMantenimiento = ({camionetaInfo,socket}) => {
 
     const handleDownloadXML = async (nombreArchivo,folioFactura) => {
         try {
-            const resp = await fetchConToken(`/uploads/facturas/camionetas/${camionetaId}/mantenimiento/${folioFactura}/${nombreArchivo}`);
+            const resp = await fetchConToken(`/uploads/camionetas/camioneta/${camionetaId}/gastos/mantenimiento/${folioFactura}/${nombreArchivo}`);
             const bytes = await resp.blob();
             let element = document.createElement('a');
             element.href = URL.createObjectURL(bytes);
@@ -48,6 +50,27 @@ export const FacturasMantenimiento = ({camionetaInfo,socket}) => {
         } catch (error) {
            message.error("No se pudo descargar el archivo del servidor :("); 
         }
+    }
+
+    const handleDeleteFactura = (folioFactura) => {
+        //Preguntarle si esta seguro de que quiere borrar la factura
+        confirm({
+            title:"¿Seguro quieres eliminar la factura?",
+            icon:<ExclamationCircleOutlined />,
+            content:"Al borrar la factura se borrara de igual forma el abono que este en ella y NO se podra recuperar de ninguna forma",
+			okText:"Borrar factura",
+			cancelText:"Volver atras",
+            async onOk(){
+                try {
+                    const resp = await fetchConToken(`/uploads/camionetas/camioneta/${camionetaInfo.uid}/gastos/mantenimiento/${folioFactura}`,{},"DELETE"); 
+                    const body = await resp.json();
+                    resp.status === 200 ? message.success(body.msg) : message.error(body.msg);
+                    socket.emit("camioneta-actualizada",camionetaId);
+                } catch (error) {
+                    message.error("No se pudo eliminar la factura del servidor!"); 
+                }
+           	},
+        });
     }
 
     const menuDescargar = (record) => {
@@ -213,6 +236,14 @@ export const FacturasMantenimiento = ({camionetaInfo,socket}) => {
             title: 'Fecha de la factura',
             dataIndex: 'fechaFactura',
             key: 'fechaFactura',
+        },
+        {
+            title:'Acciones',
+            render:(text,record) => {
+                return (
+                    <Button type="primary" danger onClick={()=>{handleDeleteFactura(record.folioFactura)}}>Eliminar factura</Button>
+                )
+            }
         },
         {
             title: 'Descargar documentos',

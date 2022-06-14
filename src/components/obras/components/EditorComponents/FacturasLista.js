@@ -22,7 +22,7 @@ export const FacturasLista = ({socket,obraInfo}) => {
             },
             {
             key:'tab3',
-            tab:"Gastos de oficina"
+            tab:"Gastos hechos desde la oficina"
             },
             {
             key:'tab4',

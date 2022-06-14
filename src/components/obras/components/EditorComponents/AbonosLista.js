@@ -68,6 +68,8 @@ export const AbonosLista = ({socket,obraInfo}) => {
         setObraInfoAbonos({cantidadTotal,numeroRegistros});
         return setDataAbonos(resultadosBusqueda);
     }
+
+
     const onChangeDate = (value, dateString) => {
         //console.log('Selected Time: ', value);//Estancias de moment
         //console.log('Formatted Selected Time: ', dateString);//fechas en string
@@ -142,6 +144,9 @@ export const AbonosLista = ({socket,obraInfo}) => {
         const { archivoName } = values;
         try {
             const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/abonos/${archivoName}`);
+            if(resp.status != 200){
+                return message.error("No se encontro el archivo en el servidor!");
+            }
             const bytes = await resp.blob();
             let element = document.createElement('a');
             element.href = URL.createObjectURL(bytes);
@@ -306,7 +311,7 @@ export const AbonosLista = ({socket,obraInfo}) => {
 
                 <Table columns={columns} dataSource={dataAbonos} bordered />
 
-                <Modal title="Agregar factura" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
+                <Modal title="Agregar abono a la obra" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
                         <h1>Subir un nuevo abono al sistema!</h1>
                         <p className="lead">Para poder realizar esta acción necesitaras el documento PDF del abono</p>
                         <Upload {...props} className="upload-list-inline" >

@@ -1,18 +1,20 @@
+//Third party 
 import React, { useContext, useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Avatar, Button, Card, Divider, Form, message, Modal, Rate, Select, Tabs, Tag } from 'antd';
-import { UserOutlined, CopyOutlined,SaveOutlined, FileImageOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
+//Mis importanciones
 import { SocketContext } from '../../context/SocketContext';
-import { EditarInformacionUsuario } from './components/EditarInformacionUsuario';
-import { EditarImagenUsuario } from './components/EditarImagenUsuario';
-import "./components/style.css";
 import { ObrasTrabajadas } from './components/ObrasTrabajadas';
 import { InformacionUsuario } from './components/InformacionUsuario';
-import { useSelector } from 'react-redux';
+import { EditarInformacionGeneral } from './components/EditarInformacionGeneral';
+import { EditarImagenPrincipal } from './components/EditarImagenPrincipal';
+import "./components/style.css";
 const { TabPane } = Tabs;
 const { Option } = Select;
 
 export const EmpleadoScreen = () => {
+
 	const { rol } = useSelector(store => store.auth);
 	const { empleadoId:usuarioId } = useParams();
     const { socket } = useContext(SocketContext);
@@ -21,7 +23,11 @@ export const EmpleadoScreen = () => {
 	//Obras en desarollo por si quieren agregar un usuario a una obra desde usuarios
 	const [obrasDesarollo, setObrasDesarollo] = useState([]);
   	const [isModalVisible, setIsModalVisible] = useState(false);
+	const [isModalVisibleEditInfo, setIsModalVisibleEditInfo] = useState(false);
+	//Info general y obras trabajadas
     const [activeTabKey1, setActiveTabKey1] = useState('tab1');
+	//Lista de editar información como foto y info general del usuario
+    const [activeTabKey2, setActiveTabKey2 ] = useState('tab1');
 
 	useEffect(() => {
 		socket.emit("obtener-usuario-por-id",{usuarioId},(usuario)=>{
@@ -35,12 +41,21 @@ export const EmpleadoScreen = () => {
 
 	useEffect(() => {
 		socket.on("usuario-informacion-actualizada",(usuario)=>{
+			console.log(usuario.uid);
+			console.log(usuarioId);
 			if(usuario.uid === usuarioId){
 				setUsuarioInfo(usuario);
 			}
 		});
 	}, [socket,setUsuarioInfo]);
 	
+    const onTab1Change = key => {
+        setActiveTabKey1(key);
+    };
+
+    const onTab2Change = key => {
+        setActiveTabKey2(key);
+    }
 	const tabList = [
 
         {
@@ -54,15 +69,27 @@ export const EmpleadoScreen = () => {
 
     ];
 
-    const onTab1Change = key => {
-        setActiveTabKey1(key);
-    };
-
     const contentList = 
-    {
-		tab1:<ObrasTrabajadas usuarioInfo={usuarioInfo} socket={socket}/>,
-		tab2:<InformacionUsuario usuarioInfo={usuarioInfo} socket={socket}/>
-    };
+    	{
+			tab1:<ObrasTrabajadas usuarioInfo={usuarioInfo} socket={socket}/>,
+			tab2:<InformacionUsuario usuarioInfo={usuarioInfo} socket={socket}/>
+    	};
+
+	const tabListEditInfo = [
+		{
+			key:'tab1',
+			tab:'Editar informacion general del usuario'
+		},
+		{
+			key:'tab2',
+			tab:'Editar imagen principal del usuario'
+		}
+	];
+    const contentEditList = 
+        {
+            tab1:<EditarInformacionGeneral socket={socket} usuarioInfo={usuarioInfo} setIsModalVisibleEditInfo={setIsModalVisibleEditInfo}/>,
+			tab2:<EditarImagenPrincipal socket={socket} usuarioInfo={usuarioInfo} setIsModalVisibleEditInfo={setIsModalVisibleEditInfo}/>
+        };
 
 	const renderizarTrabajos = () => {
 		return usuarioInfo.obrasTrabajadas.registros.map(element => {
@@ -87,6 +114,7 @@ export const EmpleadoScreen = () => {
 	
 	const handledChangeUserState = () =>{
 
+		if(usuarioInfo.rol === "ADMIN_ROLE") return message.error("No puedes desabilitar a un usuario ADMIN");
 		socket.emit("cambiar-estado-usuario",usuarioInfo.uid,(confirmacion)=>{
 			(confirmacion.ok) ? message.success(confirmacion.msg) : message.error(confirmacion.msg);
 		});
@@ -104,7 +132,6 @@ export const EmpleadoScreen = () => {
             }
         });
 	}
-
 	if(usuarioInfo == undefined){
 		return <h5>Cargando información</h5>
 	}else{
@@ -126,7 +153,7 @@ export const EmpleadoScreen = () => {
 								<h1 className="display-6 fw-bold me-2">{usuarioInfo.nombre}</h1>
 								{usuarioInfo.alias && <span>({usuarioInfo.alias})</span>}
 							</div>
-							{rol === ("ADMIN_ROLE" || "ADMINISTRADOR_ROLE") && <Button type="primary">Editar información</Button>}
+							{rol === ("ADMIN_ROLE" || "ADMINISTRADOR_ROLE") && <Button type="primary" onClick={()=>{setIsModalVisibleEditInfo(true)}}>Editar información</Button>}
 						</div>
 						<p className="fw-bold text-primary mt-3 mt-lg-0">{usuarioInfo.rol}</p>
 						<div className="row">
@@ -135,7 +162,7 @@ export const EmpleadoScreen = () => {
 						</div>
 						<div className="d-flex justify-content-start gap-4 mt-4">
 							{rol === ("ADMIN_ROLE" || "ADMINISTRADOR_ROLE") && <Button type="primary" onClick={()=>{setIsModalVisible(true)}}>Añadir a una obra</Button>}
-							{rol === ("ADMIN_ROLE" || "ADMINISTRADOR_ROLE") && (usuarioInfo.estado) ? <Button type="primary" danger onClick={handledChangeUserState}>Desabilitar usuario</Button> : <Button type="primary" style={{backgroundColor:"orange",border:"orange"}} onClick={handledChangeUserState}>Activar usuario</Button>}
+							{rol === ("ADMIN_ROLE" || "ADMINISTRADOR_ROLE") && (usuarioInfo.estado) ? <Button type="primary" danger onClick={handledChangeUserState}>Desabilitar usuario</Button> : <Button type="primary" style={{backgroundColor:"green",border:"green"}} onClick={handledChangeUserState}>Activar usuario</Button>}
 						</div>
 						<Card
 						    bordered={false}
@@ -199,6 +226,13 @@ export const EmpleadoScreen = () => {
                         		</div>
                    			</Form>
       					</Modal>
+                    	<Modal visible={isModalVisibleEditInfo} footer={null} onOk={()=>{setIsModalVisibleEditInfo(false)}} onCancel={()=>{setIsModalVisibleEditInfo(false)}}>
+                			<h2 className="fw-bold">Editar información</h2>
+                        	<Card bordered={false} tabList={tabListEditInfo} activeTabKey={activeTabKey2} onTabChange={key => {onTab2Change(key)}}>
+                            	{/*Acuerdate que podemos acceder a las propiedades de un objecto con . o [] pero la ultima forma se computa*/}
+								{contentEditList[activeTabKey2]}
+                        	</Card>
+                    	</Modal>
 					</div>
 				</div>
 			</div>

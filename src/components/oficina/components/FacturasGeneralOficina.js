@@ -1,0 +1,452 @@
+import { Input, DatePicker, Statistic, Card, Table, Space, Dropdown, message, Menu, Button, Modal,Upload } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { DownOutlined, UploadOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import locale from "antd/es/date-picker/locale/es_ES"
+import { fetchConToken, fetchConTokenSinJSON } from '../../../helpers/fetch';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+const { confirm } = Modal;
+const { RangePicker } = DatePicker;
+
+export const FacturasGeneralOficina = ({coleccion,socket,oficinaInfo}) => {
+
+    console.log(coleccion);
+    const [informacionFacturas, setInformacionFacturas] = useState({});
+    const [facturasColeccionRegistros, setFacturasColeccionRegistros] = useState([]);
+    //Modal para facturas
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    //Modal para abonos de las facturas 
+    const [isModalVisibileAbonos, setIsModalVisibileAbonos] = useState(false);
+    //UseState para saber que folio enviaremos
+    const [folioActual, setFolioActual] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const [filesList, setFilesList] = useState([]);
+
+
+    //Cada vez que cambie la colección volvemos a setear información
+    useEffect(() => {
+        oficinaInfo.gastos[coleccion].registros.map(element => element.key = element.folioFactura);
+        setFacturasColeccionRegistros(oficinaInfo.gastos[coleccion].registros);
+        setInformacionFacturas(oficinaInfo.gastos[coleccion]);
+    }, [coleccion]);
+   
+    //Seteando las facturas cada vez que se actualize la información de la oficina 
+    useEffect(() => {
+        oficinaInfo.gastos[coleccion].registros.map(element => element.key = element.folioFactura);
+        setFacturasColeccionRegistros(oficinaInfo.gastos[coleccion].registros);
+        setInformacionFacturas(oficinaInfo.gastos[coleccion]);
+    }, [oficinaInfo]);
+    
+    const handleSearch = (value) =>{
+        //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
+        if(value.length == 0){
+            setFacturasColeccionRegistros(oficinaInfo.gastos[coleccion].registros);
+            setInformacionFacturas(oficinaInfo.gastos[coleccion]);
+            return; 
+        }
+
+        const resultadosBusqueda = oficinaInfo.gastos[coleccion].registros.filter(elemento => {
+            if(elemento.descripcionFactura.toLowerCase().includes(value.toLowerCase())){
+                return elemento;
+            }
+        })
+        let gastosTotales = 0,numeroRegistros = 0;
+        resultadosBusqueda.map(element => {
+            gastosTotales += element.importeFactura;
+            numeroRegistros += 1;
+        });
+        setInformacionFacturas({gastosTotales,numeroRegistros});
+        return setFacturasColeccionRegistros(resultadosBusqueda);
+    }
+
+    const onChangeDate = (value, dateString) => {
+        //console.log('Selected Time: ', value);//Estancias de moment
+        //console.log('Formatted Selected Time: ', dateString);//fechas en string
+
+        //Se borraron las fechas
+        if(value === null){
+            setFacturasColeccionRegistros(oficinaInfo.gastos[coleccion].registros);
+            setInformacionFacturas(oficinaInfo.gastos[coleccion]);
+            return; 
+        }
+        const resultadosBusqueda = oficinaInfo.gastos[coleccion].registros.filter(element => {
+            //element.fechaFactura = element.fechaFactura.slice(0,10);
+            if(moment(element.fechaFactura).isBetween(dateString[0],dateString[1])){
+                return element;
+            }
+        });
+
+        let gastosTotales = 0,numeroRegistros = 0;
+        resultadosBusqueda.map(element => {
+            gastosTotales += element.importeFactura;
+            numeroRegistros += 1;
+        });
+        setInformacionFacturas({gastosTotales,numeroRegistros});
+        return setFacturasColeccionRegistros(resultadosBusqueda);
+    };
+
+    //Funciones para descargar el archivo PDF o XML de la factura
+    const handleDownloadPDF = async (nombreArchivo,folioFactura) => {
+        try {
+            const resp = await fetchConToken(`/uploads/oficina/gastos/${coleccion}/${folioFactura}/${nombreArchivo}`);
+            const bytes = await resp.blob();
+            let element = document.createElement('a');
+            element.href = URL.createObjectURL(bytes);
+            element.setAttribute('download',nombreArchivo);
+            element.click();
+        } catch (error) {
+           message.error("No se pudo descargar el archivo del servidor :("); 
+        }
+    }
+
+    const handleDownloadXML = async (nombreArchivo,folioFactura) => {
+        try {
+            const resp = await fetchConToken(`/uploads/oficina/gastos/${coleccion}/${folioFactura}/${nombreArchivo}`);
+            const bytes = await resp.blob();
+            let element = document.createElement('a');
+            element.href = URL.createObjectURL(bytes);
+            element.setAttribute('download',nombreArchivo);
+            element.click();
+        } catch (error) {
+           message.error("No se pudo descargar el archivo del servidor :("); 
+        }
+    }
+
+
+    //Menu descargar para las facturas 
+    const menuDescargar = (record) => {
+        const {folioFactura,nombrePDF,nombreXML} = record
+        return (
+            <Menu 
+                items={[
+                    { key: '1', label: 'Archivo PDF factura',onClick:()=>{handleDownloadPDF(nombrePDF,folioFactura)}},
+                    { key: '2', label: 'Archivo XML factura',onClick:()=>{handleDownloadXML(nombreXML,folioFactura)}},
+                    { key: '3', label: 'Archivo abono de factura',onClick:()=>{handleDownloadPDF(nombrePDF,folioFactura)}},
+                ]}
+            />      
+        )
+    }
+
+    const handleUploadAbono =  async () =>{
+
+        const formData = new FormData();
+
+        filesList.forEach(file => {
+            if(file.type == "application/pdf"){
+                formData.append("archivoPDF",file);
+                //formData.archivoPDF = file;
+            }
+        });
+
+        //Verificación que este por lo menos 2 archivos!
+        if(filesList.length < 1){
+            return message.error("Se necesita el archivo PDF del abono!");
+        }
+        setUploading(true);
+        //Primero hacemos la petición para subir la imagen al servidor y con el nombre que nos devolvera se lo mandamos al socket
+        try {
+            const resp = await fetchConTokenSinJSON(`/uploads/oficina/abonos/${coleccion}/${folioActual}`,formData,"PUT");
+            const body = await resp.json();
+            if(resp.status === 200){
+                message.success(body.msg);
+                socket.emit("informacion-oficina-actualizada");
+            }else{
+                message.error(body.msg);
+            }
+        } catch (error) {
+            
+        }
+                
+        setIsModalVisibileAbonos(false);
+        //Quitando los archivos del filesList
+        setFilesList([]);
+        setUploading(false);
+        setFolioActual(null);
+    }
+    const handleDeleteAbono = async(folioFactura,archivoName) => {
+
+        try {
+            const resp = await fetchConToken(`/uploads/oficina/abonos/${coleccion}/${folioFactura}/${archivoName}`,{},"DELETE"); 
+            const body = await resp.json();
+            if(resp.status === 200){
+                message.success(body.msg);
+                socket.emit("informacion-oficina-actualizada");
+            }
+        } catch (error) {
+            message.error("Error a la hora de eliminar abono del servidor!");
+        }
+    }
+
+    const handleDeleteFactura = (folioFactura) => {
+        confirm({
+            title:"¿Seguro quieres eliminar la factura?",
+            icon:<ExclamationCircleOutlined />,
+            content:"Al borrar la factura se borrara de igual forma el abono que este en ella y NO se podra recuperar de ninguna forma",
+			okText:"Borrar factura",
+			cancelText:"Volver atras",
+            async onOk(){
+                try {
+                    const resp = await fetchConToken(`/uploads/oficina/gastos/${coleccion}/${folioFactura}/`,{},"DELETE"); 
+                    const body = await resp.json();
+                    resp.status === 200 ? message.success(body.msg) : message.error(body.msg);
+                    socket.emit("informacion-oficina-actualizada");
+                } catch (error) {
+                    message.error("No se pudo eliminar la factura del servidor!"); 
+                }
+           	},
+        });
+    }
+
+    const propsAbono = {
+        multiple:true,
+        onRemove : file => {
+            setFilesList(files => {
+                const index = files.indexOf(file);
+                const newFileList = files.slice();
+                newFileList.splice(index,1);
+                setFilesList(newFileList);
+            });
+            /*Podemos tener mas logica de lo comun es nuestro useState tal que asi, 
+             con un callback y al final llamar a la misma función*/
+        },
+        beforeUpload: file => {
+            //Checar si el archivo es PDF O XML
+            const isPDF = file.type === "application/pdf";
+            if(isPDF){
+                //Verificar que el fileList sea menos a 2 
+                if(filesList.length < 2){
+                    setFilesList(files => [...files,file]);
+                }else{
+                    message.error("Solo puedes subir 2 archivos en total");
+                }
+            }else{
+                message.error("El archivo tiene que ser PDF!");
+
+            }
+            //Deestructuramos el estado actual y añadimos el nuevo archivo
+            return false;
+        },
+        listType:"picture",
+        maxCount:2,
+        fileList : filesList
+    };
+
+
+    const handleUpload = async () =>{
+        const formData = new FormData();
+
+        filesList.forEach(file => {
+            if(file.type == "application/pdf"){
+                formData.append("archivoPDF",file);
+                //formData.archivoPDF = file;
+            }else if(file.type == "text/xml"){
+                formData.append("archivoXML",file);
+                //formData.archivoXML = file;
+            }
+        });
+
+        //Verificación que esten los 2 archivos 
+        if(filesList.length < 2){
+            return message.error("Se necesita 2 archivos, el archivo PDF y XML para generar una nueva factura!");
+        }
+        //Verificación que los dos archivos no sean iguales
+        if(filesList[0].type == filesList[1].type){
+            return message.error("Los dos archivos son de la misma extensión se necesitan los PDF y XML");
+        }
+        setUploading(true);
+        //Making the http post 
+        let body;
+        
+        try {
+            const resp = await fetchConTokenSinJSON(`/uploads/oficina/gastos/${coleccion}`,formData,"POST");
+            body = await resp.json();
+            if(resp.status === 200){
+                message.success("Subida con exito!");
+                socket.emit("informacion-oficina-actualizada");
+            }else{
+                message.error(body.msg);
+            }
+            setIsModalVisible(false);
+            //Quitando los archivos del filesList
+            setFilesList([]);
+            //Quitando los archivos del upload list del upload
+        } catch (error) {
+            message.error(body);
+        }
+        
+        setUploading(false);
+    }
+    
+
+    const props = {
+        multiple:true,
+        onRemove : file => {
+            setFilesList(files => {
+                const index = files.indexOf(file);
+                const newFileList = files.slice();
+                newFileList.splice(index,1);
+                setFilesList(newFileList);
+            });
+            /*Podemos tener mas logica de lo comun es nuestro useState tal que asi, 
+             con un callback y al final llamar a la misma función*/
+        },
+        beforeUpload: file => {
+            //Checar si el archivo es PDF O XML
+            const isPDForXML = file.type === "application/pdf" || file.type === "text/xml";
+            if(isPDForXML){
+                //Verificar que el fileList sea menos a 2 
+                if(filesList.length < 2){
+                    setFilesList(files => [...files,file]);
+                }else{
+                    message.error("Solo puedes subir 2 archivos en total");
+                }
+            }else{
+                message.error("Los archivos tienen que ser PDF o XML!");
+
+            }
+            //Deestructuramos el estado actual y añadimos el nuevo archivo
+            return false;
+        },
+        listType:"picture",
+        maxCount:2,
+        fileList : filesList
+    };
+
+
+    //Colunmas de la tabla
+    const columns = [
+        {
+            title: 'Importe total factura',
+            dataIndex: 'importeFactura',
+            key: 'importeFactura',
+            sorter: (a, b) => a.importeFactura - b.importeFactura,
+            sortDirections: ['descend', 'ascend'],
+        },
+        {
+            title: 'Descripción o motivo de la factura',
+            dataIndex: 'descripcionFactura',
+            key: 'descripcionFactura',
+        },
+        {
+            title: 'Fecha de la factura',
+            dataIndex: 'fechaFactura',
+            key: 'fechaFactura',
+        },
+        {
+            title: 'Descargar documentos',
+            dataIndex: 'documentos',
+            key: 'tags',
+            render: (text,record) => {
+                return (
+                    <Space size="middle">
+                        <Dropdown overlay={menuDescargar(record)}>
+                            <a>
+                                Descargar <DownOutlined />
+                            </a>
+                        </Dropdown>
+                    </Space>
+                )
+            },
+        },
+        {
+            title:'Acciones',
+            key:'tags',
+            render:(text,record) => {
+                console.log(record);
+                return (
+                    record.abono ? 
+                    <div className="d-flex justify-content-start flex-wrap gap-2">
+                        <Button type="primary" danger onClick={()=>{handleDeleteAbono(record.folioFactura,record.abono.archivoName)}}>Eliminar abono</Button>
+                        <Button type="primary" danger onClick={()=>{handleDeleteFactura(record.folioFactura)}}>Eliminar factura</Button>
+                    </div>
+                    :
+                    <div className="d-flex justify-content-start flex-wrap gap-2">
+                        <Button type="primary" onClick={()=>{
+                            setIsModalVisibileAbonos(true);
+                            setFolioActual(record.folioFactura);
+                            }
+                        }>Subir abono</Button>
+                        <Button type="primary" danger onClick={()=>{handleDeleteFactura(record.folioFactura)}}>Eliminar factura</Button>
+                    </div>
+
+                )
+            }
+        },
+    ];
+
+
+    return (
+        <>
+            <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h6 className="text-muted">Total de facturas de {coleccion}</h6>
+                <Button type="primary" className="my-3" onClick={()=>{setIsModalVisible(true)}}>Agregar nueva factura!</Button>
+            </div>
+            <div className="d-flex justify-content-start flex-wrap mb-3 gap-2">
+                <Card style={{width:"300px"}}>
+                    <Statistic
+                        title={`Numero de facturas totales de ${coleccion}`}
+                        value={informacionFacturas.numeroRegistros}
+                        precision={0}
+                        prefix="Total:"
+                    />
+                </Card>
+                <Card style={{width:"300px"}}>
+                    <Statistic
+                        title={`Gastos totales de ${coleccion}`}
+                        value={informacionFacturas.gastosTotales}
+                        precision={2}
+                        prefix="Total: $"
+                    />
+                </Card>
+            </div>
+
+            {/*Buscador */}                
+            <div className="d-flex justify-content-start align-items-center flex-wrap gap-3">
+                <Input.Search 
+                    size="large" 
+                    placeholder="Busca una factura por su descripción o concepto" 
+                    enterButton
+                    onSearch={handleSearch}
+                    className="search-bar-class"
+                />
+                <RangePicker onChange={onChangeDate} size="large" locale={locale} />
+            </div>
+            
+            <Table columns={columns} dataSource={facturasColeccionRegistros} className="mt-3"/>
+
+            {/*Modal para subir una factura*/}
+            <Modal title="Agregar factura" visible={isModalVisible} onOk={()=>{setIsModalVisible(false)}} onCancel={()=>{setIsModalVisible(false)}} footer={null}>
+                <h1>Subir factura de mantenimiento</h1>
+                <p className="lead">Para poder realizar esta operación necesitaras el documento XML y PDF.</p>
+                <Upload {...props} className="upload-list-inline" >
+                    <Button icon={<UploadOutlined/>}>Selecciona el archivo</Button>
+                </Upload>
+                <Button 
+                    type="primary" 
+                    onClick={handleUpload}
+                    disabled={filesList.length === 0}
+                    loading={uploading}
+                >
+                    {uploading ? "Subiendo..." : "Comienza a subir!"}     
+                </Button>
+            </Modal>                
+
+            {/*Modal para abonos en una factura*/}
+            <Modal title="Agregar abono a una factura" visible={isModalVisibileAbonos} onOk={()=>{setIsModalVisibileAbonos(false)}} onCancel={()=>{setIsModalVisibileAbonos(false)}} footer={null}>
+                    <h1>Subir abono a la factura</h1>
+                    <p className="lead">Para poder realizar esta acción necesitaras el documento PDF del abono</p>
+                    <Upload {...propsAbono} className="upload-list-inline" >
+                        <Button icon={<UploadOutlined/>}>Selecciona el archivo del abono</Button>
+                    </Upload>
+                    <Button 
+                        type="primary" 
+                        disabled={filesList.length === 0}
+                        loading={uploading}
+                        onClick={handleUploadAbono}
+                    >
+                        {uploading ? "Subiendo..." : "Comienza a subir!"}     
+                    </Button>
+            </Modal>
+        </>
+    )
+}

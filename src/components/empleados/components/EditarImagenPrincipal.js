@@ -1,10 +1,10 @@
 import { InboxOutlined } from '@ant-design/icons';
 import { message, Upload,Button } from 'antd';
 import React, { useState } from 'react';
-import { fetchConTokenSinJSON } from "../../helpers/fetch";
+import { fetchConTokenSinJSON } from '../../../helpers/fetch';
 const { Dragger } = Upload;
 
-export const EditarImagenPrincipal = ({camionetaInfo,socket}) => {
+export const EditarImagenPrincipal = ({usuarioInfo,socket,setIsModalVisibleEditInfo}) => {
 
 
     const [filesList, setFilesList] = useState([]);
@@ -17,13 +17,18 @@ export const EditarImagenPrincipal = ({camionetaInfo,socket}) => {
         });
         setUploading(true);
         try {
-            const resp = await fetchConTokenSinJSON(`/uploads/camionetas/camioneta/${camionetaInfo.uid}`,formData,"PUT");
+            const resp = await fetchConTokenSinJSON(`/uploads/usuarios/${usuarioInfo.uid}`,formData,"PUT");
             const body = await resp.json();
             //Quitando los archivos del filesList
             setFilesList([]);
             setUploading(false);
-            message.success(body.msg);
-            socket.emit("camioneta-actualizada",camionetaInfo.uid);
+            if(resp.status === 200){
+                console.log(body);
+                message.success(body);
+                setIsModalVisibleEditInfo(false);
+                return;
+            }
+            message.error(body);
         } catch (error) {
             message.error(error);
         }

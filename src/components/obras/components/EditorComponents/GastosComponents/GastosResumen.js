@@ -1,5 +1,8 @@
-import { Card, Col, Divider, Row, Statistic } from 'antd';
+import { Card, Col, DatePicker, Divider, Row, Statistic } from 'antd';
 import React, { useEffect } from 'react'
+import moment from 'moment';
+import locale from "antd/es/date-picker/locale/es_ES"
+const { RangePicker } = DatePicker;
 
 export const GastosResumen = ({obraInfo,socket}) => {
     let totalGastosEncargado = 0, totalTransferencias = 0,totalGastosOficina = 0,totalGastosObra = 0;
@@ -8,11 +11,13 @@ export const GastosResumen = ({obraInfo,socket}) => {
     totalTransferencias = obraInfo.abonos.cantidadTotal;
     totalGastosOficina = obraInfo.gastos.oficina.totalFacturas;
     totalGastosObra = obraInfo.gastos.totalGastosObra; 
-    
+
+
     return (
         <>
             <h1>Resumen de gastos de la obra</h1>
             <p className="lead">Aqui se mostrara un resumen de los gastos que ha tenido la obra hasta el momento</p>
+            {/*<RangePicker onChange={onChangeDate} size="large" locale={locale} className="mb-3"/>*/}
             <Divider/>
             <div className="p-3 p-lg-5" style={{background:"#ececec"}}>
                 <Card><Statistic title="Total gastos del encargado" prefix={"$"} valueStyle={{color: '#3f8600',}} value={totalGastosEncargado} precision={2}/></Card>

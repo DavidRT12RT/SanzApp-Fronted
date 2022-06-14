@@ -1,8 +1,13 @@
 import React,{ useState,useEffect } from 'react'
-import { Button, Card, Col, Divider, Dropdown, Menu, message, Row, Space, Statistic,Table,Modal,Upload,Input} from 'antd';
+import { Button, Card, Col, Divider, Dropdown, Menu, message, Row, Space, Statistic,Table,Modal,Upload,Input,DatePicker } from 'antd';
 import { DownOutlined,UploadOutlined ,CopyOutlined } from '@ant-design/icons';
 import { fetchConToken, fetchConTokenSinJSON } from '../../../../../helpers/fetch';
 import "../../../assets/facturasLista.css";
+import moment from 'moment';
+import locale from "antd/es/date-picker/locale/es_ES"
+const { RangePicker } = DatePicker;
+
+
 
 export const GastosComprobables = ({obraInfo,socket}) => {
     const {_id:obraId} = obraInfo;
@@ -36,6 +41,7 @@ export const GastosComprobables = ({obraInfo,socket}) => {
     const handleSearch = (value) =>{
         //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
         if(value.length == 0){
+            setObraInfoFacturas(obraInfo.gastos.comprobables);
             return setDataFacturas(obraInfo.gastos.comprobables.registros);
         }
 
@@ -43,11 +49,42 @@ export const GastosComprobables = ({obraInfo,socket}) => {
             if(elemento.descripcionFactura.toLowerCase().includes(value.toLowerCase())){
                 return elemento;
             }
-        })
+        });
 
+        let numeroFacturas = 0, totalFacturas = 0; 
+        resultadosBusqueda.map(element => {
+            numeroFacturas += 1;
+            totalFacturas += element.importeFactura;
+        });
+        setObraInfoFacturas({numeroFacturas,totalFacturas});
         return setDataFacturas(resultadosBusqueda);
     }
 
+    const onChangeDate = (value, dateString) => {
+        //console.log('Selected Time: ', value);//Estancias de moment
+        //console.log('Formatted Selected Time: ', dateString);//fechas en string
+
+        //Se borraron las fechas
+        if(value === null){
+            setDataFacturas(obraInfo.gastos.comprobables.registros);
+            setObraInfoFacturas(obraInfo.gastos.comprobables);
+            return;
+        }
+        const resultadosBusqueda = obraInfo.gastos.comprobables.registros.filter(element => {
+            //element.fechaFactura = element.fechaFactura.slice(0,10);
+            if(moment(element.fechaFactura).isBetween(dateString[0],dateString[1])){
+                return element;
+            }
+        });
+        let numeroFacturas = 0, totalFacturas = 0; 
+        resultadosBusqueda.map(element => {
+            numeroFacturas += 1;
+            totalFacturas += element.importeFactura;
+        });
+        setObraInfoFacturas({numeroFacturas,totalFacturas});
+        return setDataFacturas(resultadosBusqueda);
+    };
+    
 
     const handleUpload = async () =>{
         const formData = new FormData();
@@ -97,6 +134,9 @@ export const GastosComprobables = ({obraInfo,socket}) => {
     const handleDownloadPDF = async (nombreArchivo,folioFactura) => {
         try {
             const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/gastos/comprobables/${folioFactura}/${nombreArchivo}`);
+            if(resp.status != 200){
+                return message.error("No se encontro el archivo en el servidor!");
+            }
             const bytes = await resp.blob();
             let element = document.createElement('a');
             element.href = URL.createObjectURL(bytes);
@@ -110,6 +150,9 @@ export const GastosComprobables = ({obraInfo,socket}) => {
     const handleDownloadXML = async (nombreArchivo,folioFactura) => {
         try {
             const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/gastos/comprobables/${folioFactura}/${nombreArchivo}`);
+            if(resp.status != 200){
+                return message.error("No se encontro el archivo en el servidor!");
+            }
             const bytes = await resp.blob();
             let element = document.createElement('a');
             element.href = URL.createObjectURL(bytes);
@@ -212,6 +255,7 @@ export const GastosComprobables = ({obraInfo,socket}) => {
                 <Divider/>
                 
                 {/*Buscador con autocompletado*/}
+                <div className="d-flex justify-content-start align-items-center flex-wrap gap-2">
                     <Input.Search 
                         size="large" 
                         placeholder="Busca una factura por su descripción o concepto" 
@@ -219,7 +263,8 @@ export const GastosComprobables = ({obraInfo,socket}) => {
                         onSearch={handleSearch}
                         className="search-bar-class"
                     />
-
+                    <RangePicker onChange={onChangeDate} size="large" locale={locale}/>
+                </div>
                 {/*Tarjetas*/}
                 <Row gutter={16} className="mt-3">
                     <Col xs={24} md={8}>
