@@ -3,10 +3,7 @@ import { uistartLoading, uiStopLoading } from "./uiActions";
 import {error, success} from '../alerts/botons';
 import {fetchConToken, fetchSinToken} from "../helpers/fetch";
 
-
 export const startLogincorreoPassword = (correo, password) => {
-    
-   
     return async(dispatch) => {
 
         dispatch(uistartLoading());

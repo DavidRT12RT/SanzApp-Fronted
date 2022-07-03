@@ -1,14 +1,21 @@
 import { useSelector } from "react-redux";
-import {Navigate, useParams} from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import {error} from "../alerts/botons";
 
 export const PrivateRoutePorRole = ({children,rolRequerido}) =>{
-    const rol = useSelector(store => store.auth.rol);
-
-    if(rolRequerido.includes(rol)){
+    const {rol,uid} = useSelector(store => store.auth);
+    if(rolRequerido.includes(rol) && uid != ""){
         return children;
+    }else if(uid !=""){
+        //El usuario intento entrar a la ruta pero no tiene uid osea no esta logeado vaya
+        return <Navigate to="/login"/>
     }else{
+        //El usuario si esta logeado pero no tiene el rol para esta ruta
         error(`Tienes que tener el rol ${rolRequerido} \n para poder acceder a este recurso!`);
-        return <Navigate to="/aplicacion/"/>;
+        if(rol !="ENCARGADO_ALMACEN_ROL"){
+             return <Navigate to="/aplicacion"/>
+        }else{
+            return <Navigate to="/almacen"/>
+        }
     }
 }

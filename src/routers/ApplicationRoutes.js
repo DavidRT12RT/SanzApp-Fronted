@@ -1,6 +1,5 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import {Component404} from "../components/component404/Component404";
-import { AplicationLandingPage } from "../components/application/AplicationLandingPage";
 import { notification } from 'antd';
 //Components
 import { RegisterScreen } from "../components/auth/RegisterScreen";
@@ -13,7 +12,6 @@ import { CalendarScreen } from "../components/calendar/CalendarScreen";
 import { MapasApp } from "../components/Mapas/MapasApp";
 import { ProductosScreen } from "../components/productos/ProductosScreen";
 import {ProductoScreen} from "../components/productos/ProductoScreen";
-import { RegistrarProducto } from "../components/productos/RegistrarProducto";
 import { PrivateRoutePorRole } from "./PrivateRoutePorRole";
 import { useContext, useEffect } from "react";
 import { SocketContext } from "../context/SocketContext";
@@ -23,11 +21,13 @@ import { GestionCamionetas } from "../components/camionetas/GestionCamionetas";
 import { CamionetaScreen } from "../components/camionetas/CamionetaScreen";
 import { RegistrarCamioneta } from "../components/camionetas/RegistrarCamioneta";
 import { GestionOficina } from "../components/oficina/GestionOficina";
+import { SeccionNoticias } from "../components/noticias/SeccionNoticias";
 
 export const ApplicationRoutes = () => {
 
    const { socket } = useContext(SocketContext);
    const navigate = useNavigate();
+
    const handleClick = (_id,key) =>{
         notification.close(key);    
         return navigate(`/aplicacion/almacen/${_id}`);
@@ -65,15 +65,8 @@ export const ApplicationRoutes = () => {
         <>
             <AplicationNavbar/> 
             <Routes>
-                <Route path="/" element={<AplicationLandingPage />} />
-                <Route path="/aplicacion" element={<AplicationLandingPage />} />
-
+                <Route path="/" element={<SeccionNoticias />} />
                 <Route path="/almacen" element={<ProductosScreen />} />
-                <Route path="/almacen/registro" element={
-                    <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ALMACEN_ENCARGADO_ROLE"]}>
-                            <RegistrarProducto/>
-                    </PrivateRoutePorRole>
-                } />
                 <Route path="/almacen/:productoId" element={<ProductoScreen />} />
                 <Route path="/obras" element={<ObrasScreen />} />
                 <Route path="/obras/registro" element={

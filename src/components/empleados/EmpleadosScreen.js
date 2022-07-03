@@ -21,20 +21,6 @@ export const EmpleadosScreen = () => {
         setEmpleadosInfo(empleados);        
     }, [empleados]);
 
- /*
-	useEffect(() => {
-		socket.on("usuario-informacion-actualizada",(usuario)=>{
-            const empleadosArrayUpdated = empleados;
-            empleadosArrayUpdated.map(element => {
-                if(element.uid == usuario.uid){
-                    element = usuario;
-                    element.key = usuario.uid;
-                }
-            });
-            setEmpleadosInfo(empleadosArrayUpdated);
-		});
-	}, [socket,setEmpleadosInfo]);
-*/
     const columns = [
         {
             title:"Nombre del empleado",

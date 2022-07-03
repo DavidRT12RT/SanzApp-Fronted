@@ -14,6 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { startChecking } from "../actions/authActions";
 import { SocketProvider } from "../context/SocketContext";
+import { PrivateRoutePorRole } from "./PrivateRoutePorRole";
+import { AlmacenRoutes } from "./AlmacenRoutes";
 
 export const AppRouter = ()=>{
 
@@ -42,13 +44,22 @@ export const AppRouter = ()=>{
                     <PublicRoute uid={uid}>
                         <LoginScreen/>
                     </PublicRoute>
-                } />
+                } 
+              />
               <Route path="/aplicacion/*" element={
-                  <PrivateRoute uid={uid}>
+                  <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","INGE_ROLE","ADMINISTRADOR_ROLE"]}>
                       <SocketProvider>
                           <ApplicationRoutes/>
                       </SocketProvider>
-                  </PrivateRoute>
+                  </PrivateRoutePorRole>
+                }
+              />
+              <Route path="/almacen/*" element={
+                  <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ENCARGADO_ALMACEN_ROL"]}>
+                      <SocketProvider>
+                          <AlmacenRoutes/>
+                      </SocketProvider>
+                  </PrivateRoutePorRole>
                 }
               />
               <Route path="/*" element={<Component404 />} />

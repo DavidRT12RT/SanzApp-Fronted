@@ -41,8 +41,6 @@ export const EmpleadoScreen = () => {
 
 	useEffect(() => {
 		socket.on("usuario-informacion-actualizada",(usuario)=>{
-			console.log(usuario.uid);
-			console.log(usuarioId);
 			if(usuario.uid === usuarioId){
 				setUsuarioInfo(usuario);
 			}

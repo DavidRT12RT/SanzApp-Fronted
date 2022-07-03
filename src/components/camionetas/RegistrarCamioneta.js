@@ -11,7 +11,6 @@ export const RegistrarCamioneta = () => {
 
     const [filesList, setFilesList] = useState([]);
     const [uploading, setUploading] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
 

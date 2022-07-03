@@ -6,7 +6,6 @@ import { fetchConToken } from "../../../helpers/fetch";
 
 export const FacturasList = ({obraInfo}) => {
 
-
     const [dataFacturas, setDataFacturas] = useState([]);
     const [obraInfoFacturas, setObraInfoFacturas] = useState({});
     const {_id:obraId} = obraInfo;
@@ -19,11 +18,6 @@ export const FacturasList = ({obraInfo}) => {
 
         setObraInfoFacturas(obraInfo.facturas);
     }, []);
-
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-
 
     //Seteamos la data cada vez que la obraInfo se actualize por algun socket de un cliente
     useEffect(() => {
@@ -127,14 +121,14 @@ export const FacturasList = ({obraInfo}) => {
     return (
       <>
             <p className='lead'>Facturas de la obra / servicio</p>
-                {/*Buscador con autocompletado*/}
-                    <Input.Search 
-                        size="large" 
-                        placeholder="Busca una factura por su descripción o concepto" 
-                        enterButton
-                        onSearch={handleSearch}
-                        className="search-bar-class"
-                    />
+            {/*Buscador con autocompletado*/}
+                <Input.Search 
+                    size="large" 
+                    placeholder="Busca una factura por su descripción o concepto" 
+                    enterButton
+                    onSearch={handleSearch}
+                    className="search-bar-class"
+                />
 
                 {/*Tarjetas*/}
                 <Row gutter={16} className="mt-3">

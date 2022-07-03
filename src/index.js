@@ -1,6 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {SanzApp} from './SanzApp';
+import { SanzApp } from './SanzApp';
+import { createRoot } from 'react-dom/client';
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(<SanzApp/>);
+//ReactDOM.render(<SanzApp />,document.getElementById('root'));
 
-ReactDOM.render(<SanzApp />,document.getElementById('root'));
 
