@@ -2,7 +2,7 @@ import { Button, Divider, Form, Input, message, Modal, Result, Select, Typograph
 import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { SocketContext } from '../../../../context/SocketContext';
-import { ProductoCardRetiro } from './ProductoCardRetiro';
+import { ProductoCardRetiroEntrada } from './ProductoCardRetiroEntrada';
 import { ExclamationCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { fetchConToken } from '../../../../helpers/fetch';
 const { Search } = Input;
@@ -195,7 +195,7 @@ export const RetirarAlmacen = () => {
                             <Divider/>
                             {
                                 listaProductos.map(producto => {
-                                    return <ProductoCardRetiro key={producto.id} producto={producto} socket={socket} cambiarCantidadProducto={cambiarCantidadProducto} eliminarProducto={eliminarProducto}/>
+                                    return <ProductoCardRetiroEntrada key={producto.id} producto={producto} socket={socket} cambiarCantidadProducto={cambiarCantidadProducto} eliminarProducto={eliminarProducto}/>
                                 })
                             }                               
                             </div>

@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import 'antd/dist/antd.css';
-import {Button, Divider, Input } from 'antd';
+import {Button, Checkbox, Divider, Input } from 'antd';
 import { useSelector } from 'react-redux';
 import { SocketContext } from '../../../../context/SocketContext';
 import { useProductos } from '../../../../hooks/useProductos';
 import { Loading } from '../../../obras/Loading';
 import { ProductoCard } from './components/ProductoCard';
 import { Link } from 'react-router-dom';
+const CheckboxGroup = Checkbox.Group;
 
 
 export const ProductosScreen = () => {
@@ -16,6 +17,7 @@ export const ProductosScreen = () => {
     const { isLoading,productos,productosInfo } = useProductos();
     const { socket } = useContext(SocketContext);
     const [dataSource, setValuesTable] = useState([]);
+    const plainOptions = ['Apple', 'Pear', 'Orange'];
 
 
     useEffect(() => {
@@ -78,15 +80,40 @@ export const ProductosScreen = () => {
                     </div>
                 </div>
                 <Divider/>
-                <div className="d-flex justify-content-center container gap-5 flex-wrap">
-                    {
-                        dataSource.map(producto => {
-                            return ( 
-                                <ProductoCard key={producto._id} producto={producto}/>
-                            )
-                        })
-                    }                               
+                <div className="row">
+                    <div className="col col-lg-2">
+                        {/*Filtros*/}
+                        <h2 className="fw-bold">Filtros</h2>
+                        <hr/>
+                        <div className="row">
+                            <p>Categoria del producto</p>
+                            <Checkbox className="ms-2">Herramientas</Checkbox>
+                            <Checkbox>Ferreteria</Checkbox>
+                            <Checkbox>Vinilos</Checkbox>
+                            <Checkbox>Pisos y azulejos</Checkbox>
+                            <Checkbox>Fontaneria</Checkbox>
+                            <Checkbox>Iluminación</Checkbox>
+                            <Checkbox>Material electrico</Checkbox>
+                        </div>
+                        <div className="row mt-3">
+                            <p>Marca del producto</p>
+                            <Checkbox className="ms-2">FOFEL</Checkbox>
+                            <Checkbox>TRUPPER</Checkbox>
+                            <Checkbox>CFE</Checkbox>
+                        </div>
+                    </div>
+                    <div className="col col-lg-10 d-flex justify-content-center container gap-2 flex-wrap mt-3 mt-lg-0">
+                        {/*Informacion*/}
+                        {
+                            dataSource.map(producto => {
+                                return ( 
+                                    <ProductoCard key={producto._id} producto={producto} />
+                                )
+                            })
+                        }                               
+                    </div>
                 </div>
+
             </div>
         )
     }

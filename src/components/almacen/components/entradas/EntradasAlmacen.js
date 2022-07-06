@@ -31,9 +31,9 @@ export const EntradasAlmacen = () => {
                         return (
                             <Tag color="yellow">{text.toUpperCase()}</Tag>
                         )
-                    case "merma":
+                    case "normal":
                         return (
-                            <Tag color="red">MERMA</Tag>
+                            <Tag color="red">NORMAL</Tag>
                         )
                 }
             }
@@ -41,12 +41,6 @@ export const EntradasAlmacen = () => {
 		{
 			title:"Fecha creacion",
 			dataIndex:"fecha"
-		},
-		{
-			title:"Cantidad de productos devueltos",
-			render:(text,record) => {
-                return <Tag color="green">{record.listaProductos.length}</Tag>
-			}
 		},
 		{
 			title:"Detalles",
@@ -82,10 +76,11 @@ export const EntradasAlmacen = () => {
             case "sobrante-obra" || "devolucion-resguardo":
                 return (
                     <ProductoCardAlmacen producto={producto} key={producto.id} tipo={"devuelto"}/>
-
                 );
             case "normal":
-                break;
+                return (
+                    <ProductoCardAlmacen producto={producto} key={producto.id} tipo={"normal"}/>
+                )
         }
     }
 

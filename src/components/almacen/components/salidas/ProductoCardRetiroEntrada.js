@@ -2,7 +2,7 @@ import { Avatar, InputNumber, Select } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { Loading } from '../../../obras/Loading';
 
-export const ProductoCardRetiro = ({producto,socket,cambiarCantidadProducto,eliminarProducto}) => {
+export const ProductoCardRetiroEntrada = ({producto,socket,cambiarCantidadProducto,eliminarProducto,tipo=""}) => {
 
     const [productoInfo, setProductoInfo] = useState(null);
 
@@ -26,7 +26,11 @@ export const ProductoCardRetiro = ({producto,socket,cambiarCantidadProducto,elim
                 <div className="col-12 col-lg-6">
                     <h5 className="fw-bold">{productoInfo.nombre}</h5>
                     {productoInfo.estatus ? <p className="text-success">Disponible</p> : <p className="text-danger">No disponible</p>}
-                    <p>Cantidad a retirar: <InputNumber bordered={false} size="small" min={1} value={producto.cantidad} onChange={(e)=>{cambiarCantidadProducto(productoInfo,e)}}/></p>
+                    {
+                        tipo === "" 
+                            ? <p>Cantidad a retirar: <InputNumber bordered={false} size="small" min={1} value={producto.cantidad} onChange={(e)=>{cambiarCantidadProducto(productoInfo,e)}}/></p>
+                            : <p>Cantidad a ingresar: <InputNumber bordered={false} size="small" min={1} value={producto.cantidad} onChange={(e)=>{cambiarCantidadProducto(productoInfo,e)}}/></p>
+                    }
                     <p className="text-white bg-dark">(cantidad en bodega: {productoInfo.cantidad})</p>
                     <p className="text-muted">{productoInfo.descripcion}</p>
                     {producto.cantidad > 1 ? <a className="text-danger" onClick={()=>{eliminarProducto(producto.id)}}>Eliminar productos</a> : <a className="text-danger" onClick={()=>{eliminarProducto(producto.id)}}>Eliminar producto</a>}

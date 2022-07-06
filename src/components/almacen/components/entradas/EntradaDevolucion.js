@@ -49,11 +49,7 @@ export const EntradaDevolucion = ({ socket }) => {
                         if(productoADevolver.id === id){
                             flag = true;
                             //TODO: Checar que no se pase de lo que hay en productos retiradso
-                            if((producto.cantidad - productoADevolver.cantidad) === 0){
-                                message.error("No se puede agregar mas producto de lo que hay registrado en la salida!")
-                            }else{
-                                productoADevolver.cantidad += 1;
-                            }
+                            (producto.cantidad - productoADevolver.cantidad) === 0 ? message.error("No se puede agregar mas producto de lo que hay registrado en la salida!") : productoADevolver.cantidad += 1;
                         }
                         return productoADevolver;
                     });

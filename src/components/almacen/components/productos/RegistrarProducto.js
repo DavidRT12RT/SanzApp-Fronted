@@ -57,7 +57,7 @@ export const RegistrarProducto = () => {
 				formData.append("cantidad",values.cantidad);
 				formData.append("descripcion",values.descripcion);
 				formData.append("marcaProducto",values.marcaProducto);
-				formData.append("categorias",values.categorias);
+				formData.append("categorias",JSON.stringify(values.categorias));
 				formData.append("costo",values.costo);
 				formData.append("estadoProducto",values.estadoProducto);
 				formData.append("usuarioCreador",uid);
@@ -149,10 +149,10 @@ export const RegistrarProducto = () => {
 									label="Unidad del producto"
 								>
                 					<Select placeholder="Metro,Kilogramo,Pieza,etc." size="large">
-										<Select.Option value="Metro">Metro</Select.Option>
-										<Select.Option value="Kilogramo">Kilogramo</Select.Option>
-										<Select.Option value="Pieza">Pieza</Select.Option>
-										<Select.Option value="Litro">Litro</Select.Option>
+										<Select.Option value="metro">Metro</Select.Option>
+										<Select.Option value="kilogramo">Kilogramo</Select.Option>
+										<Select.Option value="pieza">Pieza</Select.Option>
+										<Select.Option value="litro">Litro</Select.Option>
               						</Select>
             					</Form.Item>
             				</Col>
@@ -168,7 +168,7 @@ export const RegistrarProducto = () => {
 				                		<Select.Option value="ferreteria">Ferreteria</Select.Option>
 	                  					<Select.Option value="vinilos">Vinilos</Select.Option>
                   						<Select.Option value="herramientas">Herramientas</Select.Option>
-                  						<Select.Option value="pisosAzulejos">Pisos y azulejos</Select.Option>
+                  						<Select.Option value="pisos y azulejos">Pisos y azulejos</Select.Option>
                   						<Select.Option value="fontaneria">Fontaneria</Select.Option>
                   						<Select.Option value="iluminacion">Iluminación</Select.Option>
                   						<Select.Option value="electrico">Material electrico</Select.Option>
@@ -216,8 +216,8 @@ export const RegistrarProducto = () => {
                 					]}
               					>
 									<Select placeholder="¿Como se encuentra el producto?" size="large">
-					                	<Select.Option value="Nuevo">Nuevo</Select.Option>
-                						<Select.Option value="Usado">Usado</Select.Option>
+					                	<Select.Option value="nuevo">Nuevo</Select.Option>
+                						<Select.Option value="usado">Usado</Select.Option>
               						</Select>
               					</Form.Item>
             				</Col>

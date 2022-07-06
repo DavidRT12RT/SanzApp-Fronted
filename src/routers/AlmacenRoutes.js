@@ -24,7 +24,7 @@ export const AlmacenRoutes = () => {
                 <Route path="/productos" element={<ProductosScreen/>}/>
                 <Route path="/productos/:productoId/" element ={<ProductoScreen/>}/>
                 <Route path="/retirar/" element={<RetirarAlmacen/>}/>
-                <Route path="/productos/ingresar/" element={<IngresarAlmacen/>}/>
+                <Route path="/ingresar/" element={<IngresarAlmacen/>}/>
                 <Route path="/productos/registrar/" element={<RegistrarProducto/>}/>
                 <Route path="/salidas" element={<SalidasAlmacen/>}/>
                 <Route path="/entradas" element={<EntradasAlmacen/>}/>

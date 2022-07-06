@@ -44,6 +44,7 @@ export const ProductoCardAlmacen = ({producto,tipo}) => {
                                 {producto.id.categorias.map(categoria => categoriaColor(categoria))}
                             </div>
                             <p className="text-muted mt-3">{producto.id.descripcion}</p>
+                            <Link to={`/almacen/productos/${producto.id._id}/`}>Ver información del producto</Link>
                         </div>
                     </div>
                 ) 

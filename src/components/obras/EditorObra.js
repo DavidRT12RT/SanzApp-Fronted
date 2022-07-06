@@ -29,6 +29,7 @@ import { ComentariosObra } from "./components/EditorComponents/ComentariosObra";
 import { PlanosObra } from "./components/EditorComponents/PlanosObra";
 import { ArchivosGenerales } from "./components/EditorComponents/ArchivosGenerales";
 import { FinalizarObra } from "./components/EditorComponents/FinalizarObra";
+import { RetiradoAlmacen } from "./components/EditorComponents/RetiradoAlmacen";
 const { Content, Footer, Sider } = Layout;
 
 export const EditorObra = () => {
@@ -64,15 +65,13 @@ export const EditorObra = () => {
     }, [socket, setObraInfo, obraInfo]);
 
     const [key, setKey] = useState(1);
-
-
     const renderizarComponente = () => {
         switch (key) {
             case "1":
-                //Material utilizado
+                //Material y herramientas retiradas de almacen
                 return (
-                    <MaterialUtilizado socket={socket} obraInfo={obraInfo} />
-                );
+                    <RetiradoAlmacen obraInfo={obraInfo}/>
+                ) 
 
             case "2":
                 //Observaciones lista
@@ -115,22 +114,29 @@ export const EditorObra = () => {
 
             case "11":
                 return <ArchivosGenerales socket={socket} obraInfo={obraInfo}/>
+            
+            case "12":
+                return (
+                    <MaterialUtilizado socket={socket} obraInfo={obraInfo} />
+                );
 
             case "13":
                 return <FinalizarObra socket={socket} obraInfo={obraInfo}/>
             default:
+                //Material y herramientas retiradas de almacen
                 return (
-                    <MaterialUtilizado obraInfo={obraInfo} socket={socket} />
-                );
+                    <RetiradoAlmacen obraInfo={obraInfo}/>
+                ) 
         }
     };
-    if (obraInfo === undefined) {
-        return <h1>Loading...</h1>;
+    if (Object.keys(obraInfo).length === 0 ) {
+        return <h1>Cargando informacion de la obra..</h1>;
     }else if(obraInfo.estado === false){
         navigate("/aplicacion/obras");
         return message.error("Obra se encuentra finalizada NO puedes editarla");
     }
     else{
+        console.log("Obra info",obraInfo);
         return (
             <Layout>
                 <Sider
@@ -154,7 +160,7 @@ export const EditorObra = () => {
                             {
                                 key: "1",
                                 icon: <TagOutlined />,
-                                label: "Materiales",
+                                label: "Retirado de almacen",
                             },
                             {
                                 key: "2",

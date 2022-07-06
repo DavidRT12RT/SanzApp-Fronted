@@ -15,7 +15,6 @@ export const SalidasAlmacen = () => {
 	const [informacionRegistroParticular, setInformacionRegistroParticular] = useState(null);
 	const [isDrawerVisible, setIsDrawerVisible] = useState(false);
     
-    
     useEffect(() => {
         salidas.map(registro => registro.key = registro._id);
         setSalidasRegistros(salidas)

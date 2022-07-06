@@ -23,7 +23,6 @@ export const ProductoCard = ({producto}) => {
                 return <Tag color="gold" key="categoria">{categoria.toUpperCase()}</Tag>
             default:
                 return <Tag color="green" key="categoria">{categoria.toUpperCase()}</Tag> 
-                break;
         }
     }
 
@@ -31,7 +30,7 @@ export const ProductoCard = ({producto}) => {
         return <Loading/>
     }else{
         return (
-            <div className="row p-5 border" style={{maxWidth:"600px",minWidth:"350px"}}>
+            <div className="row p-5 border" style={{maxWidth:"500px",minWidth:"150px"}}>
                 <div className="col-12 col-lg-6 mb-3 mb-lg-0">
                     <Avatar shape="square" style={{height:"150px",width:"150px"}} src={`http://localhost:4000/api/uploads/productos/${producto._id}`}/>
                 </div>
