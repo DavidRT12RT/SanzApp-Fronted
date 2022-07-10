@@ -1,20 +1,35 @@
-import { Button, Col, Divider, Drawer, Dropdown, Input, Menu, message, Row, Table, Tag } from 'antd'
+import { Button, Col, DatePicker, Divider, Drawer, Dropdown, Form, Input, Menu, message, Modal, Row, Select, Table, Tag } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { fetchConToken } from '../../../../helpers/fetch';
 import { useSalidas } from '../../../../hooks/useSalidas';
 import { Loading } from '../../../obras/Loading';
 import { ProductoCardAlmacen } from './ProductoCardAlmacen';
+import moment from 'moment';
+import locale from "antd/es/date-picker/locale/es_ES"
+import { useObras } from '../../../../hooks/useObras';
+import { useEmpleados } from '../../../../hooks/useEmpleados';
 const { Search } = Input;
+const { RangePicker } = DatePicker;
 
 
 export const SalidasAlmacen = () => {
 
+    const startOfMonth = moment().startOf('month').locale('es').format("YYYY-MM-DD");
+    const endOfMonth   = moment().endOf('month').locale('es').format("YYYY-MM-DD");
+	//Hooks personalizados
     const { isLoading,salidas} = useSalidas();
+	const {isLoading:isLoadingObras,obras} = useObras();
+	const { isLoading:isLoadingEmpleados,empleados } = useEmpleados();
+	//Hooks react
     const [salidasRegistros, setSalidasRegistros] = useState([]);
 	//State para informacion de un registro en particular selecciona por el usuario
 	const [informacionRegistroParticular, setInformacionRegistroParticular] = useState(null);
 	const [isDrawerVisible, setIsDrawerVisible] = useState(false);
-    
+	const [isModalFiltradorVisible, setIsModalFiltradorVisible] = useState(false);
+	const [categoria, setCategoria] = useState(null);
+    const [form] = Form.useForm();
+
+
     useEffect(() => {
         salidas.map(registro => registro.key = registro._id);
         setSalidasRegistros(salidas)
@@ -75,22 +90,12 @@ export const SalidasAlmacen = () => {
 		}
 	];
 
-	const menu = (
-        <Menu 
-			items={[
-				{key:"1",label:(<a target="_blank">Obra</a>)},
-				{key:"2",label:(<a target="_blank">Resguardo</a>)},
-				{key:"3",label:(<a target="_blank">Merma</a>)}
-			]}/>
-    )
-
     const DescriptionItem = ({ title, content }) => (
         <div className="site-description-item-profile-wrapper">
             <p className="site-description-item-profile-p-label">{title}:</p>
             {content}
         </div>
     );
-
 
 	const renderizarInformacionBeneficiario = () => {
 		switch (informacionRegistroParticular.tipo) {
@@ -136,7 +141,6 @@ export const SalidasAlmacen = () => {
 		}
 	}
 
-
     const handleDownloadEvidencia = async () => {
         try {
             const resp = await fetchConToken("/salidas/documento-pdf",{salidaId:informacionRegistroParticular._id},"POST");
@@ -150,7 +154,56 @@ export const SalidasAlmacen = () => {
         }
     }
 
-	if(isLoading){
+	const renderizarOpcionesBeneficiario = () => {
+		switch (categoria) {
+			case "obra":
+				return (
+                	<Select placeholder="Selecciona la obra" size="large">
+						{obras.map(obra => {
+							return (
+								<Select.Option key={obra._id} value={obra._id}>{obra.titulo}</Select.Option>
+							)
+						})}
+              		</Select>
+				)
+			case "resguardo":
+				return (
+                	<Select placeholder="Selecciona el empleado" size="large">
+						{empleados.map(empleado => {
+							return (
+								<Select.Option key={empleado.uid} value={empleado.uid}>{empleado.nombre}</Select.Option>
+							)
+						})}
+              		</Select>
+				)
+		}
+	}
+
+	const filtrarRegistros = (values) => {
+		setCategoria(null);
+		setIsModalFiltradorVisible(false);
+		if(values.fecha === undefined || values.fecha === null){
+			//Usaremos la del mes
+			const nuevosRegistros = salidas.map(salida => {
+				if(values.beneficiario === undefined) values.beneficiario = salida.beneficiario;
+				if(moment(salida.fechaCreacion).isBetween(startOfMonth,endOfMonth) && (salida.tipo === values.categoria ) && (salida.beneficiarioObra === values.beneficiario || salida.beneficiarioResguardo === values.beneficiario)){
+					return salida;
+				}
+			})
+			return setSalidasRegistros(nuevosRegistros);
+		}else{
+			//Usaremos la que nos mando el usuario
+			const nuevosRegistros = salidas.map(salida => {
+				if(values.beneficiario === undefined) values.beneficiario = salida.beneficiario;
+				if(moment(salida.fechaCreacion).isBetween(values.fecha[0],values.fecha[1]) && (salida.tipo === values.categoria) && (salida.beneficiarioObra === values.beneficiario || salida.beneficiarioResguardo === values.beneficiario)){
+					return salida;
+				}
+			})
+			return setSalidasRegistros(nuevosRegistros);
+		}
+	}
+
+	if(isLoading && isLoadingEmpleados && isLoadingObras){
 		return <Loading/>
 	}else{
 		return (
@@ -163,25 +216,22 @@ export const SalidasAlmacen = () => {
                 	</span>
 
                     <div className="container p-5 d-flex gap-2 justify-content-center align-items-center mt-3 flex-column">
-						<h4 className="fw-bold">Registros RECIENTES del almacen</h4>
-                        <p className="text-muted text-center">Aqui se mostraran las 5 salidas recientes que ha tenido el almacen</p>
 						<Table columns={columns} dataSource={[...salidasRegistros.slice(0,5)]} bordered/>
                     </div>
 
                     <div className="container p-5 d-flex gap-2 justify-content-center align-items-center mt-3 flex-column ">
-						<h4 className="fw-bold">Registros TOTALES del almacen</h4>
-                        <p className="text-muted text-center">Aqui se mostraran TODAS las salidas registradas del almacen desde la primera hasta la ultima</p>
-						<div className="d-flex justify-content-start gap-2 flex-wrap align-items-center">
+						<div className="d-flex justify-content-center gap-2 flex-wrap align-items-center">
 	                		<Search
                     			placeholder="Ingresa el codigo de barras de la salida..."
                     			allowClear
                     			autoFocus
                     			enterButton="Buscar"
-                    			style={{width:"500px"}}
+								size="large"
                 			/> 
-                    		<Dropdown overlay={menu}>
-                        		<Button onClick={(e)=> e.preventDefault()}>Filtrar por: </Button>
-                    		</Dropdown>
+							 <div className="d-flex justify-content-center gap-3 flex-wrap align-items-center mt-3">
+								<Button type="primary" size="large" onClick={()=>{setIsModalFiltradorVisible(true)}}>Filtrar registros</Button>
+								<Button type="primary" danger size="large" onClick={()=>{setSalidasRegistros(salidas)}}>Limpiar filtros</Button>
+							 </div>
 						</div>
 						<Table columns={columns} className="mt-3" dataSource={salidasRegistros} bordered/>
 						{informacionRegistroParticular != null && (
@@ -238,6 +288,31 @@ export const SalidasAlmacen = () => {
 						)}
                     </div>
 				</div>
+				<Modal footer={null} onCancel={()=>{setIsModalFiltradorVisible(false)}} visible={isModalFiltradorVisible}>
+					<h2 className="fw-bold">Filtrar registros</h2>
+					<Form onFinish={filtrarRegistros} layout="vertical">
+						<Form.Item name="categoria" label="Categoria de el registro" >
+                			<Select placeholder="Obra,resguardo,etc." size="large" onChange={(e)=>{setCategoria(e)}}>
+								<Select.Option value="obra">Obra</Select.Option>
+								<Select.Option value="resguardo">Resguardo</Select.Option>
+								<Select.Option value="merma">Merma</Select.Option>
+              				</Select>
+            			</Form.Item>
+						{categoria != null && 
+						 	<>
+								<Form.Item name="beneficiario" label="Beneficiario">
+									{renderizarOpcionesBeneficiario()}
+								</Form.Item>
+								<p>(Por defecto seran todas las salidas de la categoria marcada)</p>
+							</>
+						}
+						<Form.Item name="fecha" label="Intervalo de fecha del registro(s)">
+                			<RangePicker size="large" locale={locale} />
+						</Form.Item>
+						<p>(Por defecto la fecha sera la del mes actual)</p>
+						<Button type="primary" htmlType="submit">Aplicar filtros</Button>
+					</Form>
+				</Modal>
         	</>
     	)
 	}

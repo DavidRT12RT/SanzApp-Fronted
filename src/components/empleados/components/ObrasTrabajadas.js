@@ -195,9 +195,8 @@ export const ObrasTrabajadas = ({usuarioInfo,socket}) => {
 
     return (
         <div style={{height:"100%"}}>
-            <h6 className="text-muted">Total de obras trabajadas</h6>
             {/*Buscador con autocompletado*/}
-            <div className="d-flex align-items-center gap-2 mt-4">
+            <div className="d-flex align-items-center gap-2">
                 <Input.Search 
                     placeholder="Busca una factura por su descripción o concepto" 
                     enterButton

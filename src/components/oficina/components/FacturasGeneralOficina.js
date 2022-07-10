@@ -171,37 +171,37 @@ export const FacturasGeneralOficina = ({coleccion,socket,oficinaInfo}) => {
         )
     }
 
-        const menuVisualizar = (record) => {
-            const { folioFactura,nombrePDF,nombreXML,abono="" } = record;
-            if(abono.length != ""){
-                return (
-                    <Menu 
-                        items={[
-                            {key:'1',label:'Archivo PDF de la factura',onClick:()=>{
+    const menuVisualizar = (record) => {
+        const { folioFactura,nombrePDF,nombreXML,abono="" } = record;
+        if(abono.length != ""){
+            return (
+                <Menu 
+                    items={[
+                        {key:'1',label:'Archivo PDF de la factura',onClick:()=>{
+                            setIsDrawerVisible(true);
+                            setFacturaActual({nombreArchivo:nombrePDF,folioFactura});
+                        }},
+                        {
+                            key:'2',label:'Archivo PDF del abono',onClick:()=>{
                                 setIsDrawerVisible(true);
-                                setFacturaActual({nombreArchivo:nombrePDF,folioFactura});
-                            }},
-                            {
-                                key:'2',label:'Archivo PDF del abono',onClick:()=>{
-                                    setIsDrawerVisible(true);
-                                    setFacturaActual({nombreArchivo:abono.archivoName,folioFactura});
-                            }}
-                        ]}
-                    />
-                ) 
-            }else{
-                return (
-                    <Menu 
-                        items={[
-                            {key:'1',label:"Archivo PDF de la factura",onClick:()=>{
-                                setIsDrawerVisible(true);
-                                setFacturaActual({nombreArchivo:nombrePDF,folioFactura});
-                            }}
-                        ]}
-                    />
-                )
-            }
+                                setFacturaActual({nombreArchivo:abono.archivoName,folioFactura});
+                        }}
+                    ]}
+                />
+            ) 
+        }else{
+            return (
+                <Menu 
+                    items={[
+                        {key:'1',label:"Archivo PDF de la factura",onClick:()=>{
+                            setIsDrawerVisible(true);
+                            setFacturaActual({nombreArchivo:nombrePDF,folioFactura});
+                        }}
+                    ]}
+                />
+            )
         }
+    }
 
     const handleUploadAbono =  async () =>{
 

@@ -1,20 +1,20 @@
 import { message } from "antd";
 import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {Link, NavLink, useNavigate} from "react-router-dom"
+import {Link, NavLink, useLocation, useNavigate} from "react-router-dom"
 import { startLogout } from "../../../actions/authActions";
 import { eventLogout } from "../../../actions/eventsActions";
 import { SocketContext } from "../../../context/SocketContext";
 //import {AuthContext} from "../../../auth/authContext";
-
+import "./style.css"
 export const AplicationNavbar = () =>{
     //Hook for change the state of the user and navigate
     const navigate = useNavigate();
-
+    const { pathname } = useLocation();
 
     const { online } = useContext(SocketContext);
 
-    let nombre = useSelector(state => state.auth.name);
+    let { uid,nombre,rol} = useSelector(state => state.auth);
 
     const dispatch = useDispatch();
     //handleLogout
@@ -26,9 +26,19 @@ export const AplicationNavbar = () =>{
     }
 
 
+    //Si el usuario es ADMIN_ROLE le dejaremos ir a almacen o aplicacion cuando quiera
+
+    const renderizarBoton = () => {
+        if(pathname.startsWith("/aplicacion")){
+            return <li><Link to="/almacen/"><a class="dropdown-item" href="#">Ir a almacen</a></Link></li>
+        }else{
+            return <li><Link to="/aplicacion/"><a class="dropdown-item" href="#">Ir a aplicacion</a></Link></li>
+        }
+    }
+
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark p-3">
-            <div className="container-fluid">
+            <div className="container-fluid menuBarra">
                 <Link to="/aplicacion/" className="navbar-brand h6">
                     <img src={require("../assets/favicon.png")} width="40" height="40"/>
                     Sanz Ingenieria Integral
@@ -89,14 +99,17 @@ export const AplicationNavbar = () =>{
                         ? <span className="navbar-text text-success h6">Servidor: Online</span>
                         : <span className="navbar-text text-danger h6">Servidor: Offline</span>
                     }
-
-                    <span className="navbar-text ms-2 h6">
-                            {nombre}
-                    </span>
-                    <button className="btn btn-outline-warning mx-lg-3 mt-3 mt-lg-0" onClick={handleLogout}>
-                        <i className="fas fa-sign-out-alt"></i>
-                        <span> Salir</span>
-                    </button>
+                    <div class="flex-shrink-0 dropdown ms-lg-3">
+                        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src={`http://localhost:4000/api/uploads/usuarios/${uid}`} alt="mdo" width="40" height="40" class="rounded-circle" style={{"objectFit":"cover"}}/>
+                        </a>
+                        <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                            <li><a class="dropdown-item" href="#">Perfil</a></li>
+                            {rol === "ADMIN_ROLE" && renderizarBoton()}
+                            <li><hr class="dropdown-divider"/></li>
+                            <li><a class="dropdown-item" href="#" onClick={handleLogout}>Cerrar sesion</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav> 

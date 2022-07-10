@@ -1,13 +1,13 @@
-import { Button, DatePicker, Form, Input, InputNumber, message, Modal, Result, Select, Space, Tag, Upload } from 'antd'
-import React, { useContext, useState } from 'react'
+import { Button, Form, Input, InputNumber, message, Modal, Result, Select, Tag, Upload } from 'antd'
+import React, { useState } from 'react'
 import { Row, Col } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import { SocketContext } from '../../../../context/SocketContext';
 import { useSelector } from 'react-redux';
-import { confirmation, error, success } from '../../../../alerts/botons';
 import { ExclamationCircleOutlined,UploadOutlined } from '@ant-design/icons';
 import moment from "moment";
-import { fetchConToken, fetchConTokenSinJSON } from '../../../../helpers/fetch';
+import { fetchConTokenSinJSON } from '../../../../helpers/fetch';
+import { useCategorias } from '../../../../hooks/useCategorias';
+import { Loading } from '../../../obras/Loading';
 const { confirm } = Modal;
 
 export const RegistrarProducto = () => {
@@ -16,6 +16,7 @@ export const RegistrarProducto = () => {
 	const [filesList, setFilesList] = useState([]);
 	const [finish, setFinish] = useState(false);
     const navigate = useNavigate();
+	const { isLoading,categorias } = useCategorias()
 
     const {uid,name} = useSelector((state) => state.auth);
 
@@ -98,6 +99,7 @@ export const RegistrarProducto = () => {
 			/>
 		)
 	}else{
+		//Cargando categorias totales
 	    return (
 			<div className="container p-5 shadow rounded">
 				<div className="d-flex justify-content-end">
@@ -164,14 +166,12 @@ export const RegistrarProducto = () => {
                 					tooltip="Ingresa la categoria o las categorias del producto"
                 					label="Categorias"
               					>
-                					<Select mode="multiple" placeholder="Ferreteria,Electrico,Herramientas,etc." size="large">
-				                		<Select.Option value="ferreteria">Ferreteria</Select.Option>
-	                  					<Select.Option value="vinilos">Vinilos</Select.Option>
-                  						<Select.Option value="herramientas">Herramientas</Select.Option>
-                  						<Select.Option value="pisos y azulejos">Pisos y azulejos</Select.Option>
-                  						<Select.Option value="fontaneria">Fontaneria</Select.Option>
-                  						<Select.Option value="iluminacion">Iluminación</Select.Option>
-                  						<Select.Option value="electrico">Material electrico</Select.Option>
+                					<Select mode="multiple" placeholder="Categoria o categorias a la que pertenece este producto." size="large">
+										{categorias.map(categoria => {
+											return (
+                  								<Select.Option value={categoria._id}>{categoria.nombre}</Select.Option>
+											)
+										})}
               						</Select>
             					</Form.Item>
             				</Col>

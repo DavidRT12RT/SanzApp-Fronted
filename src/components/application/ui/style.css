@@ -1,0 +1,13 @@
+
+
+@media (min-width:100px) and (max-width: 600px) {
+  .menuBarra {
+    width: 100%;
+  }
+}
+
+@media  (min-width:1000px) {
+  .menuBarra {
+    width: 80%;
+  }
+}

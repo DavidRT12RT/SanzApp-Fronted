@@ -73,7 +73,10 @@ export const EntradasAlmacen = () => {
 
     const renderizarProductoIngresado = (producto) => {
         switch (informacionRegistroParticular.tipo) {
-            case "sobrante-obra" || "devolucion-resguardo":
+            /*Para caso de devolucion o sobrante de obra, este es un metodo para ejecutar codigo por dos condiciones
+            sin usar el || */
+            case "devolucion-resguardo":
+            case "sobrante-obra" :
                 return (
                     <ProductoCardAlmacen producto={producto} key={producto.id} tipo={"devuelto"}/>
                 );

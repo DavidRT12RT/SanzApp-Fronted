@@ -10,7 +10,6 @@ import { EmpleadoScreen } from "../components/empleados/EmpleadoScreen";
 import { ObraScreen } from "../components/obras/ObraScreen";
 import { CalendarScreen } from "../components/calendar/CalendarScreen";
 import { MapasApp } from "../components/Mapas/MapasApp";
-import { ProductosScreen } from "../components/productos/ProductosScreen";
 import {ProductoScreen} from "../components/productos/ProductoScreen";
 import { PrivateRoutePorRole } from "./PrivateRoutePorRole";
 import { useContext, useEffect } from "react";
@@ -22,6 +21,7 @@ import { CamionetaScreen } from "../components/camionetas/CamionetaScreen";
 import { RegistrarCamioneta } from "../components/camionetas/RegistrarCamioneta";
 import { GestionOficina } from "../components/oficina/GestionOficina";
 import { SeccionNoticias } from "../components/noticias/SeccionNoticias";
+import { ProductosScreen } from "../components/almacen/components/productos/ProductosScreen";
 
 export const ApplicationRoutes = () => {
 
@@ -82,7 +82,11 @@ export const ApplicationRoutes = () => {
 
                 <Route path="/obras/:obraId" element={<ObraScreen />} />
                 <Route path="/calendario" element={<CalendarScreen/>} />
-                <Route path="/oficina/gestion/" element={<GestionOficina/>}/>
+                <Route path="/oficina/gestion/" element={
+                    <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
+                        <GestionOficina/>
+                    </PrivateRoutePorRole>
+                }/>
                 <Route path="/camionetas/registro" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
                         <RegistrarCamioneta/>

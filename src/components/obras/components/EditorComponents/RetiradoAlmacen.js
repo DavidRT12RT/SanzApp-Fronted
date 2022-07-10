@@ -1,5 +1,6 @@
-import { Button, Col, Divider, Drawer, Input, Row, Table, Tag } from 'antd'
+import { Button, Col, Divider, Drawer, Input, message, Row, Table, Tag } from 'antd'
 import React, { useEffect, useState } from 'react'
+import { fetchConToken } from '../../../../helpers/fetch';
 import { ProductoCardAlmacen } from '../../../almacen/components/salidas/ProductoCardAlmacen';
 const { Search } = Input;
 
@@ -190,7 +191,7 @@ export const RetiradoAlmacen = ({obraInfo}) => {
                     setHerramientas([]);
                     obraInfo.retiradoAlmacen.map(salida => {
                         salida.listaProductos.map((producto,index) => {
-                            producto.id.categorias.includes("herramientas") ? setHerramientas(array => [...array,{...producto,fecha:salida.fechaCreacion,motivo:salida.motivo}]) : setMateriales(array => [...array,{...producto,fecha:salida.fechaCreacion,motivo:salida.motivo}]);
+                            producto.id.categorias.includes("herramientas") && setHerramientas(array => [...array,{...producto,fecha:salida.fechaCreacion,motivo:salida.motivo}]);
                         });
                     });
                     return;
@@ -207,7 +208,7 @@ export const RetiradoAlmacen = ({obraInfo}) => {
                     setMateriales([]);
                     obraInfo.retiradoAlmacen.map(salida => {
                         salida.listaProductos.map((producto,index) => {
-                            producto.id.categorias.includes("herramientas") ? setHerramientas(array => [...array,{...producto,fecha:salida.fechaCreacion,motivo:salida.motivo}]) : setMateriales(array => [...array,{...producto,fecha:salida.fechaCreacion,motivo:salida.motivo}]);
+                            producto.id.categorias.includes("materiales") && setMateriales(array => [...array,{...producto,fecha:salida.fechaCreacion,motivo:salida.motivo}]);
                         });
                     });
                     return;
@@ -221,11 +222,25 @@ export const RetiradoAlmacen = ({obraInfo}) => {
         }
     }
 
+
+    const handleDownloadEvidencia = async () => {
+        try {
+            const resp = await fetchConToken(`/obras/documento-pdf-productos/${obraInfo._id}`);
+            const bytes = await resp.blob();
+            let element = document.createElement('a');
+            element.href = URL.createObjectURL(bytes);
+            element.setAttribute('download',`${obraInfo._id}.pdf`);
+            element.click();
+        } catch (error) {
+           message.error("No se pudo descargar el archivo del servidor :("); 
+        }
+    }
+
     return (
         <>
             <h1>Productos retirados del almacen</h1>
             <p className="lead">Total de productos retirados del almacen para la obra actual, podras descargar un documento PDF <br/>con la lista de productos totales que se usaron en la obra asi como los sobrantes de obra de la misma obra.</p>
-            <span>Descargar PDF con la lista de productos retirados y sobrante de obra &gt; <a href="#">Click aqui!</a></span>
+            <span>Descargar PDF con la lista de productos retirados y sobrante de obra &gt; <a href="#" onClick={(e)=>{e.preventDefault();handleDownloadEvidencia()}}>Click aqui!</a></span>
             <div className="p-5 bg-body mt-3">
                 <h2 className="fw-bold">Material retirado de almacen</h2>
                 <p className="text-muted">Aqui se mostraran todos los materiales retirados a de almacen para la obra actual.<br/></p>

@@ -3,7 +3,8 @@ import { Avatar, Badge, Button, Descriptions, List, Tabs, Tag, Typography } from
 import { Link, useParams } from 'react-router-dom';
 import { SocketContext } from '../../context/SocketContext';
 import { Loading } from '../obras/Loading';
-import { SalidasProducto } from './components/SalidasProducto';
+import { EntradasProducto } from '../almacen/components/productos/components/EntradasProducto';
+import { SalidasProducto } from '../almacen/components/productos/components/SalidasProducto';
 //import { EditInfo } from './components/EditInfo';
 const { TabPane } = Tabs;
 
@@ -52,7 +53,7 @@ export const ProductoScreen = () => {
         }
     }
 
-   if(informacionProducto === undefined){
+   if(Object.keys(informacionProducto).length === 0){
         <Loading/>
     }else{
             return (
@@ -94,7 +95,7 @@ export const ProductoScreen = () => {
                             <p className="text-muted">(Imagen principal del producto)</p>
                             <Tabs defaultActiveKey='1' key="1" size="large" className="mt-3">
                                 <TabPane tab="Entradas del producto">
-                                    Entradas del producto
+                                    <EntradasProducto registros={informacionProducto.registrosEntradas}/>
                                 </TabPane>
                                 <TabPane tab="Salidas del producto" key="2">
                                     <SalidasProducto registros={informacionProducto.registrosSalidas}/>

@@ -47,7 +47,7 @@ export const FinalizarObra = ({obraInfo}) => {
                 </Button>,
                 <Button key="buy" onClick={()=>{
                     if(rol != "ADMIN_ROLE") return message.error("Necesitas tener un rol Administrador!");
-                    if((obraInfo.gastos.totalGastosObra - obraInfo.abonos.cantidadTota) != 0) return message.error("Los abonos y gastos NO estan en 0!");
+                    //if((obraInfo.gastos.totalGastosObra - obraInfo.abonos.cantidadTota) != 0) return message.error("Los abonos y gastos NO estan en 0!");
                     confirm({
             		    title:"¿Seguro quieres terminar la obra?",
             		    icon:<ExclamationCircleOutlined />,

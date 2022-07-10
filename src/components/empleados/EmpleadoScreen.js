@@ -10,6 +10,7 @@ import { InformacionUsuario } from './components/InformacionUsuario';
 import { EditarInformacionGeneral } from './components/EditarInformacionGeneral';
 import { EditarImagenPrincipal } from './components/EditarImagenPrincipal';
 import "./components/style.css";
+import { ResguardosUsuario } from './components/ResguardosUsuario';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
@@ -34,7 +35,6 @@ export const EmpleadoScreen = () => {
 			setUsuarioInfo(usuario);
 		});
 		socket.emit("obtener-obras-en-desarollo",{},(obras)=>{
-			console.log(obras);
 			setObrasDesarollo(obras);
 		});
 	}, []);
@@ -60,17 +60,21 @@ export const EmpleadoScreen = () => {
         	key: 'tab1',
         	tab: 'Total de obras trabajadas',
         },
+		{
+			key:'tab2',
+			tab:'Resguardos del usuario'
+		},
         {
-        	key: 'tab2',
+        	key: 'tab3',
         	tab: 'Información del usuario',
         },
-
     ];
 
     const contentList = 
     	{
 			tab1:<ObrasTrabajadas usuarioInfo={usuarioInfo} socket={socket}/>,
-			tab2:<InformacionUsuario usuarioInfo={usuarioInfo} socket={socket}/>
+			tab2:<ResguardosUsuario usuarioInfo={usuarioInfo} socket={socket}/>,
+			tab3:<InformacionUsuario usuarioInfo={usuarioInfo} socket={socket}/>
     	};
 
 	const tabListEditInfo = [
@@ -130,22 +134,24 @@ export const EmpleadoScreen = () => {
             }
         });
 	}
+    //<Divider orientation="left" orientationMargin="0">Ultimas obras trabajadas</Divider>
 	if(usuarioInfo == undefined){
 		return <h5>Cargando información</h5>
 	}else{
+		console.log(usuarioInfo);
 		return (
 			<div className="container p-lg-5">
 				<div className="row p-lg-5 container" style={{margin:"auto"}}>
-					<div className="col-lg-6 col-sm-12 mt-3 mt-lg-0" style={{margin:0,padding:0}}>
+					<div className="col-lg-4 col-sm-12 mt-3 mt-lg-0" style={{margin:0,padding:0}}>
 						<Avatar shape="square" src={`http://localhost:4000/api/uploads/usuarios/${usuarioInfo.uid}`} style={{width:"250px",height:"250px"}}/>
-    					<Divider orientation="left" orientationMargin="0">Ultimas obras trabajadas</Divider>
+						<p className="fw-bold mt-3">Ultimas obras trabajadas</p>
 						{usuarioInfo.obrasTrabajadas.registros.length > 0 ? renderizarTrabajos() : <p>Ninguna obra trabajada por el momento</p>}
-    					<Divider orientation="left" orientationMargin="0">Habilidades</Divider>
+						<p className="fw-bold mt-3">Habilidades</p>
 						<div className="d-flex flex-wrap gap-4 mt-4">
 							{usuarioInfo.habilidades.length > 0 ? renderizarHabilidades() : <p>Ninguna habilidades registrar por el momento</p>}
 						</div>
 					</div>
-					<div className="col-lg-6 col-sm-12" style={{margin:0,padding:0}} >
+					<div className="col-lg-8 col-sm-12" style={{margin:0,padding:0}} >
 						<div className="d-flex justify-content-between align-items-center flex-wrap">
 							<div className="d-flex justify-content-start align-items-center">
 								<h1 className="display-6 fw-bold me-2">{usuarioInfo.nombre}</h1>
@@ -163,8 +169,8 @@ export const EmpleadoScreen = () => {
 							{rol === ("ADMIN_ROLE" || "ADMINISTRADOR_ROLE") && (usuarioInfo.estado) ? <Button type="primary" danger onClick={handledChangeUserState}>Desabilitar usuario</Button> : <Button type="primary" style={{backgroundColor:"green",border:"green"}} onClick={handledChangeUserState}>Activar usuario</Button>}
 						</div>
 						<Card
-						    bordered={false}
-							style={{margin:0,padding:0}}
+						 	title="Informacion extra del usuario"
+							style={{margin:0,padding:0,width:"100%"}}
             				className="mt-4"
             				tabList={tabList}
             				activeTabKey={activeTabKey1}

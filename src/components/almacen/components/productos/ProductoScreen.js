@@ -8,6 +8,7 @@ import { fetchConToken } from '../../../../helpers/fetch';
 import { Loading } from '../../../obras/Loading';
 import { CodigoBarrasProducto } from './components/CodigoBarrasProducto';
 import { SalidasProducto }  from './components/SalidasProducto';
+import { EntradasProducto } from './components/EntradasProducto';
 const { TabPane } = Tabs;
 
 export const ProductoScreen = () => {
@@ -80,7 +81,7 @@ export const ProductoScreen = () => {
     }
 
     const categoriaColor = (categoria) => {
-        switch (categoria) {
+        switch (categoria.toLowerCase()) {
             case "ferreteria":
                 return <Tag color="cyan" key="categoria">{categoria.toUpperCase()}</Tag> 
             case "vinilos":
@@ -101,10 +102,9 @@ export const ProductoScreen = () => {
     }
 
 
-    if(informacionProducto === undefined){
+    if( Object.keys(informacionProducto).length === 0){
         <Loading/>
     }else{
-        console.log(informacionProducto);
         return (
             <div className="container p-5">
                 <div className="d-flex justify-content-end gap-2 flex-wrap">
@@ -115,7 +115,7 @@ export const ProductoScreen = () => {
                         {/*Información del producto*/}
 						<h1 className="display-6 fw-bold">{informacionProducto.nombre}</h1>
                         <div className="d-flex justify-content-start gap-2 flex-wrap mt-3 mb-3">
-                            {informacionProducto?.categorias?.map(categoria => categoriaColor(categoria))}
+                            {informacionProducto?.categorias?.map(categoria => categoriaColor(categoria.nombre))}
                         </div>                            
                         <p className="fw-bold">Informacion detallada del producto</p>
                         <Descriptions layout="vertical" bordered className="mt-3">
@@ -147,7 +147,7 @@ export const ProductoScreen = () => {
                         </div>
                         <Tabs defaultActiveKey='1' key="1" size="large" className="mt-3">
                             <TabPane tab="Entradas del producto">
-                                <p>Entradas del producto</p>
+                                <EntradasProducto registros={informacionProducto.registrosEntradas}/>
                             </TabPane>
                             <TabPane tab="Salidas del producto" key="2">
                                 <SalidasProducto registros={informacionProducto.registrosSalidas}/>
