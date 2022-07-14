@@ -1,22 +1,32 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Avatar, Badge, Button, Descriptions, List, Tabs, Tag, Typography } from 'antd';
+import { Button, Divider, Tabs, Tag,} from 'antd';
 import { Link, useParams } from 'react-router-dom';
+//import { EditInfo } from './components/EditInfo';
+//import { RealizarRetiroAlmacen } from './components/RealizarRetiroAlmacen';
+import "./components/assets/style.css";
 import { SocketContext } from '../../context/SocketContext';
-import { Loading } from '../obras/Loading';
 import { EntradasProducto } from '../almacen/components/productos/components/EntradasProducto';
 import { SalidasProducto } from '../almacen/components/productos/components/SalidasProducto';
-//import { EditInfo } from './components/EditInfo';
+import { fetchConToken } from '../../helpers/fetch';
+import { SanzSpinner } from '../../helpers/spinner/SanzSpinner';
+
 const { TabPane } = Tabs;
 
 export const ProductoScreen = () => {
+
     const {productoId} = useParams();
     const [informacionProducto, setInformacionProducto] = useState({});
+	const [isModalVisibleEditInfo, setIsModalVisibleEditInfo] = useState(false);
+    const [activeTabKey2, setActiveTabKey2 ] = useState('tab1');
     const {socket} = useContext(SocketContext);
 
     useEffect(()=>{
 
         socket.emit("obtener-producto-por-id",{productoId},(producto)=>{
             setInformacionProducto(producto);
+        });
+
+        fetchConToken(`/uploads/productos/${productoId}`).then(resp => {
         });
 
     },[]);
@@ -30,80 +40,118 @@ export const ProductoScreen = () => {
         });
 
 
-    }, [socket,setInformacionProducto,informacionProducto,productoId]);
+    }, [socket,setInformacionProducto,informacionProducto,fetchConToken,,productoId]);
+
+	const tabListEditInfo = [
+		{
+			key:'tab1',
+			tab:'Editar informacion general del producto'
+		},
+		{
+			key:'tab2',
+			tab:'Editar imagen principal del producto'
+		}
+	];
+
+    const contentEditList = 
+    {
+        tab1:"Editar información del producto",
+		tab2:"Editar imagen del producto"
+    };
+
+    const onTab2Change = key => {
+        setActiveTabKey2(key);
+    }
 
     const categoriaColor = (categoria) => {
-        switch (categoria) {
+        switch (categoria.toLowerCase()) {
             case "ferreteria":
-                return <Tag color="cyan" key="categoria">{categoria.toUpperCase()}</Tag> 
+                return <Tag color="cyan" style={{fontSize:"13px",padding:"13px"}} key="categoria">{categoria}</Tag> 
             case "vinilos":
-                return <Tag color="green" key="categoria">{categoria.toUpperCase()}</Tag> 
+                return <Tag color="green" style={{fontSize:"13px",padding:"13px"}} key="categoria">{categoria}</Tag> 
             case "herramientas":
-                return <Tag color="blue" key="categoria">{categoria.toUpperCase()}</Tag> 
+                return <Tag color="blue" style={{fontSize:"13px",padding:"13px"}} key="categoria">{categoria}</Tag> 
             case "pisosAzulejos":
-                return <Tag color="orange" key="categoria">{categoria.toUpperCase()}</Tag>
+                return <Tag color="orange" style={{fontSize:"13px",padding:"13px"}} key="categoria">{categoria}</Tag>
             case "fontaneria":
-                return <Tag color="red" key="categoria">{categoria.toUpperCase()}</Tag>
+                return <Tag color="red" style={{fontSize:"13px",padding:"13px"}} key="categoria">{categoria}</Tag>
             case "iluminacion":
-                return <Tag color="yellow" key="categoria">{categoria.toUpperCase()}</Tag>
+                return <Tag color="yellow" style={{fontSize:"13px",padding:"13px"}} key="categoria">{categoria}</Tag>
             case "materialElectrico":
-                return <Tag color="gold" key="categoria">{categoria.toUpperCase()}</Tag>
+                return <Tag color="gold" style={{fontSize:"13px",padding:"13px"}} key="categoria">{categoria}</Tag>
+            case "selladores":
+                return <Tag color="gold" style={{fontSize:"13px",padding:"13px"}} key="categoria">{categoria}</Tag>
             default:
-                return <Tag color="green" key="categoria">{categoria.toUpperCase()}</Tag> 
+                return <Tag color="green" style={{fontSize:"13px",padding:"13px"}} key="categoria">{categoria}</Tag> 
         }
     }
 
-   if(Object.keys(informacionProducto).length === 0){
-        <Loading/>
+
+    if( Object.keys(informacionProducto).length === 0){
+        return <SanzSpinner/>
     }else{
-            return (
-                <div className="container p-5">
-                    <div className="d-flex justify-content-end gap-2 flex-wrap">
-                        <Link to="/aplicacion/almacen/"><Button type="primary">Regresar a lista de productos</Button></Link>
-                    </div>
-                    <div className="row mt-5">
-                        <div className="col-lg-6 col-sm-12">
-                           {/*Información del producto*/}
-							<h1 className="display-6 fw-bold">{informacionProducto.nombre}</h1>
-                            <span>Categorias del producto:</span><br/>
-                            <div className="d-flex justify-content-start gap-2 flex-wrap mt-3 mb-3">
-                                {informacionProducto?.categorias?.map(categoria => categoriaColor(categoria))}
-                            </div>
-                            <span>Información detallada del producto</span>
-                            <Descriptions layout="vertical" bordered className="mt-3">
-                                <Descriptions.Item label="Nombre del producto">{informacionProducto.nombre}</Descriptions.Item>
-                                <Descriptions.Item label="Cantidad">{informacionProducto.cantidad}</Descriptions.Item>
-                                <Descriptions.Item label="Estado">{informacionProducto.estadoProducto}</Descriptions.Item>
-                                <Descriptions.Item label="Marca del producto">{informacionProducto.marcaProducto}</Descriptions.Item>
-                                <Descriptions.Item label="Costo del producto">{informacionProducto.costo}</Descriptions.Item>
-                                <Descriptions.Item label="Unidad">{informacionProducto.unidad}</Descriptions.Item>
-                                <Descriptions.Item label="Producto registrado por">Carlos Sanchez</Descriptions.Item>
-                                <Descriptions.Item label="Estatus" span={3}>
-                                    <Badge status={informacionProducto.estatus ? "processing" : "error"} text={informacionProducto.estatus ? "Disponible en almacen" : "NO disponible en almacen"}/>
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Fecha de ingreso al sistema">{informacionProducto.fechaRegistro}</Descriptions.Item>
-                                <Descriptions.Item label="Ultima revisión en bodega" span={2}>
-                                    {informacionProducto.fechaRegistro}
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Descripción del producto">
-                                    {informacionProducto.descripcion}
-                                </Descriptions.Item>
-                            </Descriptions>
-                        </div>
-                        <div className="col-lg-6 col-sm-12 mt-3 mt-lg-0">
-                            <Avatar shape="square" src={`http://localhost:4000/api/uploads/productos/${informacionProducto._id}`} style={{width:"250px",height:"250px"}}/>
-                            <p className="text-muted">(Imagen principal del producto)</p>
-                            <Tabs defaultActiveKey='1' key="1" size="large" className="mt-3">
-                                <TabPane tab="Entradas del producto">
-                                    <EntradasProducto registros={informacionProducto.registrosEntradas}/>
-                                </TabPane>
-                                <TabPane tab="Salidas del producto" key="2">
-                                    <SalidasProducto registros={informacionProducto.registrosSalidas}/>
-                                </TabPane>
-                            </Tabs>
-                        </div>
-                    </div>
+        return (
+            <div className="container p-3 p-lg-5">
+                <div className="d-flex justify-content-end gap-2 flex-wrap">
+                    <Link to="/aplicacion/almacen"><Button type="primary">Regresar a lista de productos</Button></Link>
                 </div>
+                 <div className="row mt-lg-5">
+                    {/* Imagen del producto*/}
+                    <div className="col-lg-6 col-12 d-flex justify-content-center align-items-start">
+                        <img src={`http://localhost:4000/api/uploads/productos/${informacionProducto._id}`} className="imagen-producto"/>
+                    </div>
+
+                    {/* Informacion basica del producto*/}
+                    <div className="col-lg-6 col-12 d-flex flex-column">
+                        <h1 className="nombre-producto">{informacionProducto.nombre}</h1>
+                        {informacionProducto.estatus ? <h1 className="text-success estatus-producto">Disponible</h1> : <h1 className="text-danger descripcion">No disponible</h1>}
+                        <div className="d-flex justify-content-start gap-2 flex-wrap mt-3 mb-3">
+                            {informacionProducto?.categorias?.map(categoria => categoriaColor(categoria.nombre))}
+                        </div>  
+                        <h1 className="titulo-descripcion">Precio promedio X unidad:</h1>
+                        <h1 className="precio-por-unidad-producto">$332.22</h1>
+                        <div className="row mt-5">
+                            <h1 className="titulo-descripcion col-6">Cantidad en bodega:</h1>
+                            <h1 className="descripcion col-6">{informacionProducto.cantidad}</h1>
+                            <h1 className="titulo-descripcion col-6">Marca:</h1>
+                            <h1 className="descripcion col-6">{informacionProducto.marcaProducto}</h1>
+                            <h1 className="titulo-descripcion col-6">Unidad: </h1>
+                            <h1 className="descripcion col-6">{informacionProducto.unidad}</h1>
+                            <h1 className="titulo-descripcion col-6">Estado del producto: </h1>
+                            <h1 className="descripcion col-6">{informacionProducto.estadoProducto}</h1>
+                            <h1 className="titulo-descripcion col-6 ">Fecha de registro: </h1>
+                            <h1 className="descripcion col-6 text-danger">{informacionProducto.fechaRegistro}</h1>
+                            <p className="mt-5 nota col-12 text-center">Para mas detalles del producto comunicate a almacen...</p>
+                        </div>
+                    </div>
+                    
+                    {/*Registros de el producto*/}
+                    <div className="col-lg-6 col-12 d-flex flex-column">
+                        <Divider/>
+                        <h1 className="nombre-producto">Registros de el producto</h1>
+                        <Tabs defaultActiveKey='1' key="1" size="large">
+                            <TabPane tab="Entradas del producto">
+                                <EntradasProducto registros={informacionProducto.registrosEntradas}/>
+                            </TabPane>
+                            <TabPane tab="Salidas del producto" key="2">
+                                <SalidasProducto registros={informacionProducto.registrosSalidas}/>
+                            </TabPane>
+                        </Tabs>
+                    </div>
+
+                    {/* Descripcion del producto y sus aplicaciones*/}
+                    <div className="col-lg-6 col-12 d-flex flex-column">
+                        <Divider/>
+                        <h1 className="nombre-producto">Descripcion del producto</h1>
+                        <h1 className="descripcion-producto">{informacionProducto.descripcion}</h1>
+                        <Divider/>
+                        <h1 className="nombre-producto">Aplicaciones del producto</h1>
+                        <h1 className="descripcion-producto">*Permite poner las paredes en un buen estado antees de la pintada</h1>
+                        <h1 className="descripcion-producto">*Permite poner las paredes en un buen estado antees de la pintada</h1>
+                        <h1 className="descripcion-producto">*Permite poner las paredes en un buen estado antees de la pintada</h1>
+                    </div>
+                 </div>
+            </div>
         )
     }
 };

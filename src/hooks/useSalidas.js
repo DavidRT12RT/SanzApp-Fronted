@@ -5,13 +5,16 @@ export const useSalidas = () => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [salidas, setSalidas] = useState([]);
+    const [salidasInformacion, setSalidasInformacion] = useState({});
 
     useEffect(() => {
         //Carga de camionetas
+        setIsLoading(true);
         fetchConToken("/salidas",{},"GET")
             .then(response => response.json())
             .then(resp => {
-                setSalidas(resp.salidas)
+                setSalidas(resp.salidas);
+                setSalidasInformacion({total:resp.total});
             })
         setIsLoading(false);
     }, [])
@@ -19,5 +22,6 @@ export const useSalidas = () => {
     return {
         isLoading,
         salidas,
+        salidasInformacion
     };
 }

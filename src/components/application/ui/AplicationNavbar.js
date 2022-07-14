@@ -93,21 +93,20 @@ export const AplicationNavbar = () =>{
                         </li>
                     </ul>
 
-
                     {
                         online
                         ? <span className="navbar-text text-success h6">Servidor: Online</span>
                         : <span className="navbar-text text-danger h6">Servidor: Offline</span>
                     }
-                    <div class="flex-shrink-0 dropdown ms-lg-3">
-                        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src={`http://localhost:4000/api/uploads/usuarios/${uid}`} alt="mdo" width="40" height="40" class="rounded-circle" style={{"objectFit":"cover"}}/>
+                    <div className="flex-shrink-0 dropdown ms-lg-3">
+                        <a href="#" className="d-block text-white text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src={`http://localhost:4000/api/uploads/usuarios/${uid}`} alt="mdo" width="40" height="40" className="rounded-circle" style={{"objectFit":"cover"}}/>
                         </a>
-                        <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                            <li><a class="dropdown-item" href="#">Perfil</a></li>
+                        <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                            <li><a className="dropdown-item" href="#">Perfil</a></li>
                             {rol === "ADMIN_ROLE" && renderizarBoton()}
-                            <li><hr class="dropdown-divider"/></li>
-                            <li><a class="dropdown-item" href="#" onClick={handleLogout}>Cerrar sesion</a></li>
+                            <li><hr className="dropdown-divider"/></li>
+                            <li><a className="dropdown-item" href="#" onClick={handleLogout}>Cerrar sesion</a></li>
                         </ul>
                     </div>
                 </div>

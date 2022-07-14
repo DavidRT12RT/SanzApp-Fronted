@@ -6,6 +6,8 @@ import { startLogout } from "../../../actions/authActions";
 import { eventLogout } from "../../../actions/eventsActions";
 import { SocketContext } from "../../../context/SocketContext";
 //import {AuthContext} from "../../../auth/authContext";
+import "./style.css";
+
 
 export const AlmacenNavbar = () =>{
     //Hook for change the state of the user and navigate
@@ -57,7 +59,21 @@ export const AlmacenNavbar = () =>{
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/productos/" aria-current="page">Almacen</NavLink>
+                            } to="/almacen/panel-de-control/" aria-current="page">Panel de control</NavLink>
+                        </li>
+
+
+
+                        <li className="nav-item">
+                            <NavLink className={({isActive})=>
+                                "nav-link h6" + (isActive ? " active" : "")
+                            } to="/almacen/productos/" aria-current="page">Productos en almacen</NavLink>
+                        </li>
+
+                        <li className="nav-item">
+                            <NavLink className={({isActive})=>
+                                "nav-link h6" + (isActive ? " active" : "")
+                            } to="/almacen/categorias/" aria-current="page">Categorias</NavLink>
                         </li>
 
                         <li className="nav-item">
@@ -87,7 +103,7 @@ export const AlmacenNavbar = () =>{
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/productos/inventario/" aria-current="page">Realizar inventario</NavLink>
+                            } to="/almacen/inventario/" aria-current="page">Inventario</NavLink>
                         </li>
 
                     </ul>
@@ -97,15 +113,15 @@ export const AlmacenNavbar = () =>{
                         ? <span className="navbar-text text-success h6">Servidor: Online</span>
                         : <span className="navbar-text text-danger h6">Servidor: Offline</span>
                     }
-                    <div class="flex-shrink-0 dropdown ms-lg-3">
-                        <a href="#" class="d-block text-white text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src={`http://localhost:4000/api/uploads/usuarios/${uid}`} alt="mdo" width="40" height="40" class="rounded-circle" style={{"objectFit":"cover"}}/>
+                    <div className="flex-shrink-0 dropdown ms-lg-3">
+                        <a href="#" className="d-block text-white text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src={`http://localhost:4000/api/uploads/usuarios/${uid}`} alt="mdo" width="40" height="40" className="rounded-circle" style={{"objectFit":"cover"}}/>
                         </a>
-                        <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                            <li><a class="dropdown-item" href="#">Perfil</a></li>
+                        <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                            <li><a className="dropdown-item" href="#">Perfil</a></li>
                             {rol === "ADMIN_ROLE" && renderizarBoton()}
-                            <li><hr class="dropdown-divider"/></li>
-                            <li><a class="dropdown-item" href="#" onClick={handleLogout}>Cerrar sesion</a></li>
+                            <li><hr className="dropdown-divider"/></li>
+                            <li><a className="dropdown-item" href="#" onClick={handleLogout}>Cerrar sesion</a></li>
                         </ul>
                     </div>
                 </div>

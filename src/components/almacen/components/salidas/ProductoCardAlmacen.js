@@ -41,7 +41,7 @@ export const ProductoCardAlmacen = ({producto,tipo}) => {
                             <p className="text-white bg-success">(cantidad devuelta a almacen {producto.cantidad})</p>
                             <span>Categorias del producto:</span><br/>
                             <div className="d-flex justify-content-start gap-2 flex-wrap mt-3">
-                                {producto.id.categorias.map(categoria => categoriaColor(categoria))}
+                                {producto.id.categorias.map(categoria => categoriaColor(categoria.nombre))}
                             </div>
                             <p className="text-muted mt-3">{producto.id.descripcion}</p>
                             <Link to={`/almacen/productos/${producto.id._id}/`}>Ver información del producto</Link>
@@ -59,7 +59,7 @@ export const ProductoCardAlmacen = ({producto,tipo}) => {
                             <p className="text-white bg-danger">(cantidad retirada del almacen: {producto.cantidad})</p>
                             <span>Categorias del producto:</span><br/>
                             <div className="d-flex justify-content-start gap-2 flex-wrap mt-3">
-                                {producto.id.categorias.map(categoria => categoriaColor(categoria))}
+                                {producto.id.categorias.map(categoria => categoriaColor(categoria.nombre))}
                             </div>
                             <p className="text-muted mt-3">{producto.id.descripcion}</p>
                             <Link to={`/almacen/productos/${producto.id._id}/`}>Ver información del producto</Link>
@@ -77,7 +77,7 @@ export const ProductoCardAlmacen = ({producto,tipo}) => {
                             <p className="text-white bg-success">(cantidad ingresada a almacen {producto.cantidad})</p>
                             <span>Categorias del producto:</span><br/>
                             <div className="d-flex justify-content-start gap-2 flex-wrap mt-3">
-                                {producto.id.categorias.map(categoria => categoriaColor(categoria))}
+                                {producto.id.categorias.map(categoria => categoriaColor(categoria.nombre))}
                             </div>
                             <p className="text-muted mt-3">{producto.id.descripcion}</p>
                             <Link to={`/almacen/productos/${producto.id._id}/`}>Ver información del producto</Link>

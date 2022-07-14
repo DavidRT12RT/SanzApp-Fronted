@@ -5,6 +5,7 @@ export const useEntradas = () => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [entradas, setEntradas] = useState([]);
+    const [entradasInformacion, setEntradasInformacion] = useState({});
 
     useEffect(() => {
         //Carga de camionetas
@@ -12,6 +13,7 @@ export const useEntradas = () => {
             .then(response => response.json())
             .then(resp => {
                 setEntradas(resp.entradas)
+                setEntradasInformacion({total:resp.total});
             })
         setIsLoading(false);
     }, [])
@@ -19,5 +21,6 @@ export const useEntradas = () => {
     return {
         isLoading,
         entradas,
+        entradasInformacion
     };
 }

@@ -99,26 +99,19 @@ export const EntradasAlmacen = () => {
                         la lista de productos ingresada a almacen,etc.
                 	</span>
 
-                    <div className="container p-5 d-flex gap-2 justify-content-center align-items-center mt-3 flex-column">
-						<h4 className="fw-bold">Registros RECIENTES del almacen</h4>
-                        <p className="text-muted text-center">Aqui se mostraran las 5 entradas recientes que ha tenido el almacen</p>
-						<Table columns={columns} dataSource={[...entradasRegistros.slice(0,5)]} bordered/>
-                    </div>
-
                     <div className="container p-5 d-flex gap-2 justify-content-center align-items-center mt-3 flex-column ">
-						<h4 className="fw-bold">Registros TOTALES del almacen</h4>
-                        <p className="text-muted text-center">Aqui se mostraran TODAS las entradas registradas del almacen desde la primera hasta la ultima</p>
-						<div className="d-flex justify-content-start gap-2 flex-wrap align-items-center">
+						<div className="d-flex justify-content-center gap-2 flex-wrap align-items-center">
 	                		<Search
                     			placeholder="Ingresa el codigo de barras de la entrada..."
                     			allowClear
                     			autoFocus
                     			enterButton="Buscar"
-                    			style={{width:"500px"}}
+								size="large"
                 			/> 
-                    		<Dropdown overlay={menu}>
-                        		<Button onClick={(e)=> e.preventDefault()}>Filtrar por: </Button>
-                    		</Dropdown>
+							 <div className="d-flex justify-content-center gap-3 flex-wrap align-items-center mt-3">
+								<Button type="primary" size="large" onClick={()=>{}}>Filtrar registros</Button>
+								<Button type="primary" danger size="large" onClick={()=>{}}>Limpiar filtros</Button>
+							 </div>
 						</div>
 						<Table columns={columns} className="mt-3" dataSource={entradasRegistros} bordered/>
 						{informacionRegistroParticular != null && (

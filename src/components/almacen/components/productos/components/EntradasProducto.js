@@ -47,27 +47,11 @@ export const EntradasProducto = ({registros}) => {
             key:"fecha",
             dataIndex:"fecha"
         },
-        {
-            title:"Detalles",
-            key:"detalles",
-            dataIndex:"beneficiario",
-            render: (text,record) => {
-                return (
-                    <a href="#" onClick={()=>{setInformacionRetiro(record);}}>Ver detalles de la entrada</a>
-                )
-            }
-        }
     ];
     
     return (
         <>
-            <h6 className="text-muted mt-3">Entradas del producto</h6>
-            <Input.Search 
-                placeholder="Busca un registro por su concepto"
-                enterButton
-                className="search-bar-class mt-3"
-            />
-            <Table columns={columns} dataSource={registrosEntradas} pagination={{pageSize:4}} className="mt-3" size="large"/>
+            <Table columns={columns} dataSource={registrosEntradas} pagination={{pageSize:4}} size="large" bordered/>
         </>
     )
 }

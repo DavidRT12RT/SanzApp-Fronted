@@ -97,7 +97,7 @@ export const EmpleadosScreen = () => {
         return <Loading/>
     }else{
         return (
-            <div className="mt-lg-5 container p-5 shadow rounded">
+            <div className="container p-5 shadow rounded">
                 <div className="d-flex justify-content-between align-items-center flex-wrap">
                     <h1 className="display-5 fw-bold">Registro total de empleados</h1>
                     <div className="d-flex justify-content-center align-items-center gap-2">

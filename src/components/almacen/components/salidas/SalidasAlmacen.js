@@ -215,9 +215,6 @@ export const SalidasAlmacen = () => {
 						detalles como el beneficiario ,fecha ,motivo ,etc.
                 	</span>
 
-                    <div className="container p-5 d-flex gap-2 justify-content-center align-items-center mt-3 flex-column">
-						<Table columns={columns} dataSource={[...salidasRegistros.slice(0,5)]} bordered/>
-                    </div>
 
                     <div className="container p-5 d-flex gap-2 justify-content-center align-items-center mt-3 flex-column ">
 						<div className="d-flex justify-content-center gap-2 flex-wrap align-items-center">

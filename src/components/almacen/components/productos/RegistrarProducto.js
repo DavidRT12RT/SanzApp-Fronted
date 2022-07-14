@@ -4,10 +4,8 @@ import { Row, Col } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ExclamationCircleOutlined,UploadOutlined } from '@ant-design/icons';
-import moment from "moment";
 import { fetchConTokenSinJSON } from '../../../../helpers/fetch';
 import { useCategorias } from '../../../../hooks/useCategorias';
-import { Loading } from '../../../obras/Loading';
 const { confirm } = Modal;
 
 export const RegistrarProducto = () => {
@@ -15,7 +13,6 @@ export const RegistrarProducto = () => {
 	const [uploading, setUploading] = useState(false);
 	const [filesList, setFilesList] = useState([]);
 	const [finish, setFinish] = useState(false);
-    const navigate = useNavigate();
 	const { isLoading,categorias } = useCategorias()
 
     const {uid,name} = useSelector((state) => state.auth);
@@ -69,13 +66,14 @@ export const RegistrarProducto = () => {
         		});
 				//Emitir evento al backend de crear nuevo producto!
 				try {
-        			values.fechaRegistro = moment(values.fechaRegistro).toDate();
 					const resp = await fetchConTokenSinJSON("/productos",formData,"POST");
+					const body = await resp.json();
 					if(resp.status === 201){
-						const body = await resp.json();
 						message.success("Producto creado con exito!");
-						setFinish(true);
+						return setFinish(true);
 						//navigate(`/almacen/productos/${body._id}`);
+					}else{
+						return message.error(body.msg);
 					}
 				} catch (error) {
 					message.error("Error creando el producto!");	

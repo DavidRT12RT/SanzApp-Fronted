@@ -126,14 +126,7 @@ export const SalidasProducto = ({registros}) => {
 
     return (
         <>
-            <h6 className="text-muted mt-3">Salidas del producto</h6>
-            <Input.Search 
-                placeholder="Busca un registro por su concepto"
-                enterButton
-                className="search-bar-class mt-3"
-            />
-            <Table columns={columns} dataSource={registrosSalidas} pagination={{pageSize:4}} className="mt-3" size="large"/>
-
+            <Table columns={columns} dataSource={registrosSalidas} pagination={{pageSize:4}} size="large" bordered/>
             {/*El usuario seteo informacion de algun retiro es decir vera el drawer*/}
             {informacionRetiro != null && (
                 <Drawer width={640} placement="right" closable={false} onClose={()=>{setIsDrawerVisible(false);setInformacionRetiro(null)}} visible={isDrawerVisible}>

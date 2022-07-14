@@ -5,6 +5,8 @@ export const useCategorias = () => {
 
     const [isLoading,setisloading] = useState(true);
     const [categorias, setCategorias] = useState([]);
+    const [categoriasInformacion, setCategoriasInformacion] = useState(undefined);
+
 
     useEffect(() => {
         //Carga de empleados
@@ -12,6 +14,7 @@ export const useCategorias = () => {
             .then(response => response.json())
             .then(resp => {
                 setCategorias(resp.categorias);
+                setCategoriasInformacion({total:resp.total});
             });
         setisloading(false);
     }, []);
@@ -20,6 +23,8 @@ export const useCategorias = () => {
     
     return {
         isLoading,
-        categorias
+        categorias,
+        setCategorias,
+        categoriasInformacion
     }
 }

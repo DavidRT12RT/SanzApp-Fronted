@@ -20,7 +20,7 @@ export const EmpleadoScreen = () => {
 	const { empleadoId:usuarioId } = useParams();
     const { socket } = useContext(SocketContext);
     const [form] = Form.useForm();
-	const [usuarioInfo, setUsuarioInfo] = useState();
+	const [usuarioInfo, setUsuarioInfo] = useState(undefined);
 	//Obras en desarollo por si quieren agregar un usuario a una obra desde usuarios
 	const [obrasDesarollo, setObrasDesarollo] = useState([]);
   	const [isModalVisible, setIsModalVisible] = useState(false);
@@ -96,13 +96,15 @@ export const EmpleadoScreen = () => {
 	const renderizarTrabajos = () => {
 		return usuarioInfo.obrasTrabajadas.registros.map(element => {
 			return (
-				<div className="mt-4" style={{maxWidth:"400px"}}>
-					<div className="d-flex justify-content-between">
+				<div className="mt-4 p-3 card" style={{maxWidth:"300px"}}>
+					<div className="d-flex justify-content-center flex-wrap gap-2 text-center">
 						<h5>{element.nombreObra}</h5>
-						<Tag color="blue" style={{padding:"6px"}}>{element.rol.toUpperCase()}</Tag>
+						<Tag color="blue" key={element._id} style={{height:"30px"}}>{element.rol.toUpperCase()}</Tag>
 					</div>
-					<p className="text-muted">{element.direccionRegionalObra}</p>
-					<p className="text-muted">{element.fechaAgregado}</p>
+					<div className="d-flex justify-content-center flex-wrap gap-3 mt-3">
+						<p className="text-muted">{element.direccionRegionalObra}</p>
+						<p className="text-muted">{element.fechaAgregado}</p>
+					</div>
 				</div>
 			)
 		});
@@ -138,15 +140,14 @@ export const EmpleadoScreen = () => {
 	if(usuarioInfo == undefined){
 		return <h5>Cargando información</h5>
 	}else{
-		console.log(usuarioInfo);
 		return (
 			<div className="container p-lg-5">
 				<div className="row p-lg-5 container" style={{margin:"auto"}}>
 					<div className="col-lg-4 col-sm-12 mt-3 mt-lg-0" style={{margin:0,padding:0}}>
 						<Avatar shape="square" src={`http://localhost:4000/api/uploads/usuarios/${usuarioInfo.uid}`} style={{width:"250px",height:"250px"}}/>
-						<p className="fw-bold mt-3">Ultimas obras trabajadas</p>
+						<h5 className="fw-bold mt-3">Ultimas obras trabajadas</h5>
 						{usuarioInfo.obrasTrabajadas.registros.length > 0 ? renderizarTrabajos() : <p>Ninguna obra trabajada por el momento</p>}
-						<p className="fw-bold mt-3">Habilidades</p>
+						<h5 className="fw-bold mt-3">Habilidades</h5>
 						<div className="d-flex flex-wrap gap-4 mt-4">
 							{usuarioInfo.habilidades.length > 0 ? renderizarHabilidades() : <p>Ninguna habilidades registrar por el momento</p>}
 						</div>

@@ -36,7 +36,7 @@ export const RegistrarObra = () => {
     };
   
     return (
-        <div className='container background mt-lg-5 p-5 shadow rounded'>
+        <div className='container background p-5 shadow rounded'>
             <h1>Crear una nueva obra</h1>
             <span className='lead'>¿Que información tendra la obra o servicio?</span>
             <Row gutter={16} className="mt-4 mt-lg-5 ">

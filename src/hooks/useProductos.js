@@ -4,7 +4,7 @@ import { fetchConToken } from "../helpers/fetch";
 export const useProductos = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [productos, setProductos] = useState([]);
-    const [productosInfo, setProductosInfo] = useState();
+    const [productosInfo, setProductosInfo] = useState(undefined);
 
     useEffect(() => {
         //Carga de productos
@@ -12,7 +12,7 @@ export const useProductos = () => {
             .then(response => response.json())
             .then(resp => {
                 setProductos(resp.productos);
-                setProductosInfo(resp.total);
+                setProductosInfo({total:resp.total});
             });
         setIsLoading(false);
     }, []);
