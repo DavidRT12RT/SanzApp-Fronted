@@ -58,37 +58,37 @@ export const AplicationNavbar = () =>{
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/aplicacion/almacen" aria-current="page">Almacen</NavLink>
+                            } to="/aplicacion/almacen/" aria-current="page">Almacen</NavLink>
                         </li>
 
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/aplicacion/obras" aria-current="page">Obras</NavLink>
+                            } to="/aplicacion/obras/" aria-current="page">Obras</NavLink>
                         </li>
                          
                          <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/aplicacion/empleados" aria-current="page">Empleados</NavLink>
+                            } to="/aplicacion/empleados/" aria-current="page">Empleados</NavLink>
                         </li>
 
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/aplicacion/calendario" aria-current="page">Calendario general</NavLink>
+                            } to="/aplicacion/calendario/" aria-current="page">Calendario general</NavLink>
                         </li>
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/aplicacion/oficina/gestion" aria-current="page">Gestion de oficina</NavLink>
+                            } to="/aplicacion/oficina/gestion/" aria-current="page">Gestion de oficina</NavLink>
                         </li>
                         <li className="nav-item dropdown">
                            <NavLink className={({isActive})=>
                                 "nav-link dropdown-toggle h6" + (isActive ? " active" : "")} to="/aplicacion/camionetas" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded={false}>Control de camionetas</NavLink>
                             <ul className="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
-                                <li><NavLink className={({isActive})=>"h6 dropdown-item" +(isActive ? " active" : "")} to="/aplicacion/camionetas/localizacion">Localización de camionetas</NavLink></li>
-                                <li><NavLink  className={({isActive})=>"h6 dropdown-item" +(isActive ? " active" : "")} to="/aplicacion/camionetas/gestion">Gestion de camionetas</NavLink></li>
+                                <li><NavLink className={({isActive})=>"h6 dropdown-item" +(isActive ? " active" : "")} to="/aplicacion/camionetas/localizacion/">Localización de camionetas</NavLink></li>
+                                <li><NavLink  className={({isActive})=>"h6 dropdown-item" +(isActive ? " active" : "")} to="/aplicacion/camionetas/gestion/">Gestion de camionetas</NavLink></li>
                             </ul>
                         </li>
                     </ul>

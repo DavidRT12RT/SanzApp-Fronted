@@ -23,35 +23,36 @@ export const RetirarAlmacen = () => {
     //Marcador que nos ayudara a saber si se termino el proceso y mostrar la pantalla de success
     const [finishRetiro, setFinishRetiro] = useState({estatus:false,salida:{}});
 
-    const agregarProducto = (id) => {
+    const agregarProducto = async(id) => {
 
-        //Primera verificamos que el producto exista!
-        socket.emit("producto-existe-por-id",id,(confirmacion)=>{
+        const resp = await fetchConToken(`/productos/${id}`);
+        const body = await resp.json();
 
-            if(!confirmacion.ok) return message.error("No existe ningun producto por ese ID!");
-
-            //Si el producto existe lo dejamos añadir o seguir añadiendo
-            if(confirmacion.producto.estatus === false) {
-                setValueSearch("");
-                return message.error("Producto con estatus NO DISPONIBLE");
-            }
-            //Si el producto no tiene cantidad en stock 
-            if(confirmacion.producto.cantidad === 0){
-                setValueSearch();
-                return message.error("Producto sin cantidad en stock registrado!");
-            }
-
-            let bandera = false;
-            const nuevaListaProductos = listaProductos.map(producto => {
-                if(producto.id === id){
-                    bandera = true;
-                    (confirmacion.producto.cantidad - producto.cantidad) === 0 ? message.error("No puedes agregar mas de lo que hay en bodega registrado!") : producto.cantidad += 1;
-                }
-                return producto;
-            });
-            bandera ? setListaProductos(nuevaListaProductos) : setListaProductos(productos => [...productos,{id,cantidad:1,}]);
+        if(resp.status != 200) {
             setValueSearch("");
+            return message.error("No existe ningun producto por ese ID!");
+        }
+
+        if(body.estatus === false ) {
+            setValueSearch("");
+            return message.error("Producto con estatus NO DISPONIBLE");
+        }
+
+        if(body.cantidad === 0){
+            setValueSearch();
+            return message.error("Producto sin cantidad en stock registrado!");
+        }
+
+        let bandera = false;
+        const nuevaListaProductos = listaProductos.map(producto => {
+            if(producto.id === id){
+                bandera = true;
+                (body.cantidad - producto.cantidad) === 0 ? message.error("No puedes agregar mas de lo que hay en bodega registrado!") : producto.cantidad += 1;
+            }
+            return producto;
         });
+        bandera ? setListaProductos(nuevaListaProductos) : setListaProductos(productos => [...productos,{id,cantidad:1,}]);
+        setValueSearch("");
     }
 
 
@@ -81,15 +82,15 @@ export const RetirarAlmacen = () => {
 			cancelText:"Volver atras",
             async onOk(){
                 setLoading(true);
-                socket.emit("retiro-productos-almacen",{listaProductos,values},(confirmacion)=>{
-                    if(confirmacion.ok){
-                        message.success(confirmacion.msg);
-                        setIsModalVisible(false);
-                        setFinishRetiro({estatus:true,salida:confirmacion.salida});
-                    }else{
-                        message.error(confirmacion.msg);
-                    }
-                });
+                const resp = await fetchConToken("/salidas/retiro-productos-almacen",{listaProductos,values},"POST");
+                const body = await resp.json();
+                if(resp.status === 200){
+                    message.success(body.msg);
+                    setIsModalVisible(false);
+                    setFinishRetiro({estatus:true,salida:body.salida});
+                }else{
+                    message.error(body.msg);
+                }
                 setLoading(false);
            	},
         });
@@ -227,7 +228,7 @@ export const RetirarAlmacen = () => {
                                     <Input.TextArea/>
                                 </Form.Item>
 
-                            <Button type="primary" htmlType="submit" loading={loading}>Realizar retiro de almacen</Button>
+                                <Button type="primary" htmlType="submit" loading={loading}>Realizar retiro de almacen</Button>
                             </Form>
                         </Modal>
                     </>

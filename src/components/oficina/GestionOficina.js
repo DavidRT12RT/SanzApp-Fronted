@@ -5,6 +5,7 @@ import { SocketContext } from '../../context/SocketContext';
 import { FacturasGeneralOficina } from './components/FacturasGeneralOficina';
 import moment from 'moment';
 import locale from "antd/es/date-picker/locale/es_ES"
+import { fetchConToken } from '../../helpers/fetch';
 
 export const GestionOficina = () => {
     const startOfMonth = moment().startOf('month').locale('es').format("YYYY-MM-DD");
@@ -21,9 +22,14 @@ export const GestionOficina = () => {
 
     //Obtener información de la oficina cuando el componente se monte
     useEffect(() => {
-        socket.emit("obtener-informacion-gastos-oficina",{},(paquete)=>{
-            paquete.ok ? setOficinaInfo(paquete.oficina) : message.error(paquete.msg);
-        });
+        const fetchData = async() => {
+            const resp = await fetchConToken("/oficina");
+            const body = await resp.json();
+            if(resp.status === 200) return setOficinaInfo(body);
+            //Hubo un error en la busqueda
+            return message.error(body.msg);
+        }
+        fetchData();
     }, []);
    
     //Obtener la información de la oficina cuando se actualize por otro cliente

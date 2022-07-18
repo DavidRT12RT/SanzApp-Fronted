@@ -3,6 +3,7 @@ import React, { useContext, useState,useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom'
 import { SocketContext } from '../../context/SocketContext';
+import { fetchConToken } from '../../helpers/fetch';
 import { EditarImagenPrincipal } from './EditarImagenPrincipal';
 import { EditarInformacionGeneral } from './EditarInformacionGeneral';
 import { FacturasGasolina } from './FacturasGasolina';
@@ -24,14 +25,17 @@ export const CamionetaScreen = () => {
     //Solicitando camioneta por id por sockets
 
     useEffect(() => {
-        socket.emit("obtener-camioneta-por-id", { camionetaId }, (paquete) => {
-            if(paquete.ok){
-                setCamionetaInfo(paquete.camioneta); 
+        const fetchData = async() => {
+            const resp = await fetchConToken(`/camionetas/${camionetaId}`);
+            const body = await resp.json();
+            if(resp.status === 200){
+                setCamionetaInfo(body); 
             }else{
-                message.error(paquete.msg);
-                return navigate("/aplicacion/camionetas/gestion");
+                message.error(body.msg);
+                return navigate(-1);
             }
-        });
+        }
+        fetchData();
     }, []);
 
 

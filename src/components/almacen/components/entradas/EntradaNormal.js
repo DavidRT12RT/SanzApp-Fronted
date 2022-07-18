@@ -20,24 +20,22 @@ export const EntradaNormal = () => {
     //Marcador que nos ayudara a saber si se termino el proceso y mostrar la pantalla de success
     const [finishEntrada, setFinishEntrada] = useState({estatus:false,entrada:{}});
 
-    const agregarProducto = (id) => {
+    const agregarProducto = async(id) => {
 
         //Primera verificamos que el producto exista!
-        socket.emit("producto-existe-por-id",id,(confirmacion)=>{
-
-            if(!confirmacion.ok) return message.error("No existe ningun producto por ese ID!");
-
-            let bandera = false;
-            const nuevaListaProductos = listaProductos.map(producto => {
-                if(producto.id === id){
-                    bandera = true;
-                    (confirmacion.producto.cantidad - producto.cantidad) === 0 ? message.error("No puedes agregar mas de lo que hay en bodega registrado!") : producto.cantidad += 1;
-                }
-                return producto;
-            });
-            bandera ? setListaProductos(nuevaListaProductos) : setListaProductos(productos => [...productos,{id,cantidad:1,}]);
-            setValueSearch("");
+        const resp = await fetchConToken(`/productos/${id}`);
+        const body = await resp.json();
+        if(resp.status != 200) return message.error("No existe ningun producto por ese ID!");
+        let bandera = false;
+        const nuevaListaProductos = listaProductos.map(producto => {
+            if(producto.id === id){
+                bandera = true; 
+                (body.cantidad - producto.cantidad) === 0 ? message.error("No puedes agregar mas de lo que hay en bodega registrado!") : producto.cantidad += 1;
+            }
+            return producto;
         });
+        bandera ? setListaProductos(nuevaListaProductos) : setListaProductos(productos => [...productos,{id,cantidad:1,}]);
+        setValueSearch("");
     }
 
 
@@ -68,14 +66,11 @@ export const EntradaNormal = () => {
             async onOk(){
                 const values = { uid };
                 setLoading(true);
-                socket.emit("ingreso-productos-almacen",{listaProductos,values},(confirmacion)=>{
-                    if(confirmacion.ok){
-                        message.success(confirmacion.msg);
-                        setFinishEntrada({estatus:true});
-                    }else{
-                        message.error(confirmacion.msg);
-                    }
-                });
+                const resp = await fetchConToken(`/entradas/ingresar-almacen`,{values,listaProductos},"POST");
+                const body = await resp.json();
+                if(resp.status != 200 ) return message.error(body.msg);//Si hay un error haciendo la peticion
+                message.success(body.msg);
+                setFinishEntrada({estatus:true});
                 setLoading(false);
            	},
         });

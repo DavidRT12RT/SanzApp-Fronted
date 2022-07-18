@@ -1,5 +1,6 @@
-import { Avatar, InputNumber, Select } from 'antd';
+import { Avatar, InputNumber, message, Select } from 'antd';
 import React, { useEffect, useState } from 'react'
+import { fetchConToken } from '../../../../helpers/fetch';
 import { Loading } from '../../../obras/Loading';
 
 export const ProductoCardRetiroEntrada = ({producto,socket,cambiarCantidadProducto,eliminarProducto,tipo=""}) => {
@@ -9,10 +10,21 @@ export const ProductoCardRetiroEntrada = ({producto,socket,cambiarCantidadProduc
     //Cada vez que el componente se renderize mandaremos a llamar a la información del producto
     //Solo se hara la primera vez!
     useEffect(() => {
-        socket.emit("obtener-producto-por-id",{productoId:producto.id},(producto)=>{
-            setProductoInfo(producto); 
-        });
+        const fetchData = async() => {
+            const resp = await fetchConToken(`/productos/${producto.id}`);
+            const body = await resp.json();
+            if(resp.status === 200) return setProductoInfo(body);
+            message.error("Producto No encontrado!");
+        }
+        fetchData();
     }, []);
+
+    //Escuchar en la targeta del producto por si este se actualiza 
+    useEffect(() => {
+        socket.on("actualizar-producto",(productoActualizado)=>{
+            if( producto._id === productoActualizado._id) setProductoInfo(producto); 
+        });
+    }, [socket,productoInfo,setProductoInfo]);
 
     
     if(productoInfo === null){

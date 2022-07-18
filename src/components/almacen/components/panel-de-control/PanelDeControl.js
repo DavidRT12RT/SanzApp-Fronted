@@ -18,6 +18,9 @@ import { ProductoCardAlmacen } from '../salidas/ProductoCardAlmacen';
 import { fetchConToken } from '../../../../helpers/fetch';
 import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
 
+//CSS
+import "./assets/style.css";
+
 
 const fecha = moment().locale('es').format("YYYY-MM-DD");
 
@@ -39,7 +42,7 @@ export const PanelDeControl = () => {
     //Informacion de las salidas de este mes y anterior
     const [salidasOfMonth, setSalidasOfMonth] = useState({"obra":[],"resguardo":[],"merma":[],totalRegistros:0});
     const [salidasOfLastMonth, setSalidasOfLastMonth] = useState({"obra":[],"resguardo":[],"merma":[],totalRegistros:0});
-
+    const [dineroTotalAlmacen, setDineroTotalAlmacen] = useState(0);
     //Informacion de las entradas de este mes y anterior
     const [entradasOfMonth, setEntradasOfMonth] = useState({"sobrante-obra":[],"devolucion-resguardo":[],"normal":[],totalRegistros:0});
     const [entradasOfLastMonth, setEntradasOfLastMonth] = useState({"sobrante-obra":[],"devolucion-resguardo":[],"normal":[],totalRegistros:0});
@@ -70,10 +73,6 @@ export const PanelDeControl = () => {
                         )
                 }
             }
-	    },
-	    {
-		    title:"Motivo de la salida",
-		    dataIndex:"motivo"
 	    },
 	    {
 		    title:"Fecha creacion",
@@ -315,6 +314,17 @@ export const PanelDeControl = () => {
             }
         });
     }, [entradas]);
+
+    useEffect(() => {
+        if(productos.length !=0 ){
+            let costoTotal = 0;
+            productos.forEach(producto => {
+                costoTotal += producto.costo;
+            });
+            setDineroTotalAlmacen(Math.round(costoTotal));
+        }
+    }, [productos]);
+    
     
     
     
@@ -355,7 +365,7 @@ export const PanelDeControl = () => {
         datasets: [
             {
                 label:"Productos con categorias registrados en el sistema",
-                data: categorias.map(categoria => categoria.productosRegistrados),
+                data: categorias.map(categoria => categoria.productosRegistrados.length),
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -377,6 +387,39 @@ export const PanelDeControl = () => {
         ],
     };
 
+    const dataProductosAlmacenDineroPorCategoria = {
+        //labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels:categorias.map(categoria => categoria.nombre),
+        datasets: [
+            {
+                label:"Productos con categorias registrados en el sistema",
+                data: categorias.map(categoria =>{
+                    let dineroEnCategoria = 0;
+                    categoria.productosRegistrados.map(producto => {
+                        dineroEnCategoria += producto.costo;
+                    })
+                    return dineroEnCategoria
+                }),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
 
     const dataTiposSalida = {
         labels:["Salida por obra","Salida por resguardo","Salida por merma"],
@@ -437,89 +480,118 @@ export const PanelDeControl = () => {
         
     }else{
         return (
-            <div className="p-5">
-                <section className="row">
-                    <div className="d-flex justify-content-center align-items-center gap-2 flex-wrap col-lg-3 col-sm-12">
-                        <Card className="text-center p-3" style={{width:"350px"}}>
-                            <h1 className="display-6" style={{fontSize:"30px"}}>Categorias</h1>
-                            <h1 style={{fontSize:"50px"}}>{categoriasInformacion.total}</h1>
-                            <p className='lead text-muted' style={{fontSize:"15px"}}>Numero de categorias disponibles actualmente para registrar mas productos.</p>
-                            <Link to={"/almacen/productos/registrar/categoria/"} className="text-link" style={{fontSize:"15px"}}>Registrar una nueva categoria</Link>
-                        </Card>
-                        <Card className="text-center p-3" style={{width:"350px"}}>
-                            <h1 className="display-6" style={{fontSize:"30px"}}>Productos</h1>
-                            <h1 style={{fontSize:"50px"}}>{productosInfo.total}</h1>
-                            <p className='lead text-muted' style={{fontSize:"15px"}}>Numero de productos registrados en el almacen marcados como "disponibles".</p>
-                            <Link to={"/almacen/productos/registrar/"} className="text-link" style={{fontSize:"15px"}}>Registrar un nuevo prodcucto</Link>
-                        </Card>
-                        <Card className="text-center p-3" style={{width:"350px"}}>
-                            <h1 className="display-6" style={{fontSize:"30px"}}>Salidas</h1>
-                            <h1 style={{fontSize:"50px"}}>{salidasOfMonth.totalRegistros}</h1>
-                            <p className='lead text-muted' style={{fontSize:"15px"}}>Numero de salidas del almacen en lo que va del mes.</p>
-                            <Link to={"/almacen/retirar/"} className="text-link" style={{fontSize:"15px"}}>Realizar un retiro de almacen</Link>
-                        </Card>
-                        <Card className="text-center p-3" style={{width:"350px"}}>
-                            <h1 className="display-6" style={{fontSize:"30px"}}>Entradas</h1>
-                            <h1 style={{fontSize:"50px"}}>{entradasOfMonth.totalRegistros}</h1>
-                            <p className='lead text-muted' style={{fontSize:"15px"}}>Numero total de entradas a almacen por devolucion o normal totales en este mes.</p>
-                            <Link to={"/almacen/ingresar/"} className="text-link" style={{fontSize:"15px"}}>Realizar una entrada</Link>
-                        </Card>
+            <div className="bg-body" >
+                <section className="d-flex justify-content-center align-items-center flex-column header">
+                    <h1 className="titulo" style={{fontSize:"45px",color:"black"}}>Dashboard del almacen</h1>
+                    <h1 className="descripcion">Todo la informacion del almacen en un solo lugar&#128521;.</h1>
+                    <div class="custom-shape-divider-bottom-1658013821">
+                        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+                        </svg>
                     </div>
-                    <div className="d-flex justify-content-center align-items-center gap-2 flex-wrap col-lg-9 col-sm-12 mt-3 mt-lg-0">
-                        <div className="card p-3 d-flex justify-content-center align-items-center" style={{width:"500px",height:"500px"}}>
-                            <h1 className="display-6 mb-3" style={{fontSize:"20px"}}>Grafico de salidas</h1>
-                            {(salidasOfLastMonth.length === 0 && salidasOfMonth.length === 0) && <p className="text-danger danger mt-3">Ningun registro por el momento...</p>}
-                            <BarChart data={dataSalidas} style={{width:"100%",height:"100%"}} />
-                        </div>
-                        <div className="card p-3 d-flex justify-content-center align-items-center" style={{width:"500px",height:"500px"}}>
-                            <h1 className="display-6 mb-3" style={{fontSize:"20px"}}>Graficos de entradas</h1>
-                            {(entradasOfLastMonth.length === 0 && entradasOfMonth.length === 0) && <p className="text-danger danger mt-3">Ningun registro por el momento...</p>}
-                            <BarChart data={dataEntradas}  style={{width:"100%",height:"100%"}} />
-                        </div>
-                        <div className="card p-3 d-flex  justify-content-center align-items-center" style={{width:"400px",height:"470px"}}>
-                            <h1 className="display-6 mb-3 text-center" style={{fontSize:"20px"}}>Categorias de los productos registrados</h1>
-                            {(productos.length === 0) && <p className="text-danger mt-3">Ningun producto registrado aun...</p>}
-                            <PieChart data={dataProductosAlmacen}/>
-                        </div>
-                        <div className="card p-3 d-flex justify-content-center align-items-center" style={{width:"400px",height:"470px"}}>
-                            <h1 className="display-6 mb-3" style={{fontSize:"20px"}}>Tipos de salidas este mes</h1>
-                            {(salidas.length === 0) && <p className="text-danger mt-3">Ninguna salida registrada aun...</p>}
-                            <PieChart data={dataTiposSalida}/>
-                        </div>
-                        <div className="card p-3 d-flex justify-content-center align-items-center" style={{width:"400px",height:"470px"}}>
-                            <h1 className="display-6 mb-3" style={{fontSize:"20px"}}>Tipos de entradas este mes</h1>
-                            {(entradas.length === 0) && <p className="text-danger mt-3">Ninguna entrada registrada aun...</p>}
-                            <PieChart data={dataTiposEntrada}/>
-                        </div>
-                    </div>
-                </section>
-                <Divider/>
-                <section className="mt-5 row">
-                    <div className="d-flex justify-content-center align-items-center gap-4 flex-wrap col-12 col-lg-6">
-                        <div className="card text-center p-3 p-lg-5" style={{width:"1000px",}}>
-                            <h1 className="display-6">Ultimas salidas</h1>
-					        <Table columns={columnsSalidas} dataSource={[...salidas.slice(0,5)]} bordered/>
-                            <Link to={"/almacen/salidas"} style={{fontSize:"15px"}} ><Button type="primary" className="mt-3">Ver todas las salidas</Button></Link>
-                        </div>
+                </section> 
 
-                        <div className="card text-center p-3 p-lg-5" style={{width:"1000px",}}>
-                            <h1 className="display-6">Ultimas entradas</h1>
-					        <Table columns={columnsEntradas} dataSource={[...entradas.slice(0,5)]} bordered/>
-                            <Link to={"/almacen/entradas"} style={{fontSize:"15px"}} ><Button type="primary" className="mt-3">Ver todas las entradas</Button></Link>
-                        </div>
+                <section className="p-5 d-flex justify-content-center align-items-center gap-4 flex-wrap">
+                    <Card className="text-center shadow p-3" style={{width:"350px",height:"360px"}}>
+                        <h1 className="titulo" style={{fontSize:"30px"}}>Categorias</h1>
+                        <h1 style={{fontSize:"50px"}}>{categoriasInformacion.total}</h1>
+                        <p className='nota' style={{fontSize:"20px"}}>Numero de categorias disponibles actualmente para registrar mas productos.</p>
+                        <Link to={"/almacen/productos/registrar/categoria/"} className="text-link" style={{fontSize:"15px"}}>Registrar una nueva categoria</Link>
+                    </Card>
+                    <Card className="text-center shadow p-3" style={{width:"350px",height:"360px"}}>
+                        <h1 className="titulo" style={{fontSize:"30px"}}>Productos</h1>
+                        <h1 style={{fontSize:"50px"}}>{productosInfo.total}</h1>
+                        <p className='nota' style={{fontSize:"20px"}}>Numero de productos registrados en el almacen marcados como "disponibles".</p>
+                        <Link to={"/almacen/productos/registrar/"} className="text-link" style={{fontSize:"15px"}}>Registrar un nuevo prodcucto</Link>
+                    </Card>
+                    <Card className="text-center shadow p-3" style={{width:"350px",height:"360px"}}>
+                        <h1 className="titulo" style={{fontSize:"30px"}}>Salidas</h1>
+                        <h1 style={{fontSize:"50px"}}>{salidasOfMonth.totalRegistros}</h1>
+                         <p className='nota' style={{fontSize:"20px"}}>Numero de salidas registradas del almacen en el mes actual.</p>
+                        <Link to={"/almacen/retirar/"} className="text-link" style={{fontSize:"15px"}}>Realizar un retiro de almacen</Link>
+                    </Card>
+                    <Card className="text-center shadow p-3" style={{width:"350px",height:"360px"}}>
+                        <h1 className="titulo" style={{fontSize:"30px"}}>Entradas</h1>
+                        <h1 style={{fontSize:"50px"}}>{entradasOfMonth.totalRegistros}</h1>
+                        <p className='nota' style={{fontSize:"20px"}}>Numero de entradas registradas del almacen en el mes actual.</p>
+                        <Link to={"/almacen/ingresar/"} className="text-link" style={{fontSize:"15px"}}>Realizar una entrada</Link>
+                    </Card>
+                </section>
+
+               <Divider/> 
+
+                <section className="p-5 d-flex justify-content-center align-items-center flex-wrap gap-4" style={{margin:"auto"}}>
+                        <Card className="text-center shadow p-3">
+                            <h1 className="titulo" style={{fontSize:"30px",color:"black"}}>Dinero TOTAL en almacen:</h1>
+                            <h1 className="descripcion text-success cantidadTotalAlmacen">${dineroTotalAlmacen}</h1>
+                            <p className="nota">
+                                La cantidad anterior es un redondeo de la suma total de el costo de todos los <br/>productos del almacen (Puede variar por decimales)
+                            </p>
+                        </Card>
+                        <Card className="p-5 text-center shadow" style={{width:"35%",height:"50%"}}>
+                            <h1 className="descripcion">Dinero de productos por categoria</h1>
+                            <PieChart data={dataProductosAlmacenDineroPorCategoria} style={{width:"100%",height:"100%"}}/>
+                            <p className="nota mt-3">
+                                Dinero total de los productos por categoria (si un producto tiene 2 categorias este se mostrara en la otra tambien)
+                            </p>
+                        </Card>
+                </section>
+
+               <Divider/> 
+
+                <section className="mt-5 p-5 d-flex justify-content-center align-items-center gap-4 flex-wrap">
+                    <Card className=" p-3 shadow d-flex justify-content-center align-items-center text-center" style={{width:"45%",height:"50%"}}>
+                        <h1 className="titulo mb-3" style={{fontSize:"20px"}}>Grafico de salidas</h1>
+                        {(salidasOfLastMonth.length === 0 && salidasOfMonth.length === 0) && <p className="text-danger danger mt-3">Ningun registro por el momento...</p>}
+                        <BarChart data={dataSalidas} style={{width:"100%",height:"100%"}} />
+                        <p className="nota mt-3">
+                            Grafico donde se muestra las entradas totales del mes y comparandolas con las entradas del mes anterior.
+                        </p>
+                    </Card>
+                    <Card className=" p-3 d-flex shadow justify-content-center align-items-center text-center"  style={{width:"45%",height:"50%"}}>
+                        <h1 className="titulo mb-3" style={{fontSize:"20px"}}>Graficos de entradas</h1>
+                        {(entradasOfLastMonth.length === 0 && entradasOfMonth.length === 0) && <p className="text-danger danger mt-3">Ningun registro por el momento...</p>}
+                        <BarChart data={dataEntradas}  style={{width:"100%",height:"100%"}} />
+                        <p className="nota mt-3">
+                            Grafico donde se muestra las salidas totales del mes y comparandolas con las salidas del mes anterior.
+                        </p>
+                    </Card>
+                </section>
+
+                <Divider/>
+                <section className="mt-5 p-5 d-flex justify-content-center align-items-center gap-4 flex-wrap">
+                    <div className="card p-3 d-flex shadow justify-content-center align-items-center" style={{width:"500px",height:"570px"}}>
+                        <h1 className="titulo mb-3 " style={{fontSize:"20px"}}>Categorias de los productos registrados</h1>
+                        {(productos.length === 0) && <p className="text-danger mt-3">Ningun producto registrado aun...</p>}
+                        <PieChart data={dataProductosAlmacen}/>
                     </div>
-                    <div className="col-12 col-lg-6 mt-4 mt-lg-0 p-5 card text-center">
-                        <h1 className="display-6">Productos recien agregados</h1>
-                        <div className="d-flex justify-content-center align-items-center gap-5 flex-wrap">
-                            {
-                                productos.slice(0,5).map(producto => {
-                                    return <ProductoCard key={producto._id} producto={producto} width={500}/>
-                                })
-                            }
-                        </div>
-                        <Link to={"/almacen/productos"} style={{fontSize:"15px"}} ><Button type="primary" className="mt-3">Ver todos los productos</Button></Link>
+                    <div className="card p-3 d-flex shadow justify-content-center align-items-center" style={{width:"500px",height:"570px"}}>
+                        <h1 className="titulo mb-3" style={{fontSize:"20px"}}>Tipos de salidas este mes</h1>
+                        {(salidas.length === 0) && <p className="text-danger mt-3">Ninguna salida registrada aun...</p>}
+                        <PieChart data={dataTiposSalida}/>
+                     </div>
+                    <div className="card p-3 d-flex shadow justify-content-center align-items-center" style={{width:"500px",height:"570px"}}>
+                        <h1 className="titulo mb-3" style={{fontSize:"20px"}}>Tipos de entradas este mes</h1>
+                        {(entradas.length === 0) && <p className="text-danger mt-3">Ninguna entrada registrada aun...</p>}
+                        <PieChart data={dataTiposEntrada}/>
                     </div>
                 </section>
+                
+                <Divider/>
+                <section className="mt-5 p-5 d-flex justify-content-center align-items-center gap-4 flex-wrap">
+                    <div className="card shadow text-center p-5" style={{width:"45%",minHeight:"560px"}}>
+                        <h1 className="titulo" style={{fontSize:"30px"}}>Ultimas salidas</h1>
+					    <Table size="large" columns={columnsSalidas} dataSource={[...salidas.slice(0,5)]} bordered/>
+                        <Link to={"/almacen/salidas"} style={{fontSize:"15px"}} ><Button type="primary" className="mt-3">Ver todas las salidas</Button></Link>
+                    </div>
+
+                    <div className="card shadow text-center p-5" style={{width:"45%",minHeight:"560px"}}>
+                        <h1 className="titulo" style={{fontSize:"30px"}}>Ultimas entradas</h1>
+					    <Table size="large" columns={columnsEntradas} dataSource={[...entradas.slice(0,5)]} bordered/>
+                        <Link to={"/almacen/entradas"} style={{fontSize:"15px"}} ><Button type="primary" className="mt-3">Ver todas las entradas</Button></Link>
+                    </div>
+                </section>
+
 				{(informacionRegistroParticular != null && registroTipo === "Entrada") &&(
 					<Drawer width={640} placement="right" closable={false} onClose={()=>{setIsDrawerVisible(false);}} visible={isDrawerVisible}>
                     	<p className="site-description-item-profile-p" style={{marginBottom: 24,}}>Informacion detallada de la entrada a almacen</p>
@@ -558,6 +630,7 @@ export const PanelDeControl = () => {
 							<Divider/>
                     		<p className="site-description-item-profile-p">Lista de productos retirados del almacen</p>
                         	<div className="d-flex justify-content-center align-items-center container p-5 gap-2 flex-column">
+
 								{
 									informacionRegistroParticular.listaProductos.length > 0 
 										? 
@@ -571,6 +644,8 @@ export const PanelDeControl = () => {
 							</div>
 							<Divider/>
                     		<p className="site-description-item-profile-p">Devoluciones al almacen</p>
+							{informacionRegistroParticular.productosDevueltos.length === 0 && <p className="text-danger">
+							    Ningun producto devuelto al almacen por el momento...</p>}
 							{
 								informacionRegistroParticular.productosDevueltos.map(entrada => {
 									{
@@ -594,7 +669,6 @@ export const PanelDeControl = () => {
                 		</Drawer>
 					)}
             </div>
-
         )
     }
 }

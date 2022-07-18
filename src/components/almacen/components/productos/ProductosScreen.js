@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import 'antd/dist/antd.css';
 import {Button, Checkbox, Divider, Input } from 'antd';
 import { Loading } from '../../../obras/Loading';
 import { ProductoCard } from './components/ProductoCard';
@@ -7,7 +6,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { useProductos } from '../../../../hooks/useProductos';
 import { useSelector } from 'react-redux';
 import { useCategorias } from '../../../../hooks/useCategorias';
-const CheckboxGroup = Checkbox.Group;
 
 
 export const ProductosScreen = () => {
@@ -74,12 +72,12 @@ export const ProductosScreen = () => {
         return <Loading/>
     }else{
         return (
-            <div className="container p-5 shadow rounded">
+            <div className="container p-5 shadow rounded" style={{height:"100vh"}}>
                 <div className="d-flex justify-content-end align-items-center gap-2 flex-wrap">
                     { pathname != "/aplicacion/almacen" && <Link to="/almacen/productos/registrar"><Button type="primary">Registrar un nuevo producto</Button></Link>}
                     { pathname != "/aplicacion/almacen" && <Link to="/almacen/productos/registrar/categoria"><Button type="primary">Registrar una nueva categoria</Button></Link>}
                 </div>
-                <h1 className="display-5 fw-bold mt-5 mt-lg-0">Lista de productos en almacen</h1>
+                <h1 className="titulo mt-5 mt-lg-0" style={{fontSize:"40px"}}>Lista de productos en almacen</h1>
                 <hr/> 
                 <div className="d-flex justify-content-start gap-2 flex-wrap">                        
                     { pathname != "/aplicacion/almacen" && (
@@ -104,14 +102,14 @@ export const ProductosScreen = () => {
                 <div className="row">
                     <div className="col-md-12 col-lg-2">
                         {/*Filtros*/}
-                        <h4 className="fw-bold">Filtros</h4>
+                        <h1 className="descripcion">Filtros</h1>
                         <Divider/> 
                         <div className="row"> 
-                            <p>Categoria del producto</p>
+                            <h1 className="descripcion" style={{fontSize:"15px"}}>Categoria del producto</h1>
                             {
                                 categoriasDB.length === 0 
                                 ? 
-                                <p className="text-danger">Ninguna categoria registrada aun en el sistema...</p>
+                                <p className="text-danger descripcion" style={{fontSize:"10px"}}>Ninguna categoria registrada aun en el sistema...</p>
                                 :
                                 <Checkbox.Group onChange={(categorias)=>{setCategorias(categorias)}} className="d-flex flex-column" >
                                 {
@@ -128,18 +126,26 @@ export const ProductosScreen = () => {
                     </div>
 
                     <div className="col-md-12 col-lg-10 mt-5 mt-lg-0">
-                        <h4 className="fw-bold">Productos del almacen</h4>
+
+                        <h1 className="descripcion">Productos del almacen</h1>
                         <Divider/> 
+
                         {/*Informacion*/}
-                        <div className="d-flex justify-content-start container gap-5 flex-wrap mt-3 mt-lg-0">
                             {
-                                dataSource.map(producto => {
-                                    return ( 
-                                        <ProductoCard rol={rol} key={producto._id} producto={producto} />
-                                    )
-                                })
+                                dataSource.length != 0 
+                                    ?
+                                    <div className="d-flex justify-content-start container gap-5 flex-wrap mt-3 mt-lg-0">
+                                        {
+                                            dataSource.map(producto => {
+                                                return ( 
+                                                    <ProductoCard rol={rol} key={producto._id} producto={producto} />
+                                                 )
+                                            })
+                                        }
+                                    </div>
+                                    :
+                                    <h4 className="text-danger titulo">Ningun producto registrado aun...</h4>
                             }  
-                        </div>
                     </div>
                 </div>
 

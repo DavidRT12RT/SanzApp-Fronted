@@ -7,21 +7,21 @@ export const ProductoCardAlmacen = ({producto,tipo}) => {
     const categoriaColor = (categoria) => {
         switch (categoria) {
             case "ferreteria":
-                return <Tag color="cyan" key="ferreteria">{categoria.toUpperCase()}</Tag> 
+                return <Tag color="cyan" key="ferreteria">{categoria}</Tag> 
             case "vinilos":
-                return <Tag color="green" key="vinilos">{categoria.toUpperCase()}</Tag> 
+                return <Tag color="green" key="vinilos">{categoria}</Tag> 
             case "herramientas":
-                return <Tag color="blue" key="herramientas">{categoria.toUpperCase()}</Tag> 
+                return <Tag color="blue" key="herramientas">{categoria}</Tag> 
             case "pisosAzulejos":
-                return <Tag color="orange" key="pisosAzulejos">{categoria.toUpperCase()}</Tag>
+                return <Tag color="orange" key="pisosAzulejos">{categoria}</Tag>
             case "fontaneria":
-                return <Tag color="red" key="fontaneria">{categoria.toUpperCase()}</Tag>
+                return <Tag color="red" key="fontaneria">{categoria}</Tag>
             case "iluminacion":
-                return <Tag color="yellow" key="iluminacion">{categoria.toUpperCase()}</Tag>
+                return <Tag color="yellow" key="iluminacion">{categoria}</Tag>
             case "materialElectrico":
-                return <Tag color="gold" key="materialElectronico">{categoria.toUpperCase()}</Tag>
+                return <Tag color="gold" key="materialElectronico">{categoria}</Tag>
             default:
-                return <Tag color="green" key="categoria">{categoria.toUpperCase()}</Tag> 
+                return <Tag color="green" key="categoria">{categoria}</Tag> 
         }
     }
 
@@ -29,6 +29,7 @@ export const ProductoCardAlmacen = ({producto,tipo}) => {
     if(producto === null){
         return <Loading/>
     }else{
+        console.log(producto);
         switch (tipo) {
             case "devuelto":
                 return (

@@ -66,54 +66,54 @@ export const ApplicationRoutes = () => {
             <AplicationNavbar/> 
             <Routes>
                 <Route path="/" element={<SeccionNoticias />} />
-                <Route path="/almacen" element={<ProductosScreen />} />
-                <Route path="/almacen/:productoId" element={<ProductoScreen />} />
-                <Route path="/obras" element={<ObrasScreen />} />
-                <Route path="/obras/registro" element={
+                <Route path="/almacen/" element={<ProductosScreen />} />
+                <Route path="/almacen/:productoId/" element={<ProductoScreen />} />
+                <Route path="/obras/" element={<ObrasScreen />} />
+                <Route path="/obras/registro/" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","INGE_ROLE"]}>
                         <RegistrarObra/>
                     </PrivateRoutePorRole>
                 }/>
-                <Route path="/obras/editor/:obraId" element={
+                <Route path="/obras/editor/:obraId/" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","INGE_ROLE"]}>
                         <EditorObra/>
                     </PrivateRoutePorRole>
                 }/>
 
-                <Route path="/obras/:obraId" element={<ObraScreen />} />
-                <Route path="/calendario" element={<CalendarScreen/>} />
+                <Route path="/obras/:obraId/" element={<ObraScreen />} />
+                <Route path="/calendario/" element={<CalendarScreen/>} />
                 <Route path="/oficina/gestion/" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
                         <GestionOficina/>
                     </PrivateRoutePorRole>
                 }/>
-                <Route path="/camionetas/registro" element={
+                <Route path="/camionetas/registro/" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
                         <RegistrarCamioneta/>
                     </PrivateRoutePorRole>
                 }/>
-                <Route path="/camionetas/localizacion" element={<MapasApp/>} />
-                <Route path="/camionetas/gestion" element={
+                <Route path="/camionetas/localizacion/" element={<MapasApp/>} />
+                <Route path="/camionetas/gestion/" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
                         <GestionCamionetas/>
                     </PrivateRoutePorRole>
                 }/>
-                <Route path="/camionetas/gestion/:camionetaId" element={
+                <Route path="/camionetas/gestion/:camionetaId/" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
                         <CamionetaScreen/>
                     </PrivateRoutePorRole>
                 }/>
-                <Route path="/registro" element={
+                <Route path="/registro/" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
                         <RegisterScreen/>
                     </PrivateRoutePorRole>
                 }/>
-                <Route path="/empleados" element={
+                <Route path="/empleados/" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
                         <EmpleadosScreen/>
                     </PrivateRoutePorRole>
                 }/>
-                <Route path="/empleados/:empleadoId" element={
+                <Route path="/empleados/:empleadoId/" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
                         <EmpleadoScreen/>
                     </PrivateRoutePorRole>

@@ -261,6 +261,8 @@ export const SalidasAlmacen = () => {
 								</div>
 								<Divider/>
                     			<p className="site-description-item-profile-p">Devoluciones al almacen</p>
+								{informacionRegistroParticular.productosDevueltos.length === 0 && <p className="text-danger">
+									Ningun producto devuelto al almacen por el momento...</p>}
 								{
 									informacionRegistroParticular.productosDevueltos.map(entrada => {
 										{

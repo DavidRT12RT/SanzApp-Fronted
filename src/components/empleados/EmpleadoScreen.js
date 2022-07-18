@@ -11,6 +11,7 @@ import { EditarInformacionGeneral } from './components/EditarInformacionGeneral'
 import { EditarImagenPrincipal } from './components/EditarImagenPrincipal';
 import "./components/style.css";
 import { ResguardosUsuario } from './components/ResguardosUsuario';
+import { fetchConToken } from '../../helpers/fetch';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
@@ -34,6 +35,7 @@ export const EmpleadoScreen = () => {
 		socket.emit("obtener-usuario-por-id",{usuarioId},(usuario)=>{
 			setUsuarioInfo(usuario);
 		});
+		fetchConToken();
 		socket.emit("obtener-obras-en-desarollo",{},(obras)=>{
 			setObrasDesarollo(obras);
 		});

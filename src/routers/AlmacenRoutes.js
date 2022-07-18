@@ -15,6 +15,8 @@ import { EntradasAlmacen } from '../components/almacen/components/entradas/Entra
 import { PanelDeControl } from '../components/almacen/components/panel-de-control/PanelDeControl';
 import { Inventario } from '../components/almacen/components/inventario/Inventario';
 import { CategoriasRegistradas } from '../components/almacen/components/categorias/CategoriasRegistradas';
+import { RegistrarProductoNew } from '../components/almacen/components/productos/RegistrarProductoNew';
+//import { PDFVisalizador } from '../components/almacen/components/DocumentoPDF';
 
 export const AlmacenRoutes = () => {
     const { socket } = useContext(SocketContext);
@@ -26,10 +28,10 @@ export const AlmacenRoutes = () => {
                 <Route path="/" element={<SeccionNoticias/>}/>
                 <Route path="/productos" element={<ProductosScreen/>}/>
                 <Route path="/panel-de-control/" element={<PanelDeControl/>}/>
-                <Route path="/productos/:productoId/" element ={<ProductoScreen/>}/>
+                <Route path="/productos/:productoId/" element={<ProductoScreen/>}/>
                 <Route path="/retirar/" element={<RetirarAlmacen/>}/>
                 <Route path="/ingresar/" element={<IngresarAlmacen/>}/>
-                <Route path="/productos/registrar/" element={<RegistrarProducto/>}/>
+                <Route path="/productos/registrar/" element={<RegistrarProductoNew/>}/>
                 <Route path="/categorias" element={<CategoriasRegistradas/>}/>
                 <Route path="/salidas" element={<SalidasAlmacen/>}/>
                 <Route path="/entradas" element={<EntradasAlmacen/>}/>

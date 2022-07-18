@@ -1,7 +1,7 @@
 import { Button, Form, Input, InputNumber, message, Modal, Result, Select, Tag, Upload } from 'antd'
 import React, { useState } from 'react'
 import { Row, Col } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ExclamationCircleOutlined,UploadOutlined } from '@ant-design/icons';
 import { fetchConTokenSinJSON } from '../../../../helpers/fetch';
@@ -12,7 +12,7 @@ export const RegistrarProducto = () => {
     const [form] = Form.useForm();
 	const [uploading, setUploading] = useState(false);
 	const [filesList, setFilesList] = useState([]);
-	const [finish, setFinish] = useState(false);
+	const [finish, setFinish] = useState({estado:false,producto:null});
 	const { isLoading,categorias } = useCategorias()
 
     const {uid,name} = useSelector((state) => state.auth);
@@ -54,29 +54,26 @@ export const RegistrarProducto = () => {
 				formData.append("nombre",values.nombre);
 				formData.append("cantidad",values.cantidad);
 				formData.append("descripcion",values.descripcion);
-				formData.append("marcaProducto",values.marcaProducto);
+				formData.append("marca",values.marca);
 				formData.append("categorias",JSON.stringify(values.categorias));
 				formData.append("costo",values.costo);
-				formData.append("estadoProducto",values.estadoProducto);
+				formData.append("estado",values.estado);
 				formData.append("usuarioCreador",uid);
 				formData.append("unidad",values.unidad);
 				formData.append("inventariable",values.inventariable);
+				formData.append("aplicaciones",values.aplicaciones)
         		filesList.forEach(file => {
             		formData.append("archivo",file);
         		});
 				//Emitir evento al backend de crear nuevo producto!
-				try {
-					const resp = await fetchConTokenSinJSON("/productos",formData,"POST");
-					const body = await resp.json();
-					if(resp.status === 201){
-						message.success("Producto creado con exito!");
-						return setFinish(true);
-						//navigate(`/almacen/productos/${body._id}`);
-					}else{
-						return message.error(body.msg);
-					}
-				} catch (error) {
-					message.error("Error creando el producto!");	
+				const resp = await fetchConTokenSinJSON("/productos",formData,"POST");
+				const body = await resp.json();
+				if(resp.status === 201){
+					message.success(body.msg);
+					setFinish({estado:true,producto:body.producto});
+					//navigate(`/almacen/productos/${body._id}`);
+				}else{
+					message.error(body.msg);
 				}
 				setUploading(false);
 				setFilesList([]);
@@ -87,13 +84,13 @@ export const RegistrarProducto = () => {
 
 
     
-	if(finish){
+	if(finish.estado){
 		return (
 			<Result
     			status="success"
     			title="Producto creado con exito!"
     			subTitle="Producto creado con exito y ya disponible para entradas y salidas.!"
-    			extra={[<Link to={`/almacen/productos/`}><Button type="primary" key="console">Ver producto</Button></Link>,<Button onClick={()=>{setFinish(false)}}>Registrar un nuevo producto</Button>,]}
+    			extra={[<Link to={`/almacen/productos/${finish.producto._id}`}><Button type="primary" key="console">Ver producto</Button></Link>,<Button onClick={()=>{setFinish({estado:false,producto:null})}}>Registrar un nuevo producto</Button>,]}
 			/>
 		)
 	}else{
@@ -107,7 +104,6 @@ export const RegistrarProducto = () => {
         		<span>Campos con <Tag color="red">*</Tag>son obligatorios.</span>
         		<div className="mt-3">
 					<Form form={form} layout="vertical" autoComplete="off" onFinish={onFinish}>
-
           				<Row gutter={16}>
             				<Col span={24}>
               					<Form.Item 
@@ -127,7 +123,7 @@ export const RegistrarProducto = () => {
             				</Col>
             				<Col span={24}>
 								<Form.Item 
-				                	name="marcaProducto" 
+				                	name="marca" 
                 					tooltip="Ingresa la marca del producto"
                 					label="Marca del producto"
                 					rules={[
@@ -196,15 +192,25 @@ export const RegistrarProducto = () => {
               					<Form.Item 
 				                	label="Descripción del producto"
                   					name="descripcion"
-                  					tooltip="Ingresa una descripció sobre el producto"
+                  					tooltip="Ingresa una descripción sobre el producto"
                   					rules={[{required:true,message:"Debes ingresar una descripción",whitespace:true}]}
 				  				>
                 					<Input.TextArea allowClear showCount minLength={40} style={{width:"100%"}} placeholder="Descripción del producto"  size="large"/>
               					</Form.Item>
             				</Col>
 							<Col span={24}>
+              					<Form.Item 
+				                	label="Aplicaciones del producto"
+                  					name="aplicaciones"
+                  					tooltip="Ingresa las aplicaciones de este producto"
+                  					rules={[{required:true,message:"Debes ingresar las aplicaciones",whitespace:true}]}
+				  				>
+                					<Input.TextArea allowClear showCount minLength={40} style={{width:"100%"}} placeholder="Aplicaciones del producto"  size="large"/>
+              					</Form.Item>
+            				</Col>
+							<Col span={24}>
 								<Form.Item
-              						name="estadoProducto"
+              						name="estado"
 				              		label="Estado del producto"
               						rules={[
 	            						{
@@ -214,8 +220,8 @@ export const RegistrarProducto = () => {
                 					]}
               					>
 									<Select placeholder="¿Como se encuentra el producto?" size="large">
-					                	<Select.Option value="nuevo">Nuevo</Select.Option>
-                						<Select.Option value="usado">Usado</Select.Option>
+					                	<Select.Option value="Nuevo">Nuevo</Select.Option>
+                						<Select.Option value="Usado">Usado</Select.Option>
               						</Select>
               					</Form.Item>
             				</Col>
@@ -239,7 +245,6 @@ export const RegistrarProducto = () => {
 							<Col span={24}>
 								<Upload {...props}>
 	                            	<Button icon={<UploadOutlined/>} size="large">Selecciona la imagen del producto</Button>
-									<span className="text-muted">(Podras cambiar la imagen despues en los ajustes en la pagina del producto)</span>
                        			</Upload>
 							</Col>
             				</Col>

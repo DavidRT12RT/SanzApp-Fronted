@@ -21,49 +21,46 @@ export const EntradaDevolucion = ({ socket }) => {
 
     /*Funcion para asegurarnos que la salida existe y su estado, donde si esta en true obtendremos toda la lista de productos 
     que se sacaron y la mostraremos asi como los devueltos ,etc.*/
-    const setearCodigoSalida = (salidaId) => {
-        socket.emit("obtener-imformacion-salida",{salidaId},(confirmacion)=>{
-            if(!confirmacion.ok) return message.error(confirmacion.msg);
-            //Si existe la salida 
-            setInformacionSalida(confirmacion.salida);
-            setProcessPhase(2);
-            setValueSearchCodigoSalida("");
-        });
+    const setearCodigoSalida = async(salidaId) => {
+        const resp = await fetchConToken(`/salidas/${salidaId}`);
+        const body = await resp.json();
+        if(resp.status != 200) return message.error(body.msg);
+        setInformacionSalida(body);
+        setProcessPhase(2);
+        setValueSearchCodigoSalida("");
     }
 
-    const agregarProductoDevolucion = (id) => {
+    const agregarProductoDevolucion = async(id) => {
         //Checar que el producto existe
-        socket.emit("producto-existe-por-id",id,(confirmacion)=>{
-
-            if(!confirmacion.ok) return message.error("No existe ningun producto por ese ID!");
-
-            //Checar que el producto si este en la lista de productos de la salida en sacados y no devueltos
-            let bandera = false;
-            informacionSalida.listaProductos.map(producto => {
-                //El producto si existe en la lista de productos retirados
-                if(producto.id._id === id){
-                    bandera = true;
-                    //Checar si el producto ya esta en la lista de productos a devolver si no agregarlo
-                    let flag = false;
-                    const nuevaListaProductos = listaProductosDevueltos.map(productoADevolver => {
-                        if(productoADevolver.id === id){
-                            flag = true;
-                            //TODO: Checar que no se pase de lo que hay en productos retiradso
-                            (producto.cantidad - productoADevolver.cantidad) === 0 ? message.error("No se puede agregar mas producto de lo que hay registrado en la salida!") : productoADevolver.cantidad += 1;
-                        }
-                        return productoADevolver;
-                    });
-                    if(flag){
-                        setListaProductosDevueltos(nuevaListaProductos)
-                    }else{
-                        setListaProductosDevueltos(productos => [...productos,{id,cantidad:1,}]);
-                        setIsBotonDisabled(false);
-                        setValueSearchCodigoProducto("");
+        const resp = await fetchConToken(`/productos/${id}`);
+        const body = await resp.json();
+        if(resp.status != 200) return message.error(body.msg);
+        //Checar que el producto si este en la lista de productos de la salida en sacados y no devueltos
+        let bandera = false;
+        informacionSalida.listaProductos.map(producto => {
+            //El producto si existe en la lista de productos retirados
+            if(producto.id._id === id){
+                bandera = true;
+                //Checar si el producto ya esta en la lista de productos a devolver si no agregarlo
+                let flag = false;
+                const nuevaListaProductos = listaProductosDevueltos.map(productoADevolver => {
+                    if(productoADevolver.id === id){
+                        flag = true;
+                        //TODO: Checar que no se pase de lo que hay en productos retiradso
+                        (producto.cantidad - productoADevolver.cantidad) === 0 ? message.error("No se puede agregar mas producto de lo que hay registrado en la salida!") : productoADevolver.cantidad += 1;
                     }
+                    return productoADevolver;
+                });
+                if(flag){
+                    setListaProductosDevueltos(nuevaListaProductos)
+                }else{
+                    setListaProductosDevueltos(productos => [...productos,{id,cantidad:1,}]);
+                    setIsBotonDisabled(false);
+                    setValueSearchCodigoProducto("");
                 }
-            });
-            if(!bandera) return message.error("Producto NO registrado en la lista de productos retirados!");
+            }
         });
+        if(!bandera) return message.error("Producto NO registrado en la lista de productos retirados!");
     }
 
     const realizarDevolucion = () => {
@@ -74,9 +71,10 @@ export const EntradaDevolucion = ({ socket }) => {
 			okText:"Realizar entrada",
 			cancelText:"Volver atras",
             async onOk(){
-                socket.emit("entrada-productos-almacen-por-devolucion",{listaProductos:listaProductosDevueltos,salidaId:informacionSalida._id},(confirmacion)=>{
-                    confirmacion.ok ? setProcessPhase(3) : message.error(confirmacion.msg);
-                });
+                const resp = await fetchConToken(`/entradas/ingresar-almacen-por-devolucion`,{listaProductos:listaProductosDevueltos,salidaId:informacionSalida._id},"POST");
+                const body = await resp.json();
+                if(resp.status != 200) return message.error(body.msg);
+                setProcessPhase(3);
            	},
         });
     }

@@ -16,15 +16,15 @@ export const CategoriasRegistradas = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
 
 
-    //Registrar una categoria
+    //Marca cuando la categoria se este registrando
     const [form] = Form.useForm();
-
 	const [uploading, setUploading] = useState(false);
-	const [finishProductoRegistrado, setFinishProductoRegistrado] = useState(false);
+    const [finishCategoriaRegistrada, setFinishCategoriaRegistrada] = useState(false);
 
 
-    //Editar un producto
-    const [productoEditing, setProductoEditing] = useState(null);
+
+    //Editar categoria
+    const [categoriaEditing, setCategoriaEditing] = useState(null);
 
     //Crear un nueva categoria 
     const onFinish = async ( values ) =>{                    
@@ -38,20 +38,16 @@ export const CategoriasRegistradas = () => {
             async onOk(){
 				setUploading(true);
 				//Emitir evento al backend de crear nuevo producto!
-				try {
-					const resp = await fetchConToken("/categorias",{nombre:values.nombre},"POST");
-					const body = await resp.json();
-					if(resp.status === 201){
-						message.success(body.msg);
-                        setCategorias(categorias => [...categorias,body.categoria]);
-						setFinishProductoRegistrado(true);
-						//navigate(`/almacen/productos/${body._id}`);
-					}else{
-                        message.error(body.msg);
-                    }
-				} catch (error) {
-					message.error("Error creando el producto!");	
-				}
+				const resp = await fetchConToken("/categorias",{nombre:values.nombre,estatus:values.estatus},"POST");
+				const body = await resp.json();
+				if(resp.status === 201){
+					message.success(body.msg);
+                    setCategorias(categorias => [...categorias,body.categoria]);
+                    setFinishCategoriaRegistrada(true);
+					//navigate(`/almacen/productos/${body._id}`);
+				}else{
+                    message.error(body.msg);
+                }
 				setUploading(false);
 				form.resetFields();
            	},
@@ -69,10 +65,8 @@ export const CategoriasRegistradas = () => {
 			cancelText:"Volver atras",
             async onOk(){
 				setUploading(true);
-                try {
                     const resp = await fetchConToken(`/categorias/${id}`,{},"DELETE");
                     const body = await resp.json();
-
                     if(resp.status === 200){
                         message.success(body.msg);
                         const nuevoRegistrosCategorias = categorias.filter(categoria => categoria._id != id);
@@ -80,9 +74,6 @@ export const CategoriasRegistradas = () => {
                     }else{
                         message.error(body.msg);
                     }
-                } catch (error) {
-                    return message.error("Error eliminando la categoria");
-                }
                 setUploading(false);
            	},
         });
@@ -100,8 +91,7 @@ export const CategoriasRegistradas = () => {
             async onOk(){
 				setUploading(true);
 				//Emitir evento al backend de crear nuevo producto!
-				try {
-					const resp = await fetchConToken(`/categorias/${productoEditing._id}`,{nombre:values.nombre,estado:values.estado},"PUT");
+					const resp = await fetchConToken(`/categorias/${categoriaEditing._id}`,{nombre:values.nombre,estatus:values.estatus},"PUT");
 					const body = await resp.json();
 					if(resp.status === 200){
 						message.success(body.msg);
@@ -111,18 +101,15 @@ export const CategoriasRegistradas = () => {
                         });
                         setCategorias(nuevoRegistrosCategorias);
                         setIsModalVisible(false);
-                        console.log(categorias);
 					}else{
                         message.error(body.msg);
                     }
-				} catch (error) {
-					message.error("Error Editando el producto!");	
-				}
 				setUploading(false);
 				form.resetFields();
            	},
         });
     }
+
     const columns = [
         {
             title:"Nombre de la categoria",
@@ -132,7 +119,7 @@ export const CategoriasRegistradas = () => {
             title:"Estado de la categoria",
             dataIndex:"estado",
             render:(text,record)=> {
-                if(record.estado){
+                if(record.estatus){
                     return <Tag color={"green"} key={record._id}>Activa</Tag>
                 }else{
                     return <Tag color={"red"} key={record._id}>Desactivada</Tag>
@@ -142,6 +129,9 @@ export const CategoriasRegistradas = () => {
         {
             title:"Cantidad de productos registrados",
             dataIndex:"productosRegistrados",
+            render:(text,record)=>{
+                return <span>{record.productosRegistrados.length}</span>
+            }
         },
         {
             title:"Categoria registrada por",
@@ -159,7 +149,7 @@ export const CategoriasRegistradas = () => {
             render:(text,record)=>{
                 return (
                     <div className="d-flex justify-content-center gap-2">
-                        <Button type="primary" onClick={()=>{setProductoEditing(record);setIsModalVisible(true)}}>Editar</Button>
+                        <Button type="primary" onClick={()=>{setCategoriaEditing(record);setIsModalVisible(true)}}>Editar</Button>
                         <Button type="primary" danger onClick={()=>{handleDeleteCategoria(record._id)}}>Eliminar</Button>
                     </div>
                 )
@@ -168,28 +158,28 @@ export const CategoriasRegistradas = () => {
     ];
 
     useEffect(() => {
-        if(productoEditing != null){
+        if(categoriaEditing != null){
             form.setFieldsValue({
-                nombre:productoEditing.nombre,
-                estado:true
+                nombre:categoriaEditing.nombre,
+                estatus:categoriaEditing.estatus
             })
-        }else if(productoEditing === null){
+        }else if(categoriaEditing === null){
             form.setFieldsValue({
                 nombre:"",
-                estado:true
+                estatus:true
             })
         }
-    }, [productoEditing]);
+    }, [categoriaEditing]);
     
     if(isLoading){
         return <SanzSpinner/>
-    }else if(finishProductoRegistrado){
+    }else if(finishCategoriaRegistrada){
 		return (
 			<Result
     			status="success"
     			title="Categoria creada con exito!"
     			subTitle="Categoria creada con exito, puedes proceder a crear productos con esta categoria!"
-    			extra={[<Link to={`/almacen/productos/`}><Button type="primary" key="console">Ver productos</Button></Link>,<Button onClick={()=>{setFinishProductoRegistrado(false)}}>Registrar una nueva categoria</Button>,]}
+    			extra={[<Button type="primary" key="console" onClick={()=>{setFinishCategoriaRegistrada(false);setIsModalVisible(false)}}>Ver categorias</Button>,<Button onClick={()=>{setFinishCategoriaRegistrada(false)}}>Registrar una nueva categoria</Button>,]}
 			/>
         )
     }else{
@@ -199,7 +189,7 @@ export const CategoriasRegistradas = () => {
                 <div className="container p-5" style={{}}>
                         <h1 className="display-5 fw-bold mt-5 mt-lg-0">Lista de categorias</h1>
                         <hr/> 
-                        <Button type="primary" onClick={()=>{setIsModalVisible(true);setProductoEditing(null);}}>Nueva categoria</Button>
+                        <Button type="primary" onClick={()=>{setIsModalVisible(true);setCategoriaEditing(null)}}>Nueva categoria</Button>
                         <Table columns={columns} dataSource={categorias} className="mt-3" />
                 </div>
 
@@ -223,9 +213,9 @@ export const CategoriasRegistradas = () => {
                     </Paragraph>
                 </div>
                 <Modal footer={null} onCancel={()=>{setIsModalVisible(false)}} visible={isModalVisible}>
-                    {productoEditing != null ? <h2 className="fw-bold">Editar una categoria</h2> : <h2 className="fw-bold">Registrar una nueva categoria</h2> }
+                    {categoriaEditing != null ? <h2 className="fw-bold">Editar una categoria</h2> : <h2 className="fw-bold">Registrar una nueva categoria</h2> }
 					<Form form={form} layout="vertical" autoComplete="off" onFinish={(values)=>{
-                        productoEditing != null ? onFinishEditarCategoria(values) : onFinish(values);
+                        categoriaEditing != null ? onFinishEditarCategoria(values) : onFinish(values);
                     }}>
               			<Form.Item 
                 			name="nombre" 
@@ -235,14 +225,15 @@ export const CategoriasRegistradas = () => {
                 		>
                 		    <Input placeholder="Nombre de la categoria" size="large"/>
               		    </Form.Item>
-                        <Form.Item name="estado" tooltip="Marca el estado de la categoria" label="Estado de la categoria">
+
+                        <Form.Item name="estatus" tooltip="Marca el estado de la categoria" label="Estado de la categoria">
                             <Select size="large">
                                 <Option value={true} key={"Activada"}>Activada</Option>
                                 <Option value={false} key={"Desactivada"}>Desactivada</Option>
                             </Select>
                         </Form.Item>
 						
-                        {productoEditing != null ? <Button type="primary" block htmlType="submit" size="large">{uploading ? "Editando categoria..." : "Editar categoria"}</Button> : <Button type="primary" block htmlType="submit" size="large">{uploading ? "Registrando categoria..." : "Registrar categoria"}</Button> }
+                        {categoriaEditing != null ? <Button type="primary" block htmlType="submit" size="large">{uploading ? "Editando categoria..." : "Editar categoria"}</Button> : <Button type="primary" block htmlType="submit" size="large">{uploading ? "Registrando categoria..." : "Registrar categoria"}</Button> }
         			</Form>
                 </Modal>
             </>
