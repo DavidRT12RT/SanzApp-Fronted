@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Divider, message, Modal, Select, Tabs, Tag, Upload,} from 'antd';
+import { Button, DatePicker, Divider, Form, message, Modal, Select, Tabs, Tag, Upload,} from 'antd';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 //import { EditInfo } from './components/EditInfo';
 import { SocketContext } from '../../../../context/SocketContext';
@@ -12,6 +12,13 @@ import { EntradasProducto } from './components/EntradasProducto';
 import "./components/assets/style.css";
 import { useForm } from '../../../../hooks/useForm';
 import { useCategorias } from '../../../../hooks/useCategorias';
+import { pdf } from '@react-pdf/renderer';
+import { saveAs } from 'file-saver';
+import { ReporteGeneral } from '../../../../reportes/Productos/ReporteGeneral';
+
+import moment from 'moment';
+import locale from "antd/es/date-picker/locale/es_ES"
+const { RangePicker } = DatePicker;
 
 const { TabPane } = Tabs;
 const { Dragger } = Upload;
@@ -28,6 +35,8 @@ export const ProductoScreen = () => {
     const {socket} = useContext(SocketContext);
     const [isProductoEditing, setIsProductoEditing] = useState(false);
     const [formValues,handleInputChange,setValues] = useForm({});
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [form] = Form.useForm();
     
     //Formulario para editar informacion del producto
 
@@ -36,19 +45,37 @@ export const ProductoScreen = () => {
         const fetchDataProducto = async () => {
             const resp = await fetchConToken(`/productos/${productoId}`);
             const body = await resp.json();
-            if(resp.status === 200) setInformacionProducto(body);
+            if(resp.status === 200) {
+                body.registrosEntradas.sobranteObra.map(registro => {registro.tipo = "sobranteObra"; registro.key = registro._id;});
+                body.registrosEntradas.devolucionResguardo.map(registro => {registro.tipo = "devolucionResguardo"; registro.key = registro._id})
+                body.registrosEntradas.normal.map(registro => {registro.tipo = "normal"; registro.key = registro._id})
+                body.registrosSalidas.obra.map(registro => {registro.tipo = "obra"; registro.key = registro._id;});
+                body.registrosSalidas.merma.map(registro => {registro.tipo = "merma"; registro.key = registro._id});
+                body.registrosSalidas.resguardo.map(registro => {registro.tipo = "resguardo"; registro.key = registro._id});
+                setInformacionProducto(body);
+            }
             else{
                 message.error("El ID del producto NO existe");
                 return navigate(-1);
             }
         }
         fetchDataProducto();
+        //Setear el tipo de cada salida
+
     },[]);
 
     useEffect(() => {
 
         socket.on("actualizar-producto",(producto)=>{
-            if(productoId === producto._id) setInformacionProducto(producto);
+            if(productoId === producto._id) {
+                producto.registrosEntradas.sobranteObra.map(registro => {registro.tipo = "sobranteObra"; registro.key = registro._id;});
+                producto.registrosEntradas.devolucionResguardo.map(registro => {registro.tipo = "devolucionResguardo"; registro.key = registro._id})
+                producto.registrosEntradas.normal.map(registro => {registro.tipo = "normal"; registro.key = registro._id})
+                producto.registrosSalidas.obra.map(registro => {registro.tipo = "obra"; registro.key = registro._id;});
+                producto.registrosSalidas.merma.map(registro => {registro.tipo = "merma"; registro.key = registro._id});
+                producto.registrosSalidas.resguardo.map(registro => {registro.tipo = "resguardo"; registro.key = registro._id});
+                setInformacionProducto(producto);
+            }
         });
 
     }, [socket,setInformacionProducto,productoId]);
@@ -71,6 +98,7 @@ export const ProductoScreen = () => {
             })
         }
     }, [informacionProducto]);
+
 
 
     const categoriaColor = (categoria) => {
@@ -161,11 +189,31 @@ export const ProductoScreen = () => {
         });
     }
 
+    const crearReporteGeneral = async(values) => {
+
+        //Sacar entradas del producto
+        const entradas = [...informacionProducto.registrosEntradas.sobranteObra,...informacionProducto.registrosEntradas.devolucionResguardo,...informacionProducto.registrosEntradas.normal];
+        const entradasFiltradas = entradas.filter(entrada => {
+            if((values.tipoEntrada.includes(entrada.tipo)) && (moment(entrada.fecha).isBetween(values.intervaloFecha[0].format("YYYY-MM-DD"),values.intervaloFecha[1].format("YYYY-MM-DD")))) return entrada;
+        });
+
+        //Sacar salidas del producto 
+        const salidas = [...informacionProducto.registrosSalidas.obra,...informacionProducto.registrosSalidas.merma,...informacionProducto.registrosSalidas.resguardo];
+        const salidasFiltradas = salidas.filter(salida => {
+            if((values.tipoSalida.includes(salida.tipo)) && (moment(salida.fecha).isBetween(values.intervaloFecha[0].format("YYYY-MM-DD"),values.intervaloFecha[1].format("YYYY-MM-DD")))) return salida;
+        });
+
+        const blob = await pdf((
+            <ReporteGeneral informacionProducto={informacionProducto} productoId={productoId} intervaloFecha={[values.intervaloFecha[0].format('YYYY-MM-DD'),values.intervaloFecha[1].format('YYYY-MM-DD')]} entradas={entradasFiltradas} salidas={salidasFiltradas} entradasCategorias={values.tipoEntrada} salidasCategorias={values.tipoSalida}/>
+        )).toBlob();
+        saveAs(blob,"reporte_general.pdf")
+        
+    }
+
     if( Object.keys(informacionProducto).length === 0 || isLoadingCategorias){
         <Loading/>
     }else{
         return (
-
             <div className="container p-3 p-lg-5">
                 <div className="d-flex justify-content-end gap-2 flex-wrap">
                     {!isProductoEditing && <Link to="/almacen/productos"><Button type="primary">Regresar a lista de productos</Button></Link>}
@@ -187,7 +235,12 @@ export const ProductoScreen = () => {
                                     </p>
                                 </Dragger>
                             :
-                                <img src={`http://localhost:4000/api/uploads/productos/${informacionProducto._id}`} className="imagen-producto" key={`http://localhost:4000/api/uploads/productos/${informacionProducto._id}`}/>
+                                <div className="d-flex justify-content-center align-items-center flex-column">
+                                    {/*<PDFDownloadLink document={<DocumentoPDF/>} fileName={`${productoId}.pdf`}></PDFDownloadLink>*/}
+                                    <img src={`http://localhost:4000/api/uploads/productos/${informacionProducto._id}`} className="imagen-producto" key={`http://localhost:4000/api/uploads/productos/${informacionProducto._id}`}/>
+                                    <Button type="primary" onClick={()=>{setIsModalVisible(true)}}>Descargar reporte general del producto</Button>
+                                    <p className="text-muted text-center mt-2 w-100">(Entradas y salidas del producto)</p>
+                                </div>
                         }
                     </div>
 
@@ -302,16 +355,17 @@ export const ProductoScreen = () => {
                     
                     <div className="col-lg-6 col-12 d-flex flex-column" >
                         <Divider/>
-                        <h1 className="nombre-producto">Registros de el producto</h1>
+                        <h1 className="nombre-producto">Registros del producto</h1>
                         <Tabs defaultActiveKey='1' key="1" size="large">
                             <TabPane tab="Entradas del producto">
-                                <EntradasProducto registros={informacionProducto.registrosEntradas}/>
+                                <EntradasProducto registros={informacionProducto.registrosEntradas} informacionProducto={informacionProducto}/>
                             </TabPane>
                             <TabPane tab="Salidas del producto" key="2">
-                                <SalidasProducto registros={informacionProducto.registrosSalidas}/>
+                                <SalidasProducto registros={informacionProducto.registrosSalidas} informacionProducto={informacionProducto}/>
                             </TabPane>
                         </Tabs>
-                    </div>
+
+                   </div>
 
                     {/* Descripcion del producto y sus aplicaciones*/}
                     <div className="col-lg-6 col-12 d-flex flex-column">
@@ -323,7 +377,36 @@ export const ProductoScreen = () => {
                         {isProductoEditing ? <textarea class="form-control descripcion-producto" rows={5} value={formValues.aplicaciones} name="aplicaciones" onChange={handleInputChange}></textarea> : <h1 className="descripcion-producto">{informacionProducto.aplicaciones}</h1>}
                     </div>
                  </div>
+                <Modal visible={isModalVisible} footer={null} onCancel={()=> {setIsModalVisible(false)}} onOk={()=> {setIsModalVisible(false)}}>
+
+                    <h1 className="titulo" style={{fontSize:"30px"}}>Filtrar registros del reporte</h1>
+                    <p className="descripcion">Marca en las siguientes casillas que informacion quieras que contengan el reporte general del producto</p>
+
+                    <Form form={form} layout="vertical" onFinish={crearReporteGeneral}>
+                        <Form.Item name="intervaloFecha" label="Intervalo de fecha del reporte" rules={[{required: true,message: 'Ingresa un intervalo de fecha!',},]}>
+                            <RangePicker locale={locale} format="YYYY-MM-DD" size="large" style={{width:"100%"}}/>
+                        </Form.Item>
+
+                        <Form.Item label="Tipo de entrada" name="tipoEntrada" rules={[{required: true,message: 'Ingresa un tipo de entrada!',},]}>
+                		    <Select mode="multiple" placeholder="Tipo de entrada..." size="large">
+							    <Select.Option value="sobranteObra">Sobrante de obra</Select.Option>
+							    <Select.Option value="devolucionResguardo">Devolucion resguardo</Select.Option>
+							    <Select.Option value="normal">Normal</Select.Option>
+              		        </Select>
+                        </Form.Item>
+
+                        <Form.Item label="Tipo de salida" name="tipoSalida" rules={[{required: true,message: 'Ingresa un tipo de salida!',},]}>
+                		    <Select mode="multiple" placeholder="Tipo de salida..." size="large">
+							    <Select.Option value="obra">Obra</Select.Option>
+							    <Select.Option value="resguardo">Resguardo</Select.Option>
+							    <Select.Option value="merma">Merma</Select.Option>
+              		        </Select>
+                        </Form.Item>
+                        <Button type="primary" htmlType="submit">Descargar PDF</Button>
+                    </Form>
+                </Modal>
             </div>
+
         )
     }
 };

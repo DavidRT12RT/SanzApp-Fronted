@@ -27,6 +27,7 @@ export const RegistrarProductoNew = () => {
         unidad:"",
         categorias:[],
         descripcion:"",
+        cantidad:1,
         aplicaciones:""
     });
 

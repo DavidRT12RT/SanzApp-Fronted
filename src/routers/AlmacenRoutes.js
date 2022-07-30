@@ -9,14 +9,15 @@ import { AlmacenNavbar } from '../components/almacen/ui/AlmacenNavbar';
 import { Component404 } from '../components/component404/Component404';
 import { SeccionNoticias } from '../components/noticias/SeccionNoticias';
 import { SocketContext } from '../context/SocketContext';
-import { RegistrarProducto } from '../components/almacen/components/productos/RegistrarProducto';
 import { EntradaDevolucion } from '../components/almacen/components/entradas/EntradaDevolucion';
 import { EntradasAlmacen } from '../components/almacen/components/entradas/EntradasAlmacen';
 import { PanelDeControl } from '../components/almacen/components/panel-de-control/PanelDeControl';
-import { Inventario } from '../components/almacen/components/inventario/Inventario';
 import { CategoriasRegistradas } from '../components/almacen/components/categorias/CategoriasRegistradas';
 import { RegistrarProductoNew } from '../components/almacen/components/productos/RegistrarProductoNew';
-//import { PDFVisalizador } from '../components/almacen/components/DocumentoPDF';
+import { PDFVisalizador } from '../components/almacen/components/DocumentoPDF';
+import { Inventarios } from '../components/almacen/components/inventarios/Inventarios';
+import { RegistrarInventario } from '../components/almacen/components/inventarios/RegistrarInventario';
+import { Inventario } from '../components/almacen/components/inventarios/Inventario';
 
 export const AlmacenRoutes = () => {
     const { socket } = useContext(SocketContext);
@@ -32,10 +33,13 @@ export const AlmacenRoutes = () => {
                 <Route path="/retirar/" element={<RetirarAlmacen/>}/>
                 <Route path="/ingresar/" element={<IngresarAlmacen/>}/>
                 <Route path="/productos/registrar/" element={<RegistrarProductoNew/>}/>
+                <Route path="/productos/documento/" element={<PDFVisalizador/>}/>
                 <Route path="/categorias" element={<CategoriasRegistradas/>}/>
                 <Route path="/salidas" element={<SalidasAlmacen/>}/>
                 <Route path="/entradas" element={<EntradasAlmacen/>}/>
-                <Route path="/inventario/" element={<Inventario/>}/>
+                <Route path="/inventarios/" element={<Inventarios/>}/>
+                <Route path="/inventarios/:id" element={<Inventario/>}/>
+                <Route path="/inventarios/registrar-inventario/" element={<RegistrarInventario/>}></Route>
                 <Route path="/*" element={<Component404 />} />
             </Routes>
         </>

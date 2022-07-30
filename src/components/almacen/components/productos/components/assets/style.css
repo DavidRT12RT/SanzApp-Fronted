@@ -36,6 +36,7 @@
 .imagen-producto{
   width: 552px;
   height: 552px;
+  display: block; 
 }
 
 .nombre-producto{

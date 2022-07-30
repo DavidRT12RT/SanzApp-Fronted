@@ -1,15 +1,25 @@
-import { Button, Col, Divider, Drawer, Dropdown, Input, Menu, Row, Table, Tag } from 'antd';
+import { Button, Col, DatePicker, Divider, Drawer, Dropdown, Form, Input, Menu, Modal, Row, Select, Table, Tag } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { useEntradas } from '../../../../hooks/useEntradas';
 import { Loading } from '../../../obras/Loading';
 import { ProductoCardAlmacen } from '../salidas/ProductoCardAlmacen';
+import moment from 'moment';
+import locale from "antd/es/date-picker/locale/es_ES"
+import "./assets/styleEntradasAlmacen.css"
+import { pdf } from '@react-pdf/renderer';
+import { saveAs } from 'file-saver';
+import { ReporteEntradasAlmacen } from '../../../../reportes/Almacen/ReporteEntradasAlmacen';
 const { Search } = Input;
+const { RangePicker } = DatePicker;
 
 export const EntradasAlmacen = () => {
 
     const { isLoading,entradas} = useEntradas();
     const [entradasRegistros, setEntradasRegistros] = useState([]);
     const [informacionRegistroParticular, setInformacionRegistroParticular] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+	const [isReporte, setIsReporte] = useState(false);
+    const [isSearching, setIsSearching] = useState(false);
     const [isDrawerVisible, setIsDrawerVisible] = useState(false);
 
     useEffect(() => {
@@ -62,15 +72,6 @@ export const EntradasAlmacen = () => {
         </div>
     );
 
-    const menu = (
-        <Menu
-			items={[
-				{key:"1",label:(<a target="_blank">Obra</a>)},
-				{key:"2",label:(<a target="_blank">Resguardo</a>)},
-				{key:"3",label:(<a target="_blank">Merma</a>)}
-			]}/>
-    )
-
     const renderizarProductoIngresado = (producto) => {
         switch (informacionRegistroParticular.tipo) {
             /*Para caso de devolucion o sobrante de obra, este es un metodo para ejecutar codigo por dos condiciones
@@ -87,56 +88,99 @@ export const EntradasAlmacen = () => {
         }
     }
 
+    const filtrarEntradas = async(values) => {
+        const entradasFiltradas = entradasRegistros.filter(entrada => {
+            if(moment(entrada.fecha).isBetween(values.intervaloFecha[0].format("YYYY-MM-DD"),values.intervaloFecha[1].format("YYYY-MM-DD")) && (values.tipo.includes(entrada.tipo))) return entrada;
+        });
+
+        if(isReporte){
+            const blob = await pdf((
+                <ReporteEntradasAlmacen intervaloFecha={[values.intervaloFecha[0].format('YYYY-MM-DD'),values.intervaloFecha[1].format('YYYY-MM-DD')]} entradas={entradasFiltradas} categorias={values.tipo}/>
+            )).toBlob();
+            saveAs(blob,"reporte_entradas.pdf")
+            setIsReporte(false);
+        }else{
+            setEntradasRegistros(entradasFiltradas);
+            setIsSearching(true);
+        }
+        setIsModalVisible(false);
+    }
+
+    const filtrarEntradaPorCodigo = (values) => {
+    }
+
+    const limpiarFiltros = () => {
+        setEntradasRegistros(entradas);
+        setIsSearching(false);
+    }
+
     if(isLoading){
        return <Loading/> 
     }else{
         return (
-             <>
-            	<div className="d-flex mt-5 align-items-center flex-column gap-2" style={{height:"100vh",width:"100vw"}}>
-                	<h1 className="display-5 fw-bold">Entradas de almacen</h1>
-                	<span className="d-block text-center">
-                        Aqui se mostraran el recuento total de todas los registros de las entradas a almacen, donde podras checar fecha,<br/>
-                        la lista de productos ingresada a almacen,etc.
-                	</span>
-
-                    <div className="container p-5 d-flex gap-2 justify-content-center align-items-center mt-3 flex-column ">
-						<div className="d-flex justify-content-center gap-2 flex-wrap align-items-center">
-	                		<Search
-                    			placeholder="Ingresa el codigo de barras de la entrada..."
-                    			allowClear
-                    			autoFocus
-                    			enterButton="Buscar"
-								size="large"
-                			/> 
-							 <div className="d-flex justify-content-center gap-3 flex-wrap align-items-center mt-3">
-								<Button type="primary" size="large" onClick={()=>{}}>Filtrar registros</Button>
-								<Button type="primary" danger size="large" onClick={()=>{}}>Limpiar filtros</Button>
-							 </div>
-						</div>
-						<Table columns={columns} className="mt-3" dataSource={entradasRegistros} bordered/>
-						{informacionRegistroParticular != null && (
-							<Drawer width={640} placement="right" closable={false} onClose={()=>{setIsDrawerVisible(false);}} visible={isDrawerVisible}>
-                    			<p className="site-description-item-profile-p" style={{marginBottom: 24,}}>Informacion detallada de la entrada a almacen</p>
-                    			<p className="site-description-item-profile-p">Informacion sobre el ingreso del almacen</p>
-                                <Row>
-                       			    <Col span={12}><DescriptionItem title="Fecha de la entrada" content={informacionRegistroParticular.fecha}/></Col>
-                       			    <Col span={12}><DescriptionItem title="Tipo de entrada" content={informacionRegistroParticular.tipo.toUpperCase()}/></Col>
-                                    <Divider/>
-                    			    <p className="site-description-item-profile-p">Lista de productos ingresados a almacen</p>
-                        		    <div className="d-flex justify-content-center align-items-center container p-5 gap-2 flex-column">
-									{
-										informacionRegistroParticular.listaProductos.map(producto => {
-                                            return renderizarProductoIngresado(producto);
-										})
-									}
-								</div>
-                                </Row>
-                            </Drawer>
-                        )}
+             <div className="container">
+                <div className="text-center p-5">
+                    <h1 className="titulo text-success" style={{fontSize:"40px"}}>Entradas del almacen</h1>
+                    <div className="descripcionEntradas">
+                        <p className="descripcion">Entradas totales del almacen, donde podran consultar las entradas que se han registrado en el sistema , asi como generar reportes de estas mismas y llevar un mejor control del almacen.</p>
                     </div>
-
+                    <Divider/>
+                    <div className="d-flex justify-content-center align-items-center gap-3 flex-column">
+	                    <Search
+                    	    placeholder="Ingresa el codigo de barras de la entrada..."
+                    	    allowClear
+                    	    autoFocus
+                    	    enterButton="Buscar"
+					        size="large"
+                            onSearch={filtrarEntradaPorCodigo}
+                	    /> 
+                        <div className="d-flex justify-content-center align-items-center flex-wrap gap-2">
+                            {isSearching ? <Button type='primary' size="large" danger onClick={limpiarFiltros}>Borrar filtros</Button> :<Button type="primary" size="large" onClick={()=>{setIsModalVisible(true)}}>Filtrar registros</Button>}
+                            <Button type="primary" size="large" onClick={()=>{setIsReporte(true);setIsModalVisible(true)}}>Generar reporte de entradas</Button>
+                        </div>
+                    </div>
+                    <div className="tableContainer mt-4">
+						<Table columns={columns} className="mt-3" dataSource={entradasRegistros} bordered/>
+                    </div>
                 </div>
-             </>
+				{informacionRegistroParticular != null && (
+					<Drawer width={640} placement="right" closable={false} onClose={()=>{setIsDrawerVisible(false);}} visible={isDrawerVisible}>
+                        <p className="site-description-item-profile-p" style={{marginBottom: 24,}}>Informacion detallada de la entrada a almacen</p>
+                    	<p className="site-description-item-profile-p">Informacion sobre el ingreso del almacen</p>
+                        <Row>
+                       	    <Col span={12}><DescriptionItem title="Fecha de la entrada" content={informacionRegistroParticular.fecha}/></Col>
+                       		<Col span={12}><DescriptionItem title="Tipo de entrada" content={informacionRegistroParticular.tipo.toUpperCase()}/></Col>
+                            <Divider/>
+                    		<p className="site-description-item-profile-p">Lista de productos ingresados a almacen</p>
+                        	<div className="d-flex justify-content-center align-items-center container p-5 gap-2 flex-column">
+							    {
+								    informacionRegistroParticular.listaProductos.map(producto => {
+                                        return renderizarProductoIngresado(producto);
+								    })
+							    }
+						    </div>
+                        </Row>
+                    </Drawer>
+                )}
+                <Modal visible={isModalVisible} footer={null} onCancel={()=>{setIsModalVisible(false);setIsReporte(false)}} onOk={()=>{setIsModalVisible(false);setIsReporte(false)}}>
+                    {isReporte ? <h1 className="titulo" style={{fontSize:"30px"}}>Filtrar registros del reporte</h1> : <h1 className="titulo" style={{fontSize:"30px"}}>Filtrar registros</h1>}
+                    {isReporte ? <p className="descripcion">Filtrar los registros de las entradas que tendra el reporte.</p>:<p className="descripcion">Filtrar los registros de las entradas.</p>}
+                    <Form onFinish={filtrarEntradas} layout={"vertical"}>
+                        <Form.Item label="Intervalo de fecha" name="intervaloFecha" rules={[{required: true,message: 'Ingresa un intervalo de fecha!',},]}>
+                            <RangePicker locale={locale} size="large" style={{width:"100%"}}/>
+                        </Form.Item>
+
+                        <Form.Item label="Tipo de entrada" name="tipo" rules={[{required: true,message: 'Ingresa un tipo de entrada!',},]}>
+                		    <Select mode="multiple" placeholder="Tipo de entrada..." size="large">
+							    <Select.Option value="sobrante-obra">Sobrante de obra</Select.Option>
+							    <Select.Option value="devolucion-resguardo">Devolucion resguardo</Select.Option>
+							    <Select.Option value="normal">Normal</Select.Option>
+              		        </Select>
+                        </Form.Item>
+                        {isReporte ? <Button type="primary" htmlType="submit">Descargar PDF</Button>:<Button type="primary" htmlType="submit">Filtrar registros</Button>}
+                    </Form>
+                </Modal>
+            </div>
         )
     }
 }

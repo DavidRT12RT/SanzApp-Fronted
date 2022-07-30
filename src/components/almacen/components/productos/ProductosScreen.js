@@ -72,7 +72,7 @@ export const ProductosScreen = () => {
         return <Loading/>
     }else{
         return (
-            <div className="container p-5 shadow rounded" style={{height:"100vh"}}>
+            <div className="container p-5 rounded">
                 <div className="d-flex justify-content-end align-items-center gap-2 flex-wrap">
                     { pathname != "/aplicacion/almacen" && <Link to="/almacen/productos/registrar"><Button type="primary">Registrar un nuevo producto</Button></Link>}
                     { pathname != "/aplicacion/almacen" && <Link to="/almacen/productos/registrar/categoria"><Button type="primary">Registrar una nueva categoria</Button></Link>}
@@ -134,7 +134,7 @@ export const ProductosScreen = () => {
                             {
                                 dataSource.length != 0 
                                     ?
-                                    <div className="d-flex justify-content-start container gap-5 flex-wrap mt-3 mt-lg-0">
+                                    <div className="d-flex justify-content-center container gap-5 flex-wrap mt-3 mt-lg-0">
                                         {
                                             dataSource.map(producto => {
                                                 return ( 

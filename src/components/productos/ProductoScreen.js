@@ -27,7 +27,15 @@ export const ProductoScreen = () => {
         const fetchDataProducto = async () => {
             const resp = await fetchConToken(`/productos/${productoId}`);
             const body = await resp.json();
-            if(resp.status === 200) setInformacionProducto(body);
+            if(resp.status === 200) {
+                body.registrosEntradas.sobranteObra.map(registro => {registro.tipo = "sobranteObra"; registro.key = registro._id;});
+                body.registrosEntradas.devolucionResguardo.map(registro => {registro.tipo = "devolucionResguardo"; registro.key = registro._id})
+                body.registrosEntradas.normal.map(registro => {registro.tipo = "normal"; registro.key = registro._id})
+                body.registrosSalidas.obra.map(registro => {registro.tipo = "obra"; registro.key = registro._id;});
+                body.registrosSalidas.merma.map(registro => {registro.tipo = "merma"; registro.key = registro._id});
+                body.registrosSalidas.resguardo.map(registro => {registro.tipo = "resguardo"; registro.key = registro._id});
+                setInformacionProducto(body);
+            }
             if(resp.status === 400) {
                 message.error("El ID del producto NO existe");
                 return navigate(-1);

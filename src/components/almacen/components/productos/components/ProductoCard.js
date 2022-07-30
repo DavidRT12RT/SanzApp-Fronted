@@ -38,7 +38,7 @@ export const ProductoCard = ({producto,rol}) => {
         return <Loading/>
     }else{
         return (
-            <div className="row p-4 border shadow" style={{width:"300px",height:"380px"}}>
+            <div className="row p-4 border" style={{width:"300px",height:"380px"}}>
                 <div className="col-12 mb-3 mb-lg-0 d-flex justify-content-center align-items-center">
                     <Avatar shape="square" style={{height:"100px",width:"100px"}} src={`http://localhost:4000/api/uploads/productos/${producto._id}`}/>
                 </div>
