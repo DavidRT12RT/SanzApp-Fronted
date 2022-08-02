@@ -103,7 +103,7 @@ export const AlmacenNavbar = () =>{
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/inventarios/" aria-current="page">Inventario</NavLink>
+                            } to="/almacen/inventarios/" aria-current="page">Inventarios</NavLink>
                         </li>
 
                     </ul>

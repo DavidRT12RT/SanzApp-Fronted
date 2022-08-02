@@ -33,8 +33,16 @@
     border: 1px dashed #e9e9e9;
     border-radius: 2px;
     font-size: 18px;
-	padding:30px;
+	  padding:30px;
 }
 
+.warning-registro-content{
+	  height: fit-content;
+    margin-top: 16px;
+    background-color: #fafafa;
+    border: 1px dashed #e9e9e9;
+    border-radius: 2px;
+	  padding:30px;
+}
 
 

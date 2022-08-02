@@ -1,15 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import {  message,Divider,Input,Tag,Table,Button } from 'antd';
+import {  message,Divider,Input,Tag,Table,Button,InputNumber, Modal } from 'antd';
+import { ExclamationCircleOutlined,UploadOutlined } from '@ant-design/icons';
 import { fetchConToken } from '../../../../helpers/fetch';
 import "./assets/style.css";
 import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
+import { useForm } from '../../../../hooks/useForm';
+const { confirm } = Modal;
 
 export const Inventario = () => {
 
     const { id } = useParams();
     const navigate = useNavigate();
     const [inventario, setInventario] = useState({});
+    const [inventarioInitialValue, setInventarioInitialValue] = useState({});
+    const [isEditingProductos, setIsEditingProductos] = useState(false);
+    const [isEditingInformacion, setIsEditingInformacion] = useState(false);
+    const [values,handleInputChange,setValues] = useForm({});
+    
 
     useEffect(() => {
         //Hacer peticion de la informacion del inventario por id
@@ -21,8 +29,10 @@ export const Inventario = () => {
                 message.error(body.msg);
                 return navigate(-1);
             }
-            //La busqueda salio con exito
-            setInventario(body);
+            //Guardaremda salio con exito
+            body.productosInventariados.map(producto => producto.key = producto._id);
+            setInventario(JSON.parse(JSON.stringify(body)));
+            setInventarioInitialValue(JSON.parse(JSON.stringify(body)));
         }
         fetchData();
     }, []);
@@ -48,6 +58,48 @@ export const Inventario = () => {
             default:
                 return <Tag color="green" style={{fontSize:"13px",padding:"13px"}} key="categoria">{categoria}</Tag> 
         }
+    }
+
+
+    const guardarCambiosInventario = () => {
+		confirm({
+            title:"¿Seguro quieres editar la informacion del inventario?",
+            icon:<ExclamationCircleOutlined />,
+            content:"Se editara la informacion del inventario y no podras regresar al estado anterior",
+			okText:"Editar",
+			cancelText:"Volver atras",
+            async onOk(){
+                const resp = await fetchConToken("/inventarios/actualizar-informacion-inventario",{...inventario,...values,id},"PUT");
+                const body = await resp.json();
+                if(resp.status != 200) return message.error(body.msg);
+                //Informacion actualizada con exito
+                message.success(body.msg);
+                body.inventario.productosInventariados.map(producto => producto.key = producto._id);
+                isEditingInformacion ? setIsEditingInformacion(false) : setIsEditingProductos(false);
+                setInventario(JSON.parse(JSON.stringify(body.inventario)));
+                setInventarioInitialValue(JSON.parse(JSON.stringify(body.inventario)));
+            }
+        })
+
+    }
+
+    const finalizarInventario = () => {
+		confirm({
+            title:"¿Seguro quieres finalizar el inventario?",
+            icon:<ExclamationCircleOutlined />,
+            content:"El inventario quedara registrado y NO PODRAS activarlo de nuevo , es decir que todos los productos contados ya no se podran editar y nada de la informacion podra ser editada",
+			okText:"Finalizar",
+			cancelText:"Volver atras",
+            async onOk(){
+                const resp = await fetchConToken("/inventarios/finalizar-inventario",{id},"PUT");
+                const body = await resp.json();
+                if(resp.status != 200) return message.error(body.msg);
+                //Informacion actualizada con exito
+                message.success(body.msg);
+                body.inventario.productosInventariados.map(producto => producto.key = producto._id);
+                setInventario(JSON.parse(JSON.stringify(body.inventario)));
+            }
+        })
     }
 
     const columns = [
@@ -85,42 +137,96 @@ export const Inventario = () => {
         },
         {
             title:"Cantidad teorica",
-            render:(text,record)=>{
-                return (<Input value={record.cantidadTeorica}></Input>)
-            }
+            dataIndex:"cantidadTeorica"
         },
         {
             title:"Cantidad contada",
-            render:(text,record)=>{
-                return (<Input></Input>)
+            render:(text,record)=> {
+                return isEditingProductos ? <InputNumber onChange={(e)=>{
+                    const newInventarioValues = inventario.productosInventariados.map(producto => {
+                        if(producto.id._id === record.id._id) producto.cantidadContada = e;
+                        return producto;
+                    });
+                    setInventario({...inventario,productosInventariados:newInventarioValues});
+                }} className={record.cantidadContada != record.cantidadTeorica && "text-primary"} defaultValue={record.cantidadContada}></InputNumber> : <span className={record.cantidadContada != record.cantidadTeorica ? "text-primary" : null}>{record.cantidadContada}</span>
             }
-        }
+       }
     ];
-    
+
+    useEffect(() => {
+        if(Object.keys(inventario).length > 0){
+            setValues({
+                titulo:inventario.titulo,
+                descripcion:inventario.descripcion
+            })
+        }
+    }, [inventario]);
+
+    const renderizarBotonesEditarInformacion = () => {
+        if(inventario.estatus === "En progreso"){
+            return isEditingInformacion 
+                ?                 
+                <div className="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                    <Button type="primary"danger onClick={()=>{setIsEditingInformacion(false)}}>Descartar cambios</Button>
+                    <Button type="primary" onClick={guardarCambiosInventario}>Guardar cambios</Button>
+                </div>
+                :
+                <div className="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                    <Button type="primary" onClick={()=>{setIsEditingInformacion(true)}}>Editar informacion</Button>
+                    <Button type="primary" danger onClick={finalizarInventario}>Finalizar inventario</Button>
+                </div>
+        }else if(inventario.estatus === "Finalizado"){
+            return (
+                <div className="d-flex justify-content-center align-items-center gap-2">
+                    {/*<Button type="primary" style={{backgroundColor:"#ffc107",borderColor:"#ffc107"}}>Activar inventario</Button>*/}
+                    <Button type="primary">Descargar PDF inventario</Button>
+                </div>
+            )
+        }
+    }
+
+    const renderizarBotonesEditarCantidadProductos = () => {
+        if(inventario.estatus === "En progreso"){
+            return isEditingProductos
+            ? 
+                <div className="d-flex justify-content-start align-items-center gap-2 flex-wrap">
+                    <Button type="primary" danger onClick={()=>{
+                        setIsEditingProductos(false);
+                        setInventario(JSON.parse(JSON.stringify(inventarioInitialValue)));
+                    }}>Descartar cambios</Button>
+                    <Button type="primary" onClick={guardarCambiosInventario}>Guardar cambios</Button>
+                </div> 
+            : 
+                <Button type="primary" onClick={()=>{setIsEditingProductos(true)}}>Editar</Button>
+        }
+    } 
 
     if(Object.keys(inventario).length === 0){
         return <SanzSpinner/>
     }else{
         return (
             <div className="container p-3 p-lg-5">
-                <div className="d-flex justify-content-end align-items-center gap-2 flex-wrap">
-                    <Button type="primary" className="my-3 my-lg-0">Descargar PDF</Button>
+
+                <div className="d-flex justify-content-end align-items-center gap-2 flex-wrap my-3">
+                    {
+                        renderizarBotonesEditarInformacion()
+                    }
                 </div>
-                <h1 className="titulo" style={{fontSize:"42px"}}>{inventario.titulo}</h1>
+                {isEditingInformacion ? <Input className="titulo" value={values.titulo} onChange={handleInputChange} name="titulo" style={{fontSize:"42px"}}></Input> : <h1 className="titulo" style={{fontSize:"42px"}}>{inventario.titulo}</h1>}
                 <div className="row">
                     <div className="col-12 col-lg-6">
                         <Divider/>
-                        <h1 className="titulo">Descripcion</h1>
-                        <h1 className="descripcion">{inventario.descripcion}</h1>
+                        <h1 className="titulo" style={{fontSize:"32px"}}>Descripcion</h1>
+                        {isEditingInformacion ? <Input.TextArea rows={5} className="descripcion" value={values.descripcion} onChange={handleInputChange} name="descripcion"></Input.TextArea> : <h1 className="descripcion">{inventario.descripcion}</h1>}
                     </div>
                     <div className="col-12 col-lg-6">
                         <Divider/>
-                        <h1 className="titulo">Informacion del inventario</h1>
+                        <h1 className="titulo" style={{fontSize:"32px"}}>Informacion del inventario</h1>
                         <div className='row'>
                             <h1 className="titulo-descripcion col-6">Estatus: </h1>
                             {inventario.estatus ==="En progreso" ? <h1 className="col-6 descripcion text-success">{inventario.estatus}</h1> : <h1 className="col-6 descripcion text-danger">{inventario.estatus}</h1> }
                             <h1 className="titulo-descripcion col-6">Inventario de: </h1>
-                            <h1 className="col-6 descripcion">{inventario.tipo}</h1>
+                            <h1 className="col-6 descripcion">{inventario.tipo.toUpperCase()}</h1>
                             <h1 className="titulo-descripcion col-6">Intervalo fecha: </h1>
                             <h1 className="col-6 descripcion">{inventario.intervaloFecha[0]} --- {inventario.intervaloFecha[1]}</h1> 
                             <h1 className="titulo-descripcion col-6">Fecha del reporte: </h1>
@@ -130,8 +236,10 @@ export const Inventario = () => {
                     </div>
                 </div>
                 <Divider/>
-                <h1 className="titulo">Lista de productos</h1>
-                {/*<Button type="primary">Guardar cambios</Button>*/}
+                <h1 className="titulo" style={{fontSize:"32px"}}>Lista de productos</h1>
+                {
+                    renderizarBotonesEditarCantidadProductos()
+                }
                 <Table columns={columns} dataSource={inventario.productosInventariados} className="my-3"/>
             </div>
         )

@@ -250,30 +250,46 @@ export const SalidasAlmacen = () => {
 		setRegistrosSalidas(salidas);
 	}
 
+	const filtrarSalidaPorCodigo = (values) => {
+		const salidaFiltrada = salidas.filter(salida => salida._id === values);
+		setRegistrosSalidas(salidaFiltrada);
+	}
+
 	if(isLoading || isLoadingEmpleados || isLoadingObras){
 		return <Loading/>
 	}else{
 		return (				
 			<>
-             	<div className="container text-center p-5">
+             	<div className="container text-center p-5"  style={{minHeight:"100vh"}}>
                 	<h1 className="titulo text-danger" style={{fontSize:"40px"}}>Salidas del almacen</h1>
-                	<div className="descripcionContainer">
+
+					<div className="d-flex justify-content-center gap-3 flex-wrap align-items-center mt-3">
+	                    <Search
+                    	    placeholder="Ingresa el codigo de barras de la salida"
+                    	    allowClear
+                    	    autoFocus
+                    	    enterButton="Buscar"
+					        size="large"
+							onSearch={filtrarSalidaPorCodigo}
+							onChange={(e)=>{
+								if(e.target.value === "") return setRegistrosSalidas(salidas);
+							}}
+                	    /> 
+                		{isSearching ? <Button type="primary" size="large" danger onClick={limpiarFiltros}>Borrar filtros</Button> : <Button type="primary" size="large" onClick={()=>{setIsModalVisible(true)}}>Filtrar registros</Button>}
+						<Button type="primary" size="large" onClick={()=> {setIsReporte(true);setIsModalVisible(true)}}>Generar reporte de salidas</Button>
+					</div>
+                	<div className="descripcionContainer mt-4">
                     	<p className="descripcion">
 							Aqui se mostraran el recuento total de todas los registros de las salidas de el almacen, donde podras <br/>checar
 							detalles como el beneficiario ,fecha ,motivo ,etc.
 						</p>
                		</div>
-					<div className="d-flex justify-content-center gap-3 flex-wrap align-items-center mt-3">
-                		{isSearching ? <Button type="primary" size="large" danger onClick={limpiarFiltros}>Borrar filtros</Button> : <Button type="primary" size="large" onClick={()=>{setIsModalVisible(true)}}>Filtrar registros</Button>}
-						<Button type="primary" size="large" onClick={()=> {setIsReporte(true);setIsModalVisible(true)}}>Generar reporte de salidas</Button>
-					</div>
-					<div className="tableContainer mt-4">
-						<Table columns={columns} className="mt-3" dataSource={registrosSalidas} bordered/>
-					</div>
+					<Divider/>
+					<Table columns={columns} className="mt-3" dataSource={registrosSalidas} bordered/>
 				</div>
 
 				<Modal footer={null} onCancel={()=>{setIsModalVisible(false);setIsReporte(false)}} onOk={()=>{setIsModalVisible(false);setIsReporte(false)}} visible={isModalVisible}>
-					{isReporte ? <h2 className="fw-bold">Filtrar registros del reporte</h2> : <h2 className="fw-bold">Filtrar registros</h2>}
+					{isReporte ? <h1 className="titulo"  style={{fontSize:"30px"}}>Filtrar registros del reporte</h1> : <h1 className="titulo" style={{fontSize:"30px"}}>Filtrar registros</h1>}
 					{isReporte ? <p className="descripcion">Filtrar los registros que tendra el reporte.</p> : <p className="descripcion">Filtrar los registros de las salidas.</p>}	
 
 

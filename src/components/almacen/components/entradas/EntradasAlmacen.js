@@ -118,30 +118,21 @@ export const EntradasAlmacen = () => {
        return <Loading/> 
     }else{
         return (
-             <div className="container">
+             <div className="container" style={{minHeight:"100vh"}}>
                 <div className="text-center p-5">
                     <h1 className="titulo text-success" style={{fontSize:"40px"}}>Entradas del almacen</h1>
-                    <div className="descripcionEntradas">
-                        <p className="descripcion">Entradas totales del almacen, donde podran consultar las entradas que se han registrado en el sistema , asi como generar reportes de estas mismas y llevar un mejor control del almacen.</p>
-                    </div>
-                    <Divider/>
+
                     <div className="d-flex justify-content-center align-items-center gap-3 flex-column">
-	                    <Search
-                    	    placeholder="Ingresa el codigo de barras de la entrada..."
-                    	    allowClear
-                    	    autoFocus
-                    	    enterButton="Buscar"
-					        size="large"
-                            onSearch={filtrarEntradaPorCodigo}
-                	    /> 
                         <div className="d-flex justify-content-center align-items-center flex-wrap gap-2">
                             {isSearching ? <Button type='primary' size="large" danger onClick={limpiarFiltros}>Borrar filtros</Button> :<Button type="primary" size="large" onClick={()=>{setIsModalVisible(true)}}>Filtrar registros</Button>}
                             <Button type="primary" size="large" onClick={()=>{setIsReporte(true);setIsModalVisible(true)}}>Generar reporte de entradas</Button>
                         </div>
                     </div>
-                    <div className="tableContainer mt-4">
-						<Table columns={columns} className="mt-3" dataSource={entradasRegistros} bordered/>
+                    <div className="descripcionEntradas mt-4">
+                        <p className="descripcion">Entradas totales del almacen, donde podran consultar las entradas que se han registrado en el sistema , asi como generar reportes de estas mismas y llevar un mejor control del almacen.</p>
                     </div>
+                    <Divider/>
+					<Table columns={columns} className="mt-3" dataSource={entradasRegistros} bordered/>
                 </div>
 				{informacionRegistroParticular != null && (
 					<Drawer width={640} placement="right" closable={false} onClose={()=>{setIsDrawerVisible(false);}} visible={isDrawerVisible}>
@@ -177,7 +168,7 @@ export const EntradasAlmacen = () => {
 							    <Select.Option value="normal">Normal</Select.Option>
               		        </Select>
                         </Form.Item>
-                        {isReporte ? <Button type="primary" htmlType="submit">Descargar PDF</Button>:<Button type="primary" htmlType="submit">Filtrar registros</Button>}
+                        {isReporte ? <Button type="primary" htmlType="submit">Descargar PDF</Button>:<Button type="primary" htmlType="submit">Aplicar filtros</Button>}
                     </Form>
                 </Modal>
             </div>

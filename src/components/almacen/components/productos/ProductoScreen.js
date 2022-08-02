@@ -18,6 +18,7 @@ import { ReporteGeneral } from '../../../../reportes/Productos/ReporteGeneral';
 
 import moment from 'moment';
 import locale from "antd/es/date-picker/locale/es_ES"
+import { MovimientosProducto } from './components/MovimientosProducto';
 const { RangePicker } = DatePicker;
 
 const { TabPane } = Tabs;
@@ -363,6 +364,10 @@ export const ProductoScreen = () => {
                             <TabPane tab="Salidas del producto" key="2">
                                 <SalidasProducto registros={informacionProducto.registrosSalidas} informacionProducto={informacionProducto}/>
                             </TabPane>
+                            <TabPane tab="Movimientos del producto" key="3">
+                                <MovimientosProducto registros={informacionProducto.movimientos} informacionProducto={informacionProducto}/>
+                            </TabPane>
+
                         </Tabs>
 
                    </div>

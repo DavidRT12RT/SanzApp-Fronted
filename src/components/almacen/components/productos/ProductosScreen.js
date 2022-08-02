@@ -72,15 +72,15 @@ export const ProductosScreen = () => {
         return <Loading/>
     }else{
         return (
-            <div className="container p-5 rounded">
+            <div className="container p-5 rounded" style={{minHeight:"100vh"}}>
                 <div className="d-flex justify-content-end align-items-center gap-2 flex-wrap">
-                    { pathname != "/aplicacion/almacen" && <Link to="/almacen/productos/registrar"><Button type="primary">Registrar un nuevo producto</Button></Link>}
-                    { pathname != "/aplicacion/almacen" && <Link to="/almacen/productos/registrar/categoria"><Button type="primary">Registrar una nueva categoria</Button></Link>}
+                    { pathname != "/aplicacion/almacen/" && <Link to="/almacen/productos/registrar"><Button type="primary">Registrar un nuevo producto</Button></Link>}
+                    { pathname != "/aplicacion/almacen/" && <Link to="/almacen/categorias"><Button type="primary">Registrar una nueva categoria</Button></Link>}
                 </div>
                 <h1 className="titulo mt-5 mt-lg-0" style={{fontSize:"40px"}}>Lista de productos en almacen</h1>
                 <hr/> 
                 <div className="d-flex justify-content-start gap-2 flex-wrap">                        
-                    { pathname != "/aplicacion/almacen" && (
+                    { pathname != "/aplicacion/almacen/" && (
                         <Search
                             placeholder="Buscar un producto en almacen por codigo de barras"
                             allowClear
@@ -144,7 +144,7 @@ export const ProductosScreen = () => {
                                         }
                                     </div>
                                     :
-                                    <h4 className="text-danger titulo">Ningun producto registrado aun...</h4>
+                                    <h4 className="text-danger titulo" style={{fontSize:"25px"}}>Ningun producto registrado aun...</h4>
                             }  
                     </div>
                 </div>
