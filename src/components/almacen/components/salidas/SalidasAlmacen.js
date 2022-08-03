@@ -12,6 +12,7 @@ import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
 import "./assets/styles.css";
 import { ReporteSalidasAlmacen } from '../../../../reportes/Almacen/ReporteSalidasAlmacen';
+import { Link } from 'react-router-dom';
 const { Search } = Input;
 const { RangePicker } = DatePicker;
 
@@ -278,12 +279,6 @@ export const SalidasAlmacen = () => {
                 		{isSearching ? <Button type="primary" size="large" danger onClick={limpiarFiltros}>Borrar filtros</Button> : <Button type="primary" size="large" onClick={()=>{setIsModalVisible(true)}}>Filtrar registros</Button>}
 						<Button type="primary" size="large" onClick={()=> {setIsReporte(true);setIsModalVisible(true)}}>Generar reporte de salidas</Button>
 					</div>
-                	<div className="descripcionContainer mt-4">
-                    	<p className="descripcion">
-							Aqui se mostraran el recuento total de todas los registros de las salidas de el almacen, donde podras <br/>checar
-							detalles como el beneficiario ,fecha ,motivo ,etc.
-						</p>
-               		</div>
 					<Divider/>
 					<Table columns={columns} className="mt-3" dataSource={registrosSalidas} bordered/>
 				</div>
@@ -318,7 +313,7 @@ export const SalidasAlmacen = () => {
 						<Divider/>
                     	<p className="site-description-item-profile-p">Informacion sobre el retiro del almacen</p>
 						<Row>
-                       		<Col span={12}><DescriptionItem title="Fecha de la salida" content={informacionRegistroParticular.fecha}/></Col>
+                       		<Col span={12}><DescriptionItem title="Fecha de la salida" content={informacionRegistroParticular.fechaCreacion}/></Col>
                             <Col span={12}><DescriptionItem title="Tipo de la salida" content={informacionRegistroParticular.tipo}/></Col>
 						</Row>
 						<Row>
@@ -345,7 +340,7 @@ export const SalidasAlmacen = () => {
 							informacionRegistroParticular.productosDevueltos.map(entrada => {
 								{
 									return (
-										<div className="d-flex justify-content-center align-items-center flex-wrap">
+										<div className="d-flex justify-content-center align-items-center flex-column gap-2">
 											<p className="text-success text-center mt-3">Fecha de devolucion<br/>{entrada.fecha}</p>
 											{
 												entrada.listaProductos.map(productoDevuelto => {
@@ -358,8 +353,12 @@ export const SalidasAlmacen = () => {
 							})
 						}
 						<Divider/>
-                    	<p className="site-description-item-profile-p">Documento PDF de la salida</p>
+						{/* 
+						<p className="site-description-item-profile-p">Documento PDF de la salida</p>
 						<Button type="primary" onClick={handleDownloadEvidencia}>Descargar documento de evidencia</Button>
+						*/}
+						<p className="site-description-item-profile-p">Detalles completos de la salida</p>
+						<Link to={`/almacen/salidas/${informacionRegistroParticular._id}/`}><Button type="primary">Ir a la pagina de la salida</Button></Link>
                 	</Drawer>
 				)}
 			</>

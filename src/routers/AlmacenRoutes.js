@@ -18,6 +18,7 @@ import { PDFVisalizador } from '../components/almacen/components/DocumentoPDF';
 import { Inventarios } from '../components/almacen/components/inventarios/Inventarios';
 import { RegistrarInventario } from '../components/almacen/components/inventarios/RegistrarInventario';
 import { Inventario } from '../components/almacen/components/inventarios/Inventario';
+import { SalidaScreen } from '../components/almacen/components/salidas/SalidaScreen';
 
 export const AlmacenRoutes = () => {
     const { socket } = useContext(SocketContext);
@@ -36,6 +37,7 @@ export const AlmacenRoutes = () => {
                 <Route path="/productos/documento/" element={<PDFVisalizador/>}/>
                 <Route path="/categorias" element={<CategoriasRegistradas/>}/>
                 <Route path="/salidas" element={<SalidasAlmacen/>}/>
+                <Route path="/salidas/:id/" element={<SalidaScreen/>}/>
                 <Route path="/entradas" element={<EntradasAlmacen/>}/>
                 <Route path="/inventarios/" element={<Inventarios/>}/>
                 <Route path="/inventarios/:id" element={<Inventario/>}/>

@@ -30,6 +30,7 @@ export const EntradaDevolucion = ({ socket }) => {
         setValueSearchCodigoSalida("");
     }
 
+
     const agregarProductoDevolucion = async(id) => {
         //Checar que el producto existe
         const resp = await fetchConToken(`/productos/${id}`);

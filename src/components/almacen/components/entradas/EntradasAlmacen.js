@@ -128,9 +128,6 @@ export const EntradasAlmacen = () => {
                             <Button type="primary" size="large" onClick={()=>{setIsReporte(true);setIsModalVisible(true)}}>Generar reporte de entradas</Button>
                         </div>
                     </div>
-                    <div className="descripcionEntradas mt-4">
-                        <p className="descripcion">Entradas totales del almacen, donde podran consultar las entradas que se han registrado en el sistema , asi como generar reportes de estas mismas y llevar un mejor control del almacen.</p>
-                    </div>
                     <Divider/>
 					<Table columns={columns} className="mt-3" dataSource={entradasRegistros} bordered/>
                 </div>
