@@ -30,8 +30,6 @@ export const ReporteGeneral = ({ informacionProducto,productoId,intervaloFecha,e
     });
 
 
-
-   
     entradas = entradas.map(entrada => {
         return [entrada.tipo.toUpperCase(),entrada.cantidad,entrada.fecha];
     });

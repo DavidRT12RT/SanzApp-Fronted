@@ -239,7 +239,7 @@ export const ProductoScreen = () => {
                                 <div className="d-flex justify-content-center align-items-center flex-column">
                                     {/*<PDFDownloadLink document={<DocumentoPDF/>} fileName={`${productoId}.pdf`}></PDFDownloadLink>*/}
                                     <img src={`http://localhost:4000/api/uploads/productos/${informacionProducto._id}`} className="imagen-producto" key={`http://localhost:4000/api/uploads/productos/${informacionProducto._id}`}/>
-                                    <Button type="primary" onClick={()=>{setIsModalVisible(true)}}>Descargar reporte general del producto</Button>
+                                    <Button type="primary" className="mt-3" onClick={()=>{setIsModalVisible(true)}}>Descargar reporte general del producto</Button>
                                     <p className="text-muted text-center mt-2 w-100">(Entradas y salidas del producto)</p>
                                 </div>
                         }

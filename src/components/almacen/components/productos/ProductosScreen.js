@@ -78,6 +78,7 @@ export const ProductosScreen = () => {
                     { pathname != "/aplicacion/almacen/" && <Link to="/almacen/categorias"><Button type="primary">Registrar una nueva categoria</Button></Link>}
                 </div>
                 <h1 className="titulo mt-5 mt-lg-0" style={{fontSize:"40px"}}>Lista de productos en almacen</h1>
+                <h1 className="descripcion">Productos totales registrados en la bodega, podras filtrar los productos y buscar por su nombre de igual forma.</h1>
                 <hr/> 
                 <div className="d-flex justify-content-start gap-2 flex-wrap">                        
                     { pathname != "/aplicacion/almacen/" && (
@@ -102,10 +103,10 @@ export const ProductosScreen = () => {
                 <div className="row">
                     <div className="col-md-12 col-lg-2">
                         {/*Filtros*/}
-                        <h1 className="descripcion">Filtros</h1>
+                        <h1 className="titulo-descripcion">Filtros</h1>
                         <Divider/> 
                         <div className="row"> 
-                            <h1 className="descripcion" style={{fontSize:"15px"}}>Categoria del producto</h1>
+                            <h1 className="titulo-descripcion" style={{fontSize:"15px"}}>Categoria del producto</h1>
                             {
                                 categoriasDB.length === 0 
                                 ? 
@@ -127,7 +128,7 @@ export const ProductosScreen = () => {
 
                     <div className="col-md-12 col-lg-10 mt-5 mt-lg-0">
 
-                        <h1 className="descripcion">Productos del almacen</h1>
+                        <h1 className="titulo-descripcion">Productos del almacen</h1>
                         <Divider/> 
 
                         {/*Informacion*/}

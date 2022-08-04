@@ -2,10 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import {  message,Divider,Input,Tag,Table,Button,InputNumber, Modal } from 'antd';
 import { ExclamationCircleOutlined,UploadOutlined } from '@ant-design/icons';
+import { pdf } from '@react-pdf/renderer';
+import { saveAs } from 'file-saver';
 import { fetchConToken } from '../../../../helpers/fetch';
 import "./assets/style.css";
 import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
 import { useForm } from '../../../../hooks/useForm';
+import { ReporteInventarioAlmacen } from '../../../../reportes/Almacen/ReporteInventarioAlmacen';
 const { confirm } = Modal;
 
 export const Inventario = () => {
@@ -102,6 +105,13 @@ export const Inventario = () => {
         })
     }
 
+    const crearReporteInventario = async() => {
+        const blob = await pdf((
+            <ReporteInventarioAlmacen inventario={inventario}/>
+        )).toBlob();
+        saveAs(blob,"reporte_general.pdf")
+    }
+
     const columns = [
         {
             title:"Nombre",
@@ -179,7 +189,7 @@ export const Inventario = () => {
             return (
                 <div className="d-flex justify-content-center align-items-center gap-2">
                     {/*<Button type="primary" style={{backgroundColor:"#ffc107",borderColor:"#ffc107"}}>Activar inventario</Button>*/}
-                    <Button type="primary">Descargar PDF inventario</Button>
+                    <Button type="primary" onClick={crearReporteInventario}>Descargar PDF inventario</Button>
                 </div>
             )
         }

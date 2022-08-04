@@ -14,7 +14,6 @@ import { EntradasAlmacen } from '../components/almacen/components/entradas/Entra
 import { PanelDeControl } from '../components/almacen/components/panel-de-control/PanelDeControl';
 import { CategoriasRegistradas } from '../components/almacen/components/categorias/CategoriasRegistradas';
 import { RegistrarProductoNew } from '../components/almacen/components/productos/RegistrarProductoNew';
-import { PDFVisalizador } from '../components/almacen/components/DocumentoPDF';
 import { Inventarios } from '../components/almacen/components/inventarios/Inventarios';
 import { RegistrarInventario } from '../components/almacen/components/inventarios/RegistrarInventario';
 import { Inventario } from '../components/almacen/components/inventarios/Inventario';
@@ -34,7 +33,6 @@ export const AlmacenRoutes = () => {
                 <Route path="/retirar/" element={<RetirarAlmacen/>}/>
                 <Route path="/ingresar/" element={<IngresarAlmacen/>}/>
                 <Route path="/productos/registrar/" element={<RegistrarProductoNew/>}/>
-                <Route path="/productos/documento/" element={<PDFVisalizador/>}/>
                 <Route path="/categorias" element={<CategoriasRegistradas/>}/>
                 <Route path="/salidas" element={<SalidasAlmacen/>}/>
                 <Route path="/salidas/:id/" element={<SalidaScreen/>}/>

@@ -183,7 +183,7 @@ export const SalidaScreen = () => {
                 <div className="d-flex justify-content-end align-items-center">
                     <Button type="primary" onClick={handleDownloadEvidencia} className="my-3">Descargar PDF</Button>
                 </div>
-                <h1 className="titulo" style={{fontSize:"45px"}}>Salida del almacen</h1>
+                <h1 className="titulo" style={{fontSize:"45px"}}><mark style={{backgroundColor:"red",color:"white"}}>Salida del almacen</mark></h1>
                 <h1 className="descripcion">{informacionSalida.motivo}</h1> 
                 <div className="row">
                     <div className="col-12 col-lg-6">
