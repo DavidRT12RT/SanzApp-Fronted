@@ -9,6 +9,7 @@ import { EntradasProducto } from '../almacen/components/productos/components/Ent
 import { SalidasProducto } from '../almacen/components/productos/components/SalidasProducto';
 import { fetchConToken } from '../../helpers/fetch';
 import { SanzSpinner } from '../../helpers/spinner/SanzSpinner';
+import { MovimientosProducto } from '../almacen/components/productos/components/MovimientosProducto';
 
 const { TabPane } = Tabs;
 
@@ -124,6 +125,9 @@ export const ProductoScreen = () => {
                             </TabPane>
                             <TabPane tab="Salidas del producto" key="2">
                                 <SalidasProducto registros={informacionProducto.registrosSalidas}/>
+                            </TabPane>
+                            <TabPane tab="Movimientos del producto" key="3">
+                                <MovimientosProducto registros={informacionProducto.movimientos} informacionProducto={informacionProducto}/>
                             </TabPane>
                         </Tabs>
                     </div>

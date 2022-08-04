@@ -1,11 +1,21 @@
-import { Col, Divider, Drawer, Row, Table, Tag } from 'antd';
+import { Button, Col, DatePicker, Divider, Drawer, Form, Modal, Row, Select, Table, Tag } from 'antd';
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import moment from 'moment';
+import locale from "antd/es/date-picker/locale/es_ES"
+import { pdf } from '@react-pdf/renderer';
+import { saveAs } from 'file-saver';
+const { RangePicker } = DatePicker;
 
 export const MovimientosProducto = ({registros,informacionProducto}) => {
     const [registrosMovimientos, setRegistrosMovimientos] = useState([]);
     const [informacionInventario, setInformacionInventario] = useState(null);
     const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isSearching, setIsSearching] = useState(false);
+    const [isReporte, setIsReporte] = useState(false);
+    const location = useLocation();
+    const [form] = Form.useForm();
 
     useEffect(() => {
         setRegistrosMovimientos(registros);
@@ -50,9 +60,41 @@ export const MovimientosProducto = ({registros,informacionProducto}) => {
             {content}
         </div>
     );
+
+    const filtrarMovimientos = (values) => {
+
+        const movimientosFiltrados = registros.filter(registro => {
+            if((values.tipo.includes(registro.tipo)) && (moment(registro.inventario.fechaRegistro).isBetween(values.intervaloFecha[0],values.intervaloFecha[1]))) {
+                return registro;
+            }
+        });
+        if(isReporte){
+            /*
+            const blob = await pdf((
+            )).toBlob();
+            saveAs(blob,"reporte_movimientos.pdf")
+            */
+            setIsReporte(false);
+        }else{
+            setRegistrosMovimientos(movimientosFiltrados);
+            setIsSearching(true);
+        }
+        setIsModalVisible(false);
+    }
+
+    const limpiarFiltros = () => {
+        setIsSearching(false);
+        setRegistrosMovimientos(registros);
+    }
     
     return (
         <>
+
+
+            <div className="d-flex justify-content-start align-items-center flex-wrap gap-2 mb-3">
+                {isSearching ? <Button type="primary" danger onClick={limpiarFiltros}>Borrar filtros</Button> : <Button type="primary" onClick={()=>{setIsModalVisible(true)}}>Filtrar registros</Button>}
+                {location.pathname.startsWith("/almacen") && <Button type="primary" onClick={()=>{setIsReporte(true);setIsModalVisible(true)}}>Crear reporte de movimientos</Button>}
+            </div>
             <Table columns={columns} bordered dataSource={registrosMovimientos}/>
             {informacionInventario != null && (
             <Drawer width={640} placement="right" closable={false} onClose={()=>{setIsDrawerVisible(false);setInformacionInventario(null)}} visible={isDrawerVisible}>
@@ -73,6 +115,23 @@ export const MovimientosProducto = ({registros,informacionProducto}) => {
                 </Row>
             </Drawer>
             )}
+            <Modal visible={isModalVisible} footer={null} onCancel={()=>{setIsModalVisible(false);setIsReporte(false)}} onOk={()=>{setIsModalVisible(false);setIsReporte(false)}}>
+                {isReporte ? <h1 className="titulo">Filtrar registros del reporte</h1> : <h1 className="titulo">Filtrar registros</h1>}
+                {isReporte ? <p className="descripcion">Filtrar los registros que tendra el reporte de movimientos del producto</p> : <p className="descripcion">Filtrar registros de movimientos.</p>}
+                <Form layout="vertical" form={form} onFinish={filtrarMovimientos}>
+                    <Form.Item label="Tipo del movimiento" name="tipo">
+                		<Select mode="multiple" placeholder="Tipo de salida..." size="large">
+							<Select.Option value="GANANCIA">Ganacia</Select.Option>
+							<Select.Option value="PERDIDA">Perdida</Select.Option>
+							<Select.Option value="NEUTRAL">Neutral</Select.Option>
+              		    </Select>
+                    </Form.Item>
+                    <Form.Item label="Fecha de la creacion de los reportes" name="intervaloFecha">
+                        <RangePicker locale={locale} size="large" style={{width:"100%"}}/>
+                    </Form.Item>
+                    {isReporte ?<Button type="primary" htmlType="submit">Descargar PDF</Button> :<Button type="primary" htmlType="submit">Filtrar movimientos</Button> }
+                </Form>
+            </Modal>
         </>
 
     )

@@ -109,7 +109,7 @@ export const Inventario = () => {
         const blob = await pdf((
             <ReporteInventarioAlmacen inventario={inventario}/>
         )).toBlob();
-        saveAs(blob,"reporte_general.pdf")
+        saveAs(blob,`reporte_inventario_${inventario._id}.pdf`)
     }
 
     const columns = [
@@ -250,6 +250,15 @@ export const Inventario = () => {
                 {
                     renderizarBotonesEditarCantidadProductos()
                 }
+                {inventario.estatus === "Finalizado" && columns.push({
+                    title:"Resultado",
+                    render:(text,record)=>{
+                        if(record.cantidadTeorica < record.cantidadContada) return <Tag color="green" style={{fontSize:"13px",padding:"13px"}}>GANANCIA</Tag>
+                        if(record.cantidadTeorica > record.cantidadContada) return <Tag color="red" style={{fontSize:"13px",padding:"13px"}}>PERDIDA</Tag>
+                        if(record.cantidadTeorica === record.cantidadContada) return <Tag color="cyan" style={{fontSize:"13px",padding:"13px"}}>NEUTRAL</Tag>
+
+                    }
+                })}
                 <Table columns={columns} dataSource={inventario.productosInventariados} className="my-3"/>
             </div>
         )
