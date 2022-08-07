@@ -5,9 +5,9 @@ import { ExclamationCircleOutlined, InfoCircleOutlined } from '@ant-design/icons
 import { Link } from 'react-router-dom';
 import { fetchConToken } from '../../../../helpers/fetch';
 import { ProductoCardAlmacen } from '../salidas/ProductoCardAlmacen';
+import "./assets/styles.css";
 const { confirm } = Modal;
 const { Paragraph, Text } = Typography;
-
 const { Search } = Input;
 
 
@@ -96,11 +96,9 @@ export const EntradaDevolucion = ({ socket }) => {
     switch (processPhase) {
         case 1:
             return (
-                <div className="d-flex mt-5 align-items-center flex-column gap-2" style={{height:"100vh",width:"100vw"}}>				
-                    <h1 className="display-6 fw-bold">Escanea el codigo de la salida</h1>
-                    <span className="d-block text-center">
-                        Escanea el codigo de barras de la salida y comienza a tu proceso de devolucion a bodega!.
-                    </span>
+                <div className="d-flex p-5 text-center align-items-center flex-column gap-2">				
+                    <h1 className="titulo">Escanea el codigo de la salida</h1>
+                    <p className="descripcion">Escanea el codigo de barras de la salida y comienza a tu proceso de devolucion a bodega!.</p>
                     <Search
                         placeholder="Ingresa un codigo de barras..."
                         allowClear
@@ -116,12 +114,12 @@ export const EntradaDevolucion = ({ socket }) => {
             )
         case 2:
             return (
-                <div className="d-flex mt-5 align-items-center flex-column gap-2" style={{height:"100vh",width:"100vw"}}>				
-                    <h1 className="display-6 fw-bold">Escanea los producto(s) a devolver</h1>
-                    <span className="d-block text-center">
+                <div className="d-flex mt-5 align-items-center text-center flex-column gap-2" style={{height:"100vh",width:"100vw"}}>				
+                    <h1 className="titulo">Escanea los producto(s) a devolver</h1>
+                    <p className="descripcion">
                         Escanea el codigo de barras de los productos o producto a devolver al almacen, ten encuenta <br/>
                         que los productos que escanearas necesitan estar en la lista de productos retirados mostrada a continuacion
-                    </span>
+                    </p>
                     <Search
                         placeholder="Ingresa un codigo de barras..."
                         allowClear
@@ -135,8 +133,8 @@ export const EntradaDevolucion = ({ socket }) => {
                         onSearch={agregarProductoDevolucion}
                     /> 
                     {informacionSalida.listaProductos.length > 0 ? (
-                        <div className="d-flex justify-content-center align-items-center container p-5 gap-2 flex-column">
-                            <p className="text-muted text-center">Aqui se muestran todos los productos RETIRADOS del almacen que aun no se han devuelto</p>
+                        <div className="d-flex justify-content-center mt-3 align-items-center container p-5 gap-2 flex-column">
+                            <p className="descripcion text-muted text-center">Aqui se muestran todos los productos RETIRADOS del almacen que aun no se han devuelto</p>
                             <Divider/>
                             {informacionSalida.listaProductos.map(producto => {
                                     return <ProductoCardDevolucion producto={producto} listaProductosDevueltos={listaProductosDevueltos}/>
@@ -146,20 +144,20 @@ export const EntradaDevolucion = ({ socket }) => {
                         )
                         : 
                         (
-                            <div className="d-flex justify-content-center align-items-center container p-5 gap-2 flex-column">
+                            <div className="d-flex mt-3 justify-content-center align-items-center container p-5 gap-2 flex-column">
                                 <h2 className="fw-bold text-white bg-success p-3">Todos los productos han sido devueltos!</h2>
                                 <Divider/>
                             </div>
                         )
                     }
                     <div className="container mt-3 p-5">
-                        <p className="text-muted text-center">Aqui se muestran todos los productos DEVUELTOS al almacen</p>
+                        <p className="descripcion text-muted text-center">Aqui se muestran todos los productos DEVUELTOS al almacen</p>
                         <Divider/>
     					{
 					        informacionSalida.productosDevueltos.map(entrada => {
 						        {
 								    return (
-									    <div className="d-flex justify-content-center align-items-center flex-column">
+									    <div className="d-flex justify-content-center align-items-center gap-2 flex-column">
 									        <p className="text-success text-center mt-3">Fecha de devolucion<br/>{entrada.fecha}</p>
 											    {
 												    entrada.listaProductos.map(productoDevuelto => {

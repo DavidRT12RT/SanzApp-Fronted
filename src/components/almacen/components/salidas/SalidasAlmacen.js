@@ -1,4 +1,5 @@
 import { Button, Col, DatePicker, Divider, Drawer, Dropdown, Form, Input, Menu, message, Modal, Row, Select, Table, Tag } from 'antd'
+import { DownloadOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react'
 import { fetchConToken } from '../../../../helpers/fetch';
 import { useSalidas } from '../../../../hooks/useSalidas';
@@ -49,15 +50,15 @@ export const SalidasAlmacen = () => {
                 switch (text) {
                     case "obra":
                         return (
-                            <Tag color="green">OBRA</Tag>
+                            <Tag color="green" style={{fontSize:"13px",padding:"13px"}}>OBRA</Tag>
                         )
                     case "resguardo":
                         return (
-                            <Tag color="yellow">RESGUARDO</Tag>
+                            <Tag color="yellow" style={{fontSize:"13px",padding:"13px"}}>RESGUARDO</Tag>
                         )
                     case "merma":
                         return (
-                            <Tag color="red">MERMA</Tag>
+                            <Tag color="red" style={{fontSize:"13px",padding:"13px"}}>MERMA</Tag>
                         )
                 }
             }
@@ -262,7 +263,11 @@ export const SalidasAlmacen = () => {
 		return (				
 			<>
              	<div className="container text-center p-5"  style={{minHeight:"100vh"}}>
+					<div className="d-flex justify-content-end align-items-center my-3">
+						<Link to={"/almacen/retirar"}><Button type="primary">Retirar del almacen</Button></Link>
+					</div>
                 	<h1 className="titulo text-danger" style={{fontSize:"40px"}}>Salidas del almacen</h1>
+					<p className="descripcion">Salidas totales que se han registrado en el almacen , aqui podras hacer reportes sobre las salidas y ver detalles sobre cada una de las salidas.</p>
 
 					<div className="d-flex justify-content-center gap-3 flex-wrap align-items-center mt-3">
 	                    <Search
@@ -270,14 +275,14 @@ export const SalidasAlmacen = () => {
                     	    allowClear
                     	    autoFocus
                     	    enterButton="Buscar"
-					        size="large"
+							size="large"
 							onSearch={filtrarSalidaPorCodigo}
 							onChange={(e)=>{
 								if(e.target.value === "") return setRegistrosSalidas(salidas);
 							}}
                 	    /> 
-                		{isSearching ? <Button type="primary" size="large" danger onClick={limpiarFiltros}>Borrar filtros</Button> : <Button type="primary" size="large" onClick={()=>{setIsModalVisible(true)}}>Filtrar registros</Button>}
-						<Button type="primary" size="large" onClick={()=> {setIsReporte(true);setIsModalVisible(true)}}>Generar reporte de salidas</Button>
+                		{isSearching ? <Button type="primary" danger onClick={limpiarFiltros}>Borrar filtros</Button> : <Button type="primary" onClick={()=>{setIsModalVisible(true)}}>Filtrar registros</Button>}
+						<Button type="primary" icon={<DownloadOutlined />} onClick={()=> {setIsReporte(true);setIsModalVisible(true)}}>Generar reporte de salidas</Button>
 					</div>
 					<Divider/>
 					<Table columns={columns} className="mt-3" dataSource={registrosSalidas} bordered/>

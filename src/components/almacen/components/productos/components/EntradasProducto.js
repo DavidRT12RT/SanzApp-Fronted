@@ -20,10 +20,11 @@ export const EntradasProducto = ({registros,informacionProducto}) => {
 
 
     useEffect(() => {
-        setRegistrosEntradas([...registros.sobranteObra,...registros.devolucionResguardo,...registros.normal]);
+        setRegistrosEntradas([...registros.sobranteObra,...registros.devolucionResguardo,...registros.compraDirecta]);
     }, [registros]);
 
     const filtrarEntradas = (values) => {
+        console.log(values);
         setIsSearching(true);
         const nuevosRegistros = registrosEntradas.filter(registro => {
             if((moment(registro.fecha).isBetween(values.intervaloFecha[0],values.intervaloFecha[1])) && (values.tipo.includes(registro.tipo))) return registro;
@@ -35,7 +36,7 @@ export const EntradasProducto = ({registros,informacionProducto}) => {
     const limpiarFiltros = () => {
 
         setIsSearching(false);
-        setRegistrosEntradas([...registros.sobranteObra,...registros.devolucionResguardo,...registros.normal]);
+        setRegistrosEntradas([...registros.sobranteObra,...registros.devolucionResguardo,...registros.compraDirecta]);
         
     }
 
@@ -64,9 +65,9 @@ export const EntradasProducto = ({registros,informacionProducto}) => {
                         return (
                             <Tag color="yellow">DEVOLUCION-RESGUARDO</Tag>
                         )
-                    case "normal":
+                    case "compraDirecta":
                         return (
-                            <Tag color="blue">NORMAL</Tag>
+                            <Tag color="blue">COMPRA-DIRECTA</Tag>
                         )
                 }
             }
@@ -101,7 +102,7 @@ export const EntradasProducto = ({registros,informacionProducto}) => {
                 		<Select mode="multiple" placeholder="Tipo de entrada..." size="large">
 							<Select.Option value="sobranteObra">Sobrante de obra</Select.Option>
 							<Select.Option value="devolucionResguardo">Devolucion resguardo</Select.Option>
-							<Select.Option value="normal">Normal</Select.Option>
+							<Select.Option value="compraDirecta">Compra directa</Select.Option>
               		    </Select>
                     </Form.Item>
                     <Button type="primary" htmlType="submit" size="large">Filtrar registros</Button>
@@ -120,7 +121,7 @@ export const EntradasProducto = ({registros,informacionProducto}) => {
                 		<Select mode="multiple" placeholder="Tipo de entrada..." size="large">
 							<Select.Option value="sobranteObra">Sobrante de obra</Select.Option>
 							<Select.Option value="devolucionResguardo">Devolucion resguardo</Select.Option>
-							<Select.Option value="normal">Normal</Select.Option>
+							<Select.Option value="compraDirecta">Compra directa</Select.Option>
               		    </Select>
                     </Form.Item>
                     <Button type="primary" htmlType="submit" size="large">Filtrar registros</Button>

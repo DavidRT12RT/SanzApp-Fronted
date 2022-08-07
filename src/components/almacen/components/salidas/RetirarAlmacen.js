@@ -5,6 +5,7 @@ import { SocketContext } from '../../../../context/SocketContext';
 import { ProductoCardRetiroEntrada } from './ProductoCardRetiroEntrada';
 import { ExclamationCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { fetchConToken } from '../../../../helpers/fetch';
+import "./assets/styles.css";
 const { Search } = Input;
 const { confirm } = Modal;
 const { Paragraph, Text } = Typography;
@@ -174,10 +175,10 @@ export const RetirarAlmacen = () => {
     }else{
         return (
             <div className="d-flex mt-5 align-items-center flex-column gap-2" style={{height:"100vh",width:"100vw"}}>				
-                <h1 className="display-6 fw-bold">Comienza a escanear</h1>
-                <span className="d-block text-center">Ten seleccionado la barra de busqueda y escanea los codigos de los productos ,<br/>
+                <h1 className="titulo" style={{fontSize:"42px"}}>Comienza a escanear</h1>
+                <p className="descripcion">Ten seleccionado la barra de busqueda y escanea los codigos de los productos ,<br/>
                     al tener todos los productos escaneados llena el formulario final y listo!
-                </span>
+                </p>
                 <Search
                     placeholder="Ingresa un codigo de barras..."
                     allowClear
@@ -191,8 +192,8 @@ export const RetirarAlmacen = () => {
                 /> 
                 {listaProductos.length > 0 ? (
                     <>
-                        <div className="d-flex justify-content-center align-items-center container p-5 gap-2 flex-column">
-                            <p className="text-muted text-center">Ten en cuenta que todos los productos a retirar tienen que estar marcados como "Disponibles" en caso contrario no podras realizar retiro de nada</p>
+                        <div className="d-flex justify-content-center align-items-center container mt-3 p-5 gap-2 flex-column">
+                            <p className="descripcion text-muted text-center">Ten en cuenta que todos los productos a retirar tienen que estar marcados como "Disponibles" <br/> en caso contrario no podras realizar retiro de nada</p>
                             <Divider/>
                             {
                                 listaProductos.map(producto => {
@@ -202,11 +203,11 @@ export const RetirarAlmacen = () => {
                             </div>
                         <div className="container p-5 d-flex gap-2 justify-content-center align-items-center mt-3 flex-column">
                             <Button type="primary" onClick={()=>{setIsModalVisible(true)}}>Realizar retiro de almacen</Button>
-                            <p className="text-muted text-center">Tendras que rellenar un formulario explicando el motivo y el beneficiario de todos estos productos</p>
+                            <p className="descripcion text-muted text-center">Tendras que rellenar un formulario explicando el motivo y el beneficiario de todos estos productos</p>
                         </div>
                         <Modal footer={null} visible={isModalVisible} onCancel={()=>{setIsModalVisible(false)}} onOk={()=>{setIsModalVisible(false)}}>
-                            <h2 className="fw-bold text-center">Realizar retiro de almacen</h2>
-                            <p className="text-muted">A continuación marca que tipo de salida sera el producto o los productos.</p>
+                            <h1 className="titulo">Realizar retiro de almacen</h1>
+                            <p className="descripcion">A continuación marca que tipo de salida sera el producto o los productos.</p>
                             <Form onFinish={realizarRetiroAlmacen} layout="vertical">
                                 <Form.Item label="Tipo de salida" name="tipoSalida" rules={[{ required: true, message: 'Debes seleccionar el tipo de salida!'}]}>
                                     <Select placeholder="Selecciona el tipo de salida del producto o productos" onChange={(value)=>{setTipoSalida(value)}}>

@@ -6,6 +6,7 @@ import { ExclamationCircleOutlined, InfoCircleOutlined } from '@ant-design/icons
 import { fetchConToken } from '../../../../helpers/fetch';
 import { ProductoCardRetiroEntrada } from '../salidas/ProductoCardRetiroEntrada';
 import { useSelector } from 'react-redux';
+import "./assets/styles.css";
 const { Search } = Input;
 const { confirm } = Modal;
 const { Paragraph, Text } = Typography;
@@ -114,10 +115,10 @@ export const EntradaNormal = () => {
     }else{
         return (
             <div className="d-flex mt-5 align-items-center flex-column gap-2" style={{height:"100vh",width:"100vw"}}>				
-                <h1 className="display-6 fw-bold">Comienza a escanear</h1>
-                <span className="d-block text-center">Ten seleccionado la barra de busqueda y escanea los codigos de los productos ,<br/>
+                <h1 className="titulo">Comienza a escanear</h1>
+                <p className="descripcion">Ten seleccionado la barra de busqueda y escanea los codigos de los productos ,<br/>
                     al terminar solo da click en el boton de "Realizar ingreso a almacen" y listo!
-                </span>
+                </p>
                 <Search
                     placeholder="Ingresa un codigo de barras..."
                     allowClear

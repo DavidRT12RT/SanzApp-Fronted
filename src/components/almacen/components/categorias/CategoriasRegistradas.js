@@ -6,6 +6,7 @@ import { ExclamationCircleOutlined, InfoCircleOutlined } from '@ant-design/icons
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchConToken } from '../../../../helpers/fetch';
+import "./assets/styles.css";
 const { Paragraph, Text } = Typography;
 const { confirm } = Modal;
 const { Option } = Select;
@@ -119,11 +120,11 @@ export const CategoriasRegistradas = () => {
             title:"Estado de la categoria",
             dataIndex:"estado",
             render:(text,record)=> {
-                if(record.estatus){
-                    return <Tag color={"green"} key={record._id}>Activa</Tag>
-                }else{
-                    return <Tag color={"red"} key={record._id}>Desactivada</Tag>
-                }
+                return (
+                    <div className="d-flex justify-content-center align-items-center">
+                        {record.estatus ? <Tag color={"green"} key={record._id} style={{fontSize:"13px",padding:"13px"}}>Activa</Tag> : <Tag color={"red"} key={record._id} style={{fontSize:"13px",padding:"13px"}}>Desactivada</Tag>}
+                    </div>
+                )
             }
         },
         {
@@ -187,8 +188,8 @@ export const CategoriasRegistradas = () => {
         return (
             <>
                 <div className="container p-5" style={{}}>
-                        <h1 className="display-5 fw-bold mt-5 mt-lg-0">Lista de categorias</h1>
-                        <hr/> 
+                        <h1 className="titulo">Lista de categorias</h1>
+                        <p className="descripcion">Categorias registradas en el almacen.</p>
                         <Button type="primary" onClick={()=>{setIsModalVisible(true);setCategoriaEditing(null)}}>Nueva categoria</Button>
                         <Table columns={columns} dataSource={categorias} className="mt-3" />
                 </div>
@@ -213,7 +214,7 @@ export const CategoriasRegistradas = () => {
                     </Paragraph>
                 </div>
                 <Modal footer={null} onCancel={()=>{setIsModalVisible(false)}} visible={isModalVisible}>
-                    {categoriaEditing != null ? <h2 className="fw-bold">Editar una categoria</h2> : <h2 className="fw-bold">Registrar una nueva categoria</h2> }
+                    {categoriaEditing != null ? <h1 className="titulo" style={{fontSize:"30px"}}>Editar una categoria</h1> : <h1 className="titulo" style={{fontSize:"30px"}}>Registrar una nueva categoria</h1> }
 					<Form form={form} layout="vertical" autoComplete="off" onFinish={(values)=>{
                         categoriaEditing != null ? onFinishEditarCategoria(values) : onFinish(values);
                     }}>

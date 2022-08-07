@@ -1,14 +1,16 @@
 import { Button, Col, DatePicker, Divider, Drawer, Dropdown, Form, Input, Menu, Modal, Row, Select, Table, Tag } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react'
 import { useEntradas } from '../../../../hooks/useEntradas';
 import { Loading } from '../../../obras/Loading';
 import { ProductoCardAlmacen } from '../salidas/ProductoCardAlmacen';
 import moment from 'moment';
 import locale from "antd/es/date-picker/locale/es_ES"
-import "./assets/styleEntradasAlmacen.css"
+import "./assets/styles.css"
 import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
 import { ReporteEntradasAlmacen } from '../../../../reportes/Almacen/ReporteEntradasAlmacen';
+import { Link } from 'react-router-dom';
 const { Search } = Input;
 const { RangePicker } = DatePicker;
 
@@ -35,15 +37,15 @@ export const EntradasAlmacen = () => {
                 switch (text) {
                     case "sobrante-obra":
                         return (
-                            <Tag color="green">{text.toUpperCase()}</Tag>
+                            <Tag color="green" style={{fontSize:"13px",padding:"13px"}}>{text.toUpperCase()}</Tag>
                         )
                     case "devolucion-resguardo":
                         return (
-                            <Tag color="yellow">{text.toUpperCase()}</Tag>
+                            <Tag color="yellow" style={{fontSize:"13px",padding:"13px"}}>{text.toUpperCase()}</Tag>
                         )
-                    case "normal":
+                    case "compra-directa":
                         return (
-                            <Tag color="red">NORMAL</Tag>
+                            <Tag color="red" style={{fontSize:"13px",padding:"13px"}}>COMPRA-DIRECTA</Tag>
                         )
                 }
             }
@@ -81,9 +83,9 @@ export const EntradasAlmacen = () => {
                 return (
                     <ProductoCardAlmacen producto={producto} key={producto.id} tipo={"devuelto"}/>
                 );
-            case "normal":
+            case "compra-directa":
                 return (
-                    <ProductoCardAlmacen producto={producto} key={producto.id} tipo={"normal"}/>
+                    <ProductoCardAlmacen producto={producto} key={producto.id} tipo={"compra-directa"}/>
                 )
         }
     }
@@ -118,19 +120,20 @@ export const EntradasAlmacen = () => {
        return <Loading/> 
     }else{
         return (
-             <div className="container" style={{minHeight:"100vh"}}>
-                <div className="text-center p-5">
-                    <h1 className="titulo text-success" style={{fontSize:"40px"}}>Entradas del almacen</h1>
-
-                    <div className="d-flex justify-content-center align-items-center gap-3 flex-column">
-                        <div className="d-flex justify-content-center align-items-center flex-wrap gap-2">
-                            {isSearching ? <Button type='primary' size="large" danger onClick={limpiarFiltros}>Borrar filtros</Button> :<Button type="primary" size="large" onClick={()=>{setIsModalVisible(true)}}>Filtrar registros</Button>}
-                            <Button type="primary" size="large" onClick={()=>{setIsReporte(true);setIsModalVisible(true)}}>Generar reporte de entradas</Button>
-                        </div>
+             <div className="container p-5 text-center" style={{minHeight:"100vh"}}>
+			    <div className="d-flex justify-content-end align-items-center my-3">
+					<Link to={"/almacen/ingresar"}><Button type="primary">Ingresar al almacen</Button></Link>
+				</div>
+                <h1 className="titulo text-success" style={{fontSize:"40px"}}>Entradas del almacen</h1>
+                <p className="descripcion">Entradas totales registradas en el almacen , donde podras generar reportes y ver detalles de cada una de las entradas.</p>
+                <div className="d-flex justify-content-center align-items-center gap-3 flex-column">
+                    <div className="d-flex justify-content-center align-items-center flex-wrap gap-2">
+                        {isSearching ? <Button type='primary' danger onClick={limpiarFiltros}>Borrar filtros</Button> :<Button type="primary" onClick={()=>{setIsModalVisible(true)}}>Filtrar registros</Button>}
+                        <Button type="primary" icon={<DownloadOutlined />} onClick={()=>{setIsReporte(true);setIsModalVisible(true)}}>Generar reporte de entradas</Button>
                     </div>
-                    <Divider/>
-					<Table columns={columns} className="mt-3" dataSource={entradasRegistros} bordered/>
                 </div>
+                <Divider/>
+				<Table columns={columns} className="mt-3" dataSource={entradasRegistros} bordered/>
 				{informacionRegistroParticular != null && (
 					<Drawer width={640} placement="right" closable={false} onClose={()=>{setIsDrawerVisible(false);}} visible={isDrawerVisible}>
                         <p className="site-description-item-profile-p" style={{marginBottom: 24,}}>Informacion detallada de la entrada a almacen</p>

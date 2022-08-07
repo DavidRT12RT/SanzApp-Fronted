@@ -7,9 +7,15 @@ import { Table } from '../Table';
 import LatoBold from "../assets/fuentes/Lato-Bold.ttf";
 import LatoRegular from "../assets/fuentes/Lato-Regular.ttf";
 
-export const ReporteEntradas = ({ informacionProducto,intervaloFecha,entradas,entradasCategorias}) => {
+export const ReporteMovimientos = ({movimientos,intervaloFecha,categorias,informacionProducto}) => {
+
     const fecha = moment().locale('es').format("YYYY-MM-DD");
     const urlImagen = `http://localhost:4000/api/uploads/productos/${informacionProducto._id}`
+
+    movimientos = movimientos.map(movimiento => {
+        return [movimiento.cantidadTeorica,movimiento.cantidadContada,movimiento.inventario.fechaRegistro,movimiento.tipo]
+    });
+
 
     Font.register({
         family:"Lato",
@@ -24,11 +30,6 @@ export const ReporteEntradas = ({ informacionProducto,intervaloFecha,entradas,en
             }
         ]
     });
-
-    entradas = entradas.map(entrada => {
-        return [entrada.tipo.toUpperCase(),entrada.cantidad,entrada.fecha];
-    });
-
     const styles = StyleSheet.create({
         page: {
             fontSize: 11,
@@ -37,6 +38,22 @@ export const ReporteEntradas = ({ informacionProducto,intervaloFecha,entradas,en
             flexDirection: "column",
             padding:20
         }, 
+        headerLogoAndFecha:{
+            flexDirection:"row",
+            justifyContent:"space-between",
+            alignItems:"center"
+        },
+        logo: {
+            width:"150",
+            height:"120"
+        },
+        fechaReporte:{
+            marginTop: 20,
+            fontSize:14,
+            paddingBottom: 3,
+            fontFamily:"Lato",
+            fontWeight:"bold"
+        },
         imagenProducto: {
             width: 150,
             height: 150,
@@ -44,32 +61,19 @@ export const ReporteEntradas = ({ informacionProducto,intervaloFecha,entradas,en
             marginRight: 'auto',
             marginTop:-30
        },
-        logo: {
-            width:"150",
-            height:"120"
-        },
-        label:{
-            fontSize:13,
-            fontFamily:"Lato",
-            fontWeight:"normal"
-        },
         idProductoContainer:{
             flexDirection: "row",
             justifyContent:"center",
             fontFamily:"Lato",
             fontWeight:"normal"
         },
-        invoiceDateContainer: {
-            marginTop:36,
-        },
-        descripcion:{
-            fontSize:12,
-            textAlign:"center",
+        label:{
+            fontSize:13,
             fontFamily:"Lato",
             fontWeight:"normal"
         },
         reportTitle:{
-            color: 'green',
+            color: "blue",
             letterSpacing: 4,
             fontSize: 20,
             textAlign: 'center',
@@ -78,12 +82,18 @@ export const ReporteEntradas = ({ informacionProducto,intervaloFecha,entradas,en
             fontFamily: 'Lato',
             fontWeight:"bold"
         },
-        titleEntradas:{
-            fontSize:14,
-            color:"green",
+        descripcion:{
+            fontSize:12,
             textAlign:"center",
-            textTransform: 'uppercase',
-            marginTop:15,
+            fontFamily:"Lato",
+            fontWeight:"normal"
+        },
+        headerContainer: {
+            marginTop: 36
+        },
+        informacionProducto: {
+            paddingBottom: 3,
+            fontSize:16,
             fontFamily:"Lato",
             fontWeight:"bold"
         },
@@ -98,30 +108,14 @@ export const ReporteEntradas = ({ informacionProducto,intervaloFecha,entradas,en
             fontFamily:"Lato",
             fontWeight:"bold"
         },
-        headerContainer: {
-            marginTop: 36
-        },
-        reporteContainer:{
-            marginTop:20,
-            justifyContent:"flex-end"
-        },
-        informacionProducto: {
-            paddingBottom: 3,
-            fontSize:16,
-            fontFamily:"Lato",
-            fontWeight:"bold"
-        },
-        fechaReporte:{
-            marginTop: 20,
+        titleMovimientos:{
             fontSize:14,
-            paddingBottom: 3,
+            color:"blue",
+            textAlign:"center",
+            textTransform: 'uppercase',
+            marginTop:15,
             fontFamily:"Lato",
             fontWeight:"bold"
-        },
-        headerLogoAndFecha:{
-            flexDirection:"row",
-            justifyContent:"space-between",
-            alignItems:"center"
         },
         categoriasFiltradas:{
             textAlign:"center",
@@ -129,63 +123,50 @@ export const ReporteEntradas = ({ informacionProducto,intervaloFecha,entradas,en
             fontFamily:"Lato",
             fontWeight:"normal"
         },
-        textoError:{
-            textAlign:"center",
-            color:"red",
-            fontFamily:"Lato",
-            fontWeight:"normal"
-        },
-        table:{
-            fontFamily:"Lato",
-            fontWeight:"normal"
-        }
     });
-
-
 
     return (
         <Document>
-            <Page size="A4" style={styles.page}>
+            <Page size="A4" style={styles.page}> 
+
                 <View style={styles.headerLogoAndFecha}>
                     <Image style={styles.logo} src={logo}/>
                     <Text style={styles.fechaReporte}>Fecha del reporte: {fecha}</Text>
                 </View>
 
                 <Image style={styles.imagenProducto} src={urlImagen}/>
+
                 <View style={styles.idProductoContainer}>
                     <Text style={styles.label}>{informacionProducto._id}</Text>
                 </View>
 
-                <Text style={styles.reportTitle}>Reporte entradas del producto</Text>
-                <Text style={styles.descripcion}>Entradas que ha tenido el producto dentro de almacen.</Text>
-                
-                
+                <Text style={styles.reportTitle}>Reporte movimientos del producto</Text>
+                <Text style={styles.descripcion}>Movimientos que ha tenido el producto en almacen.</Text>
+
                 <View style={styles.headerContainer}>
                     <Text style={styles.informacionProducto}>Informacion del producto:</Text>
                     <Text style={styles.label}>Nombre del producto: {informacionProducto.nombre}</Text>
                     <Text style={styles.label}>Marca: {informacionProducto.marca}</Text>
                 </View>
 
-
                 <View style={styles.dateSelectContainer}>
                     <Text style={styles.dateSelect}>Intervalo de fecha de los registros</Text>
                     <Text style={styles.label}>{intervaloFecha[0]} --- {intervaloFecha[1]}</Text>
                 </View>
 
+                <Text style={styles.titleMovimientos}>Movimientos</Text>
+                <Text style={styles.categoriasFiltradas}>(Filtrando movimientos del producto por las categorias: {categorias.join()})</Text>
 
-                <Text style={styles.titleEntradas}>Entradas</Text>
-                <Text style={styles.categoriasFiltradas}>(Filtrando entradas por las categorias: {entradasCategorias.join()})</Text>
                 <Table
                     th
-                    col={['33.33%', '33.33%', '33.33%']}
+                    col={['25%', '25%', '25%','25%']}
                     children={[
-                        ['Tipo de entrada', 'Cantidad','Fecha del ingreso'],
-                        ...entradas
+                        ['Cantidad teorica','Cantidad contada','Fecha creacion inventario','Tipo',],
+                        ...movimientos
                     ]} 
                 />
-                {entradas.length === 0 && <Text style={styles.textoError}>Ninguna entrada encontrada...</Text>}
-           </Page>
-        </Document>
 
+            </Page>
+        </Document>
     )
 }

@@ -38,14 +38,15 @@ export const ProductoCard = ({producto,rol}) => {
         return <Loading/>
     }else{
         return (
-            <div className="row p-4 border" style={{width:"300px",height:"380px"}}>
+            <div className="row p-4 border" style={{width:"300px"}}>
                 <div className="col-12 mb-3 mb-lg-0 d-flex justify-content-center align-items-center">
                     <Avatar shape="square" style={{height:"100px",width:"100px"}} src={`http://localhost:4000/api/uploads/productos/${producto._id}`}/>
                 </div>
                 <div className="col-12 mt-3 text-center">
                     <h6 className="fw-bold">{producto.nombre}</h6>
                     {producto.estatus ? <p className="text-success">Disponible</p> : <p className="text-danger">No disponible</p>}
-                    <span>Categorias del producto:</span><br/>
+                    <p>Cantidad en stock: <span className="bg-info">{producto.cantidad}</span></p>
+                    <p>Categorias del producto:</p>
                     <div className="d-flex justify-content-center gap-2 flex-wrap my-3">
                         {producto.categorias.map(categoria => categoriaColor(categoria.nombre))}
                     </div>

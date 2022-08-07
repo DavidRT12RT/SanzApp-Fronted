@@ -9,11 +9,13 @@ import "./assets/style.css";
 import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
 import { useForm } from '../../../../hooks/useForm';
 import { ReporteInventarioAlmacen } from '../../../../reportes/Almacen/ReporteInventarioAlmacen';
+import { useSelector } from 'react-redux';
 const { confirm } = Modal;
 
 export const Inventario = () => {
 
     const { id } = useParams();
+    const {auth} = useSelector(store => store);
     const navigate = useNavigate();
     const [inventario, setInventario] = useState({});
     const [inventarioInitialValue, setInventarioInitialValue] = useState({});
@@ -101,6 +103,8 @@ export const Inventario = () => {
                 message.success(body.msg);
                 body.inventario.productosInventariados.map(producto => producto.key = producto._id);
                 setInventario(JSON.parse(JSON.stringify(body.inventario)));
+                setIsEditingInformacion(false);
+                setIsEditingProductos(false);
             }
         })
     }
@@ -160,7 +164,7 @@ export const Inventario = () => {
                     setInventario({...inventario,productosInventariados:newInventarioValues});
                 }} className={record.cantidadContada != record.cantidadTeorica && "text-primary"} defaultValue={record.cantidadContada}></InputNumber> : <span className={record.cantidadContada != record.cantidadTeorica ? "text-primary" : null}>{record.cantidadContada}</span>
             }
-       }
+       },
     ];
 
     useEffect(() => {
@@ -171,6 +175,27 @@ export const Inventario = () => {
             })
         }
     }, [inventario]);
+
+    const reactivarInventario = () => {
+		confirm({
+            title:"¿Seguro quieres reactivar el inventario?",
+            icon:<ExclamationCircleOutlined />,
+            content:"El inventario sera reactivado y podras hacer cambios en la cantidad contada y la informacion basica de este mismo",
+			okText:"Reactivar",
+			cancelText:"Volver atras",
+            async onOk(){
+                const resp = await fetchConToken(`/inventarios/reactivar-inventario/`,{id},"PUT");
+                const body = await resp.json();
+                console.log(body);
+                if(resp.status != 200) return message.error(body.msg);
+                body.inventario.productosInventariados.map(producto => producto.key = producto._id);
+                setInventario(JSON.parse(JSON.stringify(body.inventario)));
+                //Reactivacion con exito
+                message.success(body.msg);
+            }
+        })
+
+    }
 
     const renderizarBotonesEditarInformacion = () => {
         if(inventario.estatus === "En progreso"){
@@ -190,6 +215,7 @@ export const Inventario = () => {
                 <div className="d-flex justify-content-center align-items-center gap-2">
                     {/*<Button type="primary" style={{backgroundColor:"#ffc107",borderColor:"#ffc107"}}>Activar inventario</Button>*/}
                     <Button type="primary" onClick={crearReporteInventario}>Descargar PDF inventario</Button>
+                    {auth.rol === "ADMIN_ROLE" && <Button type="primary" danger onClick={reactivarInventario}>Reactivar inventario</Button>}
                 </div>
             )
         }
@@ -250,15 +276,25 @@ export const Inventario = () => {
                 {
                     renderizarBotonesEditarCantidadProductos()
                 }
-                {inventario.estatus === "Finalizado" && columns.push({
-                    title:"Resultado",
-                    render:(text,record)=>{
-                        if(record.cantidadTeorica < record.cantidadContada) return <Tag color="green" style={{fontSize:"13px",padding:"13px"}}>GANANCIA</Tag>
-                        if(record.cantidadTeorica > record.cantidadContada) return <Tag color="red" style={{fontSize:"13px",padding:"13px"}}>PERDIDA</Tag>
-                        if(record.cantidadTeorica === record.cantidadContada) return <Tag color="cyan" style={{fontSize:"13px",padding:"13px"}}>NEUTRAL</Tag>
-
-                    }
-                })}
+                {inventario.estatus === "Finalizado" && columns.push(
+                    {
+                        title:"Diferencia",
+                        render:(text,record) => {
+                            if(record.tipo === "GANANCIA") return <p className="text-success text-center">{record.diferencia}</p>
+                            if(record.tipo === "PERDIDA") return <p className="text-danger text-center">{record.diferencia}</p>
+                            if(record.tipo === "NEUTRAL") return <p className="text-info text-center">{record.diferencia}</p>
+                        }
+                    },
+                    {
+                        title:"Resultado",
+                        render:(text,record) =>{
+                            if(record.tipo === "GANANCIA") return <Tag color={"green"} style={{fontSize:"13px",padding:"13px"}}>{record.tipo}</Tag>
+                            if(record.tipo === "PERDIDA") return <Tag color={"red"} style={{fontSize:"13px",padding:"13px"}}>{record.tipo}</Tag>
+                            if(record.tipo === "NEUTRAL") return <Tag color={"cyan"} style={{fontSize:"13px",padding:"13px"}}>{record.tipo}</Tag>
+                        }
+                    },
+                    )
+                }
                 <Table columns={columns} dataSource={inventario.productosInventariados} className="my-3"/>
             </div>
         )

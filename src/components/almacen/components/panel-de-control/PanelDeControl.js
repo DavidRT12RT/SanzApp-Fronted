@@ -492,28 +492,24 @@ export const PanelDeControl = () => {
                 </section> 
 
                 <section className="p-5 d-flex justify-content-center align-items-center gap-4 flex-wrap">
-                    <Card className="text-center shadow p-3" style={{width:"350px",height:"360px"}}>
+                    <Card className="text-center shadow p-3 d-flex justify-content-center align-items-center" style={{width:"350px",height:"360px"}}>
                         <h1 className="titulo" style={{fontSize:"30px"}}>Categorias</h1>
                         <h1 style={{fontSize:"50px"}}>{categoriasInformacion.total}</h1>
-                        <p className='nota' style={{fontSize:"20px"}}>Numero de categorias disponibles actualmente para registrar mas productos.</p>
                         <Link to={"/almacen/productos/registrar/categoria/"} className="text-link" style={{fontSize:"15px"}}>Registrar una nueva categoria</Link>
                     </Card>
-                    <Card className="text-center shadow p-3" style={{width:"350px",height:"360px"}}>
+                    <Card className="text-center shadow p-3 d-flex justify-content-center align-items-center" style={{width:"350px",height:"360px"}}>
                         <h1 className="titulo" style={{fontSize:"30px"}}>Productos</h1>
                         <h1 style={{fontSize:"50px"}}>{productosInfo.total}</h1>
-                        <p className='nota' style={{fontSize:"20px"}}>Numero de productos registrados en el almacen marcados como "disponibles".</p>
                         <Link to={"/almacen/productos/registrar/"} className="text-link" style={{fontSize:"15px"}}>Registrar un nuevo prodcucto</Link>
                     </Card>
-                    <Card className="text-center shadow p-3" style={{width:"350px",height:"360px"}}>
+                    <Card className="text-center shadow p-3 d-flex justify-content-center align-items-center" style={{width:"350px",height:"360px"}}>
                         <h1 className="titulo" style={{fontSize:"30px"}}>Salidas</h1>
                         <h1 style={{fontSize:"50px"}}>{salidasOfMonth.totalRegistros}</h1>
-                         <p className='nota' style={{fontSize:"20px"}}>Numero de salidas registradas del almacen en el mes actual.</p>
                         <Link to={"/almacen/retirar/"} className="text-link" style={{fontSize:"15px"}}>Realizar un retiro de almacen</Link>
                     </Card>
-                    <Card className="text-center shadow p-3" style={{width:"350px",height:"360px"}}>
+                    <Card className="text-center shadow p-3 d-flex justify-content-center align-items-center" style={{width:"350px",height:"360px"}}>
                         <h1 className="titulo" style={{fontSize:"30px"}}>Entradas</h1>
                         <h1 style={{fontSize:"50px"}}>{entradasOfMonth.totalRegistros}</h1>
-                        <p className='nota' style={{fontSize:"20px"}}>Numero de entradas registradas del almacen en el mes actual.</p>
                         <Link to={"/almacen/ingresar/"} className="text-link" style={{fontSize:"15px"}}>Realizar una entrada</Link>
                     </Card>
                 </section>
@@ -523,7 +519,7 @@ export const PanelDeControl = () => {
                 <section className="p-5 d-flex justify-content-center align-items-center flex-wrap gap-4" style={{margin:"auto"}}>
                         <Card className="text-center shadow p-3">
                             <h1 className="titulo" style={{fontSize:"30px",color:"black"}}>Dinero TOTAL en almacen:</h1>
-                            <h1 className="descripcion text-success cantidadTotalAlmacen">${dineroTotalAlmacen}</h1>
+                            <h1 className="descripcion text-success cantidadTotalAlmacen" style={{fontSize:"50px"}}>${dineroTotalAlmacen}</h1>
                             <p className="nota">
                                 La cantidad anterior es un redondeo de la suma total de el costo de todos los <br/>productos del almacen (Puede variar por decimales)
                             </p>
@@ -577,20 +573,6 @@ export const PanelDeControl = () => {
                     </div>
                 </section>
                 
-                <Divider/>
-                <section className="mt-5 p-5 d-flex justify-content-center align-items-center gap-4 flex-wrap">
-                    <div className="card shadow text-center p-5" style={{width:"45%",minHeight:"560px"}}>
-                        <h1 className="titulo" style={{fontSize:"30px"}}>Ultimas salidas</h1>
-					    <Table size="large" columns={columnsSalidas} dataSource={[...salidas.slice(0,5)]} bordered/>
-                        <Link to={"/almacen/salidas"} style={{fontSize:"15px"}} ><Button type="primary" className="mt-3">Ver todas las salidas</Button></Link>
-                    </div>
-
-                    <div className="card shadow text-center p-5" style={{width:"45%",minHeight:"560px"}}>
-                        <h1 className="titulo" style={{fontSize:"30px"}}>Ultimas entradas</h1>
-					    <Table size="large" columns={columnsEntradas} dataSource={[...entradas.slice(0,5)]} bordered/>
-                        <Link to={"/almacen/entradas"} style={{fontSize:"15px"}} ><Button type="primary" className="mt-3">Ver todas las entradas</Button></Link>
-                    </div>
-                </section>
 
 				{(informacionRegistroParticular != null && registroTipo === "Entrada") &&(
 					<Drawer width={640} placement="right" closable={false} onClose={()=>{setIsDrawerVisible(false);}} visible={isDrawerVisible}>

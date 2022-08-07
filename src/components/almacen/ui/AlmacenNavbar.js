@@ -76,28 +76,17 @@ export const AlmacenNavbar = () =>{
                             } to="/almacen/categorias/" aria-current="page">Categorias</NavLink>
                         </li>
 
+
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/ingresar/" aria-current="page">Ingreso a almacen</NavLink>
+                            } to="/almacen/entradas/" aria-current="page">Entradas</NavLink>
                         </li>
 
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/retirar/" aria-current="page">Retirar de almacen</NavLink>
-                        </li>
-
-                        <li className="nav-item">
-                            <NavLink className={({isActive})=>
-                                "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/entradas/" aria-current="page">Registros de entradas</NavLink>
-                        </li>
-
-                        <li className="nav-item">
-                            <NavLink className={({isActive})=>
-                                "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/salidas/" aria-current="page">Registro de salidas</NavLink>
+                            } to="/almacen/salidas/" aria-current="page">Salidas</NavLink>
                         </li>
 
                         <li className="nav-item">

@@ -40,8 +40,8 @@ export const ProductoCardRetiroEntrada = ({producto,socket,cambiarCantidadProduc
                     {productoInfo.estatus ? <p className="text-success">Disponible</p> : <p className="text-danger">No disponible</p>}
                     {
                         tipo === "" 
-                            ? <p>Cantidad a retirar: <InputNumber bordered={false} size="small" min={1} value={producto.cantidad} onChange={(e)=>{cambiarCantidadProducto(productoInfo,e)}}/></p>
-                            : <p>Cantidad a ingresar: <InputNumber bordered={false} size="small" min={1} value={producto.cantidad} onChange={(e)=>{cambiarCantidadProducto(productoInfo,e)}}/></p>
+                            ? <p className="text-danger">Cantidad a retirar: <InputNumber className="text-danger" bordered={false} size="small" min={1} value={producto.cantidad} onChange={(e)=>{cambiarCantidadProducto(productoInfo,e)}}/></p>
+                            : <p className="text-success">Cantidad a ingresar: <InputNumber className="text-success" bordered={false} size="small" min={1} value={producto.cantidad} onChange={(e)=>{cambiarCantidadProducto(productoInfo,e)}}/></p>
                     }
                     <p className="text-white bg-dark">(cantidad en bodega: {productoInfo.cantidad})</p>
                     <p className="text-muted">{productoInfo.descripcion}</p>

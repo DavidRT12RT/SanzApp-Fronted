@@ -91,7 +91,7 @@ export const Inventarios = () => {
 							if(e.target.value === "") return setRegistrosInventarios(inventarios);
 						}}
                 	/> 
-                    {isSearching ? <Button type="primary" danger size="large" onClick={limpiarFiltros}>Borrar filtros</Button> : <Button type="primary" onClick={()=>{setIsModalVisible(true)}} size="large">Filtrar inventarios</Button>}
+                    {isSearching ? <Button type="primary" danger onClick={limpiarFiltros}>Borrar filtros</Button> : <Button type="primary" onClick={()=>{setIsModalVisible(true)}} >Filtrar inventarios</Button>}
                 </div>
                 <Table columns={columns} dataSource={registrosInventarios} bordered className="mt-4"/>
                 <Modal visible={isModalVisible} footer={null} onCancel={()=>{setIsModalVisible(false)}} onOk={()=>{setIsModalVisible(false)}}>

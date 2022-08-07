@@ -13,10 +13,7 @@ export const ReporteInventarioAlmacen = ({inventario}) => {
 
     const productosInventariados = inventario.productosInventariados.map(producto => {
         //Por cada producto devolver un array con informacion de este mismo.
-        const fila = [producto.id.nombre,producto.id.marca,producto.id.unidad,producto.cantidadTeorica,producto.cantidadContada];
-        if(producto.cantidadContada > producto.cantidadTeorica) fila.push("GANANCIA");
-        if(producto.cantidadContada < producto.cantidadTeorica) fila.push("PERDIDA");
-        if(producto.cantidadContada ===  producto.cantidadTeorica) fila.push("NEUTRAL");
+        const fila = [producto.id.nombre,producto.id.marca,producto.id.unidad,producto.cantidadTeorica,producto.cantidadContada,producto.diferencia,producto.tipo];
         return fila;
     })
 
@@ -136,9 +133,9 @@ export const ReporteInventarioAlmacen = ({inventario}) => {
                 <Table
                     style={styles.table}
                     th
-                    col={['16.66%','16.66%','16.66%', '16.66%','16.66%','16.66%']}
+                    col={['14.28%','14.28%','14.28%', '14.28%','14.28%','14.28%','14.28%']}
                     children={[
-                        ['Nombre', 'Marca','Unidad','Cantidad teorica','Cantidad contada','Resultado'],
+                        ['Nombre', 'Marca','Unidad','Cantidad teorica','Cantidad contada','Diferencia','Resultado'],
                         ...productosInventariados
                     ]} 
 

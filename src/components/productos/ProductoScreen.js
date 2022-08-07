@@ -31,7 +31,7 @@ export const ProductoScreen = () => {
             if(resp.status === 200) {
                 body.registrosEntradas.sobranteObra.map(registro => {registro.tipo = "sobranteObra"; registro.key = registro._id;});
                 body.registrosEntradas.devolucionResguardo.map(registro => {registro.tipo = "devolucionResguardo"; registro.key = registro._id})
-                body.registrosEntradas.normal.map(registro => {registro.tipo = "normal"; registro.key = registro._id})
+                body.registrosEntradas.compraDirecta.map(registro => {registro.tipo = "compraDirecta"; registro.key = registro._id})
                 body.registrosSalidas.obra.map(registro => {registro.tipo = "obra"; registro.key = registro._id;});
                 body.registrosSalidas.merma.map(registro => {registro.tipo = "merma"; registro.key = registro._id});
                 body.registrosSalidas.resguardo.map(registro => {registro.tipo = "resguardo"; registro.key = registro._id});
@@ -47,8 +47,16 @@ export const ProductoScreen = () => {
 
     useEffect(() => {
 
-        socket.on("actualizar-producto",(producto)=>{
-            if(productoId === producto._id) setInformacionProducto(producto);
+       socket.on("actualizar-producto",(producto)=>{
+            if(productoId === producto._id) {
+                producto.registrosEntradas.sobranteObra.map(registro => {registro.tipo = "sobranteObra"; registro.key = registro._id;});
+                producto.registrosEntradas.devolucionResguardo.map(registro => {registro.tipo = "devolucionResguardo"; registro.key = registro._id})
+                producto.registrosEntradas.compraDirecta.map(registro => {registro.tipo = "compraDirecta"; registro.key = registro._id})
+                producto.registrosSalidas.obra.map(registro => {registro.tipo = "obra"; registro.key = registro._id;});
+                producto.registrosSalidas.merma.map(registro => {registro.tipo = "merma"; registro.key = registro._id});
+                producto.registrosSalidas.resguardo.map(registro => {registro.tipo = "resguardo"; registro.key = registro._id});
+                setInformacionProducto(producto);
+            }
         });
 
     }, [socket,setInformacionProducto,productoId]);

@@ -5,6 +5,7 @@ import moment from 'moment';
 import locale from "antd/es/date-picker/locale/es_ES"
 import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
+import { ReporteMovimientos } from '../../../../../reportes/Productos/ReporteMovimientos';
 const { RangePicker } = DatePicker;
 
 export const MovimientosProducto = ({registros,informacionProducto}) => {
@@ -45,6 +46,14 @@ export const MovimientosProducto = ({registros,informacionProducto}) => {
             },
         },
         {
+            title:"Diferencia",
+            render:(text,record) => {
+                if(record.tipo === "GANANCIA") return <p className="text-success text-center">{record.diferencia}</p>
+                if(record.tipo === "PERDIDA") return <p className="text-danger text-center">{record.diferencia}</p>
+                if(record.tipo === "NEUTRAL") return <p className="text-info text-center">{record.diferencia}</p>
+            }
+        },
+        {
             title:"Detalles",
             render:(text,record) => {
                 return (
@@ -61,7 +70,7 @@ export const MovimientosProducto = ({registros,informacionProducto}) => {
         </div>
     );
 
-    const filtrarMovimientos = (values) => {
+    const filtrarMovimientos = async(values) => {
 
         const movimientosFiltrados = registros.filter(registro => {
             if((values.tipo.includes(registro.tipo)) && (moment(registro.inventario.fechaRegistro).isBetween(values.intervaloFecha[0],values.intervaloFecha[1]))) {
@@ -69,11 +78,10 @@ export const MovimientosProducto = ({registros,informacionProducto}) => {
             }
         });
         if(isReporte){
-            /*
             const blob = await pdf((
+                <ReporteMovimientos informacionProducto={informacionProducto} movimientos={movimientosFiltrados} categorias={values.tipo} intervaloFecha={[values.intervaloFecha[0].format('YYYY-MM-DD'),values.intervaloFecha[1].format('YYYY-MM-DD')]}/>
             )).toBlob();
             saveAs(blob,"reporte_movimientos.pdf")
-            */
             setIsReporte(false);
         }else{
             setRegistrosMovimientos(movimientosFiltrados);
@@ -111,7 +119,7 @@ export const MovimientosProducto = ({registros,informacionProducto}) => {
                     <Col span={24}><DescriptionItem title="Fecha del inventario" content={informacionInventario.inventario.fechaRegistro}/></Col>
                     <Col span={24}><DescriptionItem title="Intervalo de fecha del inventario" content={informacionInventario.inventario.intervaloFecha.join(" --- ")}/></Col>
                     <Divider/>
-                    <Link to={`/almacen/inventarios/${informacionInventario.inventario._id}`}>Ver detalles completos del inventario</Link>
+                    {location.pathname.startsWith("/almacen") && <Link to={`/almacen/inventarios/${informacionInventario.inventario._id}`}>Ver detalles completos del inventario</Link>}
                 </Row>
             </Drawer>
             )}

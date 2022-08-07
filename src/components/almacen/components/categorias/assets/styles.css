@@ -1,0 +1,19 @@
+.titulo{
+	color:#4a4a4a;
+  	font-family: 'Lato', sans-serif;
+  	line-height: 1.5;
+  	font-size: 40px;
+  	font-weight: 900;
+}
+.titulo-descripcion{
+  color:#000;
+  font-family: 'Lato',sans-serif;
+  font-size:18px; 
+  font-weight: 700;
+}
+.descripcion{
+	color:#000;
+  	font-family: 'Lato',sans-serif;
+  	font-size:20px; 
+	font-weight: 400;
+}
