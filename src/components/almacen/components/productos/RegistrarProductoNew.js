@@ -25,7 +25,7 @@ export const RegistrarProductoNew = () => {
         costo:0,
         inventariable:true,
         unidad:"",
-        categorias:[],
+        categoria:"",
         descripcion:"",
         cantidad:1,
         aplicaciones:""
@@ -63,6 +63,7 @@ export const RegistrarProductoNew = () => {
         maxCount:2,
         fileList : filesList
     };
+
     const steps = [
         {
             title: 'Informacion basica del producto',
@@ -142,14 +143,14 @@ export const RegistrarProductoNew = () => {
                         <option value={"Litro"}>Litro</option>
                     </select>
 
-                    <label for="unidad" className="form-label mt-3">Categorias del producto: </label>
-                	<Select style={{width:"100%",borderRadius: "0.25rem"}} mode="multiple" value={formValues.categorias} onDeselect={(e)=>{setValues(state => ({...state,categorias:state.categorias.filter(categoria => categoria != e)}))}} placeholder="Categoria o categorias a la que pertenece este producto." size="large" name="categorias" onChange={(e)=>{setValues(state => ({...state,categorias:[...new Set([...state.categorias,...e])]}))}}>
+                    <label className="form-label mt-3">Categoria del producto: </label>
+                	<select style={{width:"100%",borderRadius: "0.25rem"}} defaultValue={categorias.length > 0 && categorias[0]._id} className="form-select" value={formValues.categoria} name="categoria" onChange={handleInputChange} placeholder="Categoria a la que pertenece este producto." size="large" >
 						{categorias.map(categoria => {
 							return (
-                  				<Select.Option value={categoria._id}>{categoria.nombre}</Select.Option>
+                  				<option value={categoria._id} key={categoria._id}>{categoria.nombre}</option>
 							)
 						})}
-              		</Select>
+              		</select>
                     <label for="descripcion" className="form-label mt-3">Descripcion del producto: </label>
                     <textarea class="form-control" id="descripcion" value={formValues.descripcion} name="descripcion" onChange={handleInputChange} rows="4"></textarea>
                     <label for="aplicaciones" className="form-label mt-3">Aplicaciones del producto: </label>
@@ -183,12 +184,13 @@ export const RegistrarProductoNew = () => {
 			cancelText:"Volver atras",
             async onOk(){
 				setUploading(true);
+                console.log(formValues);
         		const formData = new FormData();
 				formData.append("nombre",formValues.nombre);
 				formData.append("cantidad",formValues.cantidad);
 				formData.append("descripcion",formValues.descripcion);
 				formData.append("marca",formValues.marca);
-				formData.append("categorias",JSON.stringify(formValues.categorias));
+				formData.append("categoria",formValues.categoria);
 				formData.append("costo",formValues.costo);
 				formData.append("estado",formValues.estado);
 				formData.append("usuarioCreador",uid);

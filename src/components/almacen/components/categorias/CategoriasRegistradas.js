@@ -30,6 +30,7 @@ export const CategoriasRegistradas = () => {
     //Crear un nueva categoria 
     const onFinish = async ( values ) =>{                    
 
+        console.log(values);
 		confirm({
             title:"¿Seguro quieres registrar esta nueva categoria?",
             icon:<ExclamationCircleOutlined />,
@@ -39,7 +40,7 @@ export const CategoriasRegistradas = () => {
             async onOk(){
 				setUploading(true);
 				//Emitir evento al backend de crear nuevo producto!
-				const resp = await fetchConToken("/categorias",{nombre:values.nombre,estatus:values.estatus},"POST");
+				const resp = await fetchConToken("/categorias",{nombre:values.nombre,estatus:values.estatus,color:values.color},"POST");
 				const body = await resp.json();
 				if(resp.status === 201){
 					message.success(body.msg);
@@ -50,7 +51,6 @@ export const CategoriasRegistradas = () => {
                     message.error(body.msg);
                 }
 				setUploading(false);
-				form.resetFields();
            	},
         });
     }
@@ -92,7 +92,7 @@ export const CategoriasRegistradas = () => {
             async onOk(){
 				setUploading(true);
 				//Emitir evento al backend de crear nuevo producto!
-					const resp = await fetchConToken(`/categorias/${categoriaEditing._id}`,{nombre:values.nombre,estatus:values.estatus},"PUT");
+					const resp = await fetchConToken(`/categorias/${categoriaEditing._id}`,{nombre:values.nombre,estatus:values.estatus,color:values.color},"PUT");
 					const body = await resp.json();
 					if(resp.status === 200){
 						message.success(body.msg);
@@ -106,12 +106,18 @@ export const CategoriasRegistradas = () => {
                         message.error(body.msg);
                     }
 				setUploading(false);
-				form.resetFields();
            	},
         });
     }
 
     const columns = [
+        {
+            title:"Color",
+            dataIndex:"color",
+            render:(text,record) => {
+                return <div style={{backgroundColor:record.color,width:"20px",height:"20px"}}></div>
+            }
+        },
         {
             title:"Nombre de la categoria",
             dataIndex:"nombre"
@@ -162,12 +168,14 @@ export const CategoriasRegistradas = () => {
         if(categoriaEditing != null){
             form.setFieldsValue({
                 nombre:categoriaEditing.nombre,
-                estatus:categoriaEditing.estatus
+                estatus:categoriaEditing.estatus,
+                color:categoriaEditing.color
             })
         }else if(categoriaEditing === null){
             form.setFieldsValue({
                 nombre:"",
-                estatus:true
+                estatus:true,
+                color:"#000000"
             })
         }
     }, [categoriaEditing]);
@@ -227,14 +235,19 @@ export const CategoriasRegistradas = () => {
                 		    <Input placeholder="Nombre de la categoria" size="large"/>
               		    </Form.Item>
 
+                        <Form.Item name="color" tooltip="Color con el cual se destinguira la categoria" label="Color de la categoria">
+                            <input style={{width:"100%"}} type="color" onChange={(e)=>{form.setFieldsValue({color:e.target.value})}}/>
+                        </Form.Item>
+                        
                         <Form.Item name="estatus" tooltip="Marca el estado de la categoria" label="Estado de la categoria">
                             <Select size="large">
                                 <Option value={true} key={"Activada"}>Activada</Option>
                                 <Option value={false} key={"Desactivada"}>Desactivada</Option>
                             </Select>
                         </Form.Item>
+
 						
-                        {categoriaEditing != null ? <Button type="primary" block htmlType="submit" size="large">{uploading ? "Editando categoria..." : "Editar categoria"}</Button> : <Button type="primary" block htmlType="submit" size="large">{uploading ? "Registrando categoria..." : "Registrar categoria"}</Button> }
+                        {categoriaEditing != null ? <Button type="primary" block htmlType="submit" >{uploading ? "Editando categoria..." : "Editar categoria"}</Button> : <Button type="primary" block htmlType="submit" >{uploading ? "Registrando categoria..." : "Registrar categoria"}</Button> }
         			</Form>
                 </Modal>
             </>

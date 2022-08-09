@@ -289,7 +289,7 @@ export const SalidasProducto = ({registros,informacionProducto}) => {
                     {renderizarOpcionesBeneficiario()}
                     <p className="text-muted">(NO seleccionar ningun beneficiario en alguna categoria regresara todos los registros de esa categoria)</p>
 
-                    <Button type="primary" htmlType="submit" size="large">Filtrar salidas</Button>
+                    <Button type="primary" htmlType="submit">Filtrar salidas</Button>
                 </Form>
 
             </Modal>
@@ -312,7 +312,7 @@ export const SalidasProducto = ({registros,informacionProducto}) => {
                     {renderizarOpcionesBeneficiario()}
                     <p className="text-muted">(NO seleccionar ningun beneficiario en alguna categoria regresara todos los registros de esa categoria)</p>
 
-                    <Button type="primary" htmlType="submit" size="large">Descargar PDF</Button>
+                    <Button type="primary" htmlType="submit">Descargar PDF</Button>
                 </Form>
             </Modal>
         </>

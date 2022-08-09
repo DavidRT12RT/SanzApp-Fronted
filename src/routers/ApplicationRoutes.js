@@ -23,6 +23,9 @@ import { GestionOficina } from "../components/oficina/GestionOficina";
 import { SeccionNoticias } from "../components/noticias/SeccionNoticias";
 import { ProductosScreen } from "../components/almacen/components/productos/ProductosScreen";
 
+import { Empresas } from "../components/empresas/Empresas";
+import { RegistrarEmpresa } from "../components/empresas/components/RegistrarEmpresa";
+
 export const ApplicationRoutes = () => {
 
    const { socket } = useContext(SocketContext);
@@ -68,6 +71,10 @@ export const ApplicationRoutes = () => {
                 <Route path="/" element={<SeccionNoticias />} />
                 <Route path="/almacen/" element={<ProductosScreen />} />
                 <Route path="/almacen/:productoId/" element={<ProductoScreen />} />
+
+                <Route path="/empresas/" element={<Empresas/>}/>
+                <Route path="/empresas/registrar/" element={<RegistrarEmpresa/>}/>
+
                 <Route path="/obras/" element={<ObrasScreen />} />
                 <Route path="/obras/registro/" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","INGE_ROLE"]}>

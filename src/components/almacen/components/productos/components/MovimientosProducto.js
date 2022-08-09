@@ -38,20 +38,20 @@ export const MovimientosProducto = ({registros,informacionProducto}) => {
             }
         },
         {
-            title:"Tipo",
-            render:(text,record) => {
-                if(record.tipo === "GANANCIA") return <Tag color={"green"} style={{fontSize:"13px",padding:"13px"}}>{record.tipo}</Tag>
-                if(record.tipo === "PERDIDA") return <Tag color={"red"} style={{fontSize:"13px",padding:"13px"}}>{record.tipo}</Tag>
-                if(record.tipo === "NEUTRAL") return <Tag color={"cyan"} style={{fontSize:"13px",padding:"13px"}}>{record.tipo}</Tag>
-            },
-        },
-        {
             title:"Diferencia",
             render:(text,record) => {
                 if(record.tipo === "GANANCIA") return <p className="text-success text-center">{record.diferencia}</p>
                 if(record.tipo === "PERDIDA") return <p className="text-danger text-center">{record.diferencia}</p>
                 if(record.tipo === "NEUTRAL") return <p className="text-info text-center">{record.diferencia}</p>
             }
+        },
+        {
+            title:"Tipo",
+            render:(text,record) => {
+                if(record.tipo === "GANANCIA") return <Tag color={"green"} style={{fontSize:"13px",padding:"13px"}}>{record.tipo}</Tag>
+                if(record.tipo === "PERDIDA") return <Tag color={"red"} style={{fontSize:"13px",padding:"13px"}}>{record.tipo}</Tag>
+                if(record.tipo === "NEUTRAL") return <Tag color={"cyan"} style={{fontSize:"13px",padding:"13px"}}>{record.tipo}</Tag>
+            },
         },
         {
             title:"Detalles",
@@ -128,7 +128,7 @@ export const MovimientosProducto = ({registros,informacionProducto}) => {
                 {isReporte ? <p className="descripcion">Filtrar los registros que tendra el reporte de movimientos del producto</p> : <p className="descripcion">Filtrar registros de movimientos.</p>}
                 <Form layout="vertical" form={form} onFinish={filtrarMovimientos}>
                     <Form.Item label="Tipo del movimiento" name="tipo">
-                		<Select mode="multiple" placeholder="Tipo de salida..." size="large">
+                		<Select mode="multiple" placeholder="Tipo de movimiento..." size="large">
 							<Select.Option value="GANANCIA">Ganacia</Select.Option>
 							<Select.Option value="PERDIDA">Perdida</Select.Option>
 							<Select.Option value="NEUTRAL">Neutral</Select.Option>

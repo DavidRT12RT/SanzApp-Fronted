@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { fetchConToken } from '../../../../helpers/fetch';
 import { ProductoCardAlmacen } from '../salidas/ProductoCardAlmacen';
 import "./assets/styles.css";
+import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
 const { confirm } = Modal;
 const { Paragraph, Text } = Typography;
 const { Search } = Input;
@@ -29,7 +30,6 @@ export const EntradaDevolucion = ({ socket }) => {
         setProcessPhase(2);
         setValueSearchCodigoSalida("");
     }
-
 
     const agregarProductoDevolucion = async(id) => {
         //Checar que el producto existe
@@ -57,8 +57,8 @@ export const EntradaDevolucion = ({ socket }) => {
                 }else{
                     setListaProductosDevueltos(productos => [...productos,{id,cantidad:1,}]);
                     setIsBotonDisabled(false);
-                    setValueSearchCodigoProducto("");
                 }
+                setValueSearchCodigoProducto("");
             }
         });
         if(!bandera) return message.error("Producto NO registrado en la lista de productos retirados!");
@@ -113,85 +113,89 @@ export const EntradaDevolucion = ({ socket }) => {
                 </div>
             )
         case 2:
-            return (
-                <div className="d-flex mt-5 align-items-center text-center flex-column gap-2" style={{height:"100vh",width:"100vw"}}>				
-                    <h1 className="titulo">Escanea los producto(s) a devolver</h1>
-                    <p className="descripcion">
-                        Escanea el codigo de barras de los productos o producto a devolver al almacen, ten encuenta <br/>
-                        que los productos que escanearas necesitan estar en la lista de productos retirados mostrada a continuacion
-                    </p>
-                    <Search
-                        placeholder="Ingresa un codigo de barras..."
-                        allowClear
-                        autoFocus
-                        enterButton="Agregar"
-                        size="large"
-                        defaultValue=""
-                        style={{width:"500px"}}
-                        value={valueSearchCodigoProducto}
-                        onChange={(e)=>{setValueSearchCodigoProducto(e.target.value)}}
-                        onSearch={agregarProductoDevolucion}
-                    /> 
-                    {informacionSalida.listaProductos.length > 0 ? (
-                        <div className="d-flex justify-content-center mt-3 align-items-center container p-5 gap-2 flex-column">
-                            <p className="descripcion text-muted text-center">Aqui se muestran todos los productos RETIRADOS del almacen que aun no se han devuelto</p>
-                            <Divider/>
-                            {informacionSalida.listaProductos.map(producto => {
-                                    return <ProductoCardDevolucion producto={producto} listaProductosDevueltos={listaProductosDevueltos}/>
-                                })
-                            }
-                        </div>
-                        )
-                        : 
-                        (
-                            <div className="d-flex mt-3 justify-content-center align-items-center container p-5 gap-2 flex-column">
-                                <h2 className="fw-bold text-white bg-success p-3">Todos los productos han sido devueltos!</h2>
+            if(informacionSalida === null){
+                return <SanzSpinner/>
+            }else{
+                return (
+                    <div className="d-flex mt-5 align-items-center text-center flex-column gap-2" style={{height:"100vh",width:"100vw"}}>				
+                        <h1 className="titulo">Escanea los producto(s) a devolver</h1>
+                        <p className="descripcion">
+                            Escanea el codigo de barras de los productos o producto a devolver al almacen, ten encuenta <br/>
+                            que los productos que escanearas necesitan estar en la lista de productos retirados mostrada a continuacion
+                        </p>
+                        <Search
+                            placeholder="Ingresa un codigo de barras..."
+                            allowClear
+                            autoFocus
+                            enterButton="Agregar"
+                            size="large"
+                            defaultValue=""
+                            style={{width:"500px"}}
+                            value={valueSearchCodigoProducto}
+                            onChange={(e)=>{setValueSearchCodigoProducto(e.target.value)}}
+                            onSearch={agregarProductoDevolucion}
+                        /> 
+                        {informacionSalida.listaProductos.length > 0 ? (
+                            <div className="d-flex justify-content-center mt-3 align-items-center container p-5 gap-2 flex-column">
+                                <p className="descripcion text-muted text-center">Aqui se muestran todos los productos RETIRADOS del almacen que aun no se han devuelto</p>
                                 <Divider/>
+                                {informacionSalida.listaProductos.map(producto => {
+                                        return <ProductoCardDevolucion producto={producto} listaProductosDevueltos={listaProductosDevueltos} key={producto._id}/>
+                                    })
+                                }
                             </div>
-                        )
-                    }
-                    <div className="container mt-3 p-5">
-                        <p className="descripcion text-muted text-center">Aqui se muestran todos los productos DEVUELTOS al almacen</p>
-                        <Divider/>
-    					{
-					        informacionSalida.productosDevueltos.map(entrada => {
-						        {
-								    return (
-									    <div className="d-flex justify-content-center align-items-center gap-2 flex-column">
-									        <p className="text-success text-center mt-3">Fecha de devolucion<br/>{entrada.fecha}</p>
-											    {
-												    entrada.listaProductos.map(productoDevuelto => {
-													    return <ProductoCardAlmacen producto={productoDevuelto} key={productoDevuelto._id} tipo={"devuelto"}/>
-												    })
-											    }
-									    </div>
-								    )
-							    }
-						    })
-					    }
+                            )
+                            : 
+                            (
+                                <div className="d-flex mt-3 justify-content-center align-items-center container p-5 gap-2 flex-column">
+                                    <h2 className="fw-bold text-white bg-success p-3">Todos los productos han sido devueltos!</h2>
+                                    <Divider/>
+                                </div>
+                            )
+                        }
+                        <div className="container mt-3 p-5">
+                            <p className="descripcion text-muted text-center">Aqui se muestran todos los productos DEVUELTOS al almacen</p>
+                            <Divider/>
+    					    {
+					            informacionSalida.productosDevueltos.map(entrada => {
+						            {
+								        return (
+									        <div className="d-flex justify-content-center align-items-center gap-2 flex-column">
+									            <p className="text-success text-center mt-3">Fecha de devolucion<br/>{entrada.fecha}</p>
+											        {
+												        entrada.listaProductos.map(productoDevuelto => {
+													        return <ProductoCardAlmacen producto={productoDevuelto} key={productoDevuelto._id} tipo={"devuelto"}/>
+												        })
+											        }
+									        </div>
+								        )
+							        }
+						        })
+					        }
+                        </div>
+                        <div className="desc d-flex mt-3 p-5 align-items-center flex-column gap-2 container">
+                            <Paragraph>
+                                <Text strong style={{fontSize: 16,}}>
+                                    Ten en cuenta las siguientes pautas antes de ingresar estos productos a almacen
+                                </Text>
+                            </Paragraph>
+                            <Paragraph>
+                                    <InfoCircleOutlined style={{backgroundColor:"yellow",marginRight:"10px"}}/>
+                                    Al ser devolucion de productos a almacen , los productos se restaran de la lista de productos retirados en la obra o resguardo, y se marcaran como "devueltos"
+                            </Paragraph>
+                            <Paragraph>
+                                    <InfoCircleOutlined style={{backgroundColor:"yellow",marginRight:"10px"}}/>
+                                    Esto afectara a la salida de forma permantente y dejara un registro de los productos que se reingresaron y la fecha.
+                            </Paragraph>
+                            <Paragraph>
+                                    <InfoCircleOutlined style={{backgroundColor:"yellow",marginRight:"10px"}}/>
+                                    El document PDF se vera actualizado de igual forma con los productos retirados y los devueltos respectivamente.
+                            </Paragraph>
+                            <Button type="primary" block onClick={realizarDevolucion} disabled={isBotonDisabled}>Realizar devolucion</Button>
+                        </div>
                     </div>
-                    <div className="desc d-flex mt-3 p-5 align-items-center flex-column gap-2 container">
-                        <Paragraph>
-                            <Text strong style={{fontSize: 16,}}>
-                                Ten en cuenta las siguientes pautas antes de ingresar estos productos a almacen
-                            </Text>
-                        </Paragraph>
-                        <Paragraph>
-                                <InfoCircleOutlined style={{backgroundColor:"yellow",marginRight:"10px"}}/>
-                                Al ser devolucion de productos a almacen , los productos se restaran de la lista de productos retirados en la obra o resguardo, y se marcaran como "devueltos"
-                        </Paragraph>
-                        <Paragraph>
-                                <InfoCircleOutlined style={{backgroundColor:"yellow",marginRight:"10px"}}/>
-                                Esto afectara a la salida de forma permantente y dejara un registro de los productos que se reingresaron y la fecha.
-                        </Paragraph>
-                        <Paragraph>
-                                <InfoCircleOutlined style={{backgroundColor:"yellow",marginRight:"10px"}}/>
-                                El document PDF se vera actualizado de igual forma con los productos retirados y los devueltos respectivamente.
-                        </Paragraph>
-                        <Button type="primary" block onClick={realizarDevolucion} disabled={isBotonDisabled}>Realizar devolucion</Button>
-                    </div>
-                </div>
-            )
+                )
+            }
         case 3:
             return (
                 <>

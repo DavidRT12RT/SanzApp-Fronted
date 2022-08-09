@@ -495,7 +495,7 @@ export const PanelDeControl = () => {
                     <Card className="text-center shadow p-3 d-flex justify-content-center align-items-center" style={{width:"350px",height:"360px"}}>
                         <h1 className="titulo" style={{fontSize:"30px"}}>Categorias</h1>
                         <h1 style={{fontSize:"50px"}}>{categoriasInformacion.total}</h1>
-                        <Link to={"/almacen/productos/registrar/categoria/"} className="text-link" style={{fontSize:"15px"}}>Registrar una nueva categoria</Link>
+                        <Link to={"/almacen/categorias/"} className="text-link" style={{fontSize:"15px"}}>Registrar una nueva categoria</Link>
                     </Card>
                     <Card className="text-center shadow p-3 d-flex justify-content-center align-items-center" style={{width:"350px",height:"360px"}}>
                         <h1 className="titulo" style={{fontSize:"30px"}}>Productos</h1>
@@ -527,9 +527,6 @@ export const PanelDeControl = () => {
                         <Card className="p-5 text-center shadow" style={{width:"35%",height:"50%"}}>
                             <h1 className="descripcion">Dinero de productos por categoria</h1>
                             <PieChart data={dataProductosAlmacenDineroPorCategoria} style={{width:"100%",height:"100%"}}/>
-                            <p className="nota mt-3">
-                                Dinero total de los productos por categoria (si un producto tiene 2 categorias este se mostrara en la otra tambien)
-                            </p>
                         </Card>
                 </section>
 

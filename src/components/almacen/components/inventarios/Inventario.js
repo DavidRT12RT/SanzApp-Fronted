@@ -130,16 +130,10 @@ export const Inventario = () => {
             }
         },
         {
-            title:"Categoria(s)",
+            title:"Categoria",
             render:(text,record)=>{
                 return (
-                    <div className="d-flex justify-content-start align-items-center gap-2">
-                        {
-                            record.id.categorias.map(categoria => {
-                                return categoriaColor(categoria.nombre);
-                            })
-                        }
-                    </div>
+                    <Tag className="my-3" style={{backgroundColor:record.id.categoria.color,borderColor:record.id.categoria.color,fontSize:"13px",padding:"13px",maxWidth:"fit-content"}}>{record.id.categoria.nombre}</Tag>
                 )
             }
         },
@@ -240,6 +234,7 @@ export const Inventario = () => {
     if(Object.keys(inventario).length === 0){
         return <SanzSpinner/>
     }else{
+        console.log(inventario);
         return (
             <div className="container p-3 p-lg-5">
 
@@ -263,6 +258,13 @@ export const Inventario = () => {
                             {inventario.estatus ==="En progreso" ? <h1 className="col-6 descripcion text-success">{inventario.estatus}</h1> : <h1 className="col-6 descripcion text-danger">{inventario.estatus}</h1> }
                             <h1 className="titulo-descripcion col-6">Inventario de: </h1>
                             <h1 className="col-6 descripcion">{inventario.tipo.toUpperCase()}</h1>
+                            {
+                                inventario.tipo === "POR-CATEGORIA" && 
+                                <>
+                                    <h1 className="titulo-descripcion col-6">Categoria del inventario: </h1>
+                                    <h1 className="col-6 descripcion">{inventario.categoria.nombre}</h1>
+                                </>
+                            }
                             <h1 className="titulo-descripcion col-6">Intervalo fecha: </h1>
                             <h1 className="col-6 descripcion">{inventario.intervaloFecha[0]} --- {inventario.intervaloFecha[1]}</h1> 
                             <h1 className="titulo-descripcion col-6">Fecha del reporte: </h1>

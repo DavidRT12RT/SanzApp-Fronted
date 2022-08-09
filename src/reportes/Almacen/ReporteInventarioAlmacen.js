@@ -17,7 +17,6 @@ export const ReporteInventarioAlmacen = ({inventario}) => {
         return fila;
     })
 
-    console.log(productosInventariados);
 
     Font.register({
         family:"Lato",
@@ -123,6 +122,7 @@ export const ReporteInventarioAlmacen = ({inventario}) => {
                     <Text style={styles.informacionInventario}>Informacion del inventario:</Text>
                     <Text style={styles.label}>Estatus del inventario: <Text style={{...styles.label,color:"red"}}>{inventario.estatus}</Text></Text>
                     <Text style={styles.label}>Tipo de inventario: {inventario.tipo}</Text>
+                    {inventario.tipo === "POR-CATEGORIA" && <Text style={styles.label}>Categoria del inventario: <Text style={{...styles.label,backgroundColor:"#FFFF00"}}>{inventario.categoria.nombre}</Text></Text>}
                     <Text style={styles.label}>Intervalo de fecha del inventario: <Text style={{...styles.label,backgroundColor:"#FFFF00",}}>{inventario.intervaloFecha[0]} --- {inventario.intervaloFecha[1]}</Text></Text>
                     <Text style={styles.label}>Fecha de registro: {inventario.fechaRegistro}</Text>
                     <Text style={styles.label}>Numero de productos en el inventario: {inventario.productosInventariados.length}</Text>

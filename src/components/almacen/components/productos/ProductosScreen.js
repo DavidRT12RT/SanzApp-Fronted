@@ -39,7 +39,8 @@ export const ProductosScreen = () => {
         //Solo filtrar por categorias
         if(valueSearch.length === 0 && categorias.length > 0){
             const resultadosBusqueda = productos.filter(producto => {
-                if(producto.categorias.some(categoria => categorias.includes(categoria._id))) return producto;
+                //if(producto.categorias.some(categoria => categorias.includes(categoria._id))) return producto;
+                if(categorias.includes(producto.categoria._id)) return producto;
             });
             return setValuesTable(resultadosBusqueda);
         }
@@ -55,7 +56,7 @@ export const ProductosScreen = () => {
         //Filtrar por los dos
         if(categorias.length != 0 && valueSearch.length != 0){
             const resultadosBusqueda = productos.filter(producto => {
-                if((producto.categorias.some(categoria => categorias.includes(categoria._id))) && (producto.nombre.toLowerCase().includes(valueSearch.toLowerCase()))) {
+                if((categorias.includes(producto.categoria._id)) && (producto.nombre.toLowerCase().includes(valueSearch.toLowerCase()))) {
                     return producto;
                 }
             });

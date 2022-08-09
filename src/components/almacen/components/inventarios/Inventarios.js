@@ -31,6 +31,10 @@ export const Inventarios = () => {
             dataIndex:"tipo"
         },
         {
+            title:"Fecha de registro",
+            dataIndex:"fechaRegistro"
+        },
+        {
             title:"Intervalo de fecha",
             render:(text,record)=>{
                 return (
@@ -106,6 +110,7 @@ export const Inventarios = () => {
                                 <Select.Option value="TODOS">Todos los productos</Select.Option>
                                 <Select.Option value="VARIOS-PRODUCTOS">Varios productos</Select.Option>
                                 <Select.Option value="UN-PRODUCTO">Solo un producto</Select.Option>
+                                <Select.Option value="POR-CATEGORIA">Por categoria</Select.Option>
               		        </Select>
                         </Form.Item>
                         <Button type="primary" htmlType="submit">Aplicar filtros</Button>

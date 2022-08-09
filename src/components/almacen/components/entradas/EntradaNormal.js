@@ -31,7 +31,7 @@ export const EntradaNormal = () => {
         const nuevaListaProductos = listaProductos.map(producto => {
             if(producto.id === id){
                 bandera = true; 
-                (body.cantidad - producto.cantidad) === 0 ? message.error("No puedes agregar mas de lo que hay en bodega registrado!") : producto.cantidad += 1;
+                producto.cantidad += 1;
             }
             return producto;
         });
@@ -77,24 +77,10 @@ export const EntradaNormal = () => {
         });
     }
 
-
     useEffect(() => {
         console.log(listaProductos);
     }, [listaProductos]);
     
-    
-    const handleDownloadEvidencia = async () => {
-        try {
-            const resp = await fetchConToken("/entrada/documento-pdf",{},"POST");
-            const bytes = await resp.blob();
-            let element = document.createElement('a');
-            element.href = URL.createObjectURL(bytes);
-            element.setAttribute('download',`${"algo"}.pdf`);
-            element.click();
-        } catch (error) {
-           message.error("No se pudo descargar el archivo del servidor :("); 
-        }
-    }
 
     if(finishEntrada.estatus){
         return (

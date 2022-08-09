@@ -10,6 +10,7 @@ export const useCategorias = () => {
 
     useEffect(() => {
         //Carga de empleados
+        setisloading(true);
         fetchConToken("/categorias",{},"GET")
             .then(response => response.json())
             .then(resp => {
@@ -18,6 +19,23 @@ export const useCategorias = () => {
             });
         setisloading(false);
     }, []);
+
+    /* 
+        async and await method
+        useEffect(() => {
+        //Carga de empleados
+        const fetchData = async() => {
+            setisloading(true);
+            const resp = await fetchConToken("/categorias",{},"GET")
+            const body = await resp.json();
+            setCategorias(body.categorias);
+            setisloading(false);
+        }
+        fetchData();
+    }, []);
+    */
+
+
 
 
     

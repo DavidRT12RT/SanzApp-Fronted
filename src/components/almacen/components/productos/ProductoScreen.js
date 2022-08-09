@@ -88,7 +88,7 @@ export const ProductoScreen = () => {
             setValues({
                 nombre:informacionProducto.nombre,
                 marca:informacionProducto.marca,
-                categorias:informacionProducto.categorias.map(categoria => categoria._id),
+                categoria:informacionProducto.categoria._id,
                 inventariable:informacionProducto.inventariable,
                 estado:informacionProducto.estado,
                 estatus:informacionProducto.estatus,
@@ -100,30 +100,6 @@ export const ProductoScreen = () => {
         }
     }, [informacionProducto]);
 
-
-
-    const categoriaColor = (categoria) => {
-        switch (categoria.toLowerCase()) {
-            case "ferreteria":
-                return <Tag color="cyan" style={{fontSize:"13px",padding:"13px"}} key="ferreteria">{categoria}</Tag> 
-            case "vinilos":
-                return <Tag color="green" style={{fontSize:"13px",padding:"13px"}} key="vinilos">{categoria}</Tag> 
-            case "herramientas":
-                return <Tag color="blue" style={{fontSize:"13px",padding:"13px"}} key="herramientas">{categoria}</Tag> 
-            case "pisosAzulejos":
-                return <Tag color="orange" style={{fontSize:"13px",padding:"13px"}} key="pisosAzulejos">{categoria}</Tag>
-            case "fontaneria":
-                return <Tag color="red" style={{fontSize:"13px",padding:"13px"}} key="fontaneria">{categoria}</Tag>
-            case "iluminacion":
-                return <Tag color="yellow" style={{fontSize:"13px",padding:"13px"}} key="iluminacion">{categoria}</Tag>
-            case "materialElectrico":
-                return <Tag color="gold" style={{fontSize:"13px",padding:"13px"}} key="materialElectrico">{categoria}</Tag>
-            case "selladores":
-                return <Tag color="gold" style={{fontSize:"13px",padding:"13px"}} key="selladores">{categoria}</Tag>
-            default:
-                return <Tag color="green" style={{fontSize:"13px",padding:"13px"}} key="categoria">{categoria}</Tag> 
-        }
-    }
 
     const props = {
         onRemove : file => {
@@ -161,7 +137,7 @@ export const ProductoScreen = () => {
 				formData.append("nombre",formValues.nombre);
 				formData.append("descripcion",formValues.descripcion);
 				formData.append("marca",formValues.marca);
-				formData.append("categorias",JSON.stringify(formValues.categorias));
+				formData.append("categoria",formValues.categoria);
 				formData.append("estado",formValues.estado);
 				formData.append("estatus",formValues.estatus);
 				formData.append("unidad",formValues.unidad);
@@ -193,7 +169,7 @@ export const ProductoScreen = () => {
     const crearReporteGeneral = async(values) => {
 
         //Sacar entradas del producto
-        const entradas = [...informacionProducto.registrosEntradas.sobranteObra,...informacionProducto.registrosEntradas.devolucionResguardo,...informacionProducto.registrosEntradas.normal];
+        const entradas = [...informacionProducto.registrosEntradas.sobranteObra,...informacionProducto.registrosEntradas.devolucionResguardo,...informacionProducto.registrosEntradas.compraDirecta];
         const entradasFiltradas = entradas.filter(entrada => {
             if((values.tipoEntrada.includes(entrada.tipo)) && (moment(entrada.fecha).isBetween(values.intervaloFecha[0].format("YYYY-MM-DD"),values.intervaloFecha[1].format("YYYY-MM-DD")))) return entrada;
         });
@@ -269,17 +245,15 @@ export const ProductoScreen = () => {
                         } 
                         {isProductoEditing 
                             ?
-                                <Select className="my-4" style={{width:"50%",borderRadius: "0.25rem"}} mode="multiple" value={formValues.categorias} onDeselect={(e)=>{setValues(state => ({...state,categorias:state.categorias.filter(categoria => categoria != e)}))}} placeholder="Categoria o categorias a la que pertenece este producto." size="large" name="categorias" onChange={(e)=>{setValues(state => ({...state,categorias:[...new Set([...state.categorias,...e])]}))}}>
+                                <select className="form-select mt-3 col-5 w-50 descripcion my-4" style={{width:"50%",borderRadius: "0.25rem"}} size="large" name="categoria" value={formValues.categoria} onChange={handleInputChange}>
 						                {categorias.map(categoria => {
 							                return (
-                  				                <Select.Option value={categoria._id}>{categoria.nombre}</Select.Option>
+                  				                <option value={categoria._id}>{categoria.nombre}</option>
 							                )
 						                })}
-              		            </Select>
+              		            </select>
                             :
-                                <div className="d-flex justify-content-start gap-2 flex-wrap mt-3 mb-3">
-                                    {informacionProducto?.categorias?.map(categoria => categoriaColor(categoria.nombre))}
-                                </div> 
+                                <Tag className="my-3" style={{backgroundColor:informacionProducto.categoria.color,borderColor:informacionProducto.categoria.color,fontSize:"13px",padding:"13px",maxWidth:"fit-content"}}>{informacionProducto.categoria.nombre}</Tag>
                         }
                         <h1 className="titulo-descripcion">Precio promedio X unidad:</h1>
                         <h1 className="precio-por-unidad-producto">${informacionProducto.costo}</h1>

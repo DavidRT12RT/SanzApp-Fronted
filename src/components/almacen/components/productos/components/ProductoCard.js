@@ -12,28 +12,6 @@ export const ProductoCard = ({producto,rol}) => {
     const ruta = pathname.startsWith("/almacen") ? `/almacen/productos/${producto._id}/`: `/aplicacion/almacen/${producto._id}/`; 
 
 
-    const categoriaColor = (categoria) => {
-        switch (categoria.toLowerCase()) {
-            case "ferreteria":
-                return <Tag color="cyan" key="ferreteria">{categoria}</Tag> 
-            case "vinilos":
-                return <Tag color="green" key="vinilos">{categoria}</Tag> 
-            case "herramientas":
-                return <Tag color="blue" key="herramientas">{categoria}</Tag> 
-            case "pisosAzulejos":
-                
-                return <Tag color="orange" key="pisosAzulejos">{categoria}</Tag>
-            case "fontaneria":
-                return <Tag color="red" key="fontaneria">{categoria}</Tag>
-            case "iluminacion":
-                return <Tag color="yellow" key="iluminacion">{categoria}</Tag>
-            case "materialElectrico":
-                return <Tag color="gold" key="materialElectrico">{categoria}</Tag>
-            default:
-                return <Tag color="green" key="categoria">{categoria}</Tag> 
-        }
-    }
-
     if(producto === null){
         return <Loading/>
     }else{
@@ -46,10 +24,8 @@ export const ProductoCard = ({producto,rol}) => {
                     <h6 className="fw-bold">{producto.nombre}</h6>
                     {producto.estatus ? <p className="text-success">Disponible</p> : <p className="text-danger">No disponible</p>}
                     <p>Cantidad en stock: <span className="bg-info">{producto.cantidad}</span></p>
-                    <p>Categorias del producto:</p>
-                    <div className="d-flex justify-content-center gap-2 flex-wrap my-3">
-                        {producto.categorias.map(categoria => categoriaColor(categoria.nombre))}
-                    </div>
+                    <p>Categoria del producto:</p>
+                    <Tag className="mb-3" style={{backgroundColor:producto.categoria.color,borderColor:producto.categoria.color,fontSize:"13px",padding:"13px",maxWidth:"fit-content"}}>{producto.categoria.nombre}</Tag>
                     <Link to={ruta}><Button type="primary">Ver información del producto</Button></Link>
                 </div>
             </div>

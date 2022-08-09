@@ -105,7 +105,7 @@ export const EntradasProducto = ({registros,informacionProducto}) => {
 							<Select.Option value="compraDirecta">Compra directa</Select.Option>
               		    </Select>
                     </Form.Item>
-                    <Button type="primary" htmlType="submit" size="large">Filtrar registros</Button>
+                    <Button type="primary" htmlType="submit">Filtrar registros</Button>
                 </Form>
             </Modal>
 
@@ -124,7 +124,7 @@ export const EntradasProducto = ({registros,informacionProducto}) => {
 							<Select.Option value="compraDirecta">Compra directa</Select.Option>
               		    </Select>
                     </Form.Item>
-                    <Button type="primary" htmlType="submit" size="large">Filtrar registros</Button>
+                    <Button type="primary" htmlType="submit">Descargar PDF</Button>
                 </Form>
             </Modal>
         </>
