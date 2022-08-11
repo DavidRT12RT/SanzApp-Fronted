@@ -25,6 +25,8 @@ import { ProductosScreen } from "../components/almacen/components/productos/Prod
 
 import { Empresas } from "../components/empresas/Empresas";
 import { RegistrarEmpresa } from "../components/empresas/components/RegistrarEmpresa";
+import { EmpresaScreen } from "../components/empresas/components/EmpresaScreen";
+import { SucursalScreen } from "../components/empresas/components/SucursalScreen";
 
 export const ApplicationRoutes = () => {
 
@@ -73,7 +75,9 @@ export const ApplicationRoutes = () => {
                 <Route path="/almacen/:productoId/" element={<ProductoScreen />} />
 
                 <Route path="/empresas/" element={<Empresas/>}/>
+                <Route path="/empresas/:empresaId/" element={<EmpresaScreen/>}/>
                 <Route path="/empresas/registrar/" element={<RegistrarEmpresa/>}/>
+                <Route path="/empresas/:empresaId/sucursales/:sucursalId" element={<SucursalScreen/>}/>
 
                 <Route path="/obras/" element={<ObrasScreen />} />
                 <Route path="/obras/registro/" element={

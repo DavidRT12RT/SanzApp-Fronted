@@ -234,7 +234,6 @@ export const Inventario = () => {
     if(Object.keys(inventario).length === 0){
         return <SanzSpinner/>
     }else{
-        console.log(inventario);
         return (
             <div className="container p-3 p-lg-5">
 

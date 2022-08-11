@@ -43,9 +43,8 @@ export const Empresas = () => {
                         autoFocus
                         enterButton="Buscar"
 					    size="large"
-                        onSearch={filtrarEmpresaPorNombre}
 						onChange={(e)=>{
-							if(e.target.value === "") return setEmpresasRegistros(empresas);
+                            filtrarEmpresaPorNombre(e.target.value)
 						}}
                     /> 
                     <Divider/>

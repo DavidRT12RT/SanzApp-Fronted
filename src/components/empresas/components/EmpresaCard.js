@@ -14,7 +14,7 @@ export const EmpresaCard = ({empresa=null}) => {
                     <h1 className="titulo">{empresa.nombre}</h1>
                     {empresa.estado ? <p className="text-success titulo-descripcion mt-3">Activa</p> : <p className="text-danger titulo-descripcion mt-3">Desactivada</p>}
                     <p className="descripcion">{empresa.descripcion.slice(0,150)}...</p>
-                    <Button type="primary">Ver información completa de la empresa</Button>
+                    <Link to={`/aplicacion/empresas/${empresa._id}`}><Button type="primary">Ver información completa de la empresa</Button></Link>
                 </div>
             </div>
         )
