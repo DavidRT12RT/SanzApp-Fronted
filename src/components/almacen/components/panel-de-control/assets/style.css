@@ -23,18 +23,22 @@
   	font-weight:300;
   	font-size: 16px;
 }
-.header{
-   background-color: #fafe09;
-   /*background-image:linear-gradient(90deg,#000000,#fafe09);*/
-   height:350px;
-  -webkit-filter: grayscale(30%);
-  filter: grayscale(30%);
 
+
+.contenedorGraficaBarra{
+    width: 45%;
+    height: 50%;
 }
-.cantidadTotalAlmacen {
-    font-size: 110px;
+.contenedorGraficaPastel{
+    width: 500px;
+    height: 570px;
 }
 
+@media (min-width:200px) and (max-width:1000px){
+    .contenedorGraficaBarra{
+        width:80%;
+    }
+}
 
 .custom-shape-divider-bottom-1658013821 {
     position: absolute;

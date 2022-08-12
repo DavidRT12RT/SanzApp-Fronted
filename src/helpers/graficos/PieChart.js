@@ -9,5 +9,5 @@ export const PieChart = ({data,options=""}) => {
         fill: true,
         responsive: true,
     };
-    return <Pie data={data} />;
+    return <Pie data={data} style={{height:"80%",width:"80%"}}/>;
 }

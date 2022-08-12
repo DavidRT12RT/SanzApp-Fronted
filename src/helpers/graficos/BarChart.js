@@ -46,7 +46,7 @@ export const BarChart = ({data,titulo="",options=""}) =>{
         },
     };
     return (
-        <Bar data={data} options={options} />
+        <Bar data={data} options={options}/>
     );
 }
 

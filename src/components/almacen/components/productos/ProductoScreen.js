@@ -19,6 +19,7 @@ import { ReporteGeneral } from '../../../../reportes/Productos/ReporteGeneral';
 import moment from 'moment';
 import locale from "antd/es/date-picker/locale/es_ES"
 import { MovimientosProducto } from './components/MovimientosProducto';
+import Barcode from 'react-barcode';
 const { RangePicker } = DatePicker;
 
 const { TabPane } = Tabs;
@@ -340,6 +341,11 @@ export const ProductoScreen = () => {
                             </TabPane>
                             <TabPane tab="Movimientos del producto" key="3">
                                 <MovimientosProducto registros={informacionProducto.movimientos} informacionProducto={informacionProducto}/>
+                            </TabPane>
+                            <TabPane tab="Codigo de barras" key="4">
+                                <div className="d-flex justify-content-center align-items-center">
+                                    <Barcode value={informacionProducto._id}/>
+                                </div>
                             </TabPane>
 
                         </Tabs>

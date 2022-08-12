@@ -78,30 +78,15 @@ export const ProductosScreen = () => {
                     { pathname != "/aplicacion/almacen/" && <Link to="/almacen/productos/registrar"><Button type="primary">Registrar un nuevo producto</Button></Link>}
                     { pathname != "/aplicacion/almacen/" && <Link to="/almacen/categorias/"><Button type="primary">Registrar una nueva categoria</Button></Link>}
                 </div>
-                <h1 className="titulo mt-5 mt-lg-0" style={{fontSize:"40px"}}>Lista de productos en almacen</h1>
-                <h1 className="descripcion">Productos totales registrados en la bodega, podras filtrar los productos y buscar por su nombre de igual forma.</h1>
-                <hr/> 
+                <h1 className="titulo mt-5 mt-lg-0" style={{fontSize:"42px"}}>Productos en almacen</h1>
                 <div className="d-flex justify-content-start gap-2 flex-wrap">                        
                     { pathname != "/aplicacion/almacen/" && (
-                        <Search
-                            placeholder="Buscar un producto en almacen por codigo de barras"
-                            allowClear
-                            enterButton="Buscar" 
-                            size="large"
-                            onSearch={onSearchProductoCodigo} 
-                        />
+                        <input placeholder="Buscar un producto en almacen por codigo de barras..." className="form-control descripcion" onChange={(e)=>{onSearchProductoCodigo(e.target.value)}}/>
                     )}
-                    <Search
-                        placeholder="Comienza a escribir el nombre del producto!"
-                        allowClear
-                        enterButton="Buscar"
-                        size="large"
-                        value={valueSearch}
-                        onChange={(e)=>{setValueSearch(e.target.value)}}
-                    />
+                    
+                    <input placeholder="Comienza a escribir el nombre del producto..." className="form-control descripcion" onChange={(e)=>{setValueSearch(e.target.value)}}/>
                 </div>
-                <Divider/> 
-                <div className="row">
+                <div className="row mt-5">
                     <div className="col-md-12 col-lg-2">
                         {/*Filtros*/}
                         <h1 className="titulo-descripcion">Filtros</h1>
@@ -129,7 +114,7 @@ export const ProductosScreen = () => {
 
                     <div className="col-md-12 col-lg-10 mt-5 mt-lg-0">
 
-                        <h1 className="titulo-descripcion">Productos del almacen</h1>
+                        <h1 className="titulo-descripcion">Resultados: {dataSource.length}</h1>
                         <Divider/> 
 
                         {/*Informacion*/}

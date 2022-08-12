@@ -18,6 +18,7 @@ import { Inventarios } from '../components/almacen/components/inventarios/Invent
 import { RegistrarInventario } from '../components/almacen/components/inventarios/RegistrarInventario';
 import { Inventario } from '../components/almacen/components/inventarios/Inventario';
 import { SalidaScreen } from '../components/almacen/components/salidas/SalidaScreen';
+import { PanelDeControlNew } from '../components/almacen/components/panel-de-control/PanelDeControlNew';
 
 export const AlmacenRoutes = () => {
     const { socket } = useContext(SocketContext);

@@ -23,38 +23,45 @@ export const Inventarios = () => {
     
     const columns = [
         {
-            title:"Titulo",
-            dataIndex:"titulo"
-        },
-        {
-            title:"Tipo de inventario",
-            dataIndex:"tipo"
-        },
-        {
-            title:"Fecha de registro",
-            dataIndex:"fechaRegistro"
-        },
-        {
-            title:"Intervalo de fecha",
-            render:(text,record)=>{
-                return (
-                    <span>{record.intervaloFecha[0]} --- {record.intervaloFecha[1]}</span>
-                )
+			title:<p className="titulo-descripcion">Titulo</p>,
+            render:(text,record) => {
+				return <p className="descripcion">{record.titulo}</p>
             }
         },
         {
-            title:"Estatus",
-            dataIndex:"estatus"
+            title:<p className="titulo-descripcion">Tipo de inventario</p>,
+            render:(text,record) => {
+				return <p className="descripcion">{record.tipo}</p>
+            }
         },
         {
-            title:"Detalles",
+            title:<p className="titulo-descripcion">Fecha de registro</p>,
+            render:(text,record) => {
+				return <p className="descripcion">{record.fechaRegistro}</p>
+            }
+        },
+        {
+            title:<p className="titulo-descripcion">Estatus</p>,
+            render:(text,record) => {
+                switch (record.estatus) {
+                    case "En progreso":
+				        return <p className="descripcion text-success">{record.estatus}</p>
+                    case "Finalizado":
+				        return <p className="descripcion text-danger">{record.estatus}</p>
+                }
+            }
+        },
+        {
+            title:<p className="titulo-descripcion">Detalles</p>,
             render:(text,record)=>{
-                return <Link to={`/almacen/inventarios/${record._id}`}>Ver mas detalles</Link>
+                return <Link to={`/almacen/inventarios/${record._id}`} className="descripcion text-primary">Ver mas detalles</Link>
             }
         }
     ];
 
     const filtrarInventariosPorTitulo = (values) => {
+
+	    if(values.length === "") return setRegistrosInventarios(inventarios);
         const inventariosFiltrados = inventarios.filter(inventario => { if(inventario.titulo.toLowerCase().includes(values.toLowerCase())) return inventario;})
         setRegistrosInventarios(inventariosFiltrados);
     }
@@ -81,8 +88,7 @@ export const Inventarios = () => {
                 <div className="d-flex justify-content-end flex-wrap gap-2 align-items-center">
                     <Link to="/almacen/inventarios/registrar-inventario/"><Button type="primary"  className="my-3">Crear un nuevo inventario</Button></Link>
                 </div>          
-                <h1 className="titulo" style={{fontSize:"40px"}}>Inventarios totales del almacen</h1>
-                <h1 className="descripcion">Inventarios que ha tenido el almacen , aqui podras buscar los inventarios y ver mas detalles sobre cada uno.</h1>
+                <p className="descripcion" style={{fontSize:"27px"}}>Inventarios que ha tenido el <b>almacen</b> , aqui podras buscar los inventarios y ver mas <b>detalles</b> sobre cada uno de estos , tambien podras generar un <b>reporte</b> en PDF sobre este mismo.</p>
                 <div className="d-flex justify-content-center align-items-center gap-3 flex-column mt-3">
                     <Search
                     	placeholder="Ingresa el titulo del inventario..."
@@ -90,9 +96,8 @@ export const Inventarios = () => {
                     	autoFocus
                     	enterButton="Buscar"
 					    size="large"
-						onSearch={filtrarInventariosPorTitulo}
 						onChange={(e)=>{
-							if(e.target.value === "") return setRegistrosInventarios(inventarios);
+                            filtrarInventariosPorTitulo(e.target.value)
 						}}
                 	/> 
                     {isSearching ? <Button type="primary" danger onClick={limpiarFiltros}>Borrar filtros</Button> : <Button type="primary" onClick={()=>{setIsModalVisible(true)}} >Filtrar inventarios</Button>}

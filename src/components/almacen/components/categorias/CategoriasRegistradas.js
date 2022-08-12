@@ -112,47 +112,50 @@ export const CategoriasRegistradas = () => {
 
     const columns = [
         {
-            title:"Color",
+			title:<p className="titulo-descripcion">Color</p>,
             dataIndex:"color",
             render:(text,record) => {
                 return <div style={{backgroundColor:record.color,width:"20px",height:"20px"}}></div>
             }
         },
         {
-            title:"Nombre de la categoria",
-            dataIndex:"nombre"
+			title:<p className="titulo-descripcion">Nombre</p>,
+            render:(text,record) => {
+                return (
+                    <p className="descripcion"><b>{record.nombre}</b></p>
+                )
+            }
         },
         {
-            title:"Estado de la categoria",
-            dataIndex:"estado",
+			title:<p className="titulo-descripcion">Estado</p>,
             render:(text,record)=> {
                 return (
                     <div className="d-flex justify-content-center align-items-center">
-                        {record.estatus ? <Tag color={"green"} key={record._id} style={{fontSize:"13px",padding:"13px"}}>Activa</Tag> : <Tag color={"red"} key={record._id} style={{fontSize:"13px",padding:"13px"}}>Desactivada</Tag>}
+                        {record.estatus ? <p className="descripcion text-success">Activa</p> : <p className="descripcion text-danger">Desactivada</p>}
                     </div>
                 )
             }
         },
         {
-            title:"Cantidad de productos registrados",
-            dataIndex:"productosRegistrados",
+			title:<p className="titulo-descripcion">Cantidad de productos registrados</p>,
             render:(text,record)=>{
-                return <span>{record.productosRegistrados.length}</span>
+                return <p className="descripcion">{record.productosRegistrados.length}</p>
             }
         },
         {
-            title:"Categoria registrada por",
-            dataIndex:"usuario",
+			title:<p className="titulo-descripcion">Registrada por</p>,
             render:(text,record)=>{
-                return <span className="fw-bold">{record.usuario.nombre}</span>
+                return <p className="descripcion"><b>{record.usuario.nombre}</b></p>
             }
         },
         {
-            title:"Fecha de registro",
-            dataIndex:"fechaRegistro"
+			title:<p className="titulo-descripcion">Fecha de registro</p>,
+            render:(text,record)=>{
+                return <p className="descripcion">{record.fechaRegistro}</p>
+            }
         },
         {
-            title:"Acciones",
+			title:<p className="titulo-descripcion">Acciones</p>,
             render:(text,record)=>{
                 return (
                     <div className="d-flex justify-content-center gap-2">
@@ -196,7 +199,7 @@ export const CategoriasRegistradas = () => {
         return (
             <>
                 <div className="container p-5" style={{}}>
-                        <h1 className="titulo">Lista de categorias</h1>
+                        <h1 className="titulo" style={{fontSize:"42px"}}>Lista de categorias</h1>
                         <p className="descripcion">Categorias registradas en el almacen.</p>
                         <Button type="primary" onClick={()=>{setIsModalVisible(true);setCategoriaEditing(null)}}>Nueva categoria</Button>
                         <Table columns={columns} dataSource={categorias} className="mt-3" />

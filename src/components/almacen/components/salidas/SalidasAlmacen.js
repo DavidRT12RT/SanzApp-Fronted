@@ -18,7 +18,6 @@ const { Search } = Input;
 const { RangePicker } = DatePicker;
 
 
-
 export const SalidasAlmacen = () => {
 
 	//Hooks personalizados
@@ -44,7 +43,7 @@ export const SalidasAlmacen = () => {
    
 	const columns = [
 		{
-			title:"Tipo de la salida",
+			title:<p className="titulo-descripcion text-danger">Tipo de salida</p>,
 			dataIndex:"tipo",
             render:(text,record) => {
                 switch (text) {
@@ -64,35 +63,34 @@ export const SalidasAlmacen = () => {
             }
 		},
 		{
-			title:"Motivo de la salida",
-			dataIndex:"motivo"
+			title:<p className="titulo-descripcion text-danger">Fecha creacion</p>,
+			render:(text,record) => {
+				return <p className="descripcion">{record.fechaCreacion}</p>
+			}
+
 		},
 		{
-			title:"Fecha creacion",
-			dataIndex:"fechaCreacion"
-		},
-		{
-			title:"Beneficiario",
+			title:<p className="titulo-descripcion text-danger">Beneficiario</p>,
 			render:(text,record) => {
 				switch (record.tipo) {
 					case "resguardo":
-						return (<span>{record.beneficiarioResguardo.nombre}</span>);
+						return (<p className="descripcion">{record.beneficiarioResguardo.nombre}</p>);
 					case "obra":
-						return (<span>{record.beneficiarioObra.titulo}</span>)
+						return (<p className="descripcion">{record.beneficiarioObra.titulo}</p>);
 					case "merma":
-						return (<span>Nadie por ser merma</span>)
+						return (<p className="descripcion">Nadie por ser merma</p>)
 				}
 			}
 		},
 		{
-			title:"Detalles",
+			title:<p className="titulo-descripcion text-danger">Detalles</p>,
 			render:(text,record) => {
 				return <a onClick={(e)=>{
 					e.preventDefault();
 					//Seteando la informacion para ver el registro en particular
 					setInformacionRegistroParticular(record);
 					setIsDrawerVisible(true);
-				}} href="">Datos completos de la salida</a>
+				}} href="" className="descripcion text-primary">Datos completos de la salida</a>
 			}
 		}
 	];
@@ -262,12 +260,12 @@ export const SalidasAlmacen = () => {
 	}else{
 		return (				
 			<>
+
              	<div className="container text-center p-5"  style={{minHeight:"100vh"}}>
 					<div className="d-flex justify-content-end align-items-center my-3">
 						<Link to={"/almacen/retirar"}><Button type="primary">Retirar del almacen</Button></Link>
 					</div>
-                	<h1 className="titulo text-danger" style={{fontSize:"40px"}}>Salidas del almacen</h1>
-					<p className="descripcion">Salidas totales que se han registrado en el almacen , aqui podras hacer reportes sobre las salidas y ver detalles sobre cada una de las salidas.</p>
+					<p className="descripcion" style={{fontSize:"27px"}}>Salidas <b>totales</b> que se han registrado en el almacen , aqui podras hacer <b>reportes</b> sobre las salidas y ver <b>detalles</b> sobre cada una de las salidas.</p>
 
 					<div className="d-flex justify-content-center gap-3 flex-wrap align-items-center mt-3">
 	                    <Search

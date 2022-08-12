@@ -31,7 +31,7 @@ export const EntradasAlmacen = () => {
 
 	const columns = [
 		{
-			title:"Tipo de entrada",
+			title:<p className="titulo-descripcion text-success">Tipo de entrada</p>,
 			dataIndex:"tipo",
             render:(text,record) => {
                 switch (text) {
@@ -51,18 +51,26 @@ export const EntradasAlmacen = () => {
             }
 		},
 		{
-			title:"Fecha creacion",
-			dataIndex:"fecha"
+			title:<p className="titulo-descripcion text-success">Fecha de creacion</p>,
+            render:(text,record) => {
+                return <p className="descripcion">{record.fecha}</p>
+            }
 		},
 		{
-			title:"Detalles",
+			title:<p className="titulo-descripcion text-success">Cantidad de productos ingresados</p>,
+            render:(text,record) => {
+                return <p className="descripcion">{record.listaProductos.length}</p>
+            }
+		},
+		{
+			title:<p className="titulo-descripcion text-success">Detalles</p>,
 			render:(text,record) => {
 				return <a onClick={(e)=>{
 					e.preventDefault();
 					//Seteando la informacion para ver el registro en particular
 					setInformacionRegistroParticular(record);
 					setIsDrawerVisible(true);
-				}} href="">Datos completos de la entrada</a>
+				}} className="descripcion text-primary" href="">Datos completos de la entrada</a>
 			}
 		}
 	];
@@ -120,58 +128,59 @@ export const EntradasAlmacen = () => {
        return <Loading/> 
     }else{
         return (
-             <div className="container p-5 text-center" style={{minHeight:"100vh"}}>
-			    <div className="d-flex justify-content-end align-items-center my-3">
-					<Link to={"/almacen/ingresar"}><Button type="primary">Ingresar al almacen</Button></Link>
-				</div>
-                <h1 className="titulo text-success" style={{fontSize:"40px"}}>Entradas del almacen</h1>
-                <p className="descripcion">Entradas totales registradas en el almacen , donde podras generar reportes y ver detalles de cada una de las entradas.</p>
-                <div className="d-flex justify-content-center align-items-center gap-3 flex-column">
-                    <div className="d-flex justify-content-center align-items-center flex-wrap gap-2">
-                        {isSearching ? <Button type='primary' danger onClick={limpiarFiltros}>Borrar filtros</Button> :<Button type="primary" onClick={()=>{setIsModalVisible(true)}}>Filtrar registros</Button>}
-                        <Button type="primary" icon={<DownloadOutlined />} onClick={()=>{setIsReporte(true);setIsModalVisible(true)}}>Generar reporte de entradas</Button>
+            <>
+                <div className="container p-5 text-center" style={{minHeight:"100vh"}}>
+			        <div className="d-flex justify-content-end align-items-center my-3">
+					    <Link to={"/almacen/ingresar"}><Button type="primary">Ingresar al almacen</Button></Link>
+				    </div>
+                    <p className="descripcion" style={{fontSize:"27px"}}>Entradas <b>totales</b> registradas en el almacen , donde podras generar <b>reportes</b> y ver <b>detalles</b> de cada una de las entradas.</p>
+                    <div className="d-flex justify-content-center align-items-center gap-3 flex-column">
+                        <div className="d-flex justify-content-center align-items-center flex-wrap gap-2">
+                            {isSearching ? <Button type='primary' danger onClick={limpiarFiltros}>Borrar filtros</Button> :<Button type="primary" onClick={()=>{setIsModalVisible(true)}}>Filtrar registros</Button>}
+                            <Button type="primary" icon={<DownloadOutlined />} onClick={()=>{setIsReporte(true);setIsModalVisible(true)}}>Generar reporte de entradas</Button>
+                        </div>
                     </div>
-                </div>
-                <Divider/>
-				<Table columns={columns} className="mt-3" dataSource={entradasRegistros} bordered/>
-				{informacionRegistroParticular != null && (
-					<Drawer width={640} placement="right" closable={false} onClose={()=>{setIsDrawerVisible(false);}} visible={isDrawerVisible}>
-                        <p className="site-description-item-profile-p" style={{marginBottom: 24,}}>Informacion detallada de la entrada a almacen</p>
-                    	<p className="site-description-item-profile-p">Informacion sobre el ingreso del almacen</p>
-                        <Row>
-                       	    <Col span={12}><DescriptionItem title="Fecha de la entrada" content={informacionRegistroParticular.fecha}/></Col>
-                       		<Col span={12}><DescriptionItem title="Tipo de entrada" content={informacionRegistroParticular.tipo.toUpperCase()}/></Col>
-                            <Divider/>
-                    		<p className="site-description-item-profile-p">Lista de productos ingresados a almacen</p>
-                        	<div className="d-flex justify-content-center align-items-center container p-5 gap-2 flex-column">
-							    {
-								    informacionRegistroParticular.listaProductos.map(producto => {
-                                        return renderizarProductoIngresado(producto);
-								    })
-							    }
-						    </div>
-                        </Row>
-                    </Drawer>
-                )}
-                <Modal visible={isModalVisible} footer={null} onCancel={()=>{setIsModalVisible(false);setIsReporte(false)}} onOk={()=>{setIsModalVisible(false);setIsReporte(false)}}>
-                    {isReporte ? <h1 className="titulo" style={{fontSize:"30px"}}>Filtrar registros del reporte</h1> : <h1 className="titulo" style={{fontSize:"30px"}}>Filtrar registros</h1>}
-                    {isReporte ? <p className="descripcion">Filtrar los registros de las entradas que tendra el reporte.</p>:<p className="descripcion">Filtrar los registros de las entradas.</p>}
-                    <Form onFinish={filtrarEntradas} layout={"vertical"}>
-                        <Form.Item label="Intervalo de fecha" name="intervaloFecha" rules={[{required: true,message: 'Ingresa un intervalo de fecha!',},]}>
-                            <RangePicker locale={locale} size="large" style={{width:"100%"}}/>
-                        </Form.Item>
+                    <Divider/>
+				    <Table columns={columns} className="mt-3" dataSource={entradasRegistros} bordered/>
+				    {informacionRegistroParticular != null && (
+					    <Drawer width={640} placement="right" closable={false} onClose={()=>{setIsDrawerVisible(false);}} visible={isDrawerVisible}>
+                            <p className="site-description-item-profile-p" style={{marginBottom: 24,}}>Informacion detallada de la entrada a almacen</p>
+                    	    <p className="site-description-item-profile-p">Informacion sobre el ingreso del almacen</p>
+                            <Row>
+                       	        <Col span={12}><DescriptionItem title="Fecha de la entrada" content={informacionRegistroParticular.fecha}/></Col>
+                       		    <Col span={12}><DescriptionItem title="Tipo de entrada" content={informacionRegistroParticular.tipo.toUpperCase()}/></Col>
+                                <Divider/>
+                    		    <p className="site-description-item-profile-p">Lista de productos ingresados a almacen</p>
+                        	    <div className="d-flex justify-content-center align-items-center container p-5 gap-2 flex-column">
+							        {
+								        informacionRegistroParticular.listaProductos.map(producto => {
+                                            return renderizarProductoIngresado(producto);
+								        })
+							        }
+						        </div>
+                            </Row>
+                        </Drawer>
+                    )}
+                    <Modal visible={isModalVisible} footer={null} onCancel={()=>{setIsModalVisible(false);setIsReporte(false)}} onOk={()=>{setIsModalVisible(false);setIsReporte(false)}}>
+                        {isReporte ? <h1 className="titulo" style={{fontSize:"30px"}}>Filtrar registros del reporte</h1> : <h1 className="titulo" style={{fontSize:"30px"}}>Filtrar registros</h1>}
+                        {isReporte ? <p className="descripcion">Filtrar los registros de las entradas que tendra el reporte.</p>:<p className="descripcion">Filtrar los registros de las entradas.</p>}
+                        <Form onFinish={filtrarEntradas} layout={"vertical"}>
+                            <Form.Item label="Intervalo de fecha" name="intervaloFecha" rules={[{required: true,message: 'Ingresa un intervalo de fecha!',},]}>
+                                <RangePicker locale={locale} size="large" style={{width:"100%"}}/>
+                            </Form.Item>
 
-                        <Form.Item label="Tipo de entrada" name="tipo" rules={[{required: true,message: 'Ingresa un tipo de entrada!',},]}>
-                		    <Select mode="multiple" placeholder="Tipo de entrada..." size="large">
-							    <Select.Option value="sobrante-obra">Sobrante de obra</Select.Option>
-							    <Select.Option value="devolucion-resguardo">Devolucion resguardo</Select.Option>
-							    <Select.Option value="normal">Normal</Select.Option>
-              		        </Select>
-                        </Form.Item>
-                        {isReporte ? <Button type="primary" htmlType="submit">Descargar PDF</Button>:<Button type="primary" htmlType="submit">Aplicar filtros</Button>}
-                    </Form>
-                </Modal>
-            </div>
+                            <Form.Item label="Tipo de entrada" name="tipo" rules={[{required: true,message: 'Ingresa un tipo de entrada!',},]}>
+                		        <Select mode="multiple" placeholder="Tipo de entrada..." size="large">
+							        <Select.Option value="sobrante-obra">Sobrante de obra</Select.Option>
+							        <Select.Option value="devolucion-resguardo">Devolucion resguardo</Select.Option>
+							        <Select.Option value="normal">Normal</Select.Option>
+              		            </Select>
+                            </Form.Item>
+                            {isReporte ? <Button type="primary" htmlType="submit">Descargar PDF</Button>:<Button type="primary" htmlType="submit">Aplicar filtros</Button>}
+                        </Form>
+                    </Modal>
+                </div>
+            </>
         )
     }
 }
