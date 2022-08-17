@@ -80,7 +80,7 @@ export const ApplicationRoutes = () => {
                 <Route path="/empresas/:empresaId/sucursales/:sucursalId" element={<SucursalScreen/>}/>
 
                 <Route path="/obras/" element={<ObrasScreen />} />
-                <Route path="/obras/registro/" element={
+                <Route path="/obras/registrar/" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","INGE_ROLE"]}>
                         <RegistrarObra/>
                     </PrivateRoutePorRole>

@@ -11,6 +11,7 @@ export const SucursalScreen = () => {
 
     const { sucursalId } = useParams();
     const [sucursalInfo, setSucursalInfo] = useState(null);
+    const [obrasSucursal, setObrasSucursal] = useState(null);
     const navigate = useNavigate();
     const { uid ,rol } = useSelector(store => store.auth);
 
@@ -23,67 +24,51 @@ export const SucursalScreen = () => {
                 return navigate(-1);
             }
             //Todo salio bien
+            body.obras.map(obra => obra.key = obra._id);
             setSucursalInfo(body);
+            setObrasSucursal(body.obras);
         }
         fetchDataSucursal();
     }, []);
-
-    useEffect(() => {
-        if(sucursalInfo != null) getCoordinates(sucursalInfo.calle+sucursalInfo.colonia);
-    }, [sucursalInfo]);
-    
-
-    function getCoordinates(address){
-        fetch("https://maps.googleapis.com/maps/api/geocode/json?address="+address)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                const latitude = data.results.geometry.location.lat;
-                const longitude = data.results.geometry.location.lng;
-                console.log({latitude, longitude})
-            })
-    }
 
 
     const columns = [
         {
             title:<p className="titulo-descripcion">Titulo de la obra</p>,
             render:(text,record) => {
-                return <p className="descripcion">{record.numero}</p>
+                return <p className="descripcion">{record.titulo}</p>
             }
         },
         {
-            title:<p className="titulo-descripcion">Direccion regional</p>,
+            title:<p className="titulo-descripcion">Fecha de creacion</p>,
             render:(text,record) => {
-                return <p className="descripcion">{record.nombre}</p>
+                return <p className="descripcion">{record.fechaCreacion}</p>
             }
+            
         },
         {
-            title:<p className="titulo-descripcion">Plaza</p>,
+            title:<p className="titulo-descripcion">Numero de track</p>,
             render:(text,record) => {
-                return <p className="descripcion">{record.calle}</p>
+                return <p className="descripcion">{record.numeroTrack}</p>
             }
         },
         {
             title:<p className="titulo-descripcion">Tipo de reporte</p>,
             render:(text,record) => {
-                return <p className="descripcion">{record.colonia}</p>
-            }
-        },
-        {
-            title:<p className="titulo-descripcion">Numero de track</p>,
-            render:(text,record) => {
-                return <p className="descripcion">{record.CP}</p>
+                return <p className="descripcion">{record.tipoReporte}</p>
             }
         },
         {
             title:<p className="titulo-descripcion">Estado de la obra</p>,
             render:(text,record) => {
-                return <p className="descripcion">{record.delegacion}</p>
+                return <p className="descripcion">{record.estado}</p>
             }
         },
         {
             title:<p className="titulo-descripcion">Ver mas detalles</p>,
+            render:(text,record) => {
+                return record.estado === "FINALIZADA" ? <Button type="primary"><Link to={`/aplicacion/obras/${record._id}`}></Link></Button> : <div className="d-flex gap-2"><Button type="primary" danger><Link to={`/aplicacion/obras/editor/${record._id}`}>Editor de obra</Link></Button><Button type="primary"><Link to={`/aplicacion/obras/${record._id}`}>Visor de obra</Link></Button></div> 
+            }
         }
     ];
     
@@ -93,6 +78,7 @@ export const SucursalScreen = () => {
         return (
             <div className="container p-5" style={{minHeight:"100vh"}}>
                 <Breadcrumb>
+                    {/* El ultimo breadcrumb sera el activo*/}
                     <Breadcrumb.Item><Link to={`/aplicacion/empresas/${sucursalInfo.empresa._id}`}>{sucursalInfo.empresa.nombre}</Link></Breadcrumb.Item>
                     <Breadcrumb.Item>{sucursalInfo.nombre}</Breadcrumb.Item>
                 </Breadcrumb>
@@ -102,6 +88,8 @@ export const SucursalScreen = () => {
                 <div className="row">
                     <h1 className="titulo-descripcion col-6">Numero sucursal:</h1>
                     <h1 className="descripcion col-6">{sucursalInfo.numero}</h1>
+                    <h1 className="titulo-descripcion col-6">Obras registradas:</h1>
+                    <h1 className="descripcion col-6">{sucursalInfo.obras.length}</h1>
                     <h1 className="titulo-descripcion col-6">Calle:</h1>
                     <h1 className="descripcion col-6">{sucursalInfo.calle}</h1>
                     <h1 className="titulo-descripcion col-6">Colonia:</h1>
@@ -121,7 +109,7 @@ export const SucursalScreen = () => {
                 <h1 className="titulo">Lista de obras</h1>
                 <div className="d-flex justify-content-start align-items-center gap-2 flex-wrap">
                     <Button type="primary">Filtrar obras</Button>
-                    {rol === "INGE_ROLE" || rol === "ADMIN_ROLE" && <Button type="primary" danger>Registrar obra</Button>}
+                    {rol === "INGE_ROLE" || rol === "ADMIN_ROLE" && <Link to={`/aplicacion/obras/registrar?empresa=${sucursalInfo.empresa._id}&sucursal=${sucursalInfo._id}`}><Button type="primary" danger>Registrar obra</Button></Link>}
                 </div>
                <Search
                     placeholder="Buscar una obra por su titulo"
@@ -130,7 +118,7 @@ export const SucursalScreen = () => {
                     size="large"
                     className="mt-3"
                 />
-                <Table bordered className="mt-3" columns={columns}/>
+                <Table bordered className="mt-3" columns={columns} dataSource={obrasSucursal}/>
             </div>
         )
     }

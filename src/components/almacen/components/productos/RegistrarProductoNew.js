@@ -35,13 +35,6 @@ export const RegistrarProductoNew = () => {
         console.log(formValues);
     }, [formValues]);
 
-    const next = () => {
-        setCurrent(current + 1);
-    };
-
-    const prev = () => {
-        setCurrent(current - 1);
-    };
 
     const props = {
         onRemove : file => {
@@ -240,7 +233,7 @@ export const RegistrarProductoNew = () => {
                 <div className="steps-content p-5">{steps[current].content}</div>
                 <div className="steps-action">
                     {current < steps.length - 1 && (
-                        <Button type="primary" onClick={() => next()}>
+                        <Button type="primary" onClick={() => setCurrent(current + 1)}>
                             Siguiente
                         </Button>
                     )}
@@ -250,7 +243,7 @@ export const RegistrarProductoNew = () => {
                         </Button>
                     )}
                     {current > 0 && (
-                        <Button style={{margin: '0 8px',}}onClick={() => prev()}>
+                        <Button style={{margin: '0 8px',}} onClick={() => setCurrent(current -1)}>
                             Anterior
                         </Button>
                     )}

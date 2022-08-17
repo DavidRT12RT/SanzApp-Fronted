@@ -196,7 +196,7 @@ export const ProductoScreen = () => {
                 <div className="d-flex justify-content-end gap-2 flex-wrap">
                     {!isProductoEditing && <Link to="/almacen/productos"><Button type="primary">Regresar a lista de productos</Button></Link>}
                     {isProductoEditing && <Button type="primary" danger onClick={()=>{setIsProductoEditing(false)}}>Salir sin guardar</Button>}
-                    {isProductoEditing ? <Button type="primary" warning onClick={()=>{onFinishEditingProduct();}}>Guardar cambios</Button> : <Button type="primary" onClick={()=>{setIsProductoEditing(true)}}>Editar informacion</Button> }
+                    {isProductoEditing ? <Button type="primary" warning onClick={()=>{onFinishEditingProduct();}}>Guardar cambios</Button> : <Button type="primary" danger onClick={()=>{setIsProductoEditing(true)}}>Editar informacion</Button> }
                 </div>
                  <div className="row mt-5">
                     {/* Imagen del producto*/}

@@ -13,7 +13,8 @@ import {
     LineChartOutlined,
     BgColorsOutlined,
     CloudServerOutlined,
-    CameraOutlined
+    CameraOutlined,
+    InfoCircleOutlined
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { MaterialUtilizado } from "./components/EditorComponents/MaterialUtilizado";
@@ -30,18 +31,18 @@ import { PlanosObra } from "./components/EditorComponents/PlanosObra";
 import { ArchivosGenerales } from "./components/EditorComponents/ArchivosGenerales";
 import { FinalizarObra } from "./components/EditorComponents/FinalizarObra";
 import { RetiradoAlmacen } from "./components/EditorComponents/RetiradoAlmacen";
+import { InformacionGeneral } from "./components/EditorComponents/InformacionGeneral";
 const { Content, Footer, Sider } = Layout;
 
 export const EditorObra = () => {
     //Datos de la obra
     const [obraInfo, setObraInfo] = useState({});
+    const navigate = useNavigate();
 
     //Sockets events
     const { socket } = useContext(SocketContext);
     const { obraId } = useParams();
 
-    //Usenavigate para mover al usuario en caso de 
-    const navigate = useNavigate();
     //Solicitando obra por id
     useEffect(() => {
         socket.emit("obtener-obra-por-id", { obraId }, (obra) => {
@@ -68,11 +69,11 @@ export const EditorObra = () => {
     const renderizarComponente = () => {
         switch (key) {
             case "1":
-                //Material y herramientas retiradas de almacen
+                //Informacion general de la obra
                 return (
-                    <RetiradoAlmacen obraInfo={obraInfo}/>
+                    <InformacionGeneral obraInfo={obraInfo}/>
                 ) 
-
+            
             case "2":
                 //Observaciones lista
                 return (
@@ -122,6 +123,13 @@ export const EditorObra = () => {
 
             case "13":
                 return <FinalizarObra socket={socket} obraInfo={obraInfo}/>
+            
+            case "14":
+                //Material y herramientas retiradas de almacen
+                return (
+                    <RetiradoAlmacen obraInfo={obraInfo}/>
+                ) 
+
             default:
                 //Material y herramientas retiradas de almacen
                 return (
@@ -159,8 +167,8 @@ export const EditorObra = () => {
                         items={[
                             {
                                 key: "1",
-                                icon: <TagOutlined />,
-                                label: "Retirado de almacen",
+                                icon:<InfoCircleOutlined />,
+                                label: "Informacion general",
                             },
                             {
                                 key: "2",
@@ -228,13 +236,8 @@ export const EditorObra = () => {
                     />
                 </Sider>
                 <Layout>
-                    <Content style={{ margin: "24px 16px 0" }}>
-                        <div
-                            className="site-layout-background"
-                            style={{ padding: 24, minHeight: "100vh" }}
-                        >
+                    <Content>
                             {renderizarComponente()}
-                        </div>
                     </Content>
                     <Footer style={{ textAlign: "center" }}>
                         <b>@Sanz Constructora 2022</b>

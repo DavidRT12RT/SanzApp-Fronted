@@ -9,6 +9,7 @@ export const useEmpleados = () => {
 
     useEffect(() => {
         //Carga de empleados
+        setisloading(true);
         fetchConToken("/usuarios",{},"GET")
             .then(response => response.json())
             .then(resp => {
@@ -17,8 +18,6 @@ export const useEmpleados = () => {
             });
         setisloading(false);
     }, []);
-
-
     
     return {
         isLoading,
