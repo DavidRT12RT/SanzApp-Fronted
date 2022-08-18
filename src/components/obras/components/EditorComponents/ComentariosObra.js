@@ -1,34 +1,67 @@
 import React, { useEffect, useState } from 'react';
-import { Comment, Avatar, Form, Button, List, Input, message } from 'antd';
+import { Comment, Avatar, Form, Button, List, Input, message, Divider } from 'antd';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
+import { PlusOutlined, ArrowRightOutlined } from '@ant-design/icons';
 const { TextArea } = Input;
 
-const CommentList = ({ comments }) => (
-    <List
-        dataSource={comments}
-        header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
-        itemLayout="horizontal"
-        renderItem={(props) => <Comment {...props} />}
-        className="bg-body p-5"
-    />
-);
 
-const Editor = ({ onChange, onSubmit, submitting, value }) => (
+const CommentList = ({comments,setIsComentarioRespondiendo}) => {
+    return (
+        <div className="d-flex justify-content-center align-items-center flex-column gap-4">
+            {comments.map(comentario => (
+                <div className="p-3 row border" style={{width:"90%"}} key={comentario._id} id={comentario._id}>
+                    {
+                    /*
+                    comentario.respondiendo && 
+                        <div className="d-flex justify-content-start align-items-center flex-wrap gap-2">
+                            <ArrowRightOutlined />
+                            <h1 className="titulo" style={{fontSize:"15px"}}>Respondiendo a un comentario <span className="text-primary" onClick={()=>{document.getElementById(comentario.respondiendo).scrollIntoView()}}>Ir a el comentario</span></h1>
+                            <Divider/>
+                        </div>
+                    */
+                    }
+                    <img className="col-12 col-lg-4 rounded" style={{objectFit:"contain"}} src={`http://localhost:4000/api/uploads/usuarios/${comentario.autor.uid}`} width="80" height="80"/>
+                    <div className="col-12 col-lg-8">
+                        <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-3 mt-lg-0">
+                            <h1 className="titulo" style={{fontSize:"15px"}}>{comentario.autor.nombre}</h1>
+                            <h1 className="titulo text-success" style={{fontSize:"15px"}}>{comentario.fecha}</h1>
+                        </div>
+                        <p className="descripcion">{comentario.contenido}</p>
+                    </div>
+                    <div className="d-flex justify-content-end align-items-center mb-4">
+                        <Button type="primary" icon={<PlusOutlined />} onClick={()=>{setIsComentarioRespondiendo({estado:true,respondiendo:comentario})}}>Responder</Button>
+                    </div>
+                </div>
+            ))}
+        </div>
+    )
+}
+
+const Editor = ({ onChange, onSubmit, submitting, value,isComentarioRespondiendo,setIsComentarioRespondiendo}) => (
     <>
         <Form.Item>
-            <TextArea rows={4} onChange={onChange} value={value} />
+            <TextArea rows={4} onChange={onChange} value={value}/>
         </Form.Item>
-        <Form.Item>
-            <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
-                Añadir comentario de la obra
-            </Button>
-        </Form.Item>
+        {isComentarioRespondiendo.estado === true 
+            ? 
+             <div className="d-flex justify-content-start align-items-center gap-2">
+                <Button loading={submitting} onClick={onSubmit} type="primary">Anadir respuesta a {isComentarioRespondiendo.respondiendo.autor.nombre}</Button>
+                <Button type="primary" danger onClick={()=>{setIsComentarioRespondiendo({estado:false,respondiendo:null})}}>Dejar de responder</Button>
+             </div>
+            :
+            <Form.Item>
+                <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
+                    Añadir comentario de la obra
+                </Button>
+            </Form.Item>
+        }
     </>
 );
 
 export const ComentariosObra = ({obraInfo,socket}) => {
     const [comments, setComments] = useState([]);
+    const [isComentarioRespondiendo, setIsComentarioRespondiendo] = useState({estado:false,respondiendo:null});
     const [submitting, setSubmitting] = useState(false);
     const [value, setValue] = useState('');
     //Conseguir el uid del empleado del store de redux
@@ -36,27 +69,23 @@ export const ComentariosObra = ({obraInfo,socket}) => {
     const {_id:obraId} = obraInfo;
 
     useEffect(() => {
+        obraInfo.comentarios.map(comentario => comentario.key = comentario._id);
         setComments([...obraInfo.comentarios]);
     }, [obraInfo]);
 
-    useEffect(() => {
-        setComments([...obraInfo.comentarios]);
-    }, []);
-    
-    
 
     const handleSubmit = () => {
         if (!value) return;
         setSubmitting(true);            
-        setSubmitting(false);
-        setValue('');
         const nuevoComentario = {                    
-            author: name,
-            avatar: `http://localhost:4000/api/uploads/usuarios/${empleadoId}`,
-            content: value,
-            datetime: moment().locale("es").format("LLLL")
+            autor: uid,
+            contenido: value,
+            fecha: moment().locale("es").format("LLLL"),
+            obraId
         };
-        nuevoComentario.obraId = obraId;
+        if(isComentarioRespondiendo.estado) nuevoComentario.respondiendo = isComentarioRespondiendo.respondiendo._id
+
+        console.log(nuevoComentario);
         socket.emit("añadir-comentario-a-obra",nuevoComentario,(confirmacion)=>{
             if(confirmacion.ok){
                 message.success(confirmacion.msg);
@@ -68,6 +97,8 @@ export const ComentariosObra = ({obraInfo,socket}) => {
                 message.error(confirmacion.msg);
             }
 
+        setSubmitting(false);
+        setValue('');
         });
     };
 
@@ -75,21 +106,28 @@ export const ComentariosObra = ({obraInfo,socket}) => {
         setValue(e.target.value);
     };
 
+    const { uid } = useSelector(store => store.auth);
+    console.log(isComentarioRespondiendo);
     return (
-        <>
-            {comments.length > 0 && <CommentList comments={comments} />}
+        <div className="container p-5" style={{minHeight:"100vh"}}>
+            <h1 className="titulo text-center">Comentarios / Observaciones a la obra</h1>
+            <Divider/>
+            {comments.length === 0 ? <p className="descripcion text-danger text-center">Ningun comentario u observacion registrada en la obra...</p>:  <CommentList setIsComentarioRespondiendo={setIsComentarioRespondiendo} comments={comments} />}
+            <Divider/>
             <Comment
-                avatar={<Avatar src={`http://localhost:4000/api/uploads/usuarios/${empleadoId}`} alt="Han Solo" />}
+                className={comments.length > 0 && "mt-3"}
+                avatar={<Avatar src={`http://localhost:4000/api/uploads/usuarios/${empleadoId}`}/>}
                 content={
                     <Editor
                         onChange={handleChange}
                         onSubmit={handleSubmit}
                         submitting={submitting}
                         value={value}
+                        isComentarioRespondiendo={isComentarioRespondiendo}
+                        setIsComentarioRespondiendo={setIsComentarioRespondiendo}
                     />
                 }
             />
-            <span>(Añadir un comentario de la obra , una opinion acerca de esta , sugerencia de como hacer un proceso,etc.)</span>
-        </>
+        </div>
     )
 }

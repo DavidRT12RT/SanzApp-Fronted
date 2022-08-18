@@ -1,14 +1,16 @@
-import { Breadcrumb, Button, Divider, Modal } from 'antd';
+import { Breadcrumb, Button, Divider, message, Modal } from 'antd';
 import { ExclamationCircleOutlined,UploadOutlined } from '@ant-design/icons';
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
 import { useEmpleados } from '../../../../hooks/useEmpleados';
 import { useForm } from '../../../../hooks/useForm';
+import { useSelector } from 'react-redux';
 const { confirm } = Modal;
 
-export const InformacionGeneral = ({obraInfo}) => {
+export const InformacionGeneral = ({obraInfo,socket}) => {
     //Cargar empleados con solo el rol de empleados o ingenieros 
+    const { uid } = useSelector(store => store.auth);
     const { isLoading:isLoadingEmpleados,empleados } = useEmpleados();
 	const [isEditing, setIsEditing] = useState(false);
     const [formValues,handleInputChange,setValues ] = useForm({
@@ -17,7 +19,7 @@ export const InformacionGeneral = ({obraInfo}) => {
 		tipoReporte:obraInfo.tipoReporte,
 		numeroTrack:obraInfo.numeroTrack,
 		estado:obraInfo.estado,
-        jefeObra:obraInfo.jefeObra.nombre
+        jefeObra:obraInfo.jefeObra.uid
 	});
 
     const actualizarInformacionObra = () => {
@@ -28,6 +30,12 @@ export const InformacionGeneral = ({obraInfo}) => {
 			okText:"Actualizar informacion",
 			cancelText:"Volver atras",
             async onOk(){
+                socket.emit("actualizar-informacion-obra",{...formValues,uid,obraId:obraInfo._id},(confirmacion)=>{
+                    if(!confirmacion.ok) return message.error(confirmacion.msg);
+                    //Informacion de obra actualizada con exito!
+                    message.success(confirmacion.msg);
+                    setIsEditing(false);
+                });
            	},
         });
     }
@@ -62,7 +70,6 @@ export const InformacionGeneral = ({obraInfo}) => {
                             <select className="form-select descripcion" style={{width:"50%"}} aria-describedby="inventariableHelpBlock" value={formValues.estado} name="estado" onChange={handleInputChange}>
 	                	        <option value={"PRESUPUESTO-CLIENTE"} key={"PRESUPUESTO-CLIENTE"}>Presupuesto con el cliente</option>
                                 <option value={"EN-PROGRESO"} key={"EN-PROGRESO"}>En progreso</option>
-                                <option value={"FINALIZADA"} key={"FINALIZADA"}>Finalizada</option>
 					        </select>
                         </>
                     :

@@ -71,7 +71,7 @@ export const EditorObra = () => {
             case "1":
                 //Informacion general de la obra
                 return (
-                    <InformacionGeneral obraInfo={obraInfo}/>
+                    <InformacionGeneral obraInfo={obraInfo} socket={socket}/>
                 ) 
             
             case "2":
@@ -131,9 +131,9 @@ export const EditorObra = () => {
                 ) 
 
             default:
-                //Material y herramientas retiradas de almacen
+                //Informacion general de la obra
                 return (
-                    <RetiradoAlmacen obraInfo={obraInfo}/>
+                    <InformacionGeneral obraInfo={obraInfo} socket={socket}/>
                 ) 
         }
     };
