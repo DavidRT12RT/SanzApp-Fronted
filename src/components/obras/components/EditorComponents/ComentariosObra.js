@@ -8,19 +8,9 @@ const { TextArea } = Input;
 
 const CommentList = ({comments,setIsComentarioRespondiendo}) => {
     return (
-        <div className="d-flex justify-content-center align-items-center flex-column gap-4">
+        <div className="d-flex justify-content-center align-items-center flex-column gap-5">
             {comments.map(comentario => (
-                <div className="p-3 row border" style={{width:"90%"}} key={comentario._id} id={comentario._id}>
-                    {
-                    /*
-                    comentario.respondiendo && 
-                        <div className="d-flex justify-content-start align-items-center flex-wrap gap-2">
-                            <ArrowRightOutlined />
-                            <h1 className="titulo" style={{fontSize:"15px"}}>Respondiendo a un comentario <span className="text-primary" onClick={()=>{document.getElementById(comentario.respondiendo).scrollIntoView()}}>Ir a el comentario</span></h1>
-                            <Divider/>
-                        </div>
-                    */
-                    }
+                <div className="p-4 row border" style={{width:"100%"}} key={comentario._id} id={comentario._id}>
                     <img className="col-12 col-lg-4 rounded" style={{objectFit:"contain"}} src={`http://localhost:4000/api/uploads/usuarios/${comentario.autor.uid}`} width="80" height="80"/>
                     <div className="col-12 col-lg-8">
                         <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-3 mt-lg-0">
@@ -30,8 +20,31 @@ const CommentList = ({comments,setIsComentarioRespondiendo}) => {
                         <p className="descripcion">{comentario.contenido}</p>
                     </div>
                     <div className="d-flex justify-content-end align-items-center mb-4">
-                        <Button type="primary" icon={<PlusOutlined />} onClick={()=>{setIsComentarioRespondiendo({estado:true,respondiendo:comentario})}}>Responder</Button>
+                        <Button type="primary" icon={<PlusOutlined />} onClick={()=>{setIsComentarioRespondiendo({estado:true,respondiendo:comentario});document.getElementById("editor").scrollIntoView()}}>Responder</Button>
                     </div>
+                    {comentario.respuestas.length > 0 && (
+                        <>
+                            <div className="d-flex justify-content-center align-items-center flex-column gap-4">
+                                <Divider/>
+                                <div className="d-flex justify-content-start align-items-center flex-wrap gap-2">
+                                    <ArrowRightOutlined />
+                                    <h1 className="titulo text-primary" style={{fontSize:"15px"}}>Respuestas del comentario: {comentario.respuestas.length}</h1>
+                                </div>
+                                {comentario.respuestas.map(respuesta => (
+                                    <div className="p-3 row border" style={{width:"90%"}} key={respuesta._id}>
+                                        <img className="col-12 col-lg-4 rounded" style={{objectFit:"contain"}} src={`http://localhost:4000/api/uploads/usuarios/${respuesta.autor.uid}`} width="80" height="80"/>
+                                        <div className="col-12 col-lg-8">
+                                            <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-3 mt-lg-0">
+                                                <h1 className="titulo" style={{fontSize:"15px"}}>{respuesta.autor.nombre}</h1>
+                                                <h1 className="titulo text-success" style={{fontSize:"15px"}}>{respuesta.fecha}</h1>
+                                            </div>
+                                            <p className="descripcion">{respuesta.contenido}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    )}
                 </div>
             ))}
         </div>
@@ -41,7 +54,7 @@ const CommentList = ({comments,setIsComentarioRespondiendo}) => {
 const Editor = ({ onChange, onSubmit, submitting, value,isComentarioRespondiendo,setIsComentarioRespondiendo}) => (
     <>
         <Form.Item>
-            <TextArea rows={4} onChange={onChange} value={value}/>
+            <TextArea rows={4} onChange={onChange} value={value} id="editor"/>
         </Form.Item>
         {isComentarioRespondiendo.estado === true 
             ? 
@@ -85,14 +98,15 @@ export const ComentariosObra = ({obraInfo,socket}) => {
         };
         if(isComentarioRespondiendo.estado) nuevoComentario.respondiendo = isComentarioRespondiendo.respondiendo._id
 
-        console.log(nuevoComentario);
         socket.emit("añadir-comentario-a-obra",nuevoComentario,(confirmacion)=>{
             if(confirmacion.ok){
                 message.success(confirmacion.msg);
+                /*
                 setComments([
                     ...comments,
                     nuevoComentario
                 ]);
+                */
             }else{
                 message.error(confirmacion.msg);
             }
