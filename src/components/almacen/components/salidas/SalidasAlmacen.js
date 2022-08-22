@@ -258,6 +258,7 @@ export const SalidasAlmacen = () => {
 	if(isLoading || isLoadingEmpleados || isLoadingObras){
 		return <Loading/>
 	}else{
+		console.log(salidas);
 		return (				
 			<>
 

@@ -15,57 +15,32 @@ const DescriptionItem = ({ title, content }) => (
 
 export const ObrasTrabajadas = ({usuarioInfo,socket}) => {
     const [obrasTrabajadas, setObrasTrabajadas] = useState([]);
-    const [isVisibleDrawer, setIsVisibleDrawer] = useState(false);
-    const [obraId, setObraId] = useState(null);
+
     const [informacionObra, setInformacionObra] = useState();
+    const [isVisibleDrawer, setIsVisibleDrawer] = useState(false);
 
     useEffect(() => {
 
-        usuarioInfo.obrasTrabajadas.registros.map((element,index) => {
-            element.key = index;
-        });
+        usuarioInfo.obrasTrabajadas.map((element,index) => element.key = index);
 
-        setObrasTrabajadas(usuarioInfo.obrasTrabajadas.registros);
+        setObrasTrabajadas(usuarioInfo.obrasTrabajadas);
     }, [usuarioInfo]);
    
-    //Cada vez que cambie el obraId buscaremos información sobre la obra y la setearemos en otro estado
-    useEffect(() => {
-        socket.emit("obtener-obra-por-id",{obraId},(obra)=>{
-            //Filtrando solo los trabajos hechos por el
-            if(obra.trabajosEjecutados.length > 0) {
-                obra.trabajosEjecutados = obra.trabajosEjecutados.filter(element => element.trabajador === usuarioInfo.nombre);
-            }
-
-            setInformacionObra(obra);
-        });
-    }, [obraId]);
-
     
     const columns = [            
         {
-            title:"Titulo de la obra",
-            key:"TituloObra",
-            dataIndex:"nombreObra",
+            title:<p className="titulo-descripcion">Titulo de la obra</p>,
         },
         {
-            title:"Rol en la obra",
-            key:"rol",
-            dataIndex:"rol"
+            title:<p className="titulo-descripcion">Rol en obra</p>
         },
         {
-            title:"Dirección regional",
-            key:"direccionRegional",
-            dataIndex:"direccionRegionalObra"
-        },
-        {
-            title:"Detalles",
-            dataIndex:"obraId",
+            title:<p className="titulo-descripcion">Detalles</p>,
             render:(text,record) => {
                 return (
                     <a href="#" onClick={(event)=>{
                         event.preventDefault();
                         setIsVisibleDrawer(true);
-                        setObraId(record.obraId);
                     }}>Ver mas detalles</a>
                 )
             }
@@ -120,14 +95,6 @@ export const ObrasTrabajadas = ({usuarioInfo,socket}) => {
         return setObrasTrabajadas(resultadosBusqueda);
     };
 
-    const menu = (
-        <Menu onClick={handleFilter}>
-            <Menu.Item key="santander">Santander</Menu.Item>
-            <Menu.Item key="banbajio">Banbajio</Menu.Item>
-            <Menu.Divider/>
-            <Menu.Item key="Limpiar">Limpiar filtros</Menu.Item>
-        </Menu>
-    );
 
     const ShowDrawer = () => (
         <Drawer width={640} placement="right" closable={false} onClose={()=>{setIsVisibleDrawer(false)}} visible={isVisibleDrawer}>
@@ -203,12 +170,6 @@ export const ObrasTrabajadas = ({usuarioInfo,socket}) => {
                     onSearch={handleSearch}
                     className="search-bar-class"
                 />
-                <Dropdown overlay={menu} className="">
-                    <Button type="primary">
-                        Filtrar por empresa:
-                        <DownOutlined />
-                    </Button>
-                </Dropdown>
             </div>
 
             <div className="d-flex align-items-center gap-2 mt-2">

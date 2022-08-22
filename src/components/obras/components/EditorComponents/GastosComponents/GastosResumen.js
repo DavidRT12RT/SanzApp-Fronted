@@ -15,8 +15,8 @@ export const GastosResumen = ({obraInfo,socket}) => {
 
     return (
         <>
-            <h1>Resumen de gastos de la obra</h1>
-            <p className="lead">Aqui se mostrara un resumen de los gastos que ha tenido la obra hasta el momento</p>
+            <h1 className="titulo">Resumen de gastos de la obra</h1>
+            <p className="descripcion">Aqui se mostrara un resumen de los gastos que ha tenido la obra hasta el momento</p>
             {/*<RangePicker onChange={onChangeDate} size="large" locale={locale} className="mb-3"/>*/}
             <Divider/>
             <div className="p-3 p-lg-5" style={{background:"#ececec"}}>

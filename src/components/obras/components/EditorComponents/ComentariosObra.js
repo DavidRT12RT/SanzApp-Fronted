@@ -121,7 +121,6 @@ export const ComentariosObra = ({obraInfo,socket}) => {
     };
 
     const { uid } = useSelector(store => store.auth);
-    console.log(isComentarioRespondiendo);
     return (
         <div className="container p-5" style={{minHeight:"100vh"}}>
             <h1 className="titulo text-center">Comentarios / Observaciones a la obra</h1>

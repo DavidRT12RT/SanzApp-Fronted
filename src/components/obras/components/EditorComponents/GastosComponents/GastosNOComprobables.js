@@ -187,17 +187,17 @@ export const GastosNOComprobables = ({obraInfo,socket}) => {
                         <h1>Agregar un gasto NO comprobable a la obra</h1>
                         <p className="lead">Asegurate de que sea un gasto NO comprobable como comidas,etc.</p>
                         <Form onFinish={handleUpload} layout="vertical">
-                            <Form.Item name="conceptoGasto" label="Concepto gasto">
+                            <Form.Item name="conceptoGasto" label="Concepto gasto" rules={[{required: true,message:"Introuce el concepto del gasto",},]}>
                                 <Input/>
                             </Form.Item>
-                            <Form.Item name="descripcionGasto" label="Descripción del gasto">
+                            <Form.Item name="descripcionGasto" label="Descripción del gasto" rules={[{required: true,message:"Introduce la descripcion del gasto",},]}>
                                 <TextArea/>
                             </Form.Item>
-                            <Form.Item name="importeGasto" label="Importe total del gasto">
+                            <Form.Item name="importeGasto" label="Importe total del gasto" rules={[{required: true,message:"introduce el importe total del gasto",},]}>
                                 <InputNumber min={0} style={{width:"100%"}}/>
                             </Form.Item>
                             <Form.Item name="fechaGasto" label="Fecha del gasto">
-                                <DatePicker style={{width:"100%"}} format={['DD/MM/YYYY', 'DD/MM/YY']} locale={locale}/>
+                                <DatePicker style={{width:"100%"}} format={['DD/MM/YYYY', 'DD/MM/YY']} locale={locale} rules={[{required: true,message:"Introudce la fecha del gasto",},]}/>
                             </Form.Item>
                             <Button type="primary" htmlType="submit" loading={uploading}>
                                 {uploading ? "Subiendo al servidor..." : "Registrar gasto"}     

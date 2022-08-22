@@ -2,7 +2,6 @@ import React from 'react'
 import { Avatar, List } from "antd";
 
 export const ObservacionesObra = ({obraInfo}) => {
-    console.log(obraInfo.comentarios);
     return (
       <>
             <p className='lead'>Observaciones</p>

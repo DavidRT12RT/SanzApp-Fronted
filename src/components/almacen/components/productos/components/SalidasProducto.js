@@ -5,7 +5,7 @@ import locale from "antd/es/date-picker/locale/es_ES"
 import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
 import { ReporteSalidas } from '../../../../../reportes/Productos/ReporteSalidas';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useSalidas } from '../../../../../hooks/useSalidas';
 import { useObras } from '../../../../../hooks/useObras';
 import { SanzSpinner } from '../../../../../helpers/spinner/SanzSpinner';
@@ -29,6 +29,7 @@ export const SalidasProducto = ({registros,informacionProducto}) => {
     useEffect(() => {
         setRegistrosSalidas([...registros.obra,...registros.merma,...registros.resguardo]);
     }, [registros]);
+
 
     const filtrarSalidas = async(values) => {
         let salidasFiltradas = [];
@@ -152,11 +153,6 @@ export const SalidasProducto = ({registros,informacionProducto}) => {
                     <>
                         <Row>
                             <Col span={12}><DescriptionItem title="Nombre de la obra" content={informacionRetiro.beneficiario.titulo}/></Col>
-                            <Col span={12}><DescriptionItem title="Jefe de la obra" content={informacionRetiro.beneficiario.jefeObra}/></Col>
-                        </Row>
-                        <Row>
-                            <Col span={12}><DescriptionItem title="Sucursal de la obra" content={informacionRetiro.beneficiario.sucursal}/></Col>
-                            <Col span={12}><DescriptionItem title="Direccion regional de la obra" content={informacionRetiro.beneficiario.direccionRegional}/></Col>
                         </Row>
                         <Row>
                             <Col span={12}><DescriptionItem title="Tipo de reporte de la obra" content={informacionRetiro.beneficiario.tipoReporte}/></Col>
@@ -269,6 +265,7 @@ export const SalidasProducto = ({registros,informacionProducto}) => {
                             <p>Evidencia del producto</p>
                         </>
                     )}
+                    <Link to={`/aplicacion/obras/${informacionRetiro._id}`}>Ver mas informacion</Link>
                     <Divider/>
                 </Drawer>
             )}

@@ -31,11 +31,6 @@ export const RegistrarProductoNew = () => {
         aplicaciones:""
     });
 
-    useEffect(() => {
-        console.log(formValues);
-    }, [formValues]);
-
-
     const props = {
         onRemove : file => {
             setFilesList([]);

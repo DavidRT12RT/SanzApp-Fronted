@@ -246,6 +246,7 @@ export const GastosComprobables = ({obraInfo,socket}) => {
         maxCount:2,
         fileList : filesList
     };
+
     return (
            <div>
                 <h1>Gastos comprobables de la obra</h1>

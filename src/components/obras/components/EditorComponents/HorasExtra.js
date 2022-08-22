@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Button, Divider, Form, Input, Modal, Table, Select, InputNumber, message, Dropdown, Space, Badge, Menu} from "antd";
 import { useParams } from 'react-router-dom';
 import { DownOutlined } from '@ant-design/icons';
-import "../../assets/styleMaterialList.css";
 const { Option } = Select;
 
 export const HorasExtra = ({obraInfo,socket}) => {

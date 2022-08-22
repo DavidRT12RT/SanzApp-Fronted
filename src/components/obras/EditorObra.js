@@ -32,6 +32,7 @@ import { ArchivosGenerales } from "./components/EditorComponents/ArchivosGeneral
 import { FinalizarObra } from "./components/EditorComponents/FinalizarObra";
 import { RetiradoAlmacen } from "./components/EditorComponents/RetiradoAlmacen";
 import { InformacionGeneral } from "./components/EditorComponents/InformacionGeneral";
+import "./assets/styleEditor.css";
 const { Content, Footer, Sider } = Layout;
 
 export const EditorObra = () => {
@@ -56,12 +57,7 @@ export const EditorObra = () => {
     //Escuchar si la obra se actualiza
     useEffect(() => {
         socket.on("obra-actualizada", (obra) => {
-            if (obra._id === obraInfo._id) {
-                obra.materialUtilizado.map((element, index) => {
-                    element.key = index;
-                });
-                setObraInfo(obra);
-            }
+            if(JSON.stringify(obra._id) === JSON.stringify(obraInfo._id)) setObraInfo(obra);
         });
     }, [socket, setObraInfo, obraInfo]);
 
@@ -144,7 +140,6 @@ export const EditorObra = () => {
         return message.error("Obra se encuentra finalizada NO puedes editarla");
     }
     else{
-        console.log("Obra info",obraInfo);
         return (
             <Layout>
                 <Sider

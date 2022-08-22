@@ -2,7 +2,7 @@ import React,{ useState,useEffect } from 'react'
 import "../../assets/facturasLista.css";
 import { DownOutlined,UploadOutlined ,CopyOutlined } from '@ant-design/icons';
 import { fetchConToken, fetchConTokenSinJSON } from '../../../../helpers/fetch';
-import { Button, Card, Col, Divider, Dropdown, Menu, message, Row, Space, Statistic,Table,Modal,Upload,Input, Form, InputNumber, DatePicker} from 'antd';
+import { Button, Card, Col, Divider, Dropdown, Menu, message, Row, Space, Statistic,Table,Modal,Upload,Input, Form, InputNumber, DatePicker, Drawer} from 'antd';
 import moment from 'moment';
 import locale from "antd/es/date-picker/locale/es_ES"
 const { RangePicker } = DatePicker;
@@ -13,20 +13,14 @@ export const AbonosLista = ({socket,obraInfo}) => {
     
     const {_id:obraId} = obraInfo;
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isDrawerVisible, setIsDrawerVisible] = useState(false);
     const [filesList, setFilesList] = useState([]);
     const [uploading, setUploading] = useState(false);
     const [dataAbonos, setDataAbonos] = useState([]);
     const [obraInfoAbonos, setObraInfoAbonos] = useState({});
 
-    //Seteamos la data cada vez que el componente se monte por primera vez
-    useEffect(() => {
-        obraInfo.abonos.registros.map(element => element.key = element._id);
-        setDataAbonos(obraInfo.abonos.registros);
 
-        setObraInfoAbonos(obraInfo.abonos);
-    }, []);
-
-    //Seteamos la data cada vez que la obraInfo se actualize por algun socket de un cliente
+    //Seteamos la data cada vez que se monte el componente o la obraInfo se actualize por algun socket de un cliente
     useEffect(() => {
         obraInfo.abonos.registros.map(element => element.key = element._id);
         setDataAbonos(obraInfo.abonos.registros);
@@ -34,18 +28,6 @@ export const AbonosLista = ({socket,obraInfo}) => {
         setObraInfoAbonos(obraInfo.abonos);
     }, [obraInfo]);
     
-    
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-
-    const handleOk = () => {
-        setIsModalVisible(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
 
     const handleSearch = (value) =>{
         //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
@@ -76,9 +58,9 @@ export const AbonosLista = ({socket,obraInfo}) => {
         //Se borraron las fechas
         if(value === null){
             setDataAbonos(obraInfo.abonos.registros);
-            setObraInfoAbonos(obraInfo.abonos);
-            return;
+            return setObraInfoAbonos(obraInfo.abonos);
         }
+
         const resultadosBusqueda = obraInfo.abonos.registros.filter(element => {
             //element.fechaFactura = element.fechaFactura.slice(0,10);
             const date = moment(element.fechaAplicacion,['DD/MM/YYYY', 'DD/MM/YY']);
@@ -133,7 +115,7 @@ export const AbonosLista = ({socket,obraInfo}) => {
             
         }
                 
-        handleCancel();
+        setIsModalVisible(false);
         //Quitando los archivos del filesList
         setFilesList([]);
         setUploading(false);
@@ -143,6 +125,7 @@ export const AbonosLista = ({socket,obraInfo}) => {
         const { archivoName } = values;
         try {
             const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/abonos/${archivoName}`);
+            console.log(`localhost:4000/api/uploads/obras/obra/${obraId}/abonos/${archivoName}`);
             if(resp.status != 200){
                 return message.error("No se encontro el archivo en el servidor!");
             }
@@ -159,56 +142,57 @@ export const AbonosLista = ({socket,obraInfo}) => {
 
 
     const menuDescargar = (record) => {
-
         return (
-        <Menu 
-            items={[
-                { key: '1', label: 'Archivo PDF',onClick:()=>{handleDownloadPDF(record)}},
-            ]}
-        />      
+            <Menu 
+                items={[
+                    { key: '1', label: 'Archivo PDF',onClick:()=>{handleDownloadPDF(record)}},
+                ]}
+            />      
         )
     }
 
     const columns = [
         {
-            title: 'Cuenta abono',
-            dataIndex: 'cuentaAbono',
-            key: 'cuentaAbono',
+            title:<p className="titulo-descripcion">Cuenta abono</p>,
+            render:(text,record) => {
+                return <p className="descripcion">{record.cuentaAbono}</p>
+            }
         },
         {
-            title:'Cuenta cargo',
-            dataIndex:'cuentaCargo',
-            key:'cuentaCargo'
+            title:<p className="titulo-descripcion">Cuenta cargo</p>,
+            render:(text,record) => {
+                return <p className="descripcion">{record.cuentaCargo}</p>
+            }
         },
         {
-            title: 'Concepto',
-            dataIndex: 'concepto',
-            key: 'concepto',
+            title:<p className="titulo-descripcion">Concepto</p>,
+            render:(text,record) => {
+                return <p className="descripcion">{record.concepto}</p>
+            }
         },
         {
-            title:'Importe',
-            dataIndex:'importe',
-            key:'importe',
+            title:<p className="titulo-descripcion">Importe</p>,
+            render:(text,record) => {
+                return <p className="descripcion">{record.importe}</p>
+            }
         },
         {
-            title: 'Fecha aplicación',
-            dataIndex: 'fechaAplicacion',
-            key: 'fechaAplicacion',
+            title:<p className="titulo-descripcion">Fecha aplicación</p>,
+            render:(text,record) => {
+                return <p className="descripcion">{record.fechaAplicacion}</p>
+            }
+ 
         },
 
         {
-            title: 'Descargar documentos',
-            dataIndex: 'documentos',
-            key: 'tags',
+            title:<p className="titulo-descripcion">Descargar documentos</p>,
             render: (text,record) => {
                 return (
-                    <Space size="middle">
-                        <Dropdown overlay={menuDescargar(record)}>
-                            <a>
-                                Descargar <DownOutlined />
-                            </a>
-                        </Dropdown>
-                    </Space>
+                    <Dropdown overlay={menuDescargar(record)}>
+                        <a className="descripcion text-primary">
+                            Descargar <DownOutlined />
+                        </a>
+                    </Dropdown>
                 )
             },
         }
@@ -252,27 +236,21 @@ export const AbonosLista = ({socket,obraInfo}) => {
 
     return (
         <>
-            <div>
-                <h1>Abonos de la obra</h1>
-                <p className="lead">
-                    En esta sección se encuentran todos los abonos con su respectivo documento PDF.
+            <div className="container p-3 p-lg-5">
+                <h1 className="titulo">Abonos de la obra</h1>
+                <p className="descripcion">
+                    En esta sección se encuentran todos los abonos que se han hecho a la obra con su respectivo documento PDF.
                 </p>
                 <Divider/>
-                
-                {/*Buscador con autocompletado*/}
-
-                    <div className="d-flex align-items-center justify-content-start gap-2 mt-4 flex-wrap">
-                        <Input.Search 
-                            size="large" 
-                            placeholder="Buscar un abono por su concepto..." 
-                            enterButton
-                            onSearch={handleSearch}
-                            className="search-bar-class"
-                        />
-                        <RangePicker onChange={onChangeDate} size="large" locale={locale}/>
-                    </div>
-                    
-
+                <div className="d-flex align-items-center justify-content-start gap-2 mt-4 flex-wrap">
+                    <Input.Search 
+                        size="large" 
+                        placeholder="Buscar un abono por su concepto..." 
+                        enterButton
+                        onChange={(e)=>{handleSearch(e.target.value)}}
+                    />
+                    <RangePicker onChange={onChangeDate} size="large" locale={locale}/>
+                </div>
                 {/*Tarjetas*/}
                 <Row gutter={16} className="mt-3">
                     <Col xs={24} md={8}>
@@ -306,13 +284,13 @@ export const AbonosLista = ({socket,obraInfo}) => {
                 </Row>
 
                 {/*Tabla con facturas*/}
-                <Button type="primary" className="my-3" onClick={showModal}>Agregar nuevo abono!</Button>
+                <Button type="primary" className="my-3" onClick={()=>{setIsModalVisible(true)}}>Agregar nuevo abono!</Button>
 
                 <Table columns={columns} dataSource={dataAbonos} bordered />
 
-                <Modal title="Agregar abono a la obra" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
-                        <h1>Subir un nuevo abono al sistema!</h1>
-                        <p className="lead">Para poder realizar esta acción necesitaras el documento PDF del abono</p>
+                <Modal visible={isModalVisible} onOk={()=>{setIsModalVisible(false)}} onCancel={()=>{setIsModalVisible(false)}} footer={null}>
+                        <h1 className="titulo">Subir un nuevo abono al sistema</h1>
+                        <p className="descripcion">Para poder realizar esta acción necesitaras el documento PDF del abono</p>
                         <Upload {...props} className="upload-list-inline" >
                             <Button icon={<UploadOutlined/>}>Selecciona el archivo del abono</Button>
                         </Upload>
@@ -325,6 +303,8 @@ export const AbonosLista = ({socket,obraInfo}) => {
                             {uploading ? "Subiendo..." : "Comienza a subir!"}     
                         </Button>
                 </Modal>
+                <Drawer visible={isDrawerVisible} onClose={()=>{setIsDrawerVisible(false)}}>
+                </Drawer>
             </div>
         </>
   )

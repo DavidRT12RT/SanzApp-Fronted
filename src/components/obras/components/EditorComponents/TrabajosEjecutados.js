@@ -1,159 +1,94 @@
-import { List, Avatar, Button, Modal, Form, Input, Divider, Select, Dropdown, Menu } from 'antd';
+import { List, Avatar, Button, Modal, Form, Input, Divider, Select, Dropdown, Menu, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { confirmation } from '../../../../alerts/botons';
-import { InfoCircleOutlined,DownOutlined } from '@ant-design/icons';
-const { Option } = Select;
+import { InfoCircleOutlined,DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+const { confirm } = Modal;
 
 
 export const TrabajosEjecutados = ({obraInfo,socket}) => {
-    const [listData, setListData] = useState([]);
-    //Formulario editar
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    //Formulario registro
-    const [isModalVisible2, setIsModalVisible2] = useState(false);
-    const [actualRow, setActualRow] = useState(null);
-    //Empleados que estan en la obra
+    const [listaTrabajos, setListaTrabajos] = useState([]);
+    //Formulario editar y registro de un trabajo 
+    const [isModalVisible, setIsModalVisible] = useState({estado:false,tipo:null,trabajo:null});
     const [empleadosObra, setEmpleadosObra] = useState([]);
-
     const [form] = Form.useForm();
-
     const { obraId }= useParams();
 
     useEffect(() => {
-        const data = listData.filter(element => element.key == actualRow)[0];
-        form.setFieldsValue(data); 
-            
-        return () => {form.resetFields()}
-    }, [actualRow,form]);
-       
-
-    useEffect(() => {
-        socket.emit("obtener-empleados-en-obra-por-id",{obraId},(empleados)=>{
+        socket.emit("obtener-trabajadores-en-obra-por-id",{obraId},(empleados)=>{
+            empleados.map(empleado => empleado.key = empleado.id.uid);
             setEmpleadosObra(empleados);
         });
 
-        const data = obraInfo.trabajosEjecutados.map((element,index)=>{
-            element.key = index;
-        });
+        obraInfo.trabajosEjecutados.map(trabajo => trabajo.key = trabajo._id)
+        setListaTrabajos(obraInfo.trabajosEjecutados);
 
-        setListData(data);
+    }, [obraInfo]);
 
-    }, []);
 
-    //Si la información de la obra se actualizo
-    useEffect(()=>{
-        //Seteo los trabajos que se han ejecutado
-        obraInfo.trabajosEjecutados.map((element,index) => {
-            element.key = index;
-        });
-        setListData(obraInfo.trabajosEjecutados);
-
-        //Seteo los empleados que estan dentro de la obra
-        setEmpleadosObra(obraInfo.empleados);
-    },[obraInfo]);
-
+    useEffect(() => {
+        if(isModalVisible.tipo === "editar") return form.setFieldsValue({titulo:isModalVisible.trabajo.titulo,descripcion:isModalVisible.trabajo.descripcion,trabajador:isModalVisible.trabajo.trabajador.uid});
+    }, [isModalVisible]);
     
-
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-
-    const handleOk = () => {
-        setIsModalVisible(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
-
-
-    const showModal2 = () =>{
-        setIsModalVisible2(true);
+    const agregarTrabajo = async (values) =>{
+        confirm({
+            title:"Seguro quieres agregar este registro de trabajo u accion a la obra",
+            icon:<ExclamationCircleOutlined />,
+            content:"La accion sera registrada dentro de la obra y se asociara al trabajador que la realizo",
+			okText:"Registrar",
+			cancelText:"Volver atras",
+            async onOk(){
+                values.obraId = obraId;
+                socket.emit("añadir-trabajo-a-obra",values,(confirmacion) => {
+                    if(!confirmacion.ok) return message.error(confirmacion.msg);
+                    //Trabajo anadido con exito!
+                    message.success(confirmacion.msg);
+                    setIsModalVisible({estado:false,tipo:null});
+                });
+            }
+        })
     }
 
-    const handleOk2 = () =>{
-        setIsModalVisible2(false);
+    const editarTrabajo = async (values) =>{
+        values._id = isModalVisible.trabajo._id; //Asignando el id del trabajo para poder remplazarlo en la base de datos
+        confirm({
+            title:"Seguro quieres editar el trabajo registrado en la obra?",
+            icon:<ExclamationCircleOutlined />,
+            content:"El trabajo realizado sera editado",
+			okText:"Editar",
+			cancelText:"Volver atras",
+            async onOk(){
+                values.obraId = obraId;
+                socket.emit("editar-trabajo-en-obra",values,(confirmacion) => {
+                    if(!confirmacion.ok) return message.error(confirmacion.msg);
+                    message.success(confirmacion.msg);
+                    setIsModalVisible({estado:false,tipo:null});
+                });
+            }
+        })
     }
 
-    const handleCancel2 = () =>{
-        setIsModalVisible2(false);    
-    }
-
-    const onFinish = async (values) =>{
-        try {
-            await confirmation("Editaras la información de el trabajo realizado y no podras regresar a la información anterior"); 
-            //Encontrar ID del trabajador y agregarlo al objecto que se agrara a la lista de tareas
-            const {_id:empleadoId} = empleadosObra.find(element => {
-                if(element.nombre === values.trabajador){
-                    return element;
-                }
-            });
-            values.empleadoId = empleadoId;
-            const trabajosRealizadosUpdated = listData.map(element => {
-                if(element.key == actualRow){
-                    return element = values;
-                }else{
-                    return element
-                }
-            });
-            handleCancel();
-            socket.emit("actualizar-trabajo",{obraId,trabajosRealizadosUpdated},(nuevosTrabajos)=>{
-                //Asignando key de nuevo
-                nuevosTrabajos.map((element,index) => element.key = index);
-                setListData(nuevosTrabajos);
-            });
-            form.resetFields();
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const handleDelete = async (key) =>{
-        try {
-            await confirmation("Se eliminara el registro del trabajo realiza y no podras recuperarlo");
-            const trabajosRealizadosUpdated = listData.filter(element => element.key != key);
-            //Emitir array actualizado 
-            socket.emit("actualizar-trabajo",{obraId,trabajosRealizadosUpdated},(nuevosTrabajos)=>{
-                //Asignando key de nuevo
-                nuevosTrabajos.map((element,index) => element.key = index);
-                setListData(nuevosTrabajos);
-            });
-        } catch (error) {
-            console.log(error);
-                
-        }
-    }
-
-    const handleAddNewElement = async (values) =>{
-        try {
-            await confirmation("Agregaras un nuevo trabajo a lista"); 
-            //Encontrar ID del trabajador y agregarlo al objecto que se agrara a la lista de tareas
-            const {_id:empleadoId} = empleadosObra.find(element => {
-                if(element.nombre=== values.trabajador){
-                    return element;
-                }
-            });
-            values.empleadoId = empleadoId;
-            listData.unshift(values);
-            const trabajosRealizadosUpdated = listData;
-            socket.emit("actualizar-trabajo",{obraId,trabajosRealizadosUpdated},(nuevosTrabajos)=>{
-                //Actualizamos la key
-                nuevosTrabajos.map((element,index) => element.key = index);
-                setListData(nuevosTrabajos);
-            });
-            setListData([...trabajosRealizadosUpdated]);
-            handleOk2();
-        } catch (error) {
-            console.log(error);
-                
-        }
+    const eliminarTrabajo = (values) => {
+        confirm({
+            title:"Seguro quieres ELIMINAR el trabajo registrado en la obra?",
+            icon:<ExclamationCircleOutlined />,
+            content:"El trabajo realizado sera eliminado de los registros de la obra",
+			okText:"Eliminar",
+			cancelText:"Volver atras",
+            async onOk(){
+                values.obraId = obraId;
+                socket.emit("eliminar-trabajo-en-obra",values,(confirmacion) => {
+                    if(!confirmacion.ok) return message.error(confirmacion.msg);
+                    message.success(confirmacion.msg);
+                });
+            }
+        })
     }
 
     const handleSearch = (value) =>{
         //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
         if(value.length == 0){
-            return setListData(obraInfo.trabajosEjecutados);
+            return setListaTrabajos(obraInfo.trabajosEjecutados);
         }
 
         const resultadosBusqueda = obraInfo.trabajosEjecutados.filter((elemento)=>{
@@ -162,13 +97,13 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
             }
         });
 
-        return setListData(resultadosBusqueda);
+        return setListaTrabajos(resultadosBusqueda);
     }
 
     const handleFilter = ({key:value}) =>{
         //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
         if(value == "Limpiar"){
-            return setListData(obraInfo.trabajosEjecutados);
+            return setListaTrabajos(obraInfo.trabajosEjecutados);
         }
 
         const resultadosBusqueda = obraInfo.trabajosEjecutados.filter((elemento)=>{
@@ -177,7 +112,7 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
             }
         });
 
-        return setListData(resultadosBusqueda);
+        return setListaTrabajos(resultadosBusqueda);
 
     }
 
@@ -185,7 +120,7 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
         <Menu onClick={handleFilter}>
             {
                 empleadosObra.map(empleado => {
-                    return <Menu.Item key={empleado.nombre}>{empleado.nombre}</Menu.Item>
+                    return <Menu.Item key={empleado.id.uid}>{empleado.id.nombre}</Menu.Item>
                 })
             }
             <Menu.Divider></Menu.Divider>
@@ -194,166 +129,74 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
     );
 
     return (
-        <>
-        <h1>Trabajos ejecutados</h1>
-        <p className="lead">En esta sección se mostrara los trabajos ejecutados dentro de la obra donde tambien se podran añadir mas trabajos </p>
-        <Divider/>
-        {/*Buscador y filtrador*/}
-        <div className="d-flex align-items-center gap-2">
-            <Input.Search 
-                size="large" 
-                placeholder="Buscar un trabajo realizado por el titulo del trabajo..." 
-                enterButton
-                onSearch={handleSearch}
-                className="search-bar-class"
-            />
-            <Dropdown overlay={menu} className="">
-                <Button type="primary" size='large'>
-                    Filtrar por categoria:
-                    <DownOutlined />
-                </Button>
-            </Dropdown>
-        </div>
-
-        <Button type="primary" style={{marginBottom: 16,}} onClick={showModal2} className="mt-3"> Añadir trabajo </Button>
-        <div className="bg-body p-lg-5">
+        <div className="container p-3 p-lg-5" style={{minHeight:"100vh"}}>
+            <h1 className="titulo">Trabajos ejecutados</h1>
+            <p className="descripcion">Seccion para anadir trabajos o tareas que hayan cumplido los trabajadores de la obra y asi poder tener un historial de acciones en esta misma.</p>
+            <Divider/>
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+                <Input.Search 
+                    size="large" 
+                    placeholder="Buscar un trabajo realizado por el titulo del trabajo..." 
+                    style={{width:"80%"}}
+                    onSearch={handleSearch}
+                />
+                <Dropdown overlay={menu} className="">
+                    <Button type="primary" size="large">
+                        Filtrar por categoria:
+                        <DownOutlined />
+                    </Button>
+                </Dropdown>
+            </div>
+            <Button type="primary" style={{marginBottom: 16,}} onClick={()=>{setIsModalVisible({estado:true,tipo:"registrar"})}} className="mt-3"> Añadir trabajo </Button>
             <List
                 itemLayout="vertical"
                 size="large"
-                pagination={{
-                    pageSize: 3,
+                pagination={{pageSize: 3,}}
+                grid={{
+                    gutter: 16,
+                    column:1
                 }}
-                dataSource={listData}
-                renderItem={item => (
+                dataSource={listaTrabajos}
+                renderItem={item =>(
                     <>
                     <List.Item
                         key={item.key}
+                        className="p-5 border"
                         actions={[
-                            <Button type="primary" onClick={()=>{showModal();setActualRow(item.key)}}>Editar</Button>,
-                            <Button danger type="primary" onClick={()=>{
-                                handleDelete(item.key);
-                            }}>Borrar trabajo</Button>,
+                            <Button type="primary" onClick={() => {setIsModalVisible({estado:true,tipo:"editar",trabajo:item})}}>Editar</Button>,
+                            <Button danger type="primary" onClick={() => {eliminarTrabajo(item)}}>Borrar trabajo</Button>,
                         ]}
-                        /*
-                        extra={
-                            <img
-                                width={272}
-                                alt="logo"
-                                src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                    />
-                }
-                */
-            >
-            <List.Item.Meta
-                avatar={<Avatar src={`http://localhost:4000/api/uploads/usuarios/${item.empleadoId}`} />}
-                title={item.trabajoRealizado}
-                description={item.trabajador}
+                    >
+                        <List.Item.Meta
+                            avatar={<img src={`http://localhost:4000/api/uploads/usuarios/${item.trabajador.uid}`} width="60px" height="60px" style={{objectFit:"cover",borderRadius:"40px"}}/>}
+                            title={<p className="titulo-descripcion">{item.titulo}</p>}
+                            description={<p className="titulo-descripcion"><mark style={{backgroundColor:"#FFFF00"}}>{item.trabajador.nombre}</mark></p>}
+                        />
+                            {<p className="descripcion">{item.descripcion}</p>}
+                        </List.Item>
+                    </>
+                )}
             />
-                {item.descripcion}
-            </List.Item>
-                
-        </>
-            )}
 
-        />
-            <Modal title="Editar trabajo" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="Salir sin ningun cambio" cancelText={false} footer={null}>
-                <Form name="basic" onFinish={onFinish} layout="vertical" form={form}>
-
-                    <Form.Item
-                        label="Nombre del empleado"
-                        name="trabajador"
-                        tooltip="Especifica el nombre del empleado..."
-                        rules={[
-                            {
-                                required:true,
-                                message:"Debes ingresar el nombre del empleado!"
-                            }
-                        ]}
-                    >
-                        <Select
-                            placeholder="Selecciona el nombre del empleado..."
-                            allowClear
-                        >
-                            {
-                                empleadosObra.map(empleado => {
-                                    return <Option value={empleado.nombre}>{empleado.nombre}</Option>
-                                })
-                            }
+            <Modal footer={null} visible={(isModalVisible.estado)} onOk={()=>{setIsModalVisible({estado:false,tipo:null})}} onCancel={()=>{setIsModalVisible({estado:false,tipo:null})}}>
+                {isModalVisible.tipo === "registrar" ? <h1 className="titulo">Registrar un trabajo</h1> : <h1 className="titulo">Editar trabajo</h1>}
+                <Form form={form} layout="vertical" onFinish={(e)=> {isModalVisible.tipo === "registrar" ? agregarTrabajo(e) : editarTrabajo(e)}}>
+                    <Form.Item label="Titulo del trabajo realizado" name="titulo" rules={[{ required: true, message: 'Introduce el titulo del trabajo realizado!' }]}>
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item label="Titulo del trabajo realizado" name="descripcion" rules={[{ required: true, message: 'Introduce la descripcion del trabajo realizado!' }]}>
+                        <Input.TextArea/>
+                    </Form.Item>
+                    <Form.Item label="Usuario que realizo el trabajo" name="trabajador" rules={[{ required: true, message: 'Introduce el trabajo que realizo el trabajo!' }]}>
+                        <Select>
+                            {empleadosObra.map(empleado => {
+                                return <Select.Option key={empleado.id.uid} value={empleado.id.uid}>{empleado.id.nombre}</Select.Option>
+                            })}
                         </Select>
                     </Form.Item>
-                    <Form.Item
-                        label="Trabajo realizado"
-                        name="trabajoRealizado"
-                        rules={[{ required: true, message: 'Introduce el titulo del trabajo realizado!' }]}
-                        tooltip={{ title: 'Introduce el titulo del trabajo', icon: <InfoCircleOutlined /> }}
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Descripcion del trabajo"
-                        name="descripcion"
-                        rules={[{ required: true, message: 'Introduce una descripción DETALLADA del trabajo!' }]}
-                        tooltip={{ title: "Introuce una descripcion DETALLADA del trabajo", icon: <InfoCircleOutlined /> }}
-                    >
-                        <Input.TextArea />
-                    </Form.Item>
-                    <Button danger type="primary" onClick={handleCancel}>Salir sin editar</Button>
-                    <Button type="primary" className="mx-3" htmlType='submit'>Editar información</Button>
+                    <Button type="primary" htmlType="submit">{isModalVisible.tipo === "registrar" ? "Registrar trabajo" : "Editar trabajo"}</Button>
                 </Form>
             </Modal>
-
-            <Modal title="Añadir trabajo" visible={isModalVisible2} onOk={handleOk2} onCancel={handleCancel2} okText="Salir sin ningun cambio" cancelText={false} footer={null}>
-
-                <Form name="basic" onFinish={handleAddNewElement} layout="vertical">
-                    <Form.Item
-                        label="Nombre del empleado"
-                        name="trabajador"
-                        tooltip="Especifica el nombre del empleado..."
-                        rules={[
-                            {
-                                required:true,
-                                message:"Debes ingresar el nombre del empleado!"
-                            }
-                        ]}
-                    >
-                        <Select
-                            placeholder="Selecciona el nombre del empleado..."
-                            allowClear
-                        >
-                            {
-                                empleadosObra.map(empleado => {
-                                    return <Option value={empleado.nombre} key={empleado._id}>{empleado.nombre}</Option>
-                                })
-                            }
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Trabajo realizado"
-                        name="trabajoRealizado"
-                        rules={[{ required: true, message: 'Introduce el titulo del trabajo realizado!' }]}
-                        tooltip={{ title: 'Introduce el titulo del trabajo', icon: <InfoCircleOutlined /> }}
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Descripcion del trabajo"
-                        name="descripcion"
-                        rules={[{ required: true, message: 'Introduce una descripción DETALLADA del trabajo!' }]}
-                        tooltip={{ title: "Introuce una descripcion DETALLADA del trabajo", icon: <InfoCircleOutlined /> }}
-
-                    >
-                        <Input.TextArea />
-                    </Form.Item>
-                    <div className="d-flex justify-content-start gap-2">
-                        <Button danger type="primary" onClick={handleCancel2}>Salir sin editar</Button>
-                        <Button type="primary" htmlType='submit'>Registrar nuevo elemento</Button>
-                    </div>
-                </Form>
-            </Modal>
-    </div>
-    </>
+        </div>
     )
 }

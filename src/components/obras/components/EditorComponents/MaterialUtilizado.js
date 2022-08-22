@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Divider, Dropdown, Form, Input, Menu, Modal, Table, Tag } from "antd";
 import { useParams } from 'react-router-dom';
-import "../../assets/styleMaterialList.css";
 import { DownOutlined } from '@ant-design/icons';
 
 const categoriaColor = (categoria) => {

@@ -1,84 +1,54 @@
 import React, { useEffect, useState } from 'react'
 import { Avatar, Button, Col, Divider, Drawer, Form, Input, message, Modal, Row, Select, Table } from "antd";
 import { useParams } from 'react-router-dom';
-import "../../assets/styleMaterialList.css";
-import "../../assets/styleTrabajadoresLista.css";
+import { useEmpleados } from '../../../../hooks/useEmpleados';
+import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
+import { ExclamationCircleOutlined,UploadOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
+const { confirm } = Modal;
 
 export const TrabajadoresLista =  ({obraInfo,socket}) => {
 
-    const [dataSource, setDataSource] = useState([]);
+    const [trabajadoresObra, setTrabajadoresObra] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [empleados, setEmpleados] = useState([]);
+    const { isLoading:isLoadingEmpleados,empleados } = useEmpleados();
     const [form] = Form.useForm();
     const { obraId } = useParams();
-    //Drawer
-    const [isVisibleDrawer, setIsVisibleDrawer] = useState(false);
-    const [empleadoId, setEmpleadoId] = useState(null);
-    const [informacionEmpleado, setInformacionEmpleado] = useState();
 
-    //Estar al tanto por si la información de la obra cambia
     useEffect(()=>{
-        obraInfo.empleados.map(empleado=>empleado.key = empleado._id);
-        setDataSource(obraInfo.empleados);
+        obraInfo.trabajadores.map(trabajador => trabajador.key = trabajador._id);
+        setTrabajadoresObra(obraInfo.trabajadores);
     },[obraInfo]);
 
-    //Cada vez que cambie el el empleadoId buscaremos información sobre el empleado y la setearemos en otro estado
     useEffect(() => {
-        socket.emit("obtener-usuario-por-id",{usuarioId:empleadoId},(usuario)=>{
-            setInformacionEmpleado(usuario);
-        });
-    }, [empleadoId,setInformacionEmpleado]);
-
-    //Obtener todos los empleados que YA esten trabajando en la obra con su rol
-    useEffect(() => {
-        socket.emit("obtener-empleados-en-obra-por-id",{obraId},(empleados)=>{
-            empleados.map(empleado=>empleado.key = empleado._id);
-            setDataSource(empleados);
-        });
-
-        socket.emit("obtener-empleados-activos",{},(empleados)=>{ 
-            empleados.map(element => element.key = element.uid);
-            setEmpleados(empleados);
-        }); 
-    }, []);
-
-    const showModal = () =>{
-        setIsModalVisible(true);
-    }
-
-    const handleOk = () => {
-        setIsModalVisible(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
-
-    const onReset = () =>{
-       form.resetFields();
-    }
+        if(empleados.length > 0) empleados.map(empleado=> empleado.key = empleado.uid);
+    }, [empleados]);
     
-    const handleAddNewEmployer = (values) => {
-        values.obraId = obraId;
-        socket.emit("agregar-empleado-obra",values,(confirmacion)=>{
-            if(confirmacion.ok){
-                message.success(confirmacion.msg);
-                return handleOk();
-            }else{
-                message.error(confirmacion.msg);
+
+
+    const agregarEmpleadoObra = (values) => {
+	    confirm({
+            title:"¿Seguro quieres registrar este nuevo usuario en la obra?",
+            icon:<ExclamationCircleOutlined />,
+            content:"Una vez registrado este usuario en la obra , podras anadirle trabajos que haya realizado y este mismo tendra un registro en su perfil acerca de la obra trabajada.",
+			okText:"Registrar",
+			cancelText:"Volver atras",
+            async onOk(){
+                values.obraId = obraId;
+                socket.emit("agregar-empleado-obra",values,(confirmacion)=>{
+                    if(!confirmacion.ok) return message.error(confirmacion.msg);
+                    message.success(confirmacion.msg);
+                    return setIsModalVisible(false);
+                });
             }
         });
-        form.resetFields();
+
     }
     
-
-    const handleDelete = (record) => {
-
+    const eliminarEmpleado = (id) => {
         //TODO Confirmación si lo quiere eliminar realmente
-        const { _id:empleadoID } = record;
-        socket.emit("eliminar-empleado-en-obra",{obraId,empleadoID},(confirmacion)=>{
+        socket.emit("eliminar-empleado-obra",{obraId,empleadoID:id},(confirmacion)=>{
             confirmacion.ok ? message.success(confirmacion.msg) : message.error(confirmacion.msg);
             //(confirmacion.ok) ? message.success(confirmacion.msg)(handleOk()) : message.error(confirmacion.msg);
         });
@@ -86,106 +56,64 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
 
     const columns = [
         {
-            title:"Nombre empleado",
-            dataIndex:"nombre",
+            render:(text,record) => {
+                return <Avatar style={{width:"60px",height:"60px"}} src={`http://localhost:4000/api/uploads/usuarios/${record.id.uid}`} />
+            }
+        },
+        {
+            title:<p className="titulo-descripcion">Nombre del empleado</p>,
+            render:(text,record) => {
+                return <p className="descripcion">{record.id.nombre}</p>
+            },
             key:"nombre",
-            with:"33%"
         },
         {
-            title:"Rol",
-            dataIndex:"rol",
+            title:<p className="titulo-descripcion">Rol del empleado en obra</p>,
+            render:(text,record) => {
+                return <p className="descripcion">{record.rol}</p>
+            },
             key:"rol",
-            with:"33%"
         },
         {
-            title:"Acciones",
+            title:<p className="titulo-descripcion">Acciones</p>,
             render:(text,record) => {
-                return (
-                    <Button type="primary" danger onClick={()=>{handleDelete(record)}}>Eliminar empleado</Button>
-                )
+                return <div className="d-flex justify-content-start align-items-center gap-2">
+                    <Button type="primary" danger onClick={()=>{eliminarEmpleado(record.id.uid)}}>Eliminar empleado</Button>
+                </div>
             }
-        },
-        {
-            title:"Detalles",
-            dataIndex:"_id",
-            key:"_id",
-            render:(text,record) => {
-                return (
-                    <a href="#" onClick={(event)=>{
-                        event.preventDefault();
-                        setEmpleadoId(record._id);
-                        setIsVisibleDrawer(true);
-                    }}>Ver mas detalles</a>
-                )
-            }
-        },
+        }
     ];
 
-    const DescriptionItem = ({ title, content }) => (
-        <div className="site-description-item-profile-wrapper">
-            <p className="site-description-item-profile-p-label">{title}:</p>
-            {content}
-        </div>
-    );
-   
-    const renderizarHabilidades = () => {
-		return informacionEmpleado.habilidades.map(elemento=>{
-			return <p className="fw-bold">{elemento}</p>
-		})
-    }
-    const ShowDrawer = () => (
-        <Drawer width={640} placement="right" closable={false} onClose={()=>{setIsVisibleDrawer(false)}} visible={isVisibleDrawer}>
-            <p className="site-description-item-profile-p" style={{marginBottom: 24,}}>Perfil del usuario</p>
-            <Avatar shape="square" src={`http://localhost:4000/api/uploads/usuarios/${informacionEmpleado.uid}`} style={{width:"250px",height:"250px",marginBottom:24}}/>
-            <p className="site-description-item-profile-p fw-bold">Personal</p>
-            <Row>
-                <Col span={12}><DescriptionItem title="Nombre" content={informacionEmpleado.nombre}/></Col>
-                <Col span={12}><DescriptionItem title="Edad" content={23}/></Col>
-                <p>Habilidades:</p>
-                <Col span={24} className="d-flex flex-wrap gap-4">
-                    {informacionEmpleado.habilidades.length > 0 ? renderizarHabilidades() : <p>Ninguna habilidades registrada por el momento...</p>}
-                </Col>
-            </Row>
-            <Divider/>
-            <p className="site-description-item-profile-p fw-bold">Información de contacto</p>
-            <Row>
-                <Col span={24}><DescriptionItem title="Correo electronico" content={informacionEmpleado.correo}/></Col>
-                <Col span={24}><DescriptionItem title="Numero de telefono" content={informacionEmpleado.telefono}/></Col>
-            </Row>
-        </Drawer>
-    )
-    return (
-        <>
-        <h1>Trabajadores de la obra</h1>
-        <p className="lead">En esta seccion podras añadir o eliminar empleados que estaran participando en la obra</p>
-        <Divider/>
-            <Button
-                onClick={showModal}
-                type="primary"
-                style={{
-                    marginBottom: 10,
-                    marginRight:10
-                }}
-            >
-                Añadir empleado
-            </Button>
+    if(isLoadingEmpleados){
+        return <SanzSpinner/>
+    }else{
+        return (
+            <div className="container p-3 p-lg-5" style={{minHeight:"100vh"}}>
+                <h1 className="titulo">Trabajadores de la obra</h1>
+                <p className="descripcion">En esta seccion podras añadir o eliminar empleados que estaran participando en la obra</p>
+                <Divider/>
+                <Button
+                    onClick={()=>{setIsModalVisible(true)}}
+                    type="primary"
+                    className="my-3"
+                >
+                    Añadir empleado
+                </Button>
 
-        <Table 
-            columns = {columns} 
-            dataSource = {dataSource} 
-            className="fix" 
-            style={{overflowX:"auto"}} 
-            bordered/>
+                <Table 
+                    columns = {columns} 
+                    dataSource = {trabajadoresObra} 
+                    style={{overflowX:"auto"}} 
+                    bordered/>
 
-        <Modal title="Agregar empleado a la obra" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
-                    <h4>Agregar un nuevo empleado a la obra</h4>
-                    <p className="lead">A continuación se mostrara un formulario con todos los campos a llenar para
-                    agregar un empleado a la obra
-                    </p>
-                    <Form form={form} onFinish={handleAddNewEmployer} layout="vertical">
+                <Modal visible={isModalVisible} onOk={()=>{setIsModalVisible(false)}} onCancel={()=>{setIsModalVisible(false)}} footer={null}>
+                    <h1 className="titulo">Agregar un nuevo trabajador</h1>
+                    <p className="descripcion">A continuación se mostrara un formulario con todos los campos a llenar para
+                    agregar un empleado a la obra</p>
+                    <Form form={form} onFinish={agregarEmpleadoObra} layout="vertical">
                         <Form.Item
                             label="Nombre del empleado que sera agregado a la obra"
-                            name="empleadoID"
+                            name="id"
                             tooltip="Especifica el nombre del empleado..."
                             rules={[
                                 {
@@ -205,10 +133,9 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
                                 }
                             </Select>
                         </Form.Item>
-
                         <Form.Item
                             label="Rol que empañara el empleado en la obra"
-                            name="rolEmpleado"
+                            name="rol"
                             tooltip="Especifica el rol que tendra el empleado en la obra..."
                             rules={[
                                 {
@@ -229,11 +156,11 @@ export const TrabajadoresLista =  ({obraInfo,socket}) => {
                         </Form.Item>
                         <div className="d-flex justify-content-start gap-2">
                             <Button type="primary" htmlType="submit">Registrar empleado en la obra!</Button>
-                            <Button className="mx-2" htmlType='button' onClick={onReset}>Borrar información</Button>
+                            <Button className="mx-2" htmlType='button' onClick={()=>{form.resetFields()}}>Borrar información</Button>
                         </div>
-                   </Form>
-        </Modal>
-        {informacionEmpleado && <ShowDrawer/>}
-        </>
-    )
+                    </Form>
+                </Modal>
+            </div>
+        )
+    }
 }
