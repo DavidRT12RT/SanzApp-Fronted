@@ -1,381 +1,333 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Divider, Form, Input, Modal, Table, Select, InputNumber, message, Dropdown, Space, Badge, Menu} from "antd";
+import { Button, Divider, Form, Input, Modal, Table, Select, InputNumber, message, Dropdown, Space, Badge, Menu, DatePicker, Steps} from "antd";
+import { InfoCircleOutlined,DownOutlined, ExclamationCircleOutlined,WarningOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
-import { DownOutlined } from '@ant-design/icons';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import moment from 'moment';
+import locale from "antd/es/date-picker/locale/es_ES"
+import { HorasExtraRecibo } from '../../../../reportes/Obras/HorasExtraRecibo';
 const { Option } = Select;
+const { confirm } = Modal;
+const { Step } = Steps;
+
 
 export const HorasExtra = ({obraInfo,socket}) => {
     
     
     const [dataSource, setDataSource] = useState([]);
     const [editingRow, setEditingRow] = useState(null);
+    const [current, setCurrent] = useState(0);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isModalVisiblePagarHoras, setIsModalVisiblePagarHoras] = useState({estado:false,tipo:null,registro:null});
     const [empleadosObra, setEmpleadosObra] = useState([]);
     const [form] = Form.useForm();
     const { obraId } = useParams();
 
-    
-    /*NOTA 
-        En nuestra tabla tenemos el prop expandable el cual recibe una función la cual recibe los valores record,index,etc.
-        esta función obtendra el valor de cada fila y con eso nosotros solo destructuramos el valor registros de la fila osea record
-        y ese sera el dataSource de nuestra tabla con las columnas 
-    */
+    useEffect(() => {
+        for(let index = 0;index < obraInfo.horasExtra.length; index++){
+            //Por cada trabajador registrado en horas extra añadimos un elemento key para ANT DESIGN
+            let trabajador = obraInfo.horasExtra[index];
+            trabajador.key = trabajador._id;
+            trabajador.horasTotales = 0;
+            trabajador.todasPagadas = true;
 
-    const expandedRowRender = (record,index,indent,expanded) => {
-        const columns = [
+            for (let j = 0; j < obraInfo.horasExtra[index].registros.length; j++) {
+                //Por cada registro del element añadimos un elemento key
+                let registro = obraInfo.horasExtra[index].registros[j];
+                registro.key = registro._id;
+                trabajador.horasTotales += registro.horas;
+                if(registro.pagadas === false) trabajador.todasPagadas = false
+            }
+        }
+        setDataSource(obraInfo.horasExtra);
+        setEmpleadosObra(obraInfo.trabajadores);
+    }, [obraInfo]);
+
+
+
+    const steps = [
         {
-            title: 'Fecha de registro',
-            dataIndex: 'fecha',
-            key: 'date',
+            title: "Resumen",
+            content:
+                isModalVisiblePagarHoras.tipo == "TODAS"
+                ?
+                <div className="row">
+                    <h1 className="titulo-descripcion col-12">Tipo de pago:</h1>
+                    <p className="descripcion col-12 text-success">PAGO DE TODAS LAS HORAS EXTRA</p>
+                    <h1 className="titulo-descripcion col-12">Total de horas extra a pagar:</h1>
+                    <p className="descripcion col-12">{isModalVisiblePagarHoras.registro.horasTotales}</p>
+                </div>
+                :
+                <div className="row">
+                    <h1 className="titulo-descripcion col-12">Tipo de pago:</h1>
+                    <p className="descripcion col-12 text-primary">PAGO DE UN SOLO REGISTRO DE HORA EXTRA</p>
+                    <h1 className="titulo-descripcion col-12">Total de horas extra a pagar:</h1>
+                    <p className="descripcion col-12">{isModalVisiblePagarHoras.registro?.horas}</p>
+                    <h1 className="titulo-descripcion col-12">Fecha de las horas extra:</h1>
+                    <p className="descripcion col-12">{isModalVisiblePagarHoras.registro?.fecha}</p>
+                    <h1 className="titulo-descripcion col-12">Motivo:</h1>
+                    <p className="descripcion col-12">{isModalVisiblePagarHoras.registro?.motivo}</p>
+                </div>,
         },
         {
-            title: 'Motivo',
-            dataIndex: 'motivo',
-            key: 'motivo',
+            title: "Documentos a descargar",
+            content:
+                <div>
+                    <WarningOutlined style={{fontSize:"50px",color:"#FFC300"}}/>
+                    <p className="descripcion"><b>Descarga</b> el documento con el boton que esta a continuacion.<br></br> Es importante descargar el documento y hacer que el <b>empleado</b> <b>firme</b> sus horas extra ya pagadas y subir el documento en la pestana siguiente para mantener la <b>evidencia</b> de esto.</p>
+                    <PDFDownloadLink document={<HorasExtraRecibo registro={isModalVisiblePagarHoras.registro} tipo={isModalVisiblePagarHoras.tipo}/>} fileName={`Evidencia.pdf`}>
+                        {({ blob, url, loading, error }) => (<Button type="primary" loading={loading}>{loading ? "Cargando documento..." : "Descargar documento"}</Button>)}
+                    </PDFDownloadLink> 
+                </div>,
+        },
+        {
+            title: "Documentos a subir",
+            content: 'Last-content',
+        },
+    ];
+    
+    console.log(isModalVisiblePagarHoras);
+    const expandedRowRender = (record,index,indent,expanded) => {
+        const { trabajador } = record;
+        const columns = [
+        {
+            title: <p className="titulo-descripcion">Fecha de las horas extra</p>,
             render:(text,record) => {
-                if(editingRow === record.key){
-                    return (
+                return editingRow === record.key 
+                    ?
+                        <Form.Item name="fecha" rules={[{required:true,message:"Tiene que tener un valor este campo"}]}>
+                            <DatePicker locale={locale} format={"YYYY-MM-DD"}/>
+                        </Form.Item>
+                    :
+                        <p className="descripcion">{record.editado && <span className="text-primary">EDITADO </span>}  {record.fecha}</p>
+            }
+        },
+        {
+            title: <p className="titulo-descripcion">Motivo</p>,
+            render:(text,record) => {
+                return editingRow === record.key 
+                    ? 
+                    (
                         <Form.Item name="motivo" rules={[{required:true,message:"Tiene que tener un valor este campo"}]}>
                             <Input/>
                         </Form.Item>
                     )
-                }else{
-                    return <p>{text}</p>
-                }
+                    :
+                    <p className="descripcion">{record.motivo}</p>
             }
         },
         {
-            title:"Horas",
-            dataIndex:"horas",
-            key:"horas",
-            render:(text,record) =>{
-                if(editingRow === record.key){
-                    return (
-                    <Form.Item name="horas" rules={[{required:true,message:"Tiene que tener un valor este campo!"}]}>
-                        <InputNumber style={{width: "100%"}} min={1} />
-                    </Form.Item>
-                    )
-                }else{
-                    return <p>{text}</p>
-                }
-            }
-        },
-        {
-            title: 'Estatus',
-            key: 'estatus',
-            dataIndex:"estatus",
-            render: (text,record) => {
-                if(editingRow === record.key){
-                    return (
-                        <Form.Item name="estatus" rules={[{required: true,message: 'El producto necesita tener este parametro'},]}>
-                            <Select>
-                                <Select.Option value={true}>Pagadas</Select.Option>
-                                <Select.Option value={false}>NO pagadas</Select.Option>
-                            </Select>
+            title: <p className="titulo-descripcion">Horas</p>,
+            render:(text,record) => {
+                return editingRow === record.key
+                    ?
+                    (
+                        <Form.Item name="horas" rules={[{required:true,message:"Tiene que tener un valor este campo!"}]}>
+                            <InputNumber style={{width: "100%"}} min={1} />
                         </Form.Item>
                     )
-                }else{
-                    if(text){
-                        return (<span><Badge status="success"/>Pagadas</span>)
-                    }else{
-                        return (<span><Badge status="error"></Badge>NO Pagadas</span>)
-                    }
-                }
+                    :
+                    <p className="descripcion">{record.horas}</p>
+            }
+        },
+        {
+            title: <p className="titulo-descripcion">Estatus</p>,
+            render: (text,record) => {
+                return record.pagadas ? <p className="descripcion"><Badge status="success"/>Pagadas</p> : (<p className="descripcion"><Badge status="error"></Badge>NO Pagadas</p>)
            }
         },
         {
-            title:"Acciones",
+            title:<p className="titulo-descripcion">Acciones</p>,
             render:(_,record) => {
-                return (
-                <>
-                    <Button
-                        type="link"
-                        onClick={() => {
-                            if(editingRow != null){
-                                setEditingRow(null);
-                            }else{
-                                console.log(record.key);
-                                setEditingRow(record.key);
-                                form.setFieldsValue({
-                                    horas:record.horas,
-                                    pagadas:record.pagadas,
-                                    motivo:record.motivo,
-                                    estatus:record.estatus
-                                });
-                            }
-                       }}
-                    >
-                        Editar registro
-                    </Button>
+                    //Si ya estan pagadas el usuario NO podra editar las horas extra
+                    if(record.pagadas){
+                        return <p className="descripcion text-danger">Sin posibilidad de editar...</p>
+                    }else{
+                    return (
+                        <div className="d-flex gap-2">
+                            {
+                                editingRow === record.key
+                                ?
+                                    <div className="d-flex gap-2">
+                                        <Button type="primary" danger htmlType="submit">Realizar cambios</Button>
+                                        <Button type="primary" onClick={()=>{setEditingRow(null)}}>Dejar de editar</Button>
+                                    </div>
+                                :
+                                <Button
+                                    type="primary"
+                                    danger
+                                    onClick={() => {
+                                        setEditingRow(record.key);
+                                        form.setFieldsValue({
+                                            horas:record.horas,
+                                            motivo:record.motivo,
+                                        });
+                                    }}
+                                >Editar</Button>
 
-                    <Button type="link" htmlType="submit">
-                       {editingRow && "Realizar cambios" }
-                    </Button>
-                   
-                </>
-                );
+                            }
+                            <Button type="primary" style={{borderColor:"green",backgroundColor:"green"}} onClick={()=>{setIsModalVisiblePagarHoras({estado:true,tipo:"UNICA",registro:{...record,trabajador}})}}>Pagar horas extra</Button>
+                        </div>
+                        )
+                    }
+
             },
         },
         ];
-
-
-        return <Form form = {form} onFinish={(values)=>{onFinish(values,record)}}><Table columns={columns} dataSource={record.registros} pagination={false} with="100%"/></Form>;
+        return <Form form = {form} onFinish={(values)=> {actualizarHorasExtra(values,record.trabajador.uid,editingRow)}}><Table columns={columns} dataSource={record.registros}/></Form>;
     };
 
-    useEffect(() => {
-        for(let index = 0;index < obraInfo.horasExtra.length; index++){
-            //Por cada elemento de horas extra añadimos un elemento key 
-            obraInfo.horasExtra[index].key = obraInfo.horasExtra[index]._id;
-            for (let j = 0; j < obraInfo.horasExtra[index].registros.length; j++) {
-                //Por cada registro del element añadimos un elemento key
-                obraInfo.horasExtra[index].registros[j].key = obraInfo.horasExtra[index].registros[j]._id;
-            }
-        }
-        setEmpleadosObra(obraInfo.empleados);
-        setDataSource(obraInfo.horasExtra);
-    }, []);
-   
-    
 
-    useEffect(() => {
-        
-        for(let index = 0;index < obraInfo.horasExtra.length; index++){
-            //Por cada elemento de horas extra añadimos un elemento key 
-            obraInfo.horasExtra[index].key = obraInfo.horasExtra[index]._id;
-            for (let j = 0; j < obraInfo.horasExtra[index].registros.length; j++) {
-                //Por cada registro del element añadimos un elemento key
-                obraInfo.horasExtra[index].registros[j].key = obraInfo.horasExtra[index].registros[j]._id;
-            }
-        }
-        setDataSource(obraInfo.horasExtra);
-        setEmpleadosObra(obraInfo.empleados);
-    }, [obraInfo]);
+    /*TODO LIST: 
+        1.-Imprirmir documento
+        2.-Mandar a pagar una hora extra en especifico y todas
+    */
+
 
     
-   
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-
-    const handleOk = () => {
-        setIsModalVisible(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
-
-    const onFinish = ( newData ) =>{
-
-        socket.emit("actualizar-horas-extra-a-obra",{newData,obraId,editingRow},(confirmacion)=>{
-            form.resetFields();
-            confirmacion ? message.success(confirmacion.msg) : message.error(confirmacion.msg);
+    const actualizarHorasExtra = (values,trabajador,idRegistro) => {
+        confirm({
+            title:"Seguro quieres editar estas horas extra al empleado?",
+            icon:<ExclamationCircleOutlined />,
+            content:"Las horas extras seran editadas al empleado en la obra.",
+			okText:"Editar",
+			cancelText:"Volver atras",
+            async onOk(){
+                values.obraId = obraId;
+                values.trabajador = trabajador;
+                values.registroId = idRegistro;
+                values.fecha = moment(values.fecha).format("YYYY-MM-DD")
+                socket.emit("actualizar-horas-extra-en-obra",values,(confirmacion)=>{
+                    if(!confirmacion.ok) return message.error(confirmacion.msg);
+                    //Horas extra actualizadas con exito!
+                    message.success(confirmacion.msg);
+                    setEditingRow(null);
+                });
+            }
         });
-        setEditingRow(null);
     }
 
-    const handleAddNewRegister = (values) => {
-        values.obraId = obraId;
-        socket.emit("añadir-horas-extra-a-obra",values,(confirmacion)=>{
-            form.resetFields();
-            confirmacion ? (handleOk())(message.success(confirmacion.msg)) : message.error(confirmacion.msg);
-        });
+    const agregarHorasExtra = (values) => {
+        confirm({
+            title:"Seguro quieres agregar estas horas extra al empleado?",
+            icon:<ExclamationCircleOutlined />,
+            content:"Las horas extras seran agregadas al empleado en la obra y se marcaran como NO pagadas y se mostraran como pendientes",
+			okText:"Agregar",
+			cancelText:"Volver atras",
+            async onOk(){
+                values.obraId = obraId;
+                values.fecha = moment(values.fecha).format("YYYY-MM-DD");
+                socket.emit("añadir-horas-extra-a-obra",values,(confirmacion)=>{
+                    form.resetFields();
+                    confirmacion ? (setIsModalVisible(false))(message.success(confirmacion.msg)) : message.error(confirmacion.msg);
+                });
+            }})
     } 
+
+    const pagarHorasExtra = (values) => {
+        console.log(values);
+    }
+
+    const pagarHorasExtraTotales = (values) => {
+        console.log(values);
+    }
 
     const columns = [
         {
-            title:"Trabajador",
-            dataIndex:"trabajador",
-            with:"50%",
+            title:<p className="titulo-descripcion">Trabajador</p>,
             render: (text,record) => {
-                if(editingRow === record.key){
-                    return (
-                        <Form.Item name="trabajador" rules={[{required:true,message:"Tiene que tener un valor este campo!"}]}>
-                            <Select
-                                placeholder="Selecciona el nombre del empleado..."
-                                allowClear
-                            >
-                                {
-                                    empleadosObra.map(empleado => {
-                                        return <Option key={empleado.key} value={empleado.nombre}>{empleado.nombre}</Option>
-                                    })
-                                }
-                            </Select>
-                        </Form.Item>
-                        )
-                }else{
-                    return <p>{text}</p>
-                }
+                return <p className="descripcion">{record.trabajador.nombre}</p>
             }
         },
         {
-            title:"Cantidad de horas extra totales",
-            dataIndex:"horasTotales",
-            with:"50%",
+            title:<p className='titulo-descripcion'>Cantidad de horas extra totales</p>,
             render: (text,record) => {
-                if(editingRow === record.key){
-                    return (
-                    <Form.Item name="horas" rules={[{required:true,message:"Tiene que tener un valor este campo!"}]}>
-                        <Input/>
-                    </Form.Item>
-                    )
-                }else{
-                    return <p>{text}</p>
-                }
+                return <p className="descripcion">{record.horasTotales}</p>;
             }
         },
         {
-            title:"Cantidad de registros",
-            dataIndex:"numeroRegistros",
+            title:<p className='titulo-descripcion'>Cantidad de registros</p>,
+            render:(text,record) => {
+                return <p className="descripcion">{record.registros.length}</p>
+            }
         },
         {
-            title:"Horas totales pagadas",
+            title:<p className='titulo-descripcion'>Horas totales pagadas</p>,
             dataIndex:"pagadasTodas",
             render:(text,record) =>{
-                if(text){
-                    return (<span><Badge status="success"/>Pagadas</span>)
-                }else{
-                    return (<span><Badge status="error"></Badge>NO Pagadas</span>)
-                }
-
+                return record.todasPagadas ? <p className="descripcion"><Badge status="success"/>Pagadas</p> : <p className="descripcion"><Badge status="error"></Badge>NO Pagadas</p>
+            }
+        },
+        {
+            title:<p className="titulo-descripcion">Pagar TODAS las horas extra</p>,
+            render:(text,record) => {
+                return record.todasPagadas ? <p className="descripcion text-success">Todas pagadas</p> : <Button type="primary" onClick={()=>{setIsModalVisiblePagarHoras({estado:true,tipo:"TODAS",registro:record})}}>Pagar TODAS</Button>
             }
         }
-        /*
-        {
-            title:"Acciones",
-            render:(_,record) => {
-                return (
-                <>
-                    <Button
-                        type="link"
-                        onClick={() => {
-                        setEditingRow(record.key);
-                        form.setFieldsValue({
-                            trabajador:record.trabajador,
-                            horas:record.horas,
-                            pagadas:record.pagadas,
-                            motivo:record.motivo 
-                        });
-            }}
-                    >
-                    Editar
-                    </Button>
-
-                    <Button type="link" htmlType="submit">
-                        Guardar
-                    </Button>
-                   
-                </>
-                );
-            },
-        },
-        */
     ];
 
     return (
-        <>
-        <h1>Horas extra en la obra</h1>
-        <p className="lead">
-            En esta sección se podran añadir horas extra a los empleados que se encuentren registrados trabajando dentro de la obra, <br/>
-            asi como marcar si las horas estan pagadas o NO. 
-        </p>
-        <Divider/>
-        {
-            <Button
-                onClick={showModal}
-                type="primary"
-                style={{
-                    marginBottom: 16,
-                }}
-            >
-                Añadir nuevo registro
-            </Button>
-        }
-            <div>
-                    <Table
-                        columns = {columns}
-                        dataSource = {dataSource}
-                        expandable={
-                                {
-                                    expandedRowRender,
-                                    /*
-                                    onExpand:(expanded,record)=>{
-                                        if(expanded){
-                                            const { key } = record
-                                            setCurrentFatherRow(key);
-                                        }
-                                    }
-                                    */
+        <div className="container p-3 p-lg-5" style={{minHeight:"100vh"}}>
+            <h1 className="titulo">Horas extra en la obra</h1>
+            <p className="descripcion">
+                En esta sección se podran añadir horas extra a los empleados que se encuentren registrados trabajando dentro de la obra, <br/>
+                asi como marcar si las horas estan pagadas o NO. 
+            </p>
+            <Divider/>
+            <Button onClick={()=>{setIsModalVisible(true)}} type="primary">Añadir nuevo registro</Button>
+            <Table className="mt-3" bordered columns={columns} dataSource = {dataSource} expandable={{expandedRowRender}}/>
+            <Modal visible={isModalVisible} onOk={()=>{setIsModalVisible(false)}} onCancel={()=>{setIsModalVisible(false)}} footer={null}>
+                <h1 className="titulo">Agregar un nuevo registro</h1>
+                <p className="descripcion">Añade y administra las horas extra de los trabajadores en la obra!</p>
+                <Form form = {form} onFinish={agregarHorasExtra} layout="vertical">
+                    <Form.Item label="Nombre del empleado" name="trabajador" rules={[{required:true,message:"Debes ingresar el nombre del empleado!"}]}>
+                        <Select placeholder="Selecciona el nombre del empleado...">
+                            {
+                                empleadosObra.map(empleado => {
+                                    return <Option key={empleado.id.uid} value={empleado.id.uid}>{empleado.id.nombre}</Option>
+                                })
                             }
-                        }
-                        className="fix"
-                        with="100%"
-                    />
-            </div>
-
-        <Modal title="Agregar un nuevo registro!" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
-            <h4>Agregar un nuevo registro</h4>
-            <p className="lead">Añade y administra las horas extra de los trabajadores en la obra!</p>
-            <Form form = {form} onFinish={handleAddNewRegister} layout="vertical">
-                <Form.Item
-                    label="Nombre del empleado"
-                    name="trabajador"
-                    tooltip="Especifica el nombre del empleado..."
-                    rules={[
-                        {
-                            required:true,
-                            message:"Debes ingresar el nombre del empleado!"
-                        }
-                    ]}
-                >
-                    <Select
-                        placeholder="Selecciona el nombre del empleado..."
-                        allowClear
-                    >
-                        {
-                            empleadosObra.map(empleado => {
-                                return <Option key={empleado.key} value={empleado.nombre}>{empleado.nombre}</Option>
-                            })
-                        }
-                    </Select>
-                </Form.Item>
-
-                <Form.Item
-                    label="Cantidad de horas extra"
-                    name="horas"
-                    tooltip="Especifica cuantas horas extra el empleado hizo"
-                    rules={[
-                        {
-                        required:true,
-                        message:"Debes ingresar la cantida de horas extra!"
-                        }
-                    ]}
-                >
-
-                    <InputNumber style={{width: "100%"}} min={1} max={99}/>
-
-                </Form.Item>
- 
-                <Form.Item
-                    label="Motivo"
-                    name="motivo"
-                    tooltip="Crea una descripción detallada sobre el por que se agregaran horas extra a este empleado"
-                    rules={[
-                        {
-                            required:true,
-                            message:"Especifica el motivo por el cual se van agregar las horas extrra!"
-                        }
-                    ]}
-                >
-                    <Input.TextArea allowClear showCount minLength={20} maxLength={60} style={{width:"100%"}} placeholder="Descripción del producto" />
-                </Form.Item>
-                <div className="d-flex justify-content-start gap-2">
-                    <Button danger type="primary" onClick={handleCancel}>Salir sin editar</Button>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Cantidad de horas extra" name="horas" rules={[{required:true,message:"Debes ingresar la cantida de horas extra!"}]}>
+                        <InputNumber style={{width: "100%"}} min={1} max={99}/>
+                    </Form.Item>
+                    <Form.Item label="Fecha de las horas extra" name="fecha" rules={[{required:true,message:"Debes ingresar la cantida de horas extra!"}]}>
+                        <DatePicker locale={locale} format={"YYYY-MM-DD"} style={{width:"100%"}}/>
+                    </Form.Item>
+                    <Form.Item label="Motivo" name="motivo" rules={[{required:true,message:"Especifica el motivo por el cual se van agregar las horas extrra!"}]}>
+                        <Input.TextArea allowClear showCount minLength={20} maxLength={60} style={{width:"100%"}} placeholder="Descripción del producto" />
+                    </Form.Item>
                     <Button type="primary" htmlType='submit'>Registrar nuevo elemento</Button>
+                </Form>
+            </Modal>
+            <Modal visible={isModalVisiblePagarHoras.estado} footer={null} onOk={()=>{setIsModalVisiblePagarHoras({estado:false,tipo:null})}} onCancel={()=>{setIsModalVisiblePagarHoras({estado:false,tipo:null})}}>
+                <h1 className="titulo">{isModalVisible.tipo === "TODAS" ? "Pagar TODAS las horas extra del empleado" : "Pagar hora extra"}</h1>
+                <p className="descripcion">{isModalVisible.tipo === "TODAS" ? "Pagar TODAS las horas extra registra del empleado , el empleado tendra que firmar un documento firmado que se descargara en la siguiente liga" : `Pagar hora extra registrada del empleado` }</p>
+                <Steps current={current}>
+                    {steps.map((item) => (
+                        <Step key={item.title} title={item.title} />
+                    ))}
+                </Steps>
+                <div className="steps-content p-5">{steps[current].content}</div>
+                <div className="steps-action">
+                    {current < steps.length - 1 && (
+                        <Button type="primary" onClick={() => setCurrent(current + 1)}>
+                            Siguiente
+                        </Button>
+                    )}
+                    {current === steps.length - 1 && (
+                        <Button type="primary" onClick={() => message.success('Processing complete!')}>
+                            Pagar horas extra
+                        </Button>
+                    )}
+                    {current > 0 && (
+                        <Button style={{margin: '0 8px',}} onClick={() => setCurrent(current - 1)}>
+                            Anterior
+                        </Button>
+                    )}
                 </div>
- 
-            </Form>
-        </Modal>
-        </>
+            </Modal>
+        </div>
     )
 }
