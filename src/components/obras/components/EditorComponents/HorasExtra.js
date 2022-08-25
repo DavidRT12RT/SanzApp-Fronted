@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Divider, Form, Input, Modal, Table, Select, InputNumber, message, Dropdown, Space, Badge, Menu, DatePicker, Steps} from "antd";
-import { InfoCircleOutlined,DownOutlined, ExclamationCircleOutlined,WarningOutlined } from '@ant-design/icons';
+import { Button, Divider, Form, Input, Modal, Table, Select, InputNumber, message, Dropdown, Space, Badge, Menu, DatePicker, Steps, Upload} from "antd";
+import { InfoCircleOutlined,DownOutlined, ExclamationCircleOutlined,WarningOutlined, UploadOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import moment from 'moment';
 import locale from "antd/es/date-picker/locale/es_ES"
 import { HorasExtraRecibo } from '../../../../reportes/Obras/HorasExtraRecibo';
+import { fetchConTokenSinJSON } from '../../../../helpers/fetch';
 const { Option } = Select;
 const { confirm } = Modal;
 const { Step } = Steps;
@@ -16,6 +17,7 @@ export const HorasExtra = ({obraInfo,socket}) => {
     
     const [dataSource, setDataSource] = useState([]);
     const [editingRow, setEditingRow] = useState(null);
+	const [filesList, setFilesList] = useState([]);
     const [current, setCurrent] = useState(0);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isModalVisiblePagarHoras, setIsModalVisiblePagarHoras] = useState({estado:false,tipo:null,registro:null});
@@ -43,6 +45,30 @@ export const HorasExtra = ({obraInfo,socket}) => {
         setEmpleadosObra(obraInfo.trabajadores);
     }, [obraInfo]);
 
+    const props = {
+        onRemove : file => {
+            setFilesList([]);
+            /*Podemos tener mas logica de lo comun es nuestro useState tal que asi, 
+             con un callback y al final llamar a la misma función*/
+        },
+        beforeUpload: file => {
+            //Verificar que el archivo sea un PDF
+            const isPDForXML = file.type === "application/pdf";
+            if(!isPDForXML) return message.error("EL ARCHIVO EVIDENCIA NECESITA SER UN PDF");
+
+            //Verificar que el fileList sea menos a 2 
+            if(filesList.length < 1){
+                setFilesList(files => [...files,file]);
+            }else{
+                message.error("Solo puedes subir 1 archivo en total");
+            }
+            //Deestructuramos el estado actual y añadimos el nuevo archivo
+            return false;
+        },
+        listType:"picture",
+        maxCount:1,
+        fileList : filesList
+    };
 
 
     const steps = [
@@ -82,11 +108,15 @@ export const HorasExtra = ({obraInfo,socket}) => {
         },
         {
             title: "Documentos a subir",
-            content: 'Last-content',
+            content: 
+                <>
+                    <Upload {...props}>
+                        <Button icon={<UploadOutlined/>}>Selecciona el archivo de evidencia</Button>
+                    </Upload>
+                </>
         },
     ];
     
-    console.log(isModalVisiblePagarHoras);
     const expandedRowRender = (record,index,indent,expanded) => {
         const { trabajador } = record;
         const columns = [
@@ -224,12 +254,30 @@ export const HorasExtra = ({obraInfo,socket}) => {
             }})
     } 
 
-    const pagarHorasExtra = (values) => {
-        console.log(values);
+    const pagarHorasExtra = () => {
+		confirm({
+            title:"¿Seguro quieres pagar estas horas extra?",
+            icon:<ExclamationCircleOutlined />,
+            content:"Las horas extra se marcaran como pagadas y YA NO podras editar la informacion como la fecha , el motivo , la cantidad de horas extra ni nada de esto",
+			okText:"Pagar",
+			cancelText:"Volver atras",
+            async onOk(){
+        		const formData = new FormData();
+                formData.append("archivo",filesList[0]);
+                formData.append("registroId",isModalVisiblePagarHoras.registro._id);
+                formData.append("trabajadorId",isModalVisiblePagarHoras.registro.trabajador.uid);
+
+                const resp = await fetchConTokenSinJSON(`/obras/${obraId}/pagar-horas-extra`,formData,"POST");
+                const body = await resp.json();
+                if(resp.status != 201) return message.error(body.msg);
+                //Horas extra pagadas!
+                message.success(body.msg);
+                setIsModalVisiblePagarHoras({estado:false,tipo:null,registro:null});
+            }
+        })
     }
 
-    const pagarHorasExtraTotales = (values) => {
-        console.log(values);
+    const pagarHorasExtraTotales = () => {
     }
 
     const columns = [
@@ -317,7 +365,7 @@ export const HorasExtra = ({obraInfo,socket}) => {
                         </Button>
                     )}
                     {current === steps.length - 1 && (
-                        <Button type="primary" onClick={() => message.success('Processing complete!')}>
+                        <Button type="primary" disabled={filesList.length === 0} onClick={()=>{isModalVisiblePagarHoras.tipo === "TODAS" ? pagarHorasExtraTotales() : pagarHorasExtra()}}>
                             Pagar horas extra
                         </Button>
                     )}
