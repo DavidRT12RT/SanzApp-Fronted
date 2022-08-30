@@ -1,4 +1,4 @@
-import { Button, DatePicker, Divider, Dropdown, Form, Input, InputNumber, Menu, message, Modal, Table, Upload } from 'antd'
+import { Button, Card, DatePicker, Divider, Dropdown, Form, Input, InputNumber, Menu, message, Modal, Statistic, Table, Upload } from 'antd'
 import { DownOutlined,UploadOutlined ,CopyOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react'
 import { fetchConToken, fetchConTokenSinJSON } from '../../../../../helpers/fetch';
@@ -232,7 +232,7 @@ export const GastosGeneral = ({tipo,obraInfo,socket}) => {
             <h1 className="titulo">Gastos <span className="text-warning">{tipo.toUpperCase()}</span></h1>
             <p className="descripcion">Seccion para subir gastos del tipo {tipo} asi como ver y descargar los documentos PDF y XML.</p>
             <Divider/>
-            <div className="d-flex justify-content-center align-items-center flex-wrap gap-4">
+            <div className="d-flex justify-content-start align-items-center flex-wrap gap-4">
                 <Input.Search 
                     size="large" 
                     placeholder="Busca una factura por su descripción o concepto" 
@@ -241,8 +241,27 @@ export const GastosGeneral = ({tipo,obraInfo,socket}) => {
                 <RangePicker size="large" locale={locale} onChange={onChangeDate}/>
             </div>
             {/*Tarjetas*/}
-            <div className="d-flex justify-content-start align-items-center flex-wrap gap-2 my-3">
+            <div className="d-flex justify-content-start align-items-center gap-2 my-3">
+                    <Card>
+                        <Statistic
+                            title="Total de dinero"
+                            precision={2}
+                            value={obraInfo.gastos[tipo].totalFacturas}
+                            valueStyle={{color: '#3f8600',}}
+                            prefix="$"
+                        />
+                    </Card>
+                    <Card>
+                        <Statistic
+                            title="Numero de registros"
+                            value={obraInfo.gastos[tipo].numeroFacturas}
+                            valueStyle={{color: '#3f8600',}}
+                            prefix={<CopyOutlined/>}
+                            //suffix="%"
+                            />
+                    </Card>
             </div>
+
             <Button type="primary" onClick={()=>{tipo === "NoComprobables" ? setIsModalVisibleNoComprobable(true) : setIsModalVisible(true)}}>Nuevo gasto</Button>
             <Table bordered className="mt-3" columns={renderizarColumns()} dataSource={registrosGastos}/>
             <Modal visible={isModalVisible} onOk={()=>{setIsModalVisible(false)}} onCancel={()=>{setIsModalVisible(false)}} footer={null}>

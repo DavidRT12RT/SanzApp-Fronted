@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Divider, Form, Input, Modal, Table, Select, InputNumber, message, Dropdown, Space, Badge, Menu, DatePicker, Steps, Upload} from "antd";
+import { Button, Divider, Form, Input, Modal, Table, Select, InputNumber, message, Dropdown, Space, Badge, Menu, DatePicker, Steps, Upload, Drawer} from "antd";
 import { InfoCircleOutlined,DownOutlined, ExclamationCircleOutlined,WarningOutlined, UploadOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import { PDFDownloadLink } from '@react-pdf/renderer';
@@ -14,13 +14,13 @@ const { Step } = Steps;
 
 export const HorasExtra = ({obraInfo,socket}) => {
     
-    
     const [dataSource, setDataSource] = useState([]);
     const [editingRow, setEditingRow] = useState(null);
 	const [filesList, setFilesList] = useState([]);
     const [current, setCurrent] = useState(0);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isModalVisiblePagarHoras, setIsModalVisiblePagarHoras] = useState({estado:false,tipo:null,registro:null});
+    const [isDrawerVisibleEvidencia, setIsDrawerVisibleEvidencia] = useState({estado:false,evidencia:null});
     const [empleadosObra, setEmpleadosObra] = useState([]);
     const [form] = Form.useForm();
     const { obraId } = useParams();
@@ -171,7 +171,7 @@ export const HorasExtra = ({obraInfo,socket}) => {
             render:(_,record) => {
                     //Si ya estan pagadas el usuario NO podra editar las horas extra
                     if(record.pagadas){
-                        return <p className="descripcion text-danger">Sin posibilidad de editar...</p>
+                        return <Button type="primary" onClick={()=>{setIsDrawerVisibleEvidencia({estado:true,registro:{...record,trabajador}})}}>Ver evidencia</Button>
                     }else{
                     return (
                         <div className="d-flex gap-2">
@@ -204,16 +204,8 @@ export const HorasExtra = ({obraInfo,socket}) => {
             },
         },
         ];
-        return <Form form = {form} onFinish={(values)=> {actualizarHorasExtra(values,record.trabajador.uid,editingRow)}}><Table columns={columns} dataSource={record.registros}/></Form>;
+        return <Form form={form} onFinish={(values)=> {actualizarHorasExtra(values,record.trabajador.uid,editingRow)}}><Table columns={columns} dataSource={record.registros}/></Form>;
     };
-
-
-    /*TODO LIST: 
-        1.-Imprirmir documento
-        2.-Mandar a pagar una hora extra en especifico y todas
-    */
-
-
     
     const actualizarHorasExtra = (values,trabajador,idRegistro) => {
         confirm({
@@ -272,12 +264,33 @@ export const HorasExtra = ({obraInfo,socket}) => {
                 if(resp.status != 201) return message.error(body.msg);
                 //Horas extra pagadas!
                 message.success(body.msg);
+                //Actualizar obra por sockets
+                socket.emit("actualizar-obra-por-id",obraId);
                 setIsModalVisiblePagarHoras({estado:false,tipo:null,registro:null});
             }
         })
     }
 
     const pagarHorasExtraTotales = () => {
+		confirm({
+            title:"¿Seguro quieres pagar TODAS las horas extra?",
+            icon:<ExclamationCircleOutlined />,
+            content:"Las horas extra se marcaran como pagadas y YA NO podras editar la informacion como la fecha , el motivo , la cantidad de horas extra ni nada de esto",
+			okText:"Pagar TODAS",
+			cancelText:"Volver atras",
+            async onOk(){
+        		const formData = new FormData();
+                formData.append("archivo",filesList[0]);
+                formData.append("trabajadorId",isModalVisiblePagarHoras.registro.trabajador.uid);
+                const resp = await fetchConTokenSinJSON(`/obras/${obraId}/pagar-horas-extra-totales`,formData,"POST"); 
+                const body = await resp.json();
+                if(resp.status != 201) return message.error(body.msg);
+                //Hora extra TOTALES pagadas
+                message.success(body.msg);
+                socket.emit("actualizar-obra-por-id",obraId);
+                setIsModalVisiblePagarHoras({estado:false,tipo:null,registro:null});
+            }
+        });
     }
 
     const columns = [
@@ -324,6 +337,7 @@ export const HorasExtra = ({obraInfo,socket}) => {
             <Divider/>
             <Button onClick={()=>{setIsModalVisible(true)}} type="primary">Añadir nuevo registro</Button>
             <Table className="mt-3" bordered columns={columns} dataSource = {dataSource} expandable={{expandedRowRender}}/>
+
             <Modal visible={isModalVisible} onOk={()=>{setIsModalVisible(false)}} onCancel={()=>{setIsModalVisible(false)}} footer={null}>
                 <h1 className="titulo">Agregar un nuevo registro</h1>
                 <p className="descripcion">Añade y administra las horas extra de los trabajadores en la obra!</p>
@@ -344,14 +358,14 @@ export const HorasExtra = ({obraInfo,socket}) => {
                         <DatePicker locale={locale} format={"YYYY-MM-DD"} style={{width:"100%"}}/>
                     </Form.Item>
                     <Form.Item label="Motivo" name="motivo" rules={[{required:true,message:"Especifica el motivo por el cual se van agregar las horas extrra!"}]}>
-                        <Input.TextArea allowClear showCount minLength={20} maxLength={60} style={{width:"100%"}} placeholder="Descripción del producto" />
+                        <Input.TextArea allowClear showCount minLength={40} style={{width:"100%"}} placeholder="Descripción del producto" />
                     </Form.Item>
                     <Button type="primary" htmlType='submit'>Registrar nuevo elemento</Button>
                 </Form>
             </Modal>
             <Modal visible={isModalVisiblePagarHoras.estado} footer={null} onOk={()=>{setIsModalVisiblePagarHoras({estado:false,tipo:null})}} onCancel={()=>{setIsModalVisiblePagarHoras({estado:false,tipo:null})}}>
-                <h1 className="titulo">{isModalVisible.tipo === "TODAS" ? "Pagar TODAS las horas extra del empleado" : "Pagar hora extra"}</h1>
-                <p className="descripcion">{isModalVisible.tipo === "TODAS" ? "Pagar TODAS las horas extra registra del empleado , el empleado tendra que firmar un documento firmado que se descargara en la siguiente liga" : `Pagar hora extra registrada del empleado` }</p>
+                <h1 className="titulo">{isModalVisiblePagarHoras.tipo === "TODAS" ? "Pagar TODAS las horas extra" : "Pagar hora extra"}</h1>
+                <p className="descripcion">{isModalVisiblePagarHoras.tipo === "TODAS" ? "Pagar TODAS las horas extra registra del empleado , el empleado tendra que firmar un documento firmado que se descargara en la siguiente seccion." : `Pagar hora extra registrada del empleado,el empleado tendra que firmar un documento que se encuentra en la siguiente seccion.` }</p>
                 <Steps current={current}>
                     {steps.map((item) => (
                         <Step key={item.title} title={item.title} />
@@ -376,6 +390,14 @@ export const HorasExtra = ({obraInfo,socket}) => {
                     )}
                 </div>
             </Modal>
-        </div>
+            {isDrawerVisibleEvidencia.estado === true && (
+                <Drawer width={"60%"} placement="left" visible={isDrawerVisibleEvidencia.estado} onClose={()=>{setIsDrawerVisibleEvidencia({estado:false,evidencia:null})}}>
+                    <h1 className="titulo">Evidencia de el pago</h1>
+                    <Divider/>
+                    {/*/obras/obra/:obraId/horasExtra/:trabajadorId/:registroId*/}
+                    <iframe type="text/plain" src={`http://localhost:4000/api/uploads/obras/obra/${obraId}/horasExtra/${isDrawerVisibleEvidencia.registro.trabajador.uid}/${isDrawerVisibleEvidencia.registro._id}`} style={{height:"100%",width:"100%"}} frameBorder="0" allowFullScreen></iframe>
+                </Drawer>
+            )}
+       </div>
     )
 }

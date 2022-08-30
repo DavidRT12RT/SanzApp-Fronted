@@ -1,6 +1,6 @@
 import { Button, Divider, Form, Input, message, Modal, Result, Select, Typography } from 'antd'
 import React, { useContext, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../../../context/SocketContext';
 import { ProductoCardRetiroEntrada } from './ProductoCardRetiroEntrada';
 import { ExclamationCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
@@ -21,6 +21,7 @@ export const RetirarAlmacen = () => {
     const [obrasDesarollo, setObrasDesarollo] = useState([]);
     const [empleadosActivos, setEmpleadosActivos] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
     //Marcador que nos ayudara a saber si se termino el proceso y mostrar la pantalla de success
     const [finishRetiro, setFinishRetiro] = useState({estatus:false,salida:{}});
 
@@ -85,13 +86,10 @@ export const RetirarAlmacen = () => {
                 setLoading(true);
                 const resp = await fetchConToken("/salidas/retiro-productos-almacen",{listaProductos,values},"POST");
                 const body = await resp.json();
-                if(resp.status === 200){
-                    message.success(body.msg);
-                    setIsModalVisible(false);
-                    setFinishRetiro({estatus:true,salida:body.salida});
-                }else{
-                    message.error(body.msg);
-                }
+                if(resp.status != 200) return message.error(body.msg);
+                message.success(body.msg);
+                setIsModalVisible(false);
+                setFinishRetiro({estatus:true,salida:body.salida});
                 setLoading(false);
            	},
         });
@@ -122,8 +120,29 @@ export const RetirarAlmacen = () => {
 
     //Buscar información de las obras y empleados
     useEffect(() => {
-        socket.emit("obtener-obras-en-desarollo",{},(obras)=>{setObrasDesarollo(obras)});
-        socket.emit("obtener-empleados-activos",{},(empleados)=>{setEmpleadosActivos(empleados)});
+
+        const fetchDataObras = async() => {
+            const resp = await fetchConToken("/obras");
+            const body = await resp.json();
+            if(resp.status != 200) {
+                navigate(-1);
+                return message.error("Error al obtener obras en desarollo ,contacta a David!");
+            }
+            setObrasDesarollo(body.obras);
+        }
+
+        const fetchDataEmpleados = async() => {
+            const resp = await fetchConToken("/usuarios");
+            const body = await resp.json();
+            if(resp.status != 200) {
+                navigate(-1);
+                return message.error("Error al obtener empleados de Sanz ,contacta a David!");
+            }
+            setEmpleadosActivos(body.usuarios);
+        }
+
+        fetchDataObras();
+        fetchDataEmpleados();
     }, []);
     
     const handleDownloadEvidencia = async () => {

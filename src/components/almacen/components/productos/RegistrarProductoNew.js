@@ -172,7 +172,6 @@ export const RegistrarProductoNew = () => {
 			cancelText:"Volver atras",
             async onOk(){
 				setUploading(true);
-                console.log(formValues);
         		const formData = new FormData();
 				formData.append("nombre",formValues.nombre);
 				formData.append("cantidad",formValues.cantidad);

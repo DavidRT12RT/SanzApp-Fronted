@@ -42,30 +42,6 @@ export const Inventario = () => {
         fetchData();
     }, []);
 
-    const categoriaColor = (categoria) => {
-        switch (categoria.toLowerCase()) {
-            case "ferreteria":
-                return <Tag color="cyan" style={{fontSize:"13px",padding:"13px"}} key="ferreteria">{categoria}</Tag> 
-            case "vinilos":
-                return <Tag color="green" style={{fontSize:"13px",padding:"13px"}} key="vinilos">{categoria}</Tag> 
-            case "herramientas":
-                return <Tag color="blue" style={{fontSize:"13px",padding:"13px"}} key="herramientas">{categoria}</Tag> 
-            case "pisosAzulejos":
-                return <Tag color="orange" style={{fontSize:"13px",padding:"13px"}} key="pisosAzulejos">{categoria}</Tag>
-            case "fontaneria":
-                return <Tag color="red" style={{fontSize:"13px",padding:"13px"}} key="fontaneria">{categoria}</Tag>
-            case "iluminacion":
-                return <Tag color="yellow" style={{fontSize:"13px",padding:"13px"}} key="iluminacion">{categoria}</Tag>
-            case "materialElectrico":
-                return <Tag color="gold" style={{fontSize:"13px",padding:"13px"}} key="materialElectrico">{categoria}</Tag>
-            case "selladores":
-                return <Tag color="gold" style={{fontSize:"13px",padding:"13px"}} key="selladores">{categoria}</Tag>
-            default:
-                return <Tag color="green" style={{fontSize:"13px",padding:"13px"}} key="categoria">{categoria}</Tag> 
-        }
-    }
-
-
     const guardarCambiosInventario = () => {
 		confirm({
             title:"¿Seguro quieres editar la informacion del inventario?",
@@ -118,45 +94,37 @@ export const Inventario = () => {
 
     const columns = [
         {
-            title:"Nombre",
-            render:(text,record)=>{
-                return <span>{record.id.nombre}</span>
-            }
+            title:<p className="titulo-descripcion">Nombre</p>,
+            render:(text,record) => (<p className="descripcion">{record.id.nombre}</p>)
         },
         {
-            title:"Marca",
-            render:(text,record)=>{
-                return <span>{record.id.marca}</span>
-            }
+            title:<p className="titulo-descripcion">Marca</p>,
+            render:(text,record) => (<p className="descripcion">{record.id.marca}</p>)
         },
         {
-            title:"Categoria",
-            render:(text,record)=>{
-                return (
-                    <Tag className="my-3" style={{backgroundColor:record.id.categoria.color,borderColor:record.id.categoria.color,fontSize:"13px",padding:"13px",maxWidth:"fit-content"}}>{record.id.categoria.nombre}</Tag>
-                )
-            }
+            title:<p className="titulo-descripcion">Categoria</p>,
+            render:(text,record)=> (<Tag className="my-3" style={{backgroundColor:record.id.categoria.color,borderColor:record.id.categoria.color,fontSize:"13px",padding:"13px",maxWidth:"fit-content"}}>{record.id.categoria.nombre}</Tag>)
         },
         {
-            title:"Unidad",
-            render:(text,record)=>{
-                return <span>{record.id.unidad}</span>
-            }
+            title:<p className="titulo-descripcion">Unidad</p>,
+            render:(text,record) => (<p className="descripcion">{record.id.unidad}</p>)
         },
         {
-            title:"Cantidad teorica",
-            dataIndex:"cantidadTeorica"
+            title:<p className="titulo-descripcion">Cantidad teorica</p>,
+            render:(text,record) => (<p className="descripcion">{record.cantidadTeorica}</p>)
         },
         {
-            title:"Cantidad contada",
+            title:<p className="titulo-descripcion">Cantidad contada</p>,
             render:(text,record)=> {
-                return isEditingProductos ? <InputNumber onChange={(e)=>{
+                return isEditingProductos 
+                ? <InputNumber onChange={(e)=>{
                     const newInventarioValues = inventario.productosInventariados.map(producto => {
                         if(producto.id._id === record.id._id) producto.cantidadContada = e;
                         return producto;
                     });
                     setInventario({...inventario,productosInventariados:newInventarioValues});
-                }} className={record.cantidadContada != record.cantidadTeorica && "text-primary"} defaultValue={record.cantidadContada}></InputNumber> : <span className={record.cantidadContada != record.cantidadTeorica ? "text-primary" : null}>{record.cantidadContada}</span>
+                }} className={record.cantidadContada != record.cantidadTeorica && "text-primary"} defaultValue={record.cantidadContada}></InputNumber> 
+                : <p className={record.cantidadContada != record.cantidadTeorica ? "text-primary descripcion" : null}>{record.cantidadContada}</p>
             }
        },
     ];
@@ -279,15 +247,15 @@ export const Inventario = () => {
                 }
                 {inventario.estatus === "Finalizado" && columns.push(
                     {
-                        title:"Diferencia",
+                        title:<p className="titulo-descripcion">Diferencia</p>,
                         render:(text,record) => {
-                            if(record.tipo === "GANANCIA") return <p className="text-success text-center">{record.diferencia}</p>
-                            if(record.tipo === "PERDIDA") return <p className="text-danger text-center">{record.diferencia}</p>
-                            if(record.tipo === "NEUTRAL") return <p className="text-info text-center">{record.diferencia}</p>
+                            if(record.tipo === "GANANCIA") return <p className="text-success descripcion">{record.diferencia}</p>
+                            if(record.tipo === "PERDIDA") return <p className="text-danger descripcion">{record.diferencia}</p>
+                            if(record.tipo === "NEUTRAL") return <p className="text-info descripcion">{record.diferencia}</p>
                         }
                     },
                     {
-                        title:"Resultado",
+                        title:<p className="titulo-descripcion">Resultado</p>,
                         render:(text,record) =>{
                             if(record.tipo === "GANANCIA") return <Tag color={"green"} style={{fontSize:"13px",padding:"13px"}}>{record.tipo}</Tag>
                             if(record.tipo === "PERDIDA") return <Tag color={"red"} style={{fontSize:"13px",padding:"13px"}}>{record.tipo}</Tag>

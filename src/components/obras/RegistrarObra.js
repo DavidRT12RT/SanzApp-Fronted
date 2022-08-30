@@ -126,17 +126,17 @@ export const RegistrarObra = () => {
                 <div className="d-flex align-items-start flex-column">
                     <label className="form-label">Empresa: </label>
                 	<input
+                        readonly
                         className="form-control"
                         value={formValues.empresa}
                         name="empresa" 
-                        onChange={handleInputChange}
                     />
                     <label className="form-label mt-3">Sucursal: </label>
                 	<input
+                        readonly
                         className="form-control"
                         value={formValues.sucursal}
                         name="sucursal" 
-                        onChange={handleInputChange}
                     />
                     <label className="form-label mt-3">Numero track: </label>
                 	<input

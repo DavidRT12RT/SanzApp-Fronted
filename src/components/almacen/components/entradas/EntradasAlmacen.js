@@ -173,7 +173,7 @@ export const EntradasAlmacen = () => {
                 		        <Select mode="multiple" placeholder="Tipo de entrada..." size="large">
 							        <Select.Option value="sobrante-obra">Sobrante de obra</Select.Option>
 							        <Select.Option value="devolucion-resguardo">Devolucion resguardo</Select.Option>
-							        <Select.Option value="normal">Normal</Select.Option>
+							        <Select.Option value="compra-directa">Compra directa</Select.Option>
               		            </Select>
                             </Form.Item>
                             {isReporte ? <Button type="primary" htmlType="submit">Descargar PDF</Button>:<Button type="primary" htmlType="submit">Aplicar filtros</Button>}

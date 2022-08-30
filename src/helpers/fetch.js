@@ -61,7 +61,8 @@ const fetchConToken = (endpoint,data={},method = "GET") =>{
                 headers:{
                     'Content-type':'application/json',
                     'x-token':token
-                }
+                },
+                body:JSON.stringify(data)
             });
 
         default:
@@ -76,6 +77,7 @@ const fetchConTokenSinJSON = (endpoint,data,method = "POST") =>{
     switch (method) {
 
         case "POST":
+        case "PUT":
             return fetch(url,{
                 method,
                 headers:{
@@ -84,15 +86,6 @@ const fetchConTokenSinJSON = (endpoint,data,method = "POST") =>{
                 body:data
             });
         
-        case "PUT":
-            return fetch(url,{
-                method,
-                headers:{
-                    'x-token':token
-                },
-                body:data,
-            });
-
         default:
             break;
     }

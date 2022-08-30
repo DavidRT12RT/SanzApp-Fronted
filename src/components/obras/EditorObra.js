@@ -14,7 +14,8 @@ import {
     BgColorsOutlined,
     CloudServerOutlined,
     CameraOutlined,
-    InfoCircleOutlined
+    InfoCircleOutlined,
+    ShoppingCartOutlined
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { MaterialUtilizado } from "./components/EditorComponents/MaterialUtilizado";
@@ -33,6 +34,8 @@ import { FinalizarObra } from "./components/EditorComponents/FinalizarObra";
 import { RetiradoAlmacen } from "./components/EditorComponents/RetiradoAlmacen";
 import { InformacionGeneral } from "./components/EditorComponents/InformacionGeneral";
 import "./assets/styleEditor.css";
+import { ProductosRetiradoAlmacen } from "./components/EditorComponents/ProductosRetiradosAlmacen";
+import { IncidentesObra } from "./components/EditorComponents/IncidentesObra";
 const { Content, Footer, Sider } = Layout;
 
 export const EditorObra = () => {
@@ -113,10 +116,9 @@ export const EditorObra = () => {
                 return <ArchivosGenerales socket={socket} obraInfo={obraInfo}/>
             
             case "12":
-                return (
-                    <MaterialUtilizado socket={socket} obraInfo={obraInfo} />
-                );
-
+                //return ( <MaterialUtilizado socket={socket} obraInfo={obraInfo} />);
+                return <ProductosRetiradoAlmacen socket={socket} obraInfo={obraInfo}/>
+                    
             case "13":
                 return <FinalizarObra socket={socket} obraInfo={obraInfo}/>
             
@@ -218,8 +220,8 @@ export const EditorObra = () => {
                             },
                             {
                                 key:"12",
-                                icon:<LineChartOutlined />,
-                                label:"Resumen de la obra"
+                                icon:<ShoppingCartOutlined />,
+                                label:"Productos retirados del almacen"
                             },
                             {
                                 key:"13",

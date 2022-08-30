@@ -203,10 +203,8 @@ export const AbonosLista = ({socket,obraInfo}) => {
         multiple:true,
         onRemove : file => {
             setFilesList(files => {
-                const index = files.indexOf(file);
-                const newFileList = files.slice();
-                newFileList.splice(index,1);
-                setFilesList(newFileList);
+                const newFiles = filesList.filter(fileOnState => fileOnState.name != file.name);
+                setFilesList(newFiles);
             });
             /*Podemos tener mas logica de lo comun es nuestro useState tal que asi, 
              con un callback y al final llamar a la misma función*/
@@ -289,7 +287,7 @@ export const AbonosLista = ({socket,obraInfo}) => {
                 <Table columns={columns} dataSource={dataAbonos} bordered />
 
                 <Modal visible={isModalVisible} onOk={()=>{setIsModalVisible(false)}} onCancel={()=>{setIsModalVisible(false)}} footer={null}>
-                        <h1 className="titulo">Subir un nuevo abono al sistema</h1>
+                        <h1 className="titulo">Subir un nuevo abono a la obra</h1>
                         <p className="descripcion">Para poder realizar esta acción necesitaras el documento PDF del abono</p>
                         <Upload {...props} className="upload-list-inline" >
                             <Button icon={<UploadOutlined/>}>Selecciona el archivo del abono</Button>

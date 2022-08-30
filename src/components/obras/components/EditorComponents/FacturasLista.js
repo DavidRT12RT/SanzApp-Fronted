@@ -52,7 +52,7 @@ export const FacturasLista = ({socket,obraInfo}) => {
     return (
         <>
             <Card
-                className="p-lg-5 container"
+                className="p-lg-4 container"
                 style={{minHeight:"100vh",margin:"0 auto"}}
                 tabList={tabList}
                 activeTabKey={activeTabKey1}

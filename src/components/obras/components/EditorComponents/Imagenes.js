@@ -171,10 +171,13 @@ export const Imagenes = ({ obraInfo, socket }) => {
 
     return (
         <>
-            <div className="p-lg-2">
+            <div className="p-lg-5 p-3 container" style={{minHeight:"100vh"}}>
+                <div className="d-flex justify-content-end align-items-center">
+                    <Button type="primary" loading={isLoading} onClick={showModal} icon={<CaretUpOutlined />}> Agregar una nueva imagen</Button>
+                </div>
                 <div>
-                    <h2>Galeria de imagenes</h2>
-                    <p className="lead">
+                    <h1 className="titulo">Galeria de imagenes</h1>
+                    <p className="descripcion">
                         Sección para la subidad de imagenes acerca de la obra
                         como trabajos,resultados,etc.
                     </p>
@@ -204,17 +207,10 @@ export const Imagenes = ({ obraInfo, socket }) => {
                         >
                             Resultados
                         </Button>
+
                     </div>
                     {/*<Button type="primary" onClick={showModal}>Agregar una nueva imagen!</Button>*/}
-                    <Button
-                        type="primary"
-                        loading={isLoading}
-                        onClick={showModal}
-                        icon={<CaretUpOutlined />}
-                        size="large"
-                    >
-                        Agregar una nueva imagen!
-                    </Button>
+
                 </div>
 
                 {fileList.length > 0 && (
@@ -226,8 +222,8 @@ export const Imagenes = ({ obraInfo, socket }) => {
                     footer={null}
                     onCancel={handleCancel}
                 >
-                    <h1>Agregar una nueva imagen!</h1>
-                    <p className="lead">
+                    <h1 className="titulo">Agregar una nueva imagen</h1>
+                    <p className="descripcion">
                         Selecciona la nueva imagen que quieras agregas a la
                         galeria de la obra y despues agrega la categoria a la
                         que esta pertenece.

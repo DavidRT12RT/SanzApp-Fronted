@@ -147,6 +147,7 @@ export const SalidaScreen = () => {
         return (<Table columns={columns} dataSource={record.listaProductos}/>)
     }
     
+    console.log(informacionSalida);
     if(informacionSalida === null){
         return <SanzSpinner/>
     }else{

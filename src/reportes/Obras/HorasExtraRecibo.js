@@ -7,7 +7,6 @@ import { Page, Document, Image, StyleSheet, Text, View, Font } from '@react-pdf/
 //Fuentes personalizadas
 import LatoBold from "../assets/fuentes/Lato-Bold.ttf";
 import LatoRegular from "../assets/fuentes/Lato-Regular.ttf";
-import { display, textAlign } from '@mui/system';
 
 
 export const HorasExtraRecibo = ({registro,tipo}) => {
@@ -52,7 +51,7 @@ export const HorasExtraRecibo = ({registro,tipo}) => {
             width:"150",
             height:"120"
         },
-       reportTitle:{
+        reportTitle:{
             color: 'green',
             letterSpacing: 4,
             fontSize: 20,

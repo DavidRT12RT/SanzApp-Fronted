@@ -31,7 +31,6 @@ export const FinalizarObra = ({obraInfo}) => {
 		} catch (error) {
 			message.error("Hubo un error a la hora de hacer la petición al servidor!");	
 		}
-
 		setIsLoading(false);
 	}
 
