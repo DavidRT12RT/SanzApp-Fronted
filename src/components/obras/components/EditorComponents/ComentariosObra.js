@@ -10,8 +10,8 @@ const CommentList = ({comments,setIsComentarioRespondiendo}) => {
     return (
         <div className="d-flex justify-content-center align-items-center flex-column gap-5">
             {comments.map(comentario => (
-                <div className="p-4 row border" style={{width:"100%"}} key={comentario._id} id={comentario._id}>
-                    <img className="col-12 col-lg-4 rounded" style={{objectFit:"contain"}} src={`http://localhost:4000/api/uploads/usuarios/${comentario.autor.uid}`} width="80" height="80"/>
+                <div className="p-4 row border" key={comentario._id} id={comentario._id}>
+                    <Avatar src={`http://localhost:4000/api/uploads/usuarios/${comentario.autor.uid}`}/>
                     <div className="col-12 col-lg-8">
                         <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-3 mt-lg-0">
                             <h1 className="titulo" style={{fontSize:"15px"}}>{comentario.autor.nombre}</h1>
@@ -32,7 +32,7 @@ const CommentList = ({comments,setIsComentarioRespondiendo}) => {
                                 </div>
                                 {comentario.respuestas.map(respuesta => (
                                     <div className="p-3 row border" style={{width:"90%"}} key={respuesta._id}>
-                                        <img className="col-12 col-lg-4 rounded" style={{objectFit:"contain"}} src={`http://localhost:4000/api/uploads/usuarios/${respuesta.autor.uid}`} width="80" height="80"/>
+                                        <Avatar src={`http://localhost:4000/api/uploads/usuarios/${respuesta.autor.uid}`}/>
                                         <div className="col-12 col-lg-8">
                                             <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-3 mt-lg-0">
                                                 <h1 className="titulo" style={{fontSize:"15px"}}>{respuesta.autor.nombre}</h1>
@@ -123,7 +123,6 @@ export const ComentariosObra = ({obraInfo,socket}) => {
     const { uid } = useSelector(store => store.auth);
     return (
         <div className="container p-5" style={{minHeight:"100vh"}}>
-            <h1 className="titulo text-center">Comentarios / Observaciones a la obra</h1>
             <Divider/>
             {comments.length === 0 ? <p className="descripcion text-danger text-center">Ningun comentario u observacion registrada en la obra...</p>:  <CommentList setIsComentarioRespondiendo={setIsComentarioRespondiendo} comments={comments} />}
             <Divider/>

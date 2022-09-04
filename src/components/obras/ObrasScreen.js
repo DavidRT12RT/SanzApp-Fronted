@@ -39,7 +39,7 @@ export const ObrasScreen = () => {
 		setIsLoading(true);
 		//Make http request to the server
 		try {
-			const resp = await fetchConToken(`/obras/activar/${IdObra}`,{correo:values.correo,password:values.password},"PUT");
+			const resp = await fetchConToken(`/obras/${IdObra}/cambiar-estado-obra`,{correo:values.correo,password:values.password,estado:"activar"},"PUT");
 			const body = await resp.json();
 			if(resp.status === 200){
 				//Make http request in order to known if the user is ok
@@ -62,7 +62,6 @@ export const ObrasScreen = () => {
 
     const handledFilter = ({key:value}) =>{
         //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
-        console.log(value);
         if(value == "Limpiar"){
             return setObrasInfo(obrasInfo);
         }
@@ -110,7 +109,7 @@ export const ObrasScreen = () => {
         const rolesPermitidos = ["ADMIN_ROLE","INGE_ROLE"];
 
         //Si el usuario tiene rol podra editar y ver
-		if(estado && rolesPermitidos.includes(rol)){
+		if(estado != "FINALIZADA" && rolesPermitidos.includes(rol)){
             return(
                 <div className="d-flex gap-2">
                     <Button type="primary" ><Link to={`/aplicacion/obras/editor/${record._id}`}>Editar obra</Link></Button>
@@ -118,12 +117,12 @@ export const ObrasScreen = () => {
                 </div>
             )
         //Si el usuario NO tiene un rol solo le dejaremos ver el visor de obras
-		}else if(estado && !rolesPermitidos.includes(rol)){
+		}else if(estado === "EN-PROGRESO" && !rolesPermitidos.includes(rol)){
             return (
                 <Button type="primary" ><Link to={`/aplicacion/obras/${record._id}`}>Visor de obra</Link></Button>
             )
         //Boton para volver a activar la obra
-        }else if(estado != true && rol === "ADMIN_ROLE"){
+        }else if(estado === "FINALIZADA" && rol === "ADMIN_ROLE"){
             return <Button type="primary"  onClick={()=>{
                 confirm({
             		title:"¿Seguro quieres volver a activar la obra?",
@@ -177,14 +176,7 @@ export const ObrasScreen = () => {
             title:"Estado del reporte",
             dataIndex:"estadoReporte",
             render: (text,record) => {
-                switch (text) {
-                    case 1:
-                        return <Tag color="blue" key="estadoReporte">Presupuesto con cliente</Tag> 
-                    case 2: 
-                        return <Tag color="green" key="estadoReporte">En desarollo</Tag>
-                    case 3:
-                        return <Tag color="red" key="estadoReporte">Finalizada</Tag>
-                } 
+                return <span>{record.estado}</span>
             }
         },
         {

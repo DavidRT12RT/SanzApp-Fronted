@@ -19,7 +19,7 @@ export const FinalizarObra = ({obraInfo}) => {
 		setIsLoading(true);
 		//Make http request to the server
 		try {
-			const resp = await fetchConToken(`/obras/finalizar/${obraId}`,{correo:values.correo,password:values.password},"PUT");
+			const resp = await fetchConToken(`/obras/${obraId}/cambiar-estado-obra`,{correo:values.correo,password:values.password,estado:"finalizar"},"PUT");
 			const body = await resp.json();
 			if(resp.status === 200){
 				//Make http request in order to known if the user is ok

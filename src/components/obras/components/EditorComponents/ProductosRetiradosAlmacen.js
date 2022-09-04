@@ -116,7 +116,7 @@ export const ProductosRetiradoAlmacen = ({obraInfo}) => {
                 </PDFDownloadLink> 
             </div>
             <h1 className="titulo">Productos retirados de almacen</h1>
-            <p className="descripcion">Salidas del almacen que ha tenido la obra, aqui se mostraran todos los productos que se han retirado del almacen y fueron destinados a la obra , asi como los productos devueltos como sobrante al almacen.</p>
+            <p className="descripcion">Salidas del almacen que ha tenido la obra, aqui se mostraran todos los productos que se han retirado del almacen <br/> y fueron destinados a la obra , asi como los productos devueltos como sobrante al almacen.</p>
             <Divider/>
             <h1 className="titulo" style={{fontSize:"20px"}}>Lista de salidas</h1>
             <Table columns={columns} dataSource={salidasObra} expandable={{expandedRowRender}}/>

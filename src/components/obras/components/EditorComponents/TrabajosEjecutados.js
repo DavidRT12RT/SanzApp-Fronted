@@ -227,10 +227,6 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
             render:(text,record) => (<p className="descripcion">{record.titulo}</p>)
         },
         {
-            title:<p className="titulo-descripcion">Descripcion del trabajo</p>,
-            render:(text,record) => (<p className="descripcion">{record.descripcion}</p>)
-        },
-        {
             title:<p className="titulo-descripcion">Trabajador</p>,
             render:(text,record) => {
                 return (

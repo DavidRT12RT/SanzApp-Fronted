@@ -77,7 +77,7 @@ export const ApplicationRoutes = () => {
                 <Route path="/empresas/" element={<Empresas/>}/>
                 <Route path="/empresas/:empresaId/" element={<EmpresaScreen/>}/>
                 <Route path="/empresas/registrar/" element={<RegistrarEmpresa/>}/>
-                <Route path="/empresas/:empresaId/sucursales/:sucursalId" element={<SucursalScreen/>}/>
+                <Route path="/empresas/:empresaId/sucursales/:sucursalId/" element={<SucursalScreen/>}/>
 
                 <Route path="/obras/" element={<ObrasScreen />} />
                 <Route path="/obras/registrar/" element={
@@ -85,6 +85,7 @@ export const ApplicationRoutes = () => {
                         <RegistrarObra/>
                     </PrivateRoutePorRole>
                 }/>
+
                 <Route path="/obras/editor/:obraId/" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","INGE_ROLE"]}>
                         <EditorObra/>

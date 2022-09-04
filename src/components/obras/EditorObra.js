@@ -109,8 +109,6 @@ export const EditorObra = () => {
             case "9":
                 return <CobrosObra socket={socket} obraInfo={obraInfo} />;
 
-            case "10":
-                return <PlanosObra socket={socket} obraInfo={obraInfo}/>
 
             case "11":
                 return <ArchivosGenerales socket={socket} obraInfo={obraInfo}/>
@@ -137,7 +135,7 @@ export const EditorObra = () => {
     };
     if (Object.keys(obraInfo).length === 0 ) {
         return <h1>Cargando informacion de la obra..</h1>;
-    }else if(obraInfo.estado === false){
+    }else if(obraInfo.estado === "FINALIZADA"){
         navigate("/aplicacion/obras");
         return message.error("Obra se encuentra finalizada NO puedes editarla");
     }
@@ -206,12 +204,6 @@ export const EditorObra = () => {
                                 key: "9",
                                 icon: <DollarCircleOutlined />,
                                 label: "Cobros de la obra",
-                            },
-
-                            {
-                                key:"10",
-                                icon:<BgColorsOutlined />,
-                                label:"Planos de obra"
                             },
                             {
                                 key:"11",

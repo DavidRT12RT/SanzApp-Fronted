@@ -125,7 +125,6 @@ export const AbonosLista = ({socket,obraInfo}) => {
         const { archivoName } = values;
         try {
             const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/abonos/${archivoName}`);
-            console.log(`localhost:4000/api/uploads/obras/obra/${obraId}/abonos/${archivoName}`);
             if(resp.status != 200){
                 return message.error("No se encontro el archivo en el servidor!");
             }
@@ -235,6 +234,9 @@ export const AbonosLista = ({socket,obraInfo}) => {
     return (
         <>
             <div className="container p-3 p-lg-5">
+                <div className="d-flex justify-content-end align-items-center gap-2">
+                    <Button type="primary">Descargar resumen</Button>
+                </div>
                 <h1 className="titulo">Abonos de la obra</h1>
                 <p className="descripcion">
                     En esta sección se encuentran todos los abonos que se han hecho a la obra con su respectivo documento PDF.

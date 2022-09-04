@@ -229,6 +229,9 @@ export const GastosGeneral = ({tipo,obraInfo,socket}) => {
 
     return (
         <div>
+            <div className="d-flex justify-content-end align-items-center gap-2">
+                <Button type="primary">Descargar resumen</Button>
+            </div>
             <h1 className="titulo">Gastos <span className="text-warning">{tipo.toUpperCase()}</span></h1>
             <p className="descripcion">Seccion para subir gastos del tipo {tipo} asi como ver y descargar los documentos PDF y XML.</p>
             <Divider/>

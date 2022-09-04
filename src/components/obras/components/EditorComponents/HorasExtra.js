@@ -329,6 +329,9 @@ export const HorasExtra = ({obraInfo,socket}) => {
 
     return (
         <div className="container p-3 p-lg-5" style={{minHeight:"100vh"}}>
+            <div className="d-flex justify-content-end align-items-center gap-2">
+                <Button type="primary">Descargar resumen</Button>
+            </div>
             <h1 className="titulo">Horas extra en la obra</h1>
             <p className="descripcion">
                 En esta sección se podran añadir horas extra a los empleados que se encuentren registrados trabajando dentro de la obra, <br/>
