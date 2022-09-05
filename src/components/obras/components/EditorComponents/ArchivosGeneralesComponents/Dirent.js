@@ -1,20 +1,18 @@
-import { message } from 'antd';
+import { message,Modal } from 'antd';
 import React from 'react'
-import { FolderFill,FileEarmarkTextFill,FileArrowDownFill } from 'react-bootstrap-icons';
+import { ExclamationCircleOutlined, WarningOutlined } from '@ant-design/icons';
+import { FolderFill,FileEarmarkTextFill,FileArrowDownFill,TrashFill,Eye } from 'react-bootstrap-icons';
 import { fetchConToken } from '../../../../../helpers/fetch';
+const { confirm } = Modal;
 
 
 export const Dirent = ({obraId,isDirectory,name,path,setSearchParams}) => {
 
     const nameOriginal = name;
-    if(name.length > 18 && isDirectory == false){
-        const nombreCortado = name.split('.');
-        //const extension = nombreCortado[nombreCortado.length-1];
-        name = name.slice(0,18) + "...";
-    }else if(name.length > 15 && isDirectory == true){
-        name = name.slice(0,15) + "...";
-    }
-    
+    if(name.length > 10 && (!isDirectory)) name = name.slice(0,10) + "..."; 
+
+    if(name.length > 16 && isDirectory) name = name.slice(0,16) + "...";
+
     const descargarArchivo = async() => {
         let query = (path === null ) ? "/" : ("/"+path+"/") 
         const resp = await fetchConToken(`/obras/${obraId}/descargar-archivo/archivos${query}${nameOriginal}`);
@@ -26,6 +24,32 @@ export const Dirent = ({obraId,isDirectory,name,path,setSearchParams}) => {
         element.click();
     }
 
+    const borrarArchivo = async() => {
+        confirm({
+            title:"Seguro quieres ELIMINAR este archivo del servidor?",
+            icon:<ExclamationCircleOutlined />,
+            content:"Una vez ELIMINADO no podra ser recuperado de ninguna forma.",
+			okText:"ELIMINAR",
+			cancelText:"Volver atras",
+            async onOk(){
+                confirm({
+                    title:"REALMENTE SEGURO?",
+                    icon:<WarningOutlined />,
+                    content:"Ultima advertencia",
+			        okText:"ELIMINAR DEL SERVIDOR",
+                    cancelText:"Volver atras",
+                    async onOk(){
+                        let query = (path === null ) ? "/" : ("/"+path+"/") 
+                        const resp = await fetchConToken(`/obras/${obraId}/eliminar-archivo/archivos${query}${nameOriginal}`,{},"DELETE");
+                        const body = await resp.json();
+                        if(resp.status != 200) return message.error(body.msg);
+                        //Archivo eliminando con exito!
+                        message.success(body.msg);
+                    }
+                });
+            }
+        });
+    }
     return (
         <div className="card" style={{height:"70px",width:"380px"}}>
             <div className="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -45,7 +69,13 @@ export const Dirent = ({obraId,isDirectory,name,path,setSearchParams}) => {
                     }
                 </div>
 
-               {!isDirectory && <span style={{color:"#61AFEF",fontSize:"24px",marginRight:"7px"}} onClick={descargarArchivo}><FileArrowDownFill/></span>}
+               {!isDirectory && (
+                    <div className="d-flex justify-content-center align-items-center gap-2">
+                        <spa style={{color:"",fontSize:"24px"}}><Eye/></spa>
+                        <span style={{color:"#61AFEF",fontSize:"24px"}} onClick={descargarArchivo}><FileArrowDownFill/></span>
+                        <span style={{color:"#E06C75",fontSize:"24px"}} onClick={borrarArchivo}><TrashFill/></span>
+                    </div>
+               )}
             </div>
         </div>
     )

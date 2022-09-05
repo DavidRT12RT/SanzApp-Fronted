@@ -80,7 +80,6 @@ export const RegistrarObra = () => {
             async onOk(){
 				setUploading(true);
 				setUploading(false);
-                console.log(formValues);
                 const resp = await fetchConToken("/obras",formValues,"POST");
                 const body = await resp.json();
                 if(resp.status != 201) return message.error(body.msg);

@@ -27,7 +27,6 @@ const fetchConToken = (endpoint,data={},method = "GET") =>{
     const url = `${baseUrl}${endpoint}`;
     const token = localStorage.getItem('token') || "";
 
-    console.log("url para backend",url);
     switch (method) {
         case "GET":
             return fetch(url,{
@@ -75,8 +74,8 @@ const fetchConTokenSinJSON = (endpoint,data,method = "POST") =>{
     const url = `${baseUrl}${endpoint}`;
     const token = localStorage.getItem('token') || "";
 
-    switch (method) {
 
+    switch (method) {
         case "POST":
         case "PUT":
             return fetch(url,{

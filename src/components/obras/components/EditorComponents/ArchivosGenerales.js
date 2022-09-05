@@ -1,12 +1,12 @@
 import { Upload, message, Modal, Button, Divider, Input, Form } from "antd";
-import { InboxOutlined, CaretUpOutlined,UploadOutlined } from "@ant-design/icons";
-import { useLocation, useNavigate,useSearchParams } from 'react-router-dom';
+import { InboxOutlined,UploadOutlined,ExclamationCircleOutlined } from "@ant-design/icons";
+import { useNavigate,useSearchParams } from 'react-router-dom';
 import { CloudArrowUpFill, FolderPlus,Arrow90degUp } from 'react-bootstrap-icons';
-import queryString from 'query-string'
 import React, { useEffect, useMemo, useState } from 'react'
-import { fetchConToken } from "../../../../helpers/fetch";
+import { fetchConToken, fetchConTokenSinJSON } from "../../../../helpers/fetch";
 import { Dirent } from "./ArchivosGeneralesComponents/Dirent";
 const { Dragger } = Upload;
+const { confirm } = Modal;
 
 export const ArchivosGenerales = ({obraInfo,socket}) => {
     const obraId = obraInfo._id;
@@ -14,6 +14,7 @@ export const ArchivosGenerales = ({obraInfo,socket}) => {
     //Hooks
     const [isModalVisible, setIsModalVisible] = useState({estado:false,tipo:null});
     const [filesList, setFilesList] = useState([]);
+    const [filesListDragger, setFilesListDragger] = useState([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const [archivos, setArchivos] = useState({
         files:[],
@@ -54,16 +55,76 @@ export const ArchivosGenerales = ({obraInfo,socket}) => {
         fileList : filesList
     };
 
-    const crearDirectory = async(values) => {
-        console.log(values);
+    const propsDragger = {
+        multiple:true,
+        onRemove : file => {
+            const newFiles = filesListDragger.filter(fileOnState => fileOnState.name != file.name);
+            setFilesListDragger(newFiles);
+        },
+        headers: {
+            "x-token":localStorage.getItem("token")
+        },
+        action:`http://localhost:4000/api/obras/${obraId}/archivos/${(path === null ) ? "" : path}`,
+        beforeUpload: file => {
+            //Checar si el archivo es PDF O XML
+            setFilesListDragger(files => [...files,file]);
+        },
+        onChange(info) {
+            const { status } = info.file;
+            if (status === 'done') return message.success(`${info.file.name} Archivo subido exitosamente al servidor!.`);
+            if (status === 'error') return message.error(`${info.file.name} Error al subir archivo al servidor,contacta a David!.`);
+        },
+
+        listType:"picture",
+        fileList : filesListDragger
     }
 
-    console.log(isModalVisible);
+    const crearDirectory = async(values) => {
+        confirm({
+            title:"¿Seguro quieres crear el directorio en el sistema?",
+            icon:<ExclamationCircleOutlined />,
+            content:"El directorio se creara y podras guardar archivos en el.",
+			okText:"Crear directorio",
+			cancelText:"Volver atras",
+            async onOk(){
+                let query = (path === null ) ? "" : path
+                console.log(query);
+                const resp = await fetchConToken(`/obras/${obraId}/crear-directorio/archivos/${query}`,{name:values.nombre},"POST");
+                const body = await resp.json();
+                if(resp.status != 200) return message.error(body.msg);
+                //Directorio creado con exito!
+                message.success(body.msg);
+            }
+        });
+    }
+
+    const subirArchivos = async() => {
+        confirm({
+            title:`Seguro quieres subir estos archivos a el path ${path}`,
+            icon:<ExclamationCircleOutlined />,
+            content:"Los archivos sera subidos al servidor y podran ser consumidos por los demas con acceso a la obra...",
+			okText:"Subir archivos",
+			cancelText:"Volver atras",
+            async onOk(){
+                let query = (path === null ) ? "" : path
+                const formData = new FormData();
+                for(let i = 0; i < filesList.length; i++) formData.append(`archivo ${i}`,filesList[i]);
+                const resp = await fetchConTokenSinJSON(`/obras/${obraId}/archivos/${query}`,formData,"POST");
+                const body = await resp.json();
+                if(resp.status != 200) return message.error(body.msg);
+                //Archivo subido con exito al servidor
+                message.success(body.msg);
+            }
+        });
+ 
+    }
+
     return (
         <div className="p-5 container" style={{minHeight:"100vh"}}>
             <div className="container">
                 <h1 className="titulo text-center" style={{fontSize:""}}>Archivos Generales</h1>
-                <Dragger {...props} style={{borderStyle:"dashed",borderWidth:"medium"}} height="150px">
+                <Divider/>
+                <Dragger {...propsDragger} style={{borderStyle:"dashed",borderWidth:"medium"}} height="150px">
                     <p className="ant-upload-drag-icon">
                         <InboxOutlined />
                     </p>
@@ -72,7 +133,7 @@ export const ArchivosGenerales = ({obraInfo,socket}) => {
                 <button className="btn btn-primary d-block w-100 descripcion" style={{color:"#fff",backgroundColor:"#2b4764",borderColor:"#28415b",padding:"8px 16px",fontSize:"18px",borderRadius:"0.3rem"}} onClick={()=>{setIsModalVisible({estado:true,tipo:"subir-archivos"})}}>Subir archivo(s) <span style={{fontSize:"25px"}}><CloudArrowUpFill/></span></button>
                 <button type="primary" className="d-block w-100 mt-3 descripcion" style={{color:"#fff",backgroundColor:"#00bc8c",borderColor:"#00bc8c",padding:"8px 16px",fontSize:"18px",borderRadius:"0.3rem"}} onClick={()=>{setIsModalVisible({estado:true,tipo:"crear-directorio"})}}> Crear directorio <span style={{fontSize:"25px"}}><FolderPlus/></span></button>
                 
-               <div className="mt-4 d-flex justify-content-center align-items-center flex-wrap gap-2">
+               <div className="mt-4 d-flex justify-content-start align-items-center flex-wrap gap-2">
                     {
                         path != null && (
                             <div className="card">
@@ -91,10 +152,12 @@ export const ArchivosGenerales = ({obraInfo,socket}) => {
                         )        
                     }
 
+                    <p className="titulo-descripcion" style={{width:"100%"}}>Carpetas</p>
                     {archivos.directories.map(directory => (
                         <Dirent key={directory} obraId={obraId} isDirectory={true} name={directory} path={path} setSearchParams={setSearchParams}/>
                     ))}
 
+                    <p className="titulo-descripcion mt-3" style={{width:"100%"}}>Archivos</p>
                     {archivos.files.map(file => (
                         <Dirent key={file} obraId={obraId} isDirectory={false} name={file} path={path} setSearchParams={setSearchParams}/>
                     ))}
@@ -105,7 +168,7 @@ export const ArchivosGenerales = ({obraInfo,socket}) => {
                 <h1 className="titulo">{isModalVisible.tipo ==="crear-directorio" ? "Crear directorio" : "Subir archivos"}</h1>
                 {
                     isModalVisible.tipo == "subir-archivos"
-                    ? <><Upload {...props}><Button icon={<UploadOutlined/>}>Selecciona el archivo(s)</Button></Upload><Button type="primary">Subir archivo(s)</Button></>
+                    ? <><Upload {...props}><Button icon={<UploadOutlined/>}>Selecciona el archivo(s)</Button></Upload><Button type="primary" onClick={subirArchivos}>Subir archivo(s)</Button></>
                     : <Form layout="vertical" onFinish={crearDirectory}><Form.Item label="Nombre del directorio" name="nombre" rules={[{required:"true",message:"El nombre del directorio es requerido!"}]}><Input/></Form.Item><Button type="primary">Crear directorio</Button></Form>
                 }
             </Modal>
