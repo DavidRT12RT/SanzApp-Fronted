@@ -15,7 +15,8 @@ import {
     CloudServerOutlined,
     CameraOutlined,
     InfoCircleOutlined,
-    ShoppingCartOutlined
+    ShoppingCartOutlined,
+    FrownOutlined
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { MaterialUtilizado } from "./components/EditorComponents/MaterialUtilizado";
@@ -49,13 +50,10 @@ export const EditorObra = () => {
 
     //Solicitando obra por id
     useEffect(() => {
-        socket.emit("obtener-obra-por-id", { obraId }, (obra) => {
-            obra.materialUtilizado.map((element, index) => {
-                element.key = index;
-            });
-            setObraInfo(obra);
-        });
+        socket.emit("obtener-obra-por-id", { obraId }, (obra) => { setObraInfo(obra)});
     }, [socket, obraId]);
+
+    console.log(obraInfo);
 
     //Escuchar si la obra se actualiza
     useEffect(() => {
@@ -122,10 +120,9 @@ export const EditorObra = () => {
             
             case "14":
                 //Material y herramientas retiradas de almacen
-                return (
-                    <RetiradoAlmacen obraInfo={obraInfo}/>
-                ) 
-
+                return ( <RetiradoAlmacen obraInfo={obraInfo}/>) 
+            case "15":
+                return (<IncidentesObra obraInfo={obraInfo} socket={socket}/>)
             default:
                 //Informacion general de la obra
                 return (
@@ -214,6 +211,11 @@ export const EditorObra = () => {
                                 key:"12",
                                 icon:<ShoppingCartOutlined />,
                                 label:"Productos retirados del almacen"
+                            },
+                            {
+                                key:"15",
+                                icon:<FrownOutlined />,
+                                label:"Incidentes de la obra"
                             },
                             {
                                 key:"13",

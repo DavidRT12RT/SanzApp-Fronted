@@ -26,7 +26,8 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
             setFilesListAntes(newFiles);
         },
         beforeUpload: file => {
-            //Checar si el archivo es PDF O XML
+            const extensionesDisponibles = ["image/png","image/jpeg","image/jpg"];
+            if(!extensionesDisponibles.includes(file.type)) return message.error("Tipo de archivo NO permitido para esta funcion");
             setFilesListAntes(files => [...files,file]);
             return false;
         },
@@ -41,7 +42,8 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
             setFilesListDespues(newFiles);
         },
         beforeUpload: file => {
-            //Checar si el archivo es PDF O XML
+            const extensionesDisponibles = ["image/png","image/jpeg","image/jpg"];
+            if(!extensionesDisponibles.includes(file.type)) return message.error("Tipo de archivo NO permitido para esta funcion");
             setFilesListDespues(files => [...files,file]);
             return false;
         },

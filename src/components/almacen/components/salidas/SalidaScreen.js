@@ -72,70 +72,56 @@ export const SalidaScreen = () => {
 
     const columnsProductosRetirados = [
         {
-            title:"Nombre del producto",
-            render:(text,record) => {
-                return <span>{record.id.nombre}</span>
-            }
+            title:<p className="titulo-descripcion">Nombre del producto</p>,
+            render:(text,record) => (
+                <p className="descripcion">{record.id.nombre}</p>
+            )
         },
         {
-            title:"Marca del producto",
-            render:(text,record) => {
-                return <span>{record.id.marca}</span>
-            }
+            title:<p className="titulo-descripcion">Marca del producto</p>,
+            render:(text,record) => (
+                <p className="descripcion">{record.id.marca}</p>
+            )
         },
         {
-            title:"Categoria",
-            render:(text,record) => {
-                return (
-                    <Tag className="my-3" style={{backgroundColor:record.id.categoria.color,borderColor:record.id.categoria.color,fontSize:"13px",padding:"13px",maxWidth:"fit-content"}}>{record.id.categoria.nombre}</Tag>
-                )
-            }
+            title:<p className="titulo-descripcion">Categoria</p>,
+            render:(text,record)=> (<Tag className="descripcion"  style={{backgroundColor:record.id.categoria.color,borderColor:record.id.categoria.color,padding:"13px",maxWidth:"fit-content"}}>{record.id.categoria.nombre}</Tag>)
         },
         {
-            title:"Unidad",
-            render:(text,record) => {
-                return (
-                    <span>{record.id.unidad}</span>
-                ) 
-            }
+            title:<p className="titulo-descripcion">Unidad</p>,
+            render:(text,record) => (
+                <p className="descripcion">{record.id.unidad}</p>
+            )
         },
         {
-            title:"Cantidad retirada",
-            render:(text,record) => {
-                return (
-                    <span>{record.cantidad}</span>
-                )
-            }
+            title:<p className="titulo-descripcion">Cantidad retirada</p>,
+            render:(text,record) => (
+                <p className="descripcion">{record.cantidad}</p>
+            )
         },
         {
-            title:"Informacion del producto",
-            render:(text,record) => {
-                return (
-                    <a href={`/almacen/productos/${record.id._id}`} target="blank">Ver producto</a>
-                )
-            }
+            title:<p className="titulo-descripcion">Informacion del producto</p>,
+            render:(text,record) => (
+                <a className="descripcion text-primary" href={`/almacen/productos/${record.id._id}`} target="blank">Ver producto</a>
+            )
         }
     ];
 
     const columnsProductosDevueltos= [
         {
-            title:"Fecha de la devolucion",
-            dataIndex:"fecha"
+            title:<p className="titulo-descripcion">Fecha de devolucion</p>,
+            render:(text,record) => (<p className="descripcion">{record.fecha}</p>)
         },
         {
-            title:"Tipo",
-            dataIndex:"tipo",
-            render:(text,record) => {
-                return <Tag color={"green"}>{text.toUpperCase()}</Tag>
-            }
+            title:<p className="titulo-descripcion">Tipo</p>,
+            render:(text,record) => (<Tag className="descripcion" color={"green"}>{text.toUpperCase()}</Tag>)
         },
         {
-            title:"Cantidad de productos devueltos",
-            render:(text,record) => {
-                return <span>{record.listaProductos.length}</span>
-            }
+            title:<p className="titulo-descripcion">Cantidad de productos devueltos</p>,
+            render:(text,record) => (<p className="descripcion">{record.listaProductos.length}</p>)
         },
     ];
+    
 
 
     const expandedRowRender = (record,index,indent,expanded) => {
@@ -147,7 +133,6 @@ export const SalidaScreen = () => {
         return (<Table columns={columns} dataSource={record.listaProductos}/>)
     }
     
-    console.log(informacionSalida);
     if(informacionSalida === null){
         return <SanzSpinner/>
     }else{

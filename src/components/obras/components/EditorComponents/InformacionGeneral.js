@@ -52,11 +52,12 @@ export const InformacionGeneral = ({obraInfo,socket}) => {
                         <Breadcrumb.Item><Link to={`/aplicacion/empresas/${obraInfo.empresa._id}/sucursales/${obraInfo.sucursal._id}`}>{obraInfo.sucursal.nombre}</Link></Breadcrumb.Item>
                         <Breadcrumb.Item>{obraInfo.titulo}</Breadcrumb.Item>
                     </Breadcrumb>
-                    <div className="d-flex gap-2">
-                        {isEditing ? <><Button type="primary" danger onClick={()=>{setIsEditing(false)}}>Salir sin guardar</Button><Button type="primary" onClick={actualizarInformacionObra}>Editar informacion</Button></>: <Button type="primary" danger onClick={()=>{setIsEditing(true)}}>Editar informacion</Button>}
-                    </div>
+
             </div>
-                {isEditing ? <input style={{width:"100%"}} name="titulo" onChange={handleInputChange} value={formValues.titulo} className="mt-3 titulo form-control"></input>:<h1 className="titulo">{obraInfo.titulo}</h1>}
+                <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
+                    {isEditing ? <input style={{width:"100%"}} name="titulo" onChange={handleInputChange} value={formValues.titulo} className="mt-3 titulo form-control w-50"></input>:<h1 className="titulo">{obraInfo.titulo}</h1>}
+                    {isEditing ? <div className="d-flex justify-content-start align-items-center gap-2"><Button type="primary" danger onClick={()=>{setIsEditing(false)}}>Salir sin guardar</Button><Button type="primary" onClick={actualizarInformacionObra}>Editar informacion</Button></div>: <Button type="primary" danger onClick={()=>{setIsEditing(true)}}>Editar informacion</Button>}
+                </div>
                 <Divider/>
                 <h1 className="titulo">Descripcion:</h1>
                 {isEditing ? <textarea style={{width:"100%"}} rows="5" name="descripcion" onChange={handleInputChange} value={formValues.descripcion} className="descripcion form-control"/> : <p className="descripcion">{obraInfo.descripcion}</p>}

@@ -23,7 +23,7 @@ export const HorasExtra = ({obraInfo,socket}) => {
     const [isDrawerVisibleEvidencia, setIsDrawerVisibleEvidencia] = useState({estado:false,evidencia:null});
     const [empleadosObra, setEmpleadosObra] = useState([]);
     const [form] = Form.useForm();
-    const { obraId } = useParams();
+    const obraId = obraInfo._id;
 
     useEffect(() => {
         for(let index = 0;index < obraInfo.horasExtra.length; index++){
