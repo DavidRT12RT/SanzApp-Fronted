@@ -199,7 +199,7 @@ export const CategoriasRegistradas = () => {
         return (
             <>
                 <div className="container p-5" style={{}}>
-                        <h1 className="titulo" style={{fontSize:"42px"}}>Lista de categorias</h1>
+                        <h1 className="titulo" style={{fontSize:"32px"}}>Lista de categorias</h1>
                         <p className="descripcion">Categorias registradas en el almacen.</p>
                         <Button type="primary" onClick={()=>{setIsModalVisible(true);setCategoriaEditing(null)}}>Nueva categoria</Button>
                         <Table columns={columns} dataSource={categorias} className="mt-3" />

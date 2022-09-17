@@ -44,7 +44,7 @@ export const ProductoCardRetiroEntrada = ({producto,socket,cambiarCantidadProduc
                             : <p className="text-success">Cantidad a ingresar: <InputNumber className="text-success" bordered={false} size="small" min={1} value={producto.cantidad} onChange={(e)=>{cambiarCantidadProducto(productoInfo,e)}}/></p>
                     }
                     <p className="text-white bg-dark">(cantidad en bodega: {productoInfo.cantidad})</p>
-                    <p className="text-muted">{productoInfo.descripcion}</p>
+                    <p className="text-muted mt-3">{productoInfo.descripcion.slice(0,130)}...</p>
                     {producto.cantidad > 1 ? <a className="text-danger" onClick={()=>{eliminarProducto(producto.id)}}>Eliminar productos</a> : <a className="text-danger" onClick={()=>{eliminarProducto(producto.id)}}>Eliminar producto</a>}
                 </div>
             </div>

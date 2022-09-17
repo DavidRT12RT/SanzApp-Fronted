@@ -8,20 +8,23 @@ const { TextArea } = Input;
 
 const CommentList = ({comments,setIsComentarioRespondiendo}) => {
     return (
-        <div className="d-flex justify-content-center align-items-center flex-column gap-5">
+        <div className="d-flex justify-content-center align-items-center flex-column gap-3">
             {comments.map(comentario => (
-                <div className="p-4 row border" key={comentario._id} id={comentario._id}>
-                    <Avatar src={`http://localhost:4000/api/uploads/usuarios/${comentario.autor.uid}`}/>
+                <div className="d-flex p-3 justify-content-center align-items-center flex-wrap row border bg-body w-100" key={comentario._id} id={comentario._id}>
                     <div className="col-12 col-lg-8">
                         <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-3 mt-lg-0">
-                            <h1 className="titulo" style={{fontSize:"15px"}}>{comentario.autor.nombre}</h1>
-                            <h1 className="titulo text-success" style={{fontSize:"15px"}}>{comentario.fecha}</h1>
+                            <div className="d-flex flex-wrap align-items-center">
+                                <Avatar src={`http://localhost:4000/api/uploads/usuarios/${comentario.autor.uid}`} style={{width:"60px",height:"60px"}}/>
+                                <h1 className="titulo-descripcion ms-2" style={{fontSize:"20px"}}>{comentario.autor.nombre}</h1>
+                            </div>
+                            <h1 className="titulo-descripcion text-muted">{comentario.fecha}</h1>
                         </div>
-                        <p className="descripcion">{comentario.contenido}</p>
+                        <p className="descripcion mt-3">{comentario.contenido}</p>
+                        <div className="d-flex justify-content-end align-items-center">
+                            <Button type="primary" icon={<PlusOutlined />} onClick={()=>{setIsComentarioRespondiendo({estado:true,respondiendo:comentario});document.getElementById("editor").scrollIntoView()}}>Responder</Button>
+                        </div>
                     </div>
-                    <div className="d-flex justify-content-end align-items-center mb-4">
-                        <Button type="primary" icon={<PlusOutlined />} onClick={()=>{setIsComentarioRespondiendo({estado:true,respondiendo:comentario});document.getElementById("editor").scrollIntoView()}}>Responder</Button>
-                    </div>
+
                     {comentario.respuestas.length > 0 && (
                         <>
                             <div className="d-flex justify-content-center align-items-center flex-column gap-4">
@@ -32,10 +35,10 @@ const CommentList = ({comments,setIsComentarioRespondiendo}) => {
                                 </div>
                                 {comentario.respuestas.map(respuesta => (
                                     <div className="p-3 row border" style={{width:"90%"}} key={respuesta._id}>
-                                        <Avatar src={`http://localhost:4000/api/uploads/usuarios/${respuesta.autor.uid}`}/>
+                                        <Avatar src={`http://localhost:4000/api/uploads/usuarios/${comentario.autor.uid}`} style={{width:"60px",height:"60px"}}/>
                                         <div className="col-12 col-lg-8">
                                             <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-3 mt-lg-0">
-                                                <h1 className="titulo" style={{fontSize:"15px"}}>{respuesta.autor.nombre}</h1>
+                                                <h1 className="titulo-descripcion ms-2" style={{fontSize:"20px"}}>{comentario.autor.nombre}</h1>
                                                 <h1 className="titulo text-success" style={{fontSize:"15px"}}>{respuesta.fecha}</h1>
                                             </div>
                                             <p className="descripcion">{respuesta.contenido}</p>
@@ -122,7 +125,8 @@ export const ComentariosObra = ({obraInfo,socket}) => {
 
     const { uid } = useSelector(store => store.auth);
     return (
-        <div className="container p-5" style={{minHeight:"100vh"}}>
+        <div className="p-5" style={{minHeight:"100vh"}}>
+            <h1 className="titulo">Observaciones ({comments.length})</h1>
             <Divider/>
             {comments.length === 0 ? <p className="descripcion text-danger text-center">Ningun comentario u observacion registrada en la obra...</p>:  <CommentList setIsComentarioRespondiendo={setIsComentarioRespondiendo} comments={comments} />}
             <Divider/>

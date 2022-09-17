@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Divider, message, Tabs, Tag,} from 'antd';
+import { Button, Divider, message, PageHeader, Tabs, Tag,} from 'antd';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 //import { EditInfo } from './components/EditInfo';
 //import { RealizarRetiroAlmacen } from './components/RealizarRetiroAlmacen';
@@ -66,10 +66,13 @@ export const ProductoScreen = () => {
     }else{
         return (
             <div className="container p-3 p-lg-5">
-                <div className="d-flex justify-content-end gap-2 flex-wrap">
-                    <Link to="/aplicacion/almacen"><Button type="primary">Regresar a lista de productos</Button></Link>
+                <div className="d-flex justify-content-start gap-2 flex-wrap">
+                    <PageHeader
+                        onBack={() => navigate("/aplicacion/almacen/")}
+                        title="Volver a almacen"
+                    />
                 </div>
-                 <div className="row mt-lg-5">
+                 <div className="row">
                     {/* Imagen del producto*/}
                     <div className="col-lg-6 col-12 d-flex justify-content-center align-items-center">
                         <img src={`http://localhost:4000/api/uploads/productos/${informacionProducto._id}`} className="imagen-producto"/>

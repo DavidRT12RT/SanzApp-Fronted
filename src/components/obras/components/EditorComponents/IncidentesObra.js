@@ -21,8 +21,6 @@ export const IncidentesObra = ({obraInfo,socket}) => {
     const [filesList, setFilesList] = useState([]);
 
 
-    console.log(isDrawerVisibleRegistroIncidente);
-
     const props = {
         maxCount:1,
         onRemove : file => {

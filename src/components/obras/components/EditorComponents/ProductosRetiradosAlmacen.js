@@ -16,7 +16,7 @@ export const ProductosRetiradoAlmacen = ({obraInfo}) => {
             render:(text,record) => (<p className="descripcion">{record.motivo}</p>)
         },
         {
-            title:<p className="titulo-descripcion">Fecha de la salida</p>,
+            title:<p className="titulo-descripcion">Fecha de salida</p>,
             render:(text,record) => (<p className="descripcion">{record.fechaCreacion}</p>)
         },
         {

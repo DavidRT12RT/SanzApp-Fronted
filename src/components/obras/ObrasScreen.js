@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Loading } from './Loading';
-import { useObras } from "../../hooks/useObras";
 import { Link, useNavigate } from 'react-router-dom';
 import { ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons';
-import "./assets/style.css";
+import "./assets/styleObrasScreen.css";
 import { useSelector } from 'react-redux';
 import { Avatar, Button, Card, Divider, Dropdown, Form, Input, Menu, message, Modal, Statistic, Table, Tag } from 'antd';
-import Password from 'antd/lib/input/Password';
 import { fetchConToken } from '../../helpers/fetch';
 
 const { confirm } = Modal;
@@ -14,8 +11,9 @@ const { confirm } = Modal;
 export const ObrasScreen = () => {
 
     const { rol } = useSelector(store => store.auth);
-    const [obrasInfo, setObrasInfo] = useState([]);
+    const [registrosObras, setRegistrosObras] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [valueSearch, setValueSearch] = useState("");
 	const [isLoadingButton, setIsLoading] = useState(false);
     const [IdObra, setIdObra] = useState(null);
     const [obrasEstados, setObrasEstados] = useState({
@@ -30,7 +28,7 @@ export const ObrasScreen = () => {
             .then(response => response.json())
             .then(resp => {
                 setObrasEstados({totalObrasActivas:resp.totalObrasActivas,totalObrasFinalizadas:resp.totalObrasFinalizadas});
-                setObrasInfo(resp.obras)
+                setRegistrosObras(resp.obras)
             });
     }, []);
 
@@ -55,52 +53,6 @@ export const ObrasScreen = () => {
 		setIsLoading(false);
 
 	}
-
-    const menu = (
-        <Menu items={[{key:"1",label:(<a target="_blank">Crear reporte de obras activas</a>)},{key:"2",label:(<a target="_blank">Crear reporte de obras finalizadas</a>)}]}/>
-    )
-
-    const handledFilter = ({key:value}) =>{
-        //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
-        if(value == "Limpiar"){
-            return setObrasInfo(obrasInfo);
-        }
-
-        value = parseInt(value);
-        const resultadosBusqueda = obrasInfo.filter((elemento)=>{
-            if(elemento.estadoReporte === value){
-                return elemento;
-            }
-        });
-
-        return setObrasInfo(resultadosBusqueda);
-    }
-
-    const handledSearch = (value) =>{
-        //No hay nada en el termino de busqueda y solo pondremos TODOS los elementos
-        if(value.length == 0){
-            return setObrasInfo(obrasInfo);
-        }
-
-        const resultadosBusqueda = obrasInfo.filter((elemento)=>{
-            if(elemento.titulo.toLowerCase().includes(value.toLowerCase())){
-                return elemento;
-            }
-        });
-
-        return setObrasInfo(resultadosBusqueda);
-    }
-
-
-    const menuFiltrar = (
-        <Menu onClick={handledFilter}>
-            <Menu.Item key={1}>Presupuesto con el cliente</Menu.Item>
-            <Menu.Item key={2}>En desarollo</Menu.Item>
-            <Menu.Item key={3}>Finalizada</Menu.Item>
-            <Menu.Divider/>
-            <Menu.Item key="Limpiar">Limpiar filtros</Menu.Item>
-        </Menu>
-    );
 
 
 	const renderizarBoton = (record) => {
@@ -142,45 +94,31 @@ export const ObrasScreen = () => {
 
     const columns = [
         {
-            title:"Numero track",
-            dataIndex:"numeroTrack",
-            render:(item,record)=>{
-                return <p className="text-primary">{item}</p>
-            }
+            title:<p className="titulo-descripcion">Numero track</p>,
+            render:(text,record)=> (<p className="descripcion text-primary">{record.numeroTrack}</p>)
         },
         {
-            title:"Fecha de creación",
-            dataIndex:"fechaCreacion"
+            title:<p className="titulo-descripcion">Titulo de obra</p>,
+            render:(text,record)=> (<p className="descripcion">{record.titulo}</p>)
         },
         {
-            title:"Nombre de la obra",
-            dataIndex:"titulo",
+            title:<p className="titulo-descripcion">Fecha de creacion</p>,
+            render:(text,record)=> (<p className="descripcion">{record.fechaCreacion}</p>)
         },
         {
-            title:"Dirección regional",
-            dataIndex:"direccionRegional"
+            title:<p className="titulo-descripcion">Empresa</p>,
+            render:(text,record)=> (<p className="descripcion">{record.empresa.nombre}</p>)
         },
         {
-            title:"Jefe de obra",
-            dataIndex:"jefeObra",
-            render:(text,record) => {
-                return (
-                    <div className="d-flex align-items-center gap-2">
-                        <Avatar src={`http://localhost:4000/api/uploads/usuarios/${text.uid}`}></Avatar>
-                        <span className="bold">{text.nombre}</span>
-                    </div>
-                )
-            }
+            title:<p className="titulo-descripcion">Sucursal</p>,
+            render:(text,record)=> (<p className="descripcion">{record.sucursal.nombre}</p>)
         },
         {
-            title:"Estado del reporte",
-            dataIndex:"estadoReporte",
-            render: (text,record) => {
-                return <span>{record.estado}</span>
-            }
+            title:<p className="titulo-descripcion">Estado de obra</p>,
+            render:(text,record)=> (<p className="descripcion">{record.estado}</p>)
         },
         {
-            title:"Acciones",
+            title:<p className="titulo-descripcion">Acciones</p>,
             dataIndex:"_id",
             render:(text,record) => {
                 return renderizarBoton(record);                
@@ -189,74 +127,32 @@ export const ObrasScreen = () => {
     ]
 
     return (
-        <div className="container p-5 shadow rounded" style={{height:"100vh"}}>
-            <div className="d-flex justify-content-between align-items-center flex-wrap">
-                <h1 className="display-5 fw-bold">Registro total de obras en Sanz</h1>
-                <div className="d-flex justify-content-center align-items-center gap-2">
-                    <Dropdown overlay={menu}>
-                        <Button onClick={(e)=> e.preventDefault()}>...</Button>
-                    </Dropdown>
-                    {(rol === "ADMIN_ROLE" || rol === "INGE_ROLE") && <Button type="primary" rounded><Link to="/aplicacion/obras/registro">Crear obra / servicio</Link></Button>}
+        <div>
+            <div className="hero">
+                <video autoPlay loop muted plays-inline className="video-fondo">
+                    <source src={require("./assets/backgroundVideo.mp4")} type="video/mp4"></source>
+                </video>
+                <div className="content">
+                    <h1 className="titulo">Obras</h1>
+                    <p className="descripcion">Registros <b>TOTALES</b> de obras en el sistema.</p>
+                    <Input.Search className="descripcion barra-busqueda" placeholder="Busca una obra por su titulo" size="large" value={valueSearch} onChange={(e) => {setValueSearch(e.target.value)}} enterButton/>
                 </div>
             </div>
-            {/*Tarjetas de información*/}
-            <div className="d-flex justify-content-start flex-wrap mt-3 gap-2">
-                <Card style={{width:"300px"}}>
-                    <Statistic
-                        title="Obras activas"
-                        value={obrasEstados.totalObrasActivas}
-                        precision={0}
-                        prefix="Total:"
-                    />
-                </Card>
-                <Card style={{width:"300px"}}>
-                    <Statistic
-                        title="Obras finalizadas"
-                        value={obrasEstados.totalObrasFinalizadas}
-                        precision={0}
-                        prefix="Total:"
-                    />
-                </Card>
-                <Card style={{width:"300px"}}>
-                    <Statistic
-                        title="Empleados trabajando en obras"
-                        value={200}
-                        precision={0}
-                        prefix="Total:"
-                    />
-                </Card>
-            </div>
-            <Divider/>
-            <Input.Search 
-                size="large" 
-                style={{width:"100%"}}
-                placeholder="Busca una obra por su titulo" 
-                onSearch={handledSearch}
-                enterButton
-                className="search-bar-class"
-            />
-            <div className="d-flex justify-content-start gap-2 mt-3 mb-3" >
-                <Dropdown overlay={menuFiltrar}>
-                    <Button type="primary">
-                        Filtrar obra por:
-                        <DownOutlined />
-                    </Button>
-                </Dropdown>
-            </div>
 
-            <Table columns={columns} dataSource={obrasInfo} size="large"/>
-                   
-            <Modal title="Comprobar identidad" visible={isModalVisible} onOk={()=>setIsModalVisible(false)} onCancel={()=>setIsModalVisible(false)} footer={null}>
-				<Form onFinish={handledActivateObra} layout="vertical">
-					<Form.Item label="Correo" name="correo">
-						<Input/>
-					</Form.Item>
-					<Form.Item label="Contraseña" name="password">
-						<Password/>
-					</Form.Item>
-					<Button type="primary" htmlType="submit" loading={isLoadingButton}>Comprobar</Button>
-				</Form>
-			</Modal>
+            <div className="bg-body p-3" style={{minHeight:"100vh"}}>
+                <div className="row mt-5" style={{width:"85%",margin:"0 auto"}}>
+                    <div className="col-12 ">
+                        <h1 className="titulo-descripcion" style={{fontSize:"20px"}}>FILTRAR POR</h1>
+                        <Divider/>
+                        <h1 className="titulo-descripcion" style={{fontSize:"13px"}}>Estado</h1>
+                    </div>
+                    <div className="col-12 mt-5">
+                        <h1 className="titulo-descripcion" style={{fontSize:"20px"}}>OBRAS ENCONTRADAS</h1>
+                        <Divider/>
+                        <Table columns={columns} dataSource={registrosObras} bordered/>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 };

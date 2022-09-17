@@ -99,8 +99,10 @@ export const ArchivosGenerales = ({obraInfo,socket}) => {
     }
 
     const subirArchivos = async() => {
+
+        let query = (path === null ) ? "" : path
         confirm({
-            title:`Seguro quieres subir estos archivos a el path ${path}`,
+            title:`Seguro quieres subir estos archivos a el path "${query}"`,
             icon:<ExclamationCircleOutlined />,
             content:"Los archivos sera subidos al servidor y podran ser consumidos por los demas con acceso a la obra...",
 			okText:"Subir archivos",

@@ -136,7 +136,8 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
                 */
                 const formData = new FormData();
                 for (const property in values) formData.append(property,values[property]);
-                //El trabajo se agregara con evidencia
+
+                //Se editara la evidencia
                 if(evidencia) {
                     for(let i=0; i < filesListAntes.length; i++){
                         const elemento = filesListAntes[i];
@@ -147,8 +148,8 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
                         const elemento = filesListDespues[i];
                         formData.append(`despuesEvidencia ${i}`,elemento);
                     }
- 
                 }
+
                 const resp = await fetchConTokenSinJSON(`/obras/${obraId}/editar-trabajo-en-obra`,formData,"PUT");
                 const body = await resp.json();
                 if(resp.status != 200) return message.error(body.msg);
@@ -281,7 +282,7 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
                 <Button type="primary" style={{marginBottom: 16,}} onClick={()=>{setIsModalVisible({estado:true,tipo:"registrar"})}} className="mt-3"> Añadir trabajo </Button>
             </div>
 
-            <Table columns={columns} dataSource={listaTrabajos}/>
+            <Table columns={columns} dataSource={listaTrabajos} bordered/>
 
 
             <Modal footer={null} visible={(isModalVisible.estado)} onOk={()=>{setIsModalVisible({estado:false,tipo:null})}} onCancel={()=>{setIsModalVisible({estado:false,tipo:null})}}>
@@ -303,7 +304,7 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
                             })}
                         </Select>
                     </Form.Item>
-                    <Checkbox value={evidencia} onChange={(e)=>{setEvidencia(e.target.checked)}} style={{width:"100%"}}>{isModalVisible.tipo === "registrar" ? "Adjuntar evidencia del trabajo" : "Editar evidencia del trabajo"}</Checkbox>
+                    <Checkbox checked={evidencia} onChange={(e)=>{setEvidencia(e.target.checked)}} style={{width:"100%"}}>{isModalVisible.tipo === "registrar" ? "Adjuntar evidencia del trabajo" : "Editar evidencia del trabajo"}</Checkbox>
                     {isModalVisible.tipo === "editar" && <span className="text-muted">(TEN EN CUENTA QUE AL MOMENTO DE EDITAR LA EVIDENCIA ANTERIOR HARA QUE ESTA SEA ELIMINADA Y REEMPLAZADA POR LA NUEVA)</span>}
                     {evidencia && (
                         <div className="mt-3">
@@ -334,11 +335,12 @@ export const TrabajosEjecutados = ({obraInfo,socket}) => {
                     <h1 className="descripcion col-6 text-danger mt-3">{isDrawerVisible.trabajo.trabajador.nombre}</h1>
                     <h1 className="titulo-descripcion col-6 mt-3">Fecha del trabajo: </h1>
                     <p className="descripcion text-success">{isDrawerVisible.trabajo.fecha}</p>
+                    <h1 className="titulo" style={{fontSize:"20px"}}>Evidencia del trabajo</h1>
+                    <Divider/>
                     {isDrawerVisible.trabajo.evidencia.antes.length > 0 
                         ? (
                            <>
-                                <h1 className="titulo" style={{fontSize:"20px"}}>Evidencia del trabajo</h1>
-                                <Divider/>
+
                                 <h1 className="titulo-descripcion">Antes</h1>
                                 <div id="carouselAntes" class="carousel slide" data-bs-ride="carousel" width={"50%"} height={"30%"}>
                                     <div class="carousel-inner">

@@ -299,66 +299,64 @@ export const PanelDeControl = () => {
     }else{
         return (
             <>
-                <section className="d-flex justify-content-center align-items-center flex-wrap gap-3 mt-5">
-                   <Card className="text-center p-3 d-flex justify-content-center align-items-center" style={{width:"350px",height:"360px"}}>
+                <section className="d-flex justify-content-center align-items-center flex-wrap gap-3 bg-body p-5">
+                   <Card className="text-center p-3 d-flex justify-content-center align-items-center shadow" style={{width:"350px",height:"360px"}}>
                         <h1 className="titulo" style={{fontSize:"30px"}}>Categorias</h1>
                         <h1 style={{fontSize:"50px"}}>{categoriasInformacion.total}</h1>
                         <Link to={"/almacen/categorias/"} className="text-link" style={{fontSize:"15px"}}>Registrar una nueva categoria</Link>
                     </Card>
-                    <Card className="text-center p-3 d-flex justify-content-center align-items-center" style={{width:"350px",height:"360px"}}>
+                    <Card className="text-center p-3 d-flex justify-content-center align-items-center shadow" style={{width:"350px",height:"360px"}}>
                         <h1 className="titulo" style={{fontSize:"30px"}}>Productos</h1>
                         <h1 style={{fontSize:"50px"}}>{productosInfo.total}</h1>
                         <Link to={"/almacen/productos/registrar/"} className="text-link" style={{fontSize:"15px"}}>Registrar un nuevo prodcucto</Link>
                     </Card>
-                    <Card className="text-center p-3 d-flex justify-content-center align-items-center" style={{width:"350px",height:"360px"}}>
+                    <Card className="text-center p-3 d-flex justify-content-center align-items-center shadow" style={{width:"350px",height:"360px"}}>
                         <h1 className="titulo" style={{fontSize:"30px"}}>Salidas</h1>
                         <h1 style={{fontSize:"50px"}}>{salidasOfMonth.totalRegistros}</h1>
                         <Link to={"/almacen/retirar/"} className="text-link" style={{fontSize:"15px"}}>Realizar un retiro de almacen</Link>
                     </Card>
-                    <Card className="text-center p-3 d-flex justify-content-center align-items-center" style={{width:"350px",height:"360px"}}>
+                    <Card className="text-center p-3 d-flex justify-content-center align-items-center shadow" style={{width:"350px",height:"360px"}}>
                         <h1 className="titulo" style={{fontSize:"30px"}}>Entradas</h1>
                         <h1 style={{fontSize:"50px"}}>{entradasOfMonth.totalRegistros}</h1>
                         <Link to={"/almacen/ingresar/"} className="text-link" style={{fontSize:"15px"}}>Realizar una entrada</Link>
                     </Card>
                </section>
 
-                <section className="d-flex justify-content-center align-items-center gap-3 flex-wrap mt-5">
-                    <div className="bg-body d-flex justify-content-center align-items-center text-center flex-column contenedorGraficaBarra">
-                        <h1 className="titulo mt-3" style={{fontSize:"25px"}}>Salidas por mes</h1>
+                <section className="d-flex justify-content-center align-items-center gap-3 flex-wrap bg-light p-5">
+                    <div className="bg-body d-flex justify-content-center align-items-center text-center flex-column contenedorGrafica">
+                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Salidas por mes</p>
                         {(salidasOfLastMonth.length === 0 && salidasOfMonth.length === 0) && <p className="text-danger danger mt-3">Ningun registro por el momento...</p>}
                         <BarChart data={dataSalidas}/>
                     </div>
-                    <div className="bg-body d-flex justify-content-center align-items-center text-center flex-column contenedorGraficaBarra">
-                        <h1 className="titulo mt-3" style={{fontSize:"25px"}}>Entradas por mes</h1>
+                    <div className="bg-body d-flex justify-content-center align-items-center text-center flex-column contenedorGrafica">
+                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Entradas por mes</p>
                         {(entradasOfLastMonth.length === 0 && entradasOfMonth.length === 0) && <p className="text-danger danger mt-3">Ningun registro por el momento...</p>}
                         <BarChart data={dataEntradas}/>
                     </div>
                 </section>
 
-                <section className="d-flex justify-content-center align-items-center flex-wrap gap-5 mt-5">
-                    <Card className="text-center p-3 d-flex justify-content-center align-items-center">
-                        <h1 className="titulo" style={{fontSize:"30px"}}>Dinero TOTAL en almacen</h1>
-                        <h1 className="text-success" style={{fontSize:"110px"}}>${dineroTotalAlmacen}</h1>
-                    </Card>
-                    <div className="p-3 bg-body d-flex flex-column justify-content-center align-items-center contenedorGraficaPastel">
-                        <h1 className="titulo mt-3" style={{fontSize:"25px"}}>Dinero por categoria</h1>
+
+                <section className="d-flex justify-content-center align-items-center gap-4 flex-wrap bg-body p-5">
+                    <div className="p-3 bg-body d-flex flex-column justify-content-center align-items-center contenedorGrafica">
+                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Dinero por categoria</p>
                         <PieChart data={dataProductosAlmacenDineroPorCategoria}/>
                     </div>
-                </section>
 
-                <section className="mt-5 d-flex justify-content-center align-items-center gap-4 flex-wrap">
-                    <div className="p-3 bg-body d-flex flex-column justify-content-center align-items-center contenedorGraficaPastel">
-                        <h1 className="titulo mt-3" style={{fontSize:"25px"}}>Productos por categoria</h1>
+                    <div className="p-3 bg-body d-flex flex-column justify-content-center align-items-center contenedorGrafica">
+                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Productos por categoria</p>
                         {(productos.length === 0) && <p className="text-danger mt-3">Ningun producto registrado aun...</p>}
                         <PieChart data={dataProductosAlmacen}/>
                     </div>
-                    <div className=" p-3 bg-body d-flex flex-column justify-content-center align-items-center contenedorGraficaPastel">
-                        <h1 className="titulo mt-3" style={{fontSize:"25px"}}>Tipos de salidas en el mes</h1>
+                </section>
+
+                <section className="d-flex justify-content-center align-items-center gap-4 flex-wrap bg-light p-5">
+                    <div className="p-3 bg-body d-flex flex-column justify-content-center align-items-center contenedorGrafica">
+                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Tipos de salidas este mes</p>
                         {(salidas.length === 0) && <p className="text-danger mt-3">Ninguna salida registrada aun...</p>}
                         <PieChart data={dataTiposSalida}/>
                      </div>
-                    <div className="p-3 bg-body d-flex flex-column justify-content-center align-items-center contenedorGraficaPastel">
-                        <h1 className="titulo mt-3" style={{fontSize:"25px"}}>Tipos de entradas en el mes</h1>
+                    <div className="p-3 bg-body d-flex flex-column justify-content-center align-items-center contenedorGrafica">
+                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Tipos de entradas este mes</p>
                         {(entradas.length === 0) && <p className="text-danger mt-3">Ninguna entrada registrada aun...</p>}
                         <PieChart data={dataTiposEntrada}/>
                     </div>

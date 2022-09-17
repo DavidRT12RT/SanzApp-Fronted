@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import {Button, Checkbox, Divider, Input } from 'antd';
+import {Affix, Button, Checkbox, Divider, Input, Menu } from 'antd';
 import { Loading } from '../../../obras/Loading';
 import { ProductoCard } from './components/ProductoCard';
 import { Link, useLocation } from 'react-router-dom';
 import { useProductos } from '../../../../hooks/useProductos';
 import { useSelector } from 'react-redux';
 import { useCategorias } from '../../../../hooks/useCategorias';
+import { motion } from "framer-motion"
+
+import "../../assets/css/styleProductosScreen.css";
 
 
 export const ProductosScreen = () => {
@@ -68,31 +71,30 @@ export const ProductosScreen = () => {
             return setValuesTable(productos);
         }
     }, [valueSearch,categorias]);
+
     
     if(isLoading || isLoadingCategorias){
         return <Loading/>
     }else{
         return (
-            <div className="container p-5 rounded" style={{minHeight:"100vh"}}>
-                <div className="d-flex justify-content-end align-items-center gap-2 flex-wrap">
-                    { pathname != "/aplicacion/almacen/" && <Link to="/almacen/productos/registrar"><Button type="primary">Registrar un nuevo producto</Button></Link>}
-                    { pathname != "/aplicacion/almacen/" && <Link to="/almacen/categorias/"><Button type="primary">Registrar una nueva categoria</Button></Link>}
+            <>
+                <div className="contenedorBuscador">
+                    <div className="content">
+                        <h1 className="titulo">Almacen</h1>
+                        <p className="descripcion">Registros de <b>TODOS</b> los productos en el sistema.</p>
+                        <Input.Search className="descripcion barra-busqueda" placeholder="Busca una obra por su titulo" size="large" value={valueSearch} onChange={(e) => {setValueSearch(e.target.value)}} enterButton/>
+                    </div>
                 </div>
-                <h1 className="titulo mt-5 mt-lg-0" style={{fontSize:"42px"}}>Productos en almacen</h1>
-                <div className="d-flex justify-content-start gap-2 flex-wrap">                        
-                    { pathname != "/aplicacion/almacen/" && (
-                        <input placeholder="Buscar un producto en almacen por codigo de barras..." className="form-control descripcion" onChange={(e)=>{onSearchProductoCodigo(e.target.value)}}/>
-                    )}
-                    
-                    <input placeholder="Comienza a escribir el nombre del producto..." className="form-control descripcion" onChange={(e)=>{setValueSearch(e.target.value)}}/>
-                </div>
-                <div className="row mt-5">
-                    <div className="col-md-12 col-lg-2">
-                        {/*Filtros*/}
-                        <h1 className="titulo-descripcion">Filtros</h1>
-                        <Divider/> 
-                        <div className="row"> 
-                            <h1 className="titulo-descripcion" style={{fontSize:"15px"}}>Categoria del producto</h1>
+
+                <div className="bg-body p-3" style={{minHeight:"100vh"}}>
+                    <div className="row mt-5" style={{width:"85%",margin:"0 auto"}}>
+                        <div className="d-flex justify-content-end">
+                            { pathname != "/aplicacion/almacen/" && <Link to="/almacen/productos/registrar"><Button type="primary">Registrar producto</Button></Link>}
+                        </div>
+                        <div className="col-lg-2 col-12 ">
+                            <h1 className="titulo-descripcion" style={{fontSize:"20px"}}>FILTRAR POR</h1>
+                            <Divider/>
+                            <h1 className="titulo-descripcion" style={{fontSize:"13px"}}>Categorias</h1>
                             {
                                 categoriasDB.length === 0 
                                 ? 
@@ -110,33 +112,20 @@ export const ProductosScreen = () => {
                                 </Checkbox.Group>
                             }
                         </div>
-                    </div>
-
-                    <div className="col-md-12 col-lg-10 mt-5 mt-lg-0">
-
-                        <h1 className="titulo-descripcion">Resultados: {dataSource.length}</h1>
-                        <Divider/> 
-
-                        {/*Informacion*/}
-                            {
-                                dataSource.length != 0 
-                                    ?
-                                    <div className="d-flex justify-content-center container gap-5 flex-wrap mt-3 mt-lg-0">
-                                        {
-                                            dataSource.map(producto => {
-                                                return ( 
-                                                    <ProductoCard rol={rol} key={producto._id} producto={producto} />
-                                                 )
-                                            })
-                                        }
-                                    </div>
-                                    :
-                                    <h4 className="text-danger titulo" style={{fontSize:"25px"}}>Ningun producto registrado aun...</h4>
-                            }  
+                        <div className="col-lg-10 col-12 mt-5 mt-lg-0">
+                            <h1 className="titulo-descripcion" style={{fontSize:"20px"}}>PRODUCTOS ENCONTRADOS</h1>
+                            <Divider/>
+                            <div className="d-flex justify-content-center gap-5 flex-wrap">
+                                {
+                                    dataSource.map(producto => (
+                                        <ProductoCard rol={rol} key={producto._id} producto={producto} />
+                                    ))
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-            </div>
+            </>
         )
-    }
+   }
 }

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, DatePicker, Divider, Form, message, Modal, Select, Tabs, Tag, Upload,} from 'antd';
+import { Button, DatePicker, Divider, Form, message, Modal, PageHeader, Select, Tabs, Tag, Upload,} from 'antd';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 //import { EditInfo } from './components/EditInfo';
 import { SocketContext } from '../../../../context/SocketContext';
@@ -193,12 +193,17 @@ export const ProductoScreen = () => {
     }else{
         return (
             <div className="container p-3 p-lg-5">
-                <div className="d-flex justify-content-end gap-2 flex-wrap">
-                    {!isProductoEditing && <Link to="/almacen/productos"><Button type="primary">Regresar a lista de productos</Button></Link>}
-                    {isProductoEditing && <Button type="primary" danger onClick={()=>{setIsProductoEditing(false)}}>Salir sin guardar</Button>}
-                    {isProductoEditing ? <Button type="primary" warning onClick={()=>{onFinishEditingProduct();}}>Guardar cambios</Button> : <Button type="primary" danger onClick={()=>{setIsProductoEditing(true)}}>Editar informacion</Button> }
-                </div>
-                 <div className="row mt-5">
+                <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                    <PageHeader
+                        onBack={() => navigate("/almacen/productos/")}
+                        title="Volver a almacen"
+                    />
+                    <div>
+                        {isProductoEditing && <Button type="primary" className="me-3" danger onClick={()=>{setIsProductoEditing(false)}}>Salir sin guardar</Button>}
+                        {isProductoEditing ? <Button type="primary" warning onClick={()=>{onFinishEditingProduct();}}>Guardar cambios</Button> : <Button type="primary" danger onClick={()=>{setIsProductoEditing(true)}}>Editar informacion</Button> }
+                    </div>
+               </div>
+                 <div className="row">
                     {/* Imagen del producto*/}
                     <div className="col-lg-6 col-12 d-flex justify-content-center align-items-center">
                         {isProductoEditing

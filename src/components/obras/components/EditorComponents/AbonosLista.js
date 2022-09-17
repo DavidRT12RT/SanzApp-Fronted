@@ -233,7 +233,7 @@ export const AbonosLista = ({socket,obraInfo}) => {
 
     return (
         <>
-            <div className="container p-3 p-lg-5">
+            <div className="container p-3 p-lg-5" style={{minHeight:"100vh"}}>
                 <div className="d-flex justify-content-end align-items-center gap-2">
                     <Button type="primary">Descargar resumen</Button>
                 </div>

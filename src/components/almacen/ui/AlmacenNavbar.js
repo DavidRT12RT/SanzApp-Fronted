@@ -41,7 +41,7 @@ export const AlmacenNavbar = () =>{
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark p-3">
             <div className="container-fluid menuBarra">
                 <Link to="/almacen/" className="navbar-brand h6">
-                    <img src={require("../assets/favicon.png")} width="40" height="40"/>
+                    <img src={require("../assets/imgs/favicon.png")} width="40" height="40"/>
                     Sanz Ingenieria Integral 
                     </Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">

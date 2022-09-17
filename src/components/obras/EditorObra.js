@@ -16,7 +16,8 @@ import {
     CameraOutlined,
     InfoCircleOutlined,
     ShoppingCartOutlined,
-    FrownOutlined
+    FrownOutlined,
+    AreaChartOutlined
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { MaterialUtilizado } from "./components/EditorComponents/MaterialUtilizado";
@@ -37,6 +38,7 @@ import { InformacionGeneral } from "./components/EditorComponents/InformacionGen
 import "./assets/styleEditor.css";
 import { ProductosRetiradoAlmacen } from "./components/EditorComponents/ProductosRetiradosAlmacen";
 import { IncidentesObra } from "./components/EditorComponents/IncidentesObra";
+import { EstadisticasObra } from "./components/EditorComponents/EstadisticasObra";
 const { Content, Footer, Sider } = Layout;
 
 export const EditorObra = () => {
@@ -121,8 +123,12 @@ export const EditorObra = () => {
             case "14":
                 //Material y herramientas retiradas de almacen
                 return ( <RetiradoAlmacen obraInfo={obraInfo}/>) 
+
             case "15":
                 return (<IncidentesObra obraInfo={obraInfo} socket={socket}/>)
+            
+            case "16":
+                return (<EstadisticasObra obraInfo={obraInfo} socket={socket}/>)
             default:
                 //Informacion general de la obra
                 return (
@@ -162,11 +168,7 @@ export const EditorObra = () => {
                                 icon:<InfoCircleOutlined />,
                                 label: "Informacion general",
                             },
-                            {
-                                key: "2",
-                                icon: <EyeOutlined />,
-                                label: "Observaciones",
-                            },
+
                             {
                                 key: "3",
                                 icon: <TeamOutlined />,
@@ -183,25 +185,40 @@ export const EditorObra = () => {
                                 label: "Abonos",
                             },
                             {
-                                key: "6",
-                                icon: <ToolOutlined />,
-                                label: "Trabajos",
-                            },
-                            {
                                 key: "7",
                                 icon: <PlusCircleOutlined />,
                                 label: "Horas extra",
-                            },
-                            {
-                                key: "8",
-                                icon:<CameraOutlined />,
-                                label: "Imagenes de la obra",
                             },
                             {
                                 key: "9",
                                 icon: <DollarCircleOutlined />,
                                 label: "Cobros de la obra",
                             },
+                            {
+                                key: "16",
+                                icon: <AreaChartOutlined />,
+                                label: "Estadistica",
+                            },
+                            {
+                                key: "6",
+                                icon: <ToolOutlined />,
+                                label: "Trabajos",
+                            },
+ 
+                            /*
+                            {
+                                key: "8",
+                                icon:<CameraOutlined />,
+                                label: "Imagenes de la obra",
+                            },
+                            */
+                            /*
+                            {
+                                key: "2",
+                                icon: <EyeOutlined />,
+                                label: "Observaciones",
+                            },
+                            */
                             {
                                 key:"11",
                                 icon:<CloudServerOutlined />,
@@ -230,12 +247,7 @@ export const EditorObra = () => {
                     <Content>
                             {renderizarComponente()}
                     </Content>
-                    <Footer style={{ textAlign: "center" }}>
-                        <b>@Sanz Constructora 2022</b>
-                        <br />
-                        App hecha por David Arcos Melgarejo
-                    </Footer>
-                </Layout>
+               </Layout>
             </Layout>
         );
     }
