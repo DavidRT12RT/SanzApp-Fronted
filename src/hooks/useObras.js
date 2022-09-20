@@ -18,6 +18,7 @@ export const useObras = () => {
     
     return {
         isLoading,
-        obras
+        obras,
+        setObras
     }
 }

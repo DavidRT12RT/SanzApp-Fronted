@@ -6,7 +6,6 @@ import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
 import { ReporteSalidas } from '../../../../../reportes/Productos/ReporteSalidas';
 import { Link, useLocation } from 'react-router-dom';
-import { useSalidas } from '../../../../../hooks/useSalidas';
 import { useObras } from '../../../../../hooks/useObras';
 import { SanzSpinner } from '../../../../../helpers/spinner/SanzSpinner';
 import { useEmpleados } from '../../../../../hooks/useEmpleados';

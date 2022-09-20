@@ -85,7 +85,6 @@ export const RegistrarObra = () => {
                 if(resp.status != 201) return message.error(body.msg);
                 //Obra creada con exito!
                 message.success(body.msg);
-                console.log(body.obra);
            	},
         });
 	}

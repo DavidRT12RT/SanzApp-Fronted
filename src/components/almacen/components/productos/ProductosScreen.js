@@ -13,7 +13,6 @@ import "../../assets/css/styleProductosScreen.css";
 
 export const ProductosScreen = () => {
 
-    const { Search } = Input;
     const { isLoading,productos,productosInfo } = useProductos();
     const [dataSource, setValuesTable] = useState([]);
     const [valueSearch, setValueSearch] = useState("");
@@ -47,8 +46,7 @@ export const ProductosScreen = () => {
             });
             return setValuesTable(resultadosBusqueda);
         }
-
-        //Solo filtrar por nombre 
+//Solo filtrar por nombre 
         if(categorias.length === 0 && valueSearch.length > 0){
             const resultadosBusqueda = productos.filter(producto => {
                 if(producto.nombre.toLowerCase().includes(valueSearch.toLowerCase())) return producto;

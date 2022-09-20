@@ -34,6 +34,7 @@ const fetchConToken = (endpoint,data={},method = "GET") =>{
                 headers:{
                     'x-token':token
                 },
+
             }) 
         case "POST":
             return fetch(url,{
