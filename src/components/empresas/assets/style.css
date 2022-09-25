@@ -25,29 +25,45 @@
 }
 
 
-/* Empresa Card */
-.empresaCard{
-	width:45%;
-  	box-sizing: border-box;
-  	overflow: hidden;
-	transition: 0.7s ease
-}
-
-.empresaCard img {
-	width: 100%;
-	padding:0;
-	margin: 0;
-  	height: 200px;
-  	object-fit: cover;
-  	display: block;
-}
 
 .informacionEmpresa{
 	padding:20px;
 }
 
-@media (min-width:200px) and (max-width:1000px){
-	.empresaCard {
-		width: 80%;
-	}
+
+/* Estilos de Empresas screen*/
+
+.contenedorBuscadorEmpresas {
+    background-image: url("../assets/imgs/Business-HD-Wallpaper-1.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 300px;
+}
+
+.contenedorBuscadorEmpresas .content{
+    background-color:rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+
+.contenedorBuscadorEmpresas .content h1,.contenedorBuscadorEmpresas .content p {
+    color:white;
+    text-align: center;
+}
+
+.barra-busqueda{
+    max-width: 80%;
+}
+
+@media (min-width:1000px){
+    .barra-busqueda{
+        max-width: 50%;
+    }
 }

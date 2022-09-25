@@ -91,7 +91,7 @@ export const CalendarScreen = () => {
         }));
         dispatch(uiOpenModal());
       }
-  }
+  	}
 
   return (
     <div className='calendar-screen'>

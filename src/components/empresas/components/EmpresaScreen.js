@@ -43,9 +43,9 @@ export const EmpresaScreen = () => {
 
     const registrarSucursal = (values) => {
         confirm({
-            title:"¿Seguro quieres registrar un nuevo producto?",
+            title:"¿Seguro quieres registrar una nueva sucursal en la empresa?",
             icon:<ExclamationCircleOutlined />,
-            content:"El producto sera registrado dentro del almacen y podra ser usado para salidas a obras y resguardos.",
+            content:"La sucursal sera creada dentro de la empresa y se podran anadir obras a esta misma.",
 			okText:"Registrar",
 			cancelText:"Volver atras",
             async onOk(){
@@ -55,6 +55,9 @@ export const EmpresaScreen = () => {
                 //Todo salio bien , surcusal creada con exito!
                 message.success(body.msg);
                 form.resetFields();
+                //Agregando la sucursal creada en el estado de empresa en el apartado de sucursales
+                setEmpresaInfo({...empresaInfo,sucursales:[...empresaInfo.sucursales,body.sucursal]});
+                setIsModalRegistrarSucursalVisible(false);
             }
         });
     }

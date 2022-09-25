@@ -53,7 +53,7 @@ export const RetirarAlmacen = () => {
             }
             return producto;
         });
-        bandera ? setListaProductos(nuevaListaProductos) : setListaProductos(productos => [...productos,{id,cantidad:1,}]);
+        bandera ? setListaProductos(nuevaListaProductos) : setListaProductos(productos => [...productos,{id,cantidad:1,costoXunidad:body.costo}]);
         setValueSearch("");
     }
 
@@ -194,7 +194,7 @@ export const RetirarAlmacen = () => {
     }else{
         return (
             <div className="d-flex mt-5 align-items-center flex-column gap-2" style={{height:"100vh",width:"100vw"}}>				
-                <h1 className="titulo" style={{fontSize:"42px"}}>Comienza a escanear</h1>
+                <h1 className="titulo" style={{fontSize:"32px"}}>Comienza a escanear</h1>
                 <p className="descripcion">Ten seleccionado la barra de busqueda y escanea los codigos de los productos ,<br/>
                     al tener todos los productos escaneados llena el formulario final y listo!
                 </p>

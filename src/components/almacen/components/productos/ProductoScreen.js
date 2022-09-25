@@ -259,7 +259,7 @@ export const ProductoScreen = () => {
 						                })}
               		            </select>
                             :
-                                <Tag className="my-3" style={{backgroundColor:informacionProducto.categoria.color,borderColor:informacionProducto.categoria.color,fontSize:"13px",padding:"13px",maxWidth:"fit-content"}}>{informacionProducto.categoria.nombre}</Tag>
+                                <Tag className="descripcion my-3" style={{backgroundColor:informacionProducto.categoria.color,borderColor:informacionProducto.categoria.color,fontSize:"13px",padding:"13px",maxWidth:"fit-content"}}>{informacionProducto.categoria.nombre}</Tag>
                         }
                         <h1 className="titulo-descripcion">Precio promedio X unidad:</h1>
                         <h1 className="precio-por-unidad-producto">${informacionProducto.costo}</h1>

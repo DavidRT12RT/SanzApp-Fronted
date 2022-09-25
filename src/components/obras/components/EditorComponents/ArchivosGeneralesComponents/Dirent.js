@@ -6,10 +6,10 @@ import { fetchConToken } from '../../../../../helpers/fetch';
 const { confirm } = Modal;
 
 
-export const Dirent = ({obraId,isDirectory,name,path,setSearchParams}) => {
+export const Dirent = ({obraId,isDirectory,name,path,setSearchParams,socket}) => {
 
     const nameOriginal = name;
-    if(name.length > 10 && (!isDirectory)) name = name.slice(0,10) + "..."; 
+    if(name.length > 10 && (!isDirectory)) name = name.slice(0,14) + "..."; 
 
     if(name.length > 16 && isDirectory) name = name.slice(0,16) + "...";
 
@@ -45,13 +45,14 @@ export const Dirent = ({obraId,isDirectory,name,path,setSearchParams}) => {
                         if(resp.status != 200) return message.error(body.msg);
                         //Archivo eliminando con exito!
                         message.success(body.msg);
+                        socket.emit("actualizar-archivos-obra",({obraId,query}));
                     }
                 });
             }
         });
     }
     return (
-        <div className="card" style={{height:"70px",width:"380px"}}>
+        <div className="card" style={{height:"70px",minWidth:"290px",maxWidth:"380px"}}>
             <div className="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div>
                     <span style={{color:"#61AFEF",fontSize:"24px",marginRight:"7px"}}>{isDirectory ? <FolderFill/> : <FileEarmarkTextFill/>}</span>
@@ -71,9 +72,9 @@ export const Dirent = ({obraId,isDirectory,name,path,setSearchParams}) => {
 
                {!isDirectory && (
                     <div className="d-flex justify-content-center align-items-center gap-2">
-                        <spa style={{color:"",fontSize:"24px"}}><Eye/></spa>
-                        <span style={{color:"#61AFEF",fontSize:"24px"}} onClick={descargarArchivo}><FileArrowDownFill/></span>
-                        <span style={{color:"#E06C75",fontSize:"24px"}} onClick={borrarArchivo}><TrashFill/></span>
+                        {/*<spa style={{color:"",fontSize:"24px"}}><Eye/></spa>*/}
+                        <span style={{color:"#61AFEF",fontSize:"24px",cursor:"pointer"}} onClick={descargarArchivo}><FileArrowDownFill/></span>
+                        <span style={{color:"#E06C75",fontSize:"24px",cursor:"pointer"}} onClick={borrarArchivo}><TrashFill/></span>
                     </div>
                )}
             </div>

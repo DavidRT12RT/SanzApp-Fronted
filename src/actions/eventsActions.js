@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { error } from "../alerts/botons";
 import { fetchConToken } from "../helpers/fetch";
 import { prepareEvents } from "../helpers/prepareEvents";
@@ -11,16 +12,13 @@ export const startAddNew = (event)=>{
         console.log(resp);
         const body = await resp.json();
         try {
-            if(resp.status == 200){
-                event.id = body.id;
-                event.user = {_id:uid,name:name};
-                dispatch(eventAddNew(event));
-            }else{
-                error("error al grabar el evento en la Base de datos");
-            }
+            if(resp.status != 200) return message.error("Error al grabar evento en el calendario, contacta a David!");
+            event.id = body.id;
+            event.user = {_id:uid,name:name};
+            dispatch(eventAddNew(event));
+            message.success("Evento en el calendario agregado con exito!");
         } catch (error) {
             console.log(error);
-            
         }
     }
 }
@@ -47,12 +45,8 @@ export const startEventUpdated = (event) => {
             
             const resp = await fetchConToken(`/events/${event.id}`,event,"PUT");
             const body = await resp.json();
-            if(resp.status == 200){
-                dispatch(eventUpdated(event));
-            }else{
-                console.log(body);
-                error(body.msg);
-            }
+            if(resp.status != 200) return message.error(body.msg);
+            dispatch(eventUpdated(event));
         } catch (error) {
             console.log(error);
             error("Error al momento de actualizar");
@@ -70,14 +64,10 @@ export const startEventDeleted = (id) =>{
         try {
             const resp = await fetchConToken(`/events/${id}`,{},"DELETE"); 
             const body = await resp.json();
-            if(resp.status == 200){
-                dispatch(eventDeleted());
-            }else{
-                error(body.msg);
-            }
+            if(resp.status != 200) return message.error(body.msg);
+            dispatch(eventDeleted());
         } catch (error) {
             console.log(error);
-            
         }
     }
 }

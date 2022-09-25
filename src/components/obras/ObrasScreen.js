@@ -142,11 +142,11 @@ export const ObrasScreen = () => {
         },
         {
             title:<p className="titulo-descripcion">Empresa</p>,
-            render:(text,record)=> (<p className="descripcion">{record.empresa.nombre}</p>)
+            render:(text,record)=> (<Link className="descripcion" to={`/aplicacion/empresas/${record.empresa._id}`}>{record.empresa.nombre}</Link>)
         },
         {
             title:<p className="titulo-descripcion">Sucursal</p>,
-            render:(text,record)=> (<p className="descripcion">{record.sucursal.nombre}</p>)
+            render:(text,record)=> (<Link className="descripcion" to={`/aplicacion/empresas/${record.empresa._id}/sucursales/${record.sucursal._id}`}>{record.sucursal.nombre}</Link>)
         },
         {
             title:<p className="titulo-descripcion">Estado de obra</p>,

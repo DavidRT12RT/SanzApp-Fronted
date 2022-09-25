@@ -103,7 +103,7 @@ export const Inventario = () => {
         },
         {
             title:<p className="titulo-descripcion">Categoria</p>,
-            render:(text,record)=> (<Tag className="my-3" style={{backgroundColor:record.id.categoria.color,borderColor:record.id.categoria.color,fontSize:"13px",padding:"13px",maxWidth:"fit-content"}}>{record.id.categoria.nombre}</Tag>)
+            render:(text,record)=> (<Tag className="descripcion my-3" style={{backgroundColor:record.id.categoria.color,borderColor:record.id.categoria.color,padding:"13px",maxWidth:"fit-content"}}>{record.id.categoria.nombre}</Tag>)
         },
         {
             title:<p className="titulo-descripcion">Unidad</p>,

@@ -82,7 +82,7 @@ export const ProductoScreen = () => {
                     <div className="col-lg-6 col-12 d-flex flex-column">
                         <h1 className="nombre-producto">{informacionProducto.nombre}</h1>
                         {informacionProducto.estatus ? <h1 className="text-success estatus-producto">Disponible</h1> : <h1 className="text-danger descripcion">No disponible</h1>}
-                        <Tag className="my-3" style={{backgroundColor:informacionProducto.categoria.color,borderColor:informacionProducto.categoria.color,fontSize:"13px",padding:"13px",maxWidth:"fit-content"}}>{informacionProducto.categoria.nombre}</Tag>
+                        <Tag className="descripcion my-3" style={{backgroundColor:informacionProducto.categoria.color,borderColor:informacionProducto.categoria.color,fontSize:"13px",padding:"13px",maxWidth:"fit-content"}}>{informacionProducto.categoria.nombre}</Tag>
                         <h1 className="titulo-descripcion">Precio promedio X unidad:</h1>
                         <h1 className="precio-por-unidad-producto">${informacionProducto.costo}</h1>
                         <div className="row mt-5">

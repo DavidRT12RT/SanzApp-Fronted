@@ -1,6 +1,6 @@
 import { Button, Divider, message, Table, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { fetchConToken } from '../../../../helpers/fetch';
 import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
 import "./assets/styles.css";
@@ -30,12 +30,13 @@ export const SalidaScreen = () => {
                     <>
                         <h1 className="titulo-descripcion col-6">Titulo de la obra:</h1>
                         <h1 className="col-6 descripcion">{informacionSalida.beneficiarioObra.titulo}</h1>
-                        <h1 className="titulo-descripcion col-6">Sucursal obra:</h1>
-                        <h1 className="col-6 descripcion">{informacionSalida.beneficiarioObra.sucursal}</h1>
-                        <h1 className="titulo-descripcion col-6">Direccion regional:</h1>
-                        <h1 className="col-6 descripcion">{informacionSalida.beneficiarioObra.direccionRegional}</h1>
                         <h1 className="titulo-descripcion col-6">Numero track:</h1>
                         <h1 className="col-6 descripcion">{informacionSalida.beneficiarioObra.numeroTrack}</h1>
+                        <h1 className="titulo-descripcion col-6">Sucursal obra:</h1>
+                        <Link to={`/aplicacion/empresas/${informacionSalida.beneficiarioObra.sucursal.empresa}/sucursales/${informacionSalida.beneficiarioObra.sucursal._id}`} target="_blank" className="col-6 descripcion">{informacionSalida.beneficiarioObra.sucursal.nombre}</Link>
+                        <h1 className="titulo-descripcion col-6">Delegacion de la sucursal:</h1>
+                        <h1 className="col-6 descripcion">{informacionSalida.beneficiarioObra.sucursal.delegacion}</h1>
+
                     </>
                 )
             
@@ -100,6 +101,18 @@ export const SalidaScreen = () => {
             )
         },
         {
+            title:<p className="titulo-descripcion">Costo por unidad</p>,
+            render:(text,record) => (
+                <p className="descripcion">${record.costoXunidad}</p>
+            )
+        },
+        {
+            title:<p className="titulo-descripcion">Costo total del producto</p>,
+            render:(text,record) => (
+                <p className="descripcion text-success">${record.costoXunidad * record.cantidad}</p>
+            )
+        },
+        {
             title:<p className="titulo-descripcion">Informacion del producto</p>,
             render:(text,record) => (
                 <a className="descripcion text-primary" href={`/almacen/productos/${record.id._id}`} target="blank">Ver producto</a>
@@ -114,7 +127,7 @@ export const SalidaScreen = () => {
         },
         {
             title:<p className="titulo-descripcion">Tipo</p>,
-            render:(text,record) => (<Tag className="descripcion" color={"green"}>{text.toUpperCase()}</Tag>)
+            render:(text,record) => (<Tag className="descripcion" color={"green"} style={{padding:"13px"}}>{record.tipo.toUpperCase()}</Tag>)
         },
         {
             title:<p className="titulo-descripcion">Cantidad de productos devueltos</p>,
@@ -126,10 +139,7 @@ export const SalidaScreen = () => {
 
     const expandedRowRender = (record,index,indent,expanded) => {
         const columns = columnsProductosRetirados.slice(0,4);
-        columns.push({title:"Cantidad ingresada",render:(text,record)=>{return <span>{record.cantidad}</span>}},{title:"Informacion del producto",render:(text,record)=>{                return (
-                    <a href={`/almacen/productos/${record.id._id}`} target="blank">Ver producto</a>
-                )}});
-
+        columns.push({title:<p className="titulo-descripcion">Cantidad ingresada</p>,render:(text,record)=>{return <p className="descripcion">{record.cantidad}</p>}},{title:<p className="titulo-descripcion">Informacion del producto</p>,render:(text,record)=>{ return (<Link to={`/almacen/productos/${record.id._id}`} className="descripcion text-primary" target="_blank">Ver producto</Link>)}});
         return (<Table columns={columns} dataSource={record.listaProductos}/>)
     }
     
@@ -152,6 +162,8 @@ export const SalidaScreen = () => {
                             <h1 className="titulo" style={{fontSize:"32px"}}>Informacion de la salida</h1>
                             <h1 className="titulo-descripcion col-6">Tipo de la salida: </h1>
                             <h1 className="col-6 descripcion">{informacionSalida.tipo.toUpperCase()}</h1>
+                            <h1 className="titulo-descripcion col-6">Costo TOTAL de la salida: </h1>
+                            <h1 className="col-6 descripcion text-success">${informacionSalida.costoTotal}</h1>
                             <h1 className="titulo-descripcion col-6">Fecha creacion: </h1>
                             <h1 className="col-6 descripcion">{informacionSalida.fechaCreacion}</h1>
                             {informacionSalida.tipo === "resguardo" && (

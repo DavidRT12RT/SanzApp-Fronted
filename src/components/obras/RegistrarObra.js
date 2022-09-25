@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link,useLocation, useSearchParams } from 'react-router-dom';
+import { Link,Navigate,useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import queryString from 'query-string'
 import { Form, Button,  message, Modal, Result, Select, Steps, Upload, Input } from 'antd';
 import { ExclamationCircleOutlined,UploadOutlined } from '@ant-design/icons';
@@ -18,6 +18,7 @@ export const RegistrarObra = () => {
     const [current, setCurrent] = useState(0);
 	const location = useLocation();
     const [isUploading, setUploading] = useState(false);
+    const navigate = useNavigate();
     const [formValues,handleInputChange,setValues ] = useForm({
 		titulo:"",
 		descripcion:"",
@@ -79,12 +80,13 @@ export const RegistrarObra = () => {
 			cancelText:"Volver atras",
             async onOk(){
 				setUploading(true);
-				setUploading(false);
                 const resp = await fetchConToken("/obras",formValues,"POST");
                 const body = await resp.json();
                 if(resp.status != 201) return message.error(body.msg);
                 //Obra creada con exito!
                 message.success(body.msg);
+				setUploading(false);
+                navigate(`/aplicacion/obras/editor/${body.obra._id}`);
            	},
         });
 	}
@@ -163,13 +165,13 @@ export const RegistrarObra = () => {
                         <option value={"EN-PROGRESO"} key={"EN-PROGRESO"}>En progreso</option>
                         <option value={"FINALIZADA"} key={"FINALIZADA"}>Finalizada</option>
 					</select>
-					{formValues.estado !="PRESUPUESTO-CLIENTE" && 
+					{/*formValues.estado !="PRESUPUESTO-CLIENTE" && 
 					    <>
                 			<label className="form-label mt-3">Archivo del presupuesto: </label>
 							<Upload {...props}>
 	                    		<Button icon={<UploadOutlined/>} style={{width:"100%"}} size="large">Selecciona el archivo</Button>
                     		</Upload>
-						</>
+						</>*/
 					}
 				</div>
 		}
