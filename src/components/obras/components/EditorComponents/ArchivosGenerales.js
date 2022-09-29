@@ -1,5 +1,5 @@
 import { Upload, message, Modal, Button, Divider, Input, Form, Checkbox } from "antd";
-import { InboxOutlined,UploadOutlined,ExclamationCircleOutlined } from "@ant-design/icons";
+import { InboxOutlined,UploadOutlined,ExclamationCircleOutlined,WarningOutlined } from "@ant-design/icons";
 import { useNavigate,useSearchParams } from 'react-router-dom';
 import { CloudArrowUpFill,FolderFill,FileEarmarkTextFill,FileArrowDownFill,TrashFill,EyeCloudArrowUpFill, FolderPlus,Arrow90degUp } from 'react-bootstrap-icons';
 import React, { useEffect, useMemo, useState } from 'react'
@@ -61,8 +61,8 @@ export const ArchivosGenerales = ({obraInfo,socket}) => {
             console.log("Path que llega",values.query);
             //Checamos si el path es el mismo en el que estamos
             if(query === values.query){
+                console.log("Es el mismo");
                 const fetchData = async() => {
-                    let query = (path === null ) ? "" : path
                     const resp = await fetchConToken(`/obras/${obraId}/archivos/${query}`);
                     const body = await resp.json();
                     if(resp.status != 200) {
@@ -143,7 +143,7 @@ export const ArchivosGenerales = ({obraInfo,socket}) => {
                 let query = (path === null ) ? "" : path
                 const resp = await fetchConToken(`/obras/${obraId}/crear-directorio/archivos/${query}`,{name:values.nombre},"POST");
                 const body = await resp.json();
-                if(resp.status != 200) return message.error(body.msg);
+                if(resp.status != 201) return message.error(body.msg);
                 //Directorio creado con exito!
                 message.success(body.msg);
                 //avisando a mi mismo y a los demas que se crea una carpeta en el servidor para que actualizen al igual que yo
@@ -177,6 +177,84 @@ export const ArchivosGenerales = ({obraInfo,socket}) => {
             }
         });
  
+    }
+
+    const descargarArchivo = async(file) => {
+        let query = (path === null ) ? "/" : ("/"+path+"/") 
+        const resp = await fetchConToken(`/obras/${obraId}/descargar-archivo/archivos${query}${file}`);
+        if(resp.status != 200) return message.error("Imposible descargar archivo del servidor! , contacta a David!");
+        const bytes = await resp.blob();
+        let element = document.createElement('a');
+        element.href = URL.createObjectURL(bytes);
+        element.setAttribute('download',file);
+        element.click();
+    }
+
+    const descargarCarpeta = async(directory) => {
+        let query = (path === null ) ? "/" : ("/"+path+"/") 
+        const resp = await fetchConToken(`/obras/${obraId}/descargar-carpeta/archivos${query}${directory}`);
+        if(resp.status != 200) return message.error("Imposible descargar archivo del servidor! , contacta a David!");
+        const bytes = await resp.blob();
+        let element = document.createElement('a');
+        element.href = URL.createObjectURL(bytes);
+        element.setAttribute('download',directory);
+        element.click();
+    }
+
+    const eliminarCarpeta = async(directory) => {
+        confirm({
+            title:"Seguro quieres ELIMINAR esta carpeta del servidor?",
+            icon:<ExclamationCircleOutlined />,
+            content:"Se eliminaran todos los archivos que esten dentro de esta y una vez eliminado no podra ser recuperado de ninguna forma.",
+			okText:"ELIMINAR",
+			cancelText:"Volver atras",
+            async onOk(){
+                confirm({
+                    title:"REALMENTE SEGURO?",
+                    icon:<WarningOutlined />,
+                    content:"Ultima advertencia",
+			        okText:"ELIMINAR DEL SERVIDOR",
+                    cancelText:"Volver atras",
+                    async onOk(){
+                        let query = (path === null ) ? "/" : ("/"+path+"/") 
+                        const resp = await fetchConToken(`/obras/${obraId}/eliminar-carpeta/archivos${query}${directory}`,{},"DELETE");
+                        const body = await resp.json();
+                        if(resp.status != 200) return message.error("Imposible eliminar carpeta del servidor! , contacta a David!");
+                        //Se borro la carpeta con exito!
+                        socket.emit("actualizar-archivos-obra",({obraId,query}));
+                        message.success(body.msg);
+                    }
+                })
+            }
+        });
+    }
+
+    const borrarArchivo = async(file) => {
+        confirm({
+            title:"Seguro quieres ELIMINAR este archivo del servidor?",
+            icon:<ExclamationCircleOutlined />,
+            content:"Una vez ELIMINADO no podra ser recuperado de ninguna forma.",
+			okText:"ELIMINAR",
+			cancelText:"Volver atras",
+            async onOk(){
+                confirm({
+                    title:"REALMENTE SEGURO?",
+                    icon:<WarningOutlined />,
+                    content:"Ultima advertencia",
+			        okText:"ELIMINAR DEL SERVIDOR",
+                    cancelText:"Volver atras",
+                    async onOk(){
+                        let query = (path === null ) ? "/" : ("/"+path+"/") 
+                        const resp = await fetchConToken(`/obras/${obraId}/eliminar-archivo/archivos${query}${file}`,{},"DELETE");
+                        const body = await resp.json();
+                        if(resp.status != 200) return message.error(body.msg);
+                        //Archivo eliminando con exito!
+                        message.success(body.msg);
+                        socket.emit("actualizar-archivos-obra",({obraId,query}));
+                    }
+                });
+            }
+        });
     }
 
 
@@ -222,11 +300,11 @@ export const ArchivosGenerales = ({obraInfo,socket}) => {
                             </ContextMenuTrigger>
 
                             <ContextMenu id={directory} className="contextMenu">
-                                <MenuItem onClick={() => {console.log(directory)}}>
-                                    <p className="titulo-descripcion" style={{fontSize:"18px"}}><span style={{color:"#61AFEF",fontSize:"18px",cursor:"pointer"}}><FileArrowDownFill/></span> Descargar carpeta</p>
+                                <MenuItem onClick={() => {descargarCarpeta(directory)}} className="mt-3">
+                                    <p><span style={{color:"#61AFEF",fontSize:"22px",cursor:"pointer"}}><FileArrowDownFill/></span> Descargar carpeta</p>
                                 </MenuItem>
-                                <MenuItem>
-                                    <p className="titulo-descripcion" style={{fontSize:"18px"}}><span style={{color:"#E06C75",fontSize:"18px",cursor:"pointer"}}><TrashFill/></span> Borrar carpeta</p>
+                                <MenuItem onClick={() => {eliminarCarpeta(directory)}} className="mb-3">
+                                    <p><span style={{color:"#E06C75",fontSize:"22px",cursor:"pointer"}}><TrashFill/></span> Borrar carpeta</p>
                                 </MenuItem>
                             </ContextMenu>
                         </>
@@ -235,8 +313,23 @@ export const ArchivosGenerales = ({obraInfo,socket}) => {
 
                     <p className="titulo-descripcion mt-3" style={{width:"100%"}}>Archivos</p>
                     {archivos.files.map(file => (
-                        <Dirent id={file} key={file} obraId={obraId} isDirectory={false} name={file} path={path} setSearchParams={setSearchParams} socket={socket}/>
-                    
+                        <>
+                            <ContextMenuTrigger id={file}>
+                                <Dirent id={file} key={file} obraId={obraId} isDirectory={false} name={file} path={path} setSearchParams={setSearchParams} socket={socket}/>
+                            </ContextMenuTrigger>
+
+                            <ContextMenu id={file} className="contextMenu">
+
+                                <MenuItem onClick={() => {descargarArchivo(file)}} className="mt-3">
+                                    <p><span style={{color:"#61AFEF",fontSize:"22px",cursor:"pointer"}}><FileArrowDownFill/></span> Descargar archivo</p>
+                                </MenuItem>
+
+                                <MenuItem onClick={() => {borrarArchivo(file)}} className="mb-3">
+                                    <p><span style={{color:"#E06C75",fontSize:"22px",cursor:"pointer"}}><TrashFill/></span> Borrar archivo</p>
+                                </MenuItem>
+
+                            </ContextMenu>
+                        </>
                     ))}
                 </div>
             </div>

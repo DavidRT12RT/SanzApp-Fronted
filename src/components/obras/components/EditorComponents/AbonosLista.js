@@ -85,49 +85,32 @@ export const AbonosLista = ({socket,obraInfo}) => {
 
         const formData = new FormData();
 
-        filesList.forEach(file => {
-            if(file.type == "application/pdf"){
-                formData.append("archivoPDF",file);
-                //formData.archivoPDF = file;
-            }
-        });
+        filesList.forEach(file => { if(file.type == "application/pdf") formData.append("archivoPDF",file);});
 
         //Verificación que este por lo menos 2 archivos!
-        if(filesList.length < 1){
-            return message.error("Se necesita el archivo PDF del abono!");
-        }
+        if(filesList.length < 1) return message.error("Se necesita el archivo PDF del abono!");
+
         setUploading(true);
         //Primero hacemos la petición para subir la imagen al servidor y con el nombre que nos devolvera se lo mandamos al socket
-        try {
-            const resp = await fetchConTokenSinJSON(`/uploads/obras/obra/${obraId}/abonos`,formData,"POST")
-            const body = await resp.json();
-            if(resp.status === 200){
-                message.success(body.msg);
-                /*
-                socket.emit("añadir-abono-obra",(confirmacion)=>{
-                    confirmacion ? message.success(confirmacion.msg) : message.error(confirmacion.msg);
-                });
-                */
-            }else{
-                message.error(body.msg);
-            }
-        } catch (error) {
-            
-        }
-                
+        const resp = await fetchConTokenSinJSON(`/obras/${obraId}/abonos`,formData,"POST")
+        const body = await resp.json();
+        setUploading(false);
+        if(resp.status != 200) return message.error(body.msg);
+        message.success(body.msg);
         setIsModalVisible(false);
         //Quitando los archivos del filesList
         setFilesList([]);
-        setUploading(false);
+        
+
+        //Mandar a actualizar obra
+        socket.emit("actualizar-obra-por-id",obraId);
     }
 
     const handleDownloadPDF = async (values) => {
         const { archivoName } = values;
         try {
-            const resp = await fetchConToken(`/uploads/obras/obra/${obraId}/abonos/${archivoName}`);
-            if(resp.status != 200){
-                return message.error("No se encontro el archivo en el servidor!");
-            }
+            const resp = await fetchConToken(`/obras/${obraId}/abonos/${archivoName}`);
+            if(resp.status != 200) return message.error("No se encontro el archivo en el servidor!");
             const bytes = await resp.blob();
             let element = document.createElement('a');
             element.href = URL.createObjectURL(bytes);
@@ -201,10 +184,8 @@ export const AbonosLista = ({socket,obraInfo}) => {
     const props = {
         multiple:true,
         onRemove : file => {
-            setFilesList(files => {
-                const newFiles = filesList.filter(fileOnState => fileOnState.name != file.name);
-                setFilesList(newFiles);
-            });
+            const newFiles = filesList.filter(fileOnState => fileOnState.name != file.name);
+            setFilesList(newFiles);
             /*Podemos tener mas logica de lo comun es nuestro useState tal que asi, 
              con un callback y al final llamar a la misma función*/
         },

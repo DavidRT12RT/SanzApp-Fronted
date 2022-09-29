@@ -138,8 +138,11 @@ export const EmpresaScreen = () => {
         return (
             <div className="container p-5" style={{minHeight:"100vh"}}>
                 <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap">
-                    <h1 className="titulo" style={{fontSize:"42px"}}>{empresaInfo.nombre}</h1>
-                    <img src={`http://localhost:4000/api/uploads/empresas/empresa/${empresaInfo._id}`} style={{height:"50px"}}/>
+                    <div>
+                        <h1 className="titulo" style={{fontSize:"32px"}}>{empresaInfo.nombre}</h1>
+                        <h1 className="descripcion col-6">{empresaInfo._id}</h1>
+                    </div>
+                   <img src={`http://localhost:4000/api/uploads/empresas/empresa/${empresaInfo._id}`} style={{height:"50px"}}/>
                 </div>
                 <div className="row">
                     <div className="col-12 col-lg-6">
@@ -153,10 +156,10 @@ export const EmpresaScreen = () => {
                         <div className="row">
                             <h1 className="titulo-descripcion col-6">Fecha registro:</h1>
                             <h1 className="descripcion col-6 text-success">{empresaInfo.fechaRegistro}</h1>
-                            <h1 className="titulo-descripcion col-6">Numero de sucursales:</h1>
+                            <h1 className="titulo-descripcion col-6">Numero de sucursales registradas:</h1>
                             <h1 className="descripcion col-6">{empresaInfo.sucursales.length}</h1>
-                            <h1 className="titulo-descripcion col-6">ID de la empresa: </h1>
-                            <h1 className="descripcion col-6">{empresaInfo._id}</h1>
+                            <h1 className="titulo-descripcion col-6">Numero de obras registradas:</h1>
+                            <h1 className="descripcion col-6">{empresaInfo.obras.length}</h1>
                         </div> 
                     </div>
                 </div>

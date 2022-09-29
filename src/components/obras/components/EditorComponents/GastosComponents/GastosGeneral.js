@@ -75,7 +75,7 @@ export const GastosGeneral = ({tipo,obraInfo,socket}) => {
 
                 filesList.forEach(file => {file.type == "application/pdf" ? formData.append("archivoPDF",file) : formData.append("archivoXML",file);});
                 setUploading(true);
-                const resp = await fetchConTokenSinJSON(`/uploads/obras/obra/${obraInfo._id}/gastos/${tipo}`,formData,"POST");
+                const resp = await fetchConTokenSinJSON(`/obras/${obraInfo._id}/gastos/${tipo}`,formData,"POST");
                 const body = await resp.json();
                 setUploading(false);
                 if(resp.status != 201) return message.error(body.msg);
@@ -127,10 +127,8 @@ export const GastosGeneral = ({tipo,obraInfo,socket}) => {
 
     const handleDownloadPDFAndXML = async (nombreArchivo,folioFactura) => {
         try {
-            const resp = await fetchConToken(`/uploads/obras/obra/${obraInfo._id}/gastos/${tipo}/${folioFactura}/${nombreArchivo}`);
-            if(resp.status != 200){
-                return message.error("No se encontro el archivo en el servidor!");
-            }
+            const resp = await fetchConToken(`/obras/${obraInfo._id}/gastos/${tipo}/${folioFactura}/${nombreArchivo}`);
+            if(resp.status != 200) return message.error("No se encontro el archivo en el servidor!");
             const bytes = await resp.blob();
             let element = document.createElement('a');
             element.href = URL.createObjectURL(bytes);
@@ -249,7 +247,7 @@ export const GastosGeneral = ({tipo,obraInfo,socket}) => {
                         <Statistic
                             title="Total de dinero"
                             precision={2}
-                            value={obraInfo.gastos[tipo].totalFacturas}
+                            value={obraInfo.gastos[tipo].totalFacturas | obraInfo.gastos[tipo].totalGastos}
                             valueStyle={{color: '#3f8600',}}
                             prefix="$"
                         />
@@ -257,7 +255,7 @@ export const GastosGeneral = ({tipo,obraInfo,socket}) => {
                     <Card>
                         <Statistic
                             title="Numero de registros"
-                            value={obraInfo.gastos[tipo].numeroFacturas}
+                            value={obraInfo.gastos[tipo].totalFacturas | obraInfo.gastos[tipo].numeroGastos}
                             valueStyle={{color: '#3f8600',}}
                             prefix={<CopyOutlined/>}
                             //suffix="%"

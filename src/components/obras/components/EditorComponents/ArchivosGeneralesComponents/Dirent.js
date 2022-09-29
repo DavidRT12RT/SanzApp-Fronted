@@ -9,7 +9,7 @@ const { confirm } = Modal;
 export const Dirent = ({obraId,isDirectory,name,path,setSearchParams,socket}) => {
 
     const nameOriginal = name;
-    if(name.length > 10 && (!isDirectory)) name = name.slice(0,14) + "..."; 
+    if(name.length > 20 && (!isDirectory)) name = name.slice(0,18) + "..."; 
 
     if(name.length > 16 && isDirectory) name = name.slice(0,16) + "...";
 
@@ -72,9 +72,11 @@ export const Dirent = ({obraId,isDirectory,name,path,setSearchParams,socket}) =>
 
                {!isDirectory && (
                     <div className="d-flex justify-content-center align-items-center gap-2">
-                        {/*<spa style={{color:"",fontSize:"24px"}}><Eye/></spa>*/}
-                        <span style={{color:"#61AFEF",fontSize:"24px",cursor:"pointer"}} onClick={descargarArchivo}><FileArrowDownFill/></span>
-                        <span style={{color:"#E06C75",fontSize:"24px",cursor:"pointer"}} onClick={borrarArchivo}><TrashFill/></span>
+                        {/* 
+                            <spa style={{color:"",fontSize:"24px"}}><Eye/></spa>
+                            <span style={{color:"#61AFEF",fontSize:"24px",cursor:"pointer"}} onClick={descargarArchivo}><FileArrowDownFill/></span>
+                            <span style={{color:"#E06C75",fontSize:"24px",cursor:"pointer"}} onClick={borrarArchivo}><TrashFill/></span>
+                        */}
                     </div>
                )}
             </div>

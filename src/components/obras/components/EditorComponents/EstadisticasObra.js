@@ -6,6 +6,8 @@ import "../../assets/EstadisticasObra.css";
 
 
 export const EstadisticasObra = ({obraInfo,socket}) => {
+
+    //Dinero de gastos por categoria
     const dineroGastosPorCategoria = {
         labels:["COMPROBABLES","NO COMPROBABLES","OFICINA"],
         datasets: [
@@ -26,6 +28,45 @@ export const EstadisticasObra = ({obraInfo,socket}) => {
             },
         ],
     };
+
+    //Horas extra totales por empleado
+    let horasExtraTotales = 0; 
+    let trabajadores = [];
+    let horasXTrabajador = [];
+
+    for(let i = 0; i < obraInfo.horasExtra.length; i++){
+        let dato = obraInfo.horasExtra[i];
+        trabajadores.push(dato.trabajador.nombre);
+        horasXTrabajador[i] = 0;
+        for(let j = 0; j < dato.registros.length; j++){
+            let registro = dato.registros[j];
+            horasExtraTotales += registro.horas;
+            horasXTrabajador[i] += registro.horas;
+        }
+    }
+
+
+    const horasExtraPorTrabajador = {
+        labels:trabajadores,
+        datasets: [
+            {
+                label:"Horas X trabajador",
+                data:horasXTrabajador,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
+
     return (
         <div >
             <section className="d-flex justify-content-center align-items-center flex-wrap gap-3 mt-5">
@@ -65,8 +106,9 @@ export const EstadisticasObra = ({obraInfo,socket}) => {
                 </div>
 
                 <div className="p-3 bg-body d-flex flex-column justify-content-center align-items-center contenedorGrafica">
-                    <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Dinero total de abonos por categoria</p>
-                    <p className="titulo" style={{fontSize:"30px",fontWeight:"700"}}><span className="text-danger">${obraInfo.abonos.cantidadTotal}</span></p>
+                    <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Horas extra totales</p>
+                    <p className="titulo" style={{fontSize:"30px",fontWeight:"700"}}><span className="text-danger">{horasExtraTotales}</span></p>
+                    <PieChart data={horasExtraPorTrabajador}/>
                 </div>
 
             </section>
