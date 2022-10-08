@@ -9,17 +9,14 @@ import { SocketContext } from "../../../context/SocketContext";
 import "./style.css";
 
 
-export const AlmacenNavbar = () =>{
+export const AdministracionNavbar = () =>{
     //Hook for change the state of the user and navigate
     const navigate = useNavigate();
-
     const { online } = useContext(SocketContext);
-
     const { pathname } = useLocation();
-
     let { uid,nombre,rol} = useSelector(state => state.auth);
-
     const dispatch = useDispatch();
+
     //handleLogout
     const handleLogout=()=>{
         dispatch(eventLogout());
@@ -27,15 +24,6 @@ export const AlmacenNavbar = () =>{
         message.success("Token eliminado!");
         navigate('/login',{replace:true});
     }
-
-    const renderizarBoton = () => {
-        if(pathname.startsWith("/aplicacion")){
-            return <li><Link to="/almacen/"><a class="dropdown-item" href="#">Ir a almacen</a></Link></li>
-        }else{
-            return <li><Link to="/aplicacion/"><a class="dropdown-item" href="#">Ir a aplicacion</a></Link></li>
-        }
-    }
-
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark p-3">
@@ -53,46 +41,13 @@ export const AlmacenNavbar = () =>{
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/" aria-current="page">Inicio</NavLink>
+                            } to="/administracion/" aria-current="page">Inicio</NavLink>
                         </li>
 
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/panel-de-control/" aria-current="page">Panel de control</NavLink>
-                        </li>
-
-
-
-                        <li className="nav-item">
-                            <NavLink className={({isActive})=>
-                                "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/productos/" aria-current="page">Productos en almacen</NavLink>
-                        </li>
-
-                        <li className="nav-item">
-                            <NavLink className={({isActive})=>
-                                "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/categorias/" aria-current="page">Categorias</NavLink>
-                        </li>
-
-
-                        <li className="nav-item">
-                            <NavLink className={({isActive})=>
-                                "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/entradas/" aria-current="page">Entradas</NavLink>
-                        </li>
-
-                        <li className="nav-item">
-                            <NavLink className={({isActive})=>
-                                "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/salidas/" aria-current="page">Salidas</NavLink>
-                        </li>
-
-                        <li className="nav-item">
-                            <NavLink className={({isActive})=>
-                                "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/inventarios/" aria-current="page">Inventarios</NavLink>
+                            } to="/administracion/usuarios/" aria-current="page">Usuarios registrados</NavLink>
                         </li>
 
                     </ul>
@@ -108,8 +63,8 @@ export const AlmacenNavbar = () =>{
                         </a>
                         <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
                             <li><a className="dropdown-item" href="#">Perfil</a></li>
-                            {rol === "ADMIN_ROLE" && renderizarBoton()}
-                            <li><Link className="dropdown-item" to={`/almacen/mi-espacio/`}>Mi espacio</Link></li>
+                            <li><Link to="/aplicacion/"><a class="dropdown-item" href="#">Ir a la aplicacion</a></Link></li>
+                            <li><Link to="/almacen/"><a class="dropdown-item" href="#">Ir a almacen</a></Link></li>
                             <li><hr className="dropdown-divider"/></li>
                             <li><a className="dropdown-item" href="#" onClick={handleLogout}>Cerrar sesion</a></li>
                         </ul>

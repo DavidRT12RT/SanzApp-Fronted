@@ -115,6 +115,7 @@ export const AplicationNavbar = () =>{
                         <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
                             <li><a className="dropdown-item" href="#">Perfil</a></li>
                             {rol === "ADMIN_ROLE" && renderizarBoton()}
+                            <li><Link className="dropdown-item" to={`/aplicacion/mi-espacio/`}>Mi espacio</Link></li>
                             <li><hr className="dropdown-divider"/></li>
                             <li><a className="dropdown-item" href="#" onClick={handleLogout}>Cerrar sesion</a></li>
                         </ul>

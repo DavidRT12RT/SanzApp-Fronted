@@ -18,6 +18,7 @@ import { Inventarios } from '../components/almacen/components/inventarios/Invent
 import { RegistrarInventario } from '../components/almacen/components/inventarios/RegistrarInventario';
 import { Inventario } from '../components/almacen/components/inventarios/Inventario';
 import { SalidaScreen } from '../components/almacen/components/salidas/SalidaScreen';
+import { MySpace } from '../components/mi-espacio/components/MySpace';
 
 export const AlmacenRoutes = () => {
     const { socket } = useContext(SocketContext);
@@ -40,6 +41,9 @@ export const AlmacenRoutes = () => {
                 <Route path="/inventarios/" element={<Inventarios/>}/>
                 <Route path="/inventarios/:id" element={<Inventario/>}/>
                 <Route path="/inventarios/registrar-inventario/" element={<RegistrarInventario/>}></Route>
+				<Route path="/mi-espacio/" element={
+                    <MySpace/>
+                }/>
                 <Route path="/*" element={<Component404 />} />
             </Routes>
         </>

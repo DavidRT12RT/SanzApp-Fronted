@@ -55,8 +55,6 @@ export const EditorObra = () => {
         socket.emit("obtener-obra-por-id", { obraId }, (obra) => { setObraInfo(obra)});
     }, [socket, obraId]);
 
-    console.log(obraInfo);
-
     //Escuchar si la obra se actualiza
     useEffect(() => {
         socket.on("obra-actualizada", (obra) => {

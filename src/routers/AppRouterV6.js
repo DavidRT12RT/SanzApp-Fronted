@@ -11,6 +11,8 @@ import { startChecking } from "../actions/authActions";
 import { SocketProvider } from "../context/SocketContext";
 import { PrivateRoutePorRole } from "./PrivateRoutePorRole";
 import { AlmacenRoutes } from "./AlmacenRoutes";
+import { SanzSpinner } from "../helpers/spinner/SanzSpinner";
+import { AdministracionRoutes } from "./AdministracionRoutes";
 
 export const AppRouter = ()=>{
 	const dispatch = useDispatch();
@@ -24,7 +26,7 @@ export const AppRouter = ()=>{
     //Cargando mientras se hace la autenticación automatica
 
     if(checking){
-      return <h5>Validando token, Espere...</h5>;
+	  return <SanzSpinner/>
     }
     return (
 		<BrowserRouter>
@@ -51,6 +53,13 @@ export const AppRouter = ()=>{
                   	</PrivateRoutePorRole>
                 	}
               	/>
+				<Route path="/administracion/*" element={
+					<PrivateRoutePorRole rolRequerido={["ADMIN_ROLE"]}>
+						<SocketProvider>
+							<AdministracionRoutes/>
+						</SocketProvider>
+					</PrivateRoutePorRole>
+				}/>
               	<Route path="/*" element={
 					<PublicRoute uid={uid}>
                     	<LoginScreen/>

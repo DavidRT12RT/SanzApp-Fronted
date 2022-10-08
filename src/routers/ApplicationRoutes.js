@@ -27,6 +27,7 @@ import { Empresas } from "../components/empresas/Empresas";
 import { RegistrarEmpresa } from "../components/empresas/components/RegistrarEmpresa";
 import { EmpresaScreen } from "../components/empresas/components/EmpresaScreen";
 import { SucursalScreen } from "../components/empresas/components/SucursalScreen";
+import { MySpace } from "../components/mi-espacio/components/MySpace";
 
 export const ApplicationRoutes = () => {
 
@@ -130,6 +131,10 @@ export const ApplicationRoutes = () => {
                         <EmpleadoScreen/>
                     </PrivateRoutePorRole>
                 } />
+				<Route path="/mi-espacio/" element={
+                    <MySpace/>
+                }/>
+
                 <Route path="/*" element={<Component404 />} />
             </Routes>
         </>

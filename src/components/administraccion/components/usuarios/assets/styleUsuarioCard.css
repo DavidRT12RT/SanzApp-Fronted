@@ -1,0 +1,16 @@
+.usuarioCard{
+    transition: box-shadow .3s;
+    width: 600px;
+    background-color: #fff;
+    padding:30px;
+}
+
+.usuarioCard:hover{
+    box-shadow: 0 0 11px rgba(33,33,33,.2); 
+    cursor: pointer;
+}
+
+.nombreUsuario{
+    font-size: 30px;
+    font-weight: 900;
+}
