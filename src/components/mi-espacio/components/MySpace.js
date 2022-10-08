@@ -74,6 +74,39 @@ export const MySpace = () => {
         fetchData();
     }, [path]);
 
+    useEffect(() => {
+        socket.on("actualizar-archivos-usuario",(values) => {
+            let query;
+            if(values.query.startsWith("/")){
+                query = (path === null ) ? "/" : `/${path}/`
+            }else{
+                query = (path === null ) ? "/" : path 
+            }
+            /*
+            console.log("Nuestro path",query);
+            console.log("Path que llega",values.query);
+            */
+            //Checamos si el path es el mismo en el que estamos
+            if(query === values.query){
+                const fetchData = async() => {
+                    const resp = await fetchConToken(`/usuarios/${uid}/archivos${query}`);
+                    const body = await resp.json();
+                    if(resp.status != 200) {
+                        message.error("Carpeta NO encontrada en el servidor,contacta a David!");
+                        return navigate(-1);
+                    }
+                    //Peticion con exito 
+                    setArchivos({
+                        files:body.content.files,
+                        directories:body.content.directories
+                    });
+                }
+                fetchData();               
+            }
+
+        });
+    }, [socket,path]);
+
 
     const propsDragger = {
         multiple:true,
@@ -137,22 +170,21 @@ export const MySpace = () => {
 			cancelText:"Volver atras",
             async onOk(){
                 let query = (path === null ) ? "/" : `/${path}/` 
-                /*
-                const resp = await fetchConToken(`/obras/${obraId}/crear-directorio/archivos${query}`,{name:values.nombre},"POST");
+                //const resp = await fetchConToken(`/obras/${obraId}/crear-directorio/archivos${query}`,{name:values.nombre},"POST");
+                const resp = await fetchConToken(`/usuarios/${uid}/crear-directorio/archivos${query}`,{name:values.nombre},"POST");
                 const body = await resp.json();
                 if(resp.status != 201) return message.error(body.msg);
                 //Directorio creado con exito!
                 message.success(body.msg);
                 //avisando a mi mismo y a los demas que se crea una carpeta en el servidor para que actualizen al igual que yo
-                socket.emit("actualizar-archivos-obra",({obraId,query}));
+                //socket.emit("actualizar-archivos-obra",({obraId,query}));
+                socket.emit("actualizar-archivos-usuario",({uid,query}));
                 setIsModalVisible({estado:false});
-                */
             } 
         });
     }
 
     const subirArchivos = async() => {
-
         let query = (path === null ) ? "/" : `/${path}/` 
         confirm({
             title:`Seguro quieres subir estos archivos a el path "${query}"`,
@@ -161,18 +193,16 @@ export const MySpace = () => {
 			okText:"Subir archivos",
 			cancelText:"Volver atras",
             async onOk(){
-                /*
                 const formData = new FormData();
                 for(let i = 0; i < filesList.length; i++) formData.append(`archivo ${i}`,filesList[i]);
-                const resp = await fetchConTokenSinJSON(`/obras/${obraId}/archivos${query}`,formData,"POST");
+                const resp = await fetchConTokenSinJSON(`/usuarios/${uid}/archivos${query}`,formData,"POST");
                 const body = await resp.json();
                 if(resp.status != 200) return message.error(body.msg);
                 //Archivo subido con exito al servidor
                 message.success(body.msg);
-                socket.emit("actualizar-archivos-obra",({obraId,query}));
+                socket.emit("actualizar-archivos-usuario",({uid,query}));
                 setIsModalVisible({estado:false});
                 setFilesList([]);
-                */
             }
         });
  
@@ -180,32 +210,27 @@ export const MySpace = () => {
 
     const descargarArchivo = async(file) => {
         let query = (path === null ) ? "/" : ("/"+path+"/") 
-        /*
-        const resp = await fetchConToken(`/obras/${obraId}/descargar-archivo/archivos${query}${file}`);
+        const resp = await fetchConToken(`/usuarios/${uid}/descargar-archivo/archivos${query}${file}`);
         if(resp.status != 200) return message.error("Imposible descargar archivo del servidor! , contacta a David!");
         const bytes = await resp.blob();
         let element = document.createElement('a');
         element.href = URL.createObjectURL(bytes);
         element.setAttribute('download',file);
         element.click();
-        */
     }
 
     const descargarCarpeta = async(directory) => {
         let query = (path === null ) ? "/" : ("/"+path+"/") 
-        /*
-        const resp = await fetchConToken(`/obras/${obraId}/descargar-carpeta/archivos${query}${directory}`);
+        const resp = await fetchConToken(`/usuarios/${uid}/descargar-carpeta/archivos${query}${directory}`);
         if(resp.status != 200) return message.error("Imposible descargar archivo del servidor! , contacta a David!");
         const bytes = await resp.blob();
         let element = document.createElement('a');
         element.href = URL.createObjectURL(bytes);
         element.setAttribute('download',directory);
         element.click();
-        */
     }
 
     const eliminarCarpeta = async(directory) => {
-        /*
         confirm({
             title:"Seguro quieres ELIMINAR esta carpeta del servidor?",
             icon:<ExclamationCircleOutlined />,
@@ -221,21 +246,19 @@ export const MySpace = () => {
                     cancelText:"Volver atras",
                     async onOk(){
                         let query = (path === null ) ? "/" : ("/"+path+"/") 
-                        const resp = await fetchConToken(`/obras/${obraId}/eliminar-carpeta/archivos${query}${directory}`,{},"DELETE");
+                        const resp = await fetchConToken(`/usuarios/${uid}/eliminar-carpeta/archivos${query}${directory}`,{},"DELETE");
                         const body = await resp.json();
                         if(resp.status != 200) return message.error("Imposible eliminar carpeta del servidor! , contacta a David!");
                         //Se borro la carpeta con exito!
-                        socket.emit("actualizar-archivos-obra",({obraId,query}));
+                        socket.emit("actualizar-archivos-usuario",({uid,query}));
                         message.success(body.msg);
                     }
                 })
             }
         });
-        */
     }
 
     const borrarArchivo = async(file) => {
-        /*
         confirm({
             title:"Seguro quieres ELIMINAR este archivo del servidor?",
             icon:<ExclamationCircleOutlined />,
@@ -251,17 +274,16 @@ export const MySpace = () => {
                     cancelText:"Volver atras",
                     async onOk(){
                         let query = (path === null ) ? "/" : ("/"+path+"/") 
-                        const resp = await fetchConToken(`/obras/${obraId}/eliminar-archivo/archivos${query}${file}`,{},"DELETE");
+                        const resp = await fetchConToken(`/usuarios/${uid}/eliminar-archivo/archivos${query}${file}`,{},"DELETE");
                         const body = await resp.json();
                         if(resp.status != 200) return message.error(body.msg);
                         //Archivo eliminando con exito!
                         message.success(body.msg);
-                        socket.emit("actualizar-archivos-obra",({obraId,query}));
+                        socket.emit("actualizar-archivos-usuario",({uid,query}));
                     }
                 });
             }
         });
-        */
     }
 
     return (
