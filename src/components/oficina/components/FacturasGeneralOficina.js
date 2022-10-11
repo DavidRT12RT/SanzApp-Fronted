@@ -475,11 +475,8 @@ export const FacturasGeneralOficina = ({coleccion,socket,oficinaInfo}) => {
 
     return (
         <>
-            <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <h6 className="text-muted">Total de facturas de {coleccion}</h6>
-                <Button type="primary" className="my-3" onClick={()=>{setIsModalVisible(true)}}>Agregar nueva factura!</Button>
-            </div>
-            <span>(Por defecto se mostraran solo se mostraran las facturas de este mes, <br/>si deseas puedes cambiar esto en la editor de fecha de abajo)</span>
+            <Button type="primary" className="my-3" onClick={()=>{setIsModalVisible(true)}}>Agregar nueva factura!</Button>
+            <p className="nota text-start">(Por defecto se mostraran solo se mostraran las facturas de este mes, <br/>si deseas puedes cambiar esto en la editor de fecha de abajo)</p>
             <div className="d-flex justify-content-start flex-wrap mt-3 gap-2">
                 <Card style={{width:"300px"}}>
                     <Statistic

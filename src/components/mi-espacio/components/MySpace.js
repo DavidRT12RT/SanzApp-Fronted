@@ -22,8 +22,6 @@ const { confirm } = Modal;
 
 export const MySpace = () => {
     
-
-
     //uid usuario y permisos de este
     const { uid,name } = useSelector(store => store.auth);
     //Hooks
@@ -121,15 +119,13 @@ export const MySpace = () => {
             let query = (path === null ) ? "/" : `/${path}/` 
             const formData = new FormData();
             for(let i = 0; i < filesListDragger.length; i++) formData.append(`archivo ${i}`,filesListDragger[i]);
-            /*
-            const resp = await fetchConTokenSinJSON(`/obras/${obraId}/archivos${query}`,formData,"POST");
+            const resp = await fetchConTokenSinJSON(`/usuarios/${uid}/archivos${query}`,formData,"POST");
             const body = await resp.json();
             if(resp.status != 200) return message.error(body.msg);
             //Archivo subido con exito al servidor
             message.success(body.msg);
-            socket.emit("actualizar-archivos-obra",({obraId,query}));
+            socket.emit("actualizar-archivos-usuario",({uid,query}));
             setFilesListDragger([]);
-            */
         },
         beforeUpload: file => {
             //Checar si el archivo es PDF O XML

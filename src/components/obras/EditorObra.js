@@ -61,8 +61,8 @@ export const EditorObra = () => {
             if(JSON.stringify(obra._id) === JSON.stringify(obraInfo._id)) setObraInfo(obra);
         });
     }, [socket, setObraInfo, obraInfo]);
-
     const [key, setKey] = useState(1);
+
     const renderizarComponente = () => {
         switch (key) {
             case "1":
@@ -72,7 +72,7 @@ export const EditorObra = () => {
                 ) 
             
             case "2":
-                //Observaciones lista
+                //Obsericiones lista
                 return (
                     <ComentariosObra obraInfo={obraInfo} socket={socket}/>
                 )

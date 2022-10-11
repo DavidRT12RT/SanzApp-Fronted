@@ -1,0 +1,53 @@
+.welcomeDiv{
+    background-color: #f8e5e9;
+    /*height: 200px;*/
+    margin-top: 15px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.welcomeDiv .titulo{
+    font-size: 24px;
+    color:#f7636f;
+}
+
+.welcomeDiv .descripcion{
+    font-size:18px;
+}
+
+.statistics{
+    margin-top: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap:20px;
+}
+
+.statisticDiv{
+    width: 500px;
+    padding:25px;
+    border-radius: 15px;
+    background-color: #fff;
+}
+
+.statisticDiv .content{
+    margin-bottom: 30px;
+}
+
+
+@media (min-width:200px) and (max-width:1500px) {
+    .imageWelcomeDiv{
+        display: none;
+    }
+
+    .welcomeDiv{
+        padding:20px;
+    }
+
+}

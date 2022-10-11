@@ -1,11 +1,18 @@
-import { Button, Divider, Dropdown, Input, Menu, DatePicker, Card, Statistic, message } from 'antd';
+import { Menu, Button , message, Layout } from 'antd';
+import { InfoCircleOutlined,TeamOutlined } from '@ant-design/icons';
 import React, { useContext, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { SocketContext } from '../../context/SocketContext';
 import { FacturasGeneralOficina } from './components/FacturasGeneralOficina';
-import moment from 'moment';
-import locale from "antd/es/date-picker/locale/es_ES"
 import { fetchConToken } from '../../helpers/fetch';
+import moment from "moment";
+
+//Estilos del componente
+import "./assets/styleGestionOficina.css";
+import { SanzSpinner } from '../../helpers/spinner/SanzSpinner';
+import { DashboardOficina } from './components/DashboardOficina';
+
+const { Content, Footer, Sider } = Layout;
 
 export const GestionOficina = () => {
     const startOfMonth = moment().startOf('month').locale('es').format("YYYY-MM-DD");
@@ -15,10 +22,9 @@ export const GestionOficina = () => {
     const [oficinaInfo, setOficinaInfo] = useState(null);
     //const [oficinaInfoGastosMes,setOficinaInfoGastosMes] = useState({});
     const { socket } = useContext(SocketContext);
+    const [key, setKey] = useState(1);
     //const colecciones = ["Agua","Luz","Gas","Luz","Material","Otros","Papeleria","Predial"];
     //let totalMes = 0,numeroRegistrosMes = 0;
-
-
 
     //Obtener información de la oficina cuando el componente se monte
     useEffect(() => {
@@ -40,107 +46,62 @@ export const GestionOficina = () => {
     }, [socket,setOficinaInfo]);
 
 
+    const renderizarComponente = () => {
+        switch (key) {
+            case "1":
+                return (<DashboardOficina oficinaInfo={oficinaInfo}/>) 
+            
+            case "2":
+                return <h1>Subir facturas</h1>
 
-    const menuReporte = (
-        <Menu>
-            <Menu.Item key={1}>Reporte de gastos de este mes</Menu.Item>
-            <Menu.Item key={2}>Reporte de gastos de una cierta colección este mes</Menu.Item>
-            <Menu.Divider/>
-            <Menu.Item key="Limpiar">Limpiar filtros</Menu.Item>
-        </Menu>
-    );
-
-    const onTab1Change = key => {
-        setActiveTabKey1(key);
-    };
-
-	const tabList = [
-        {
-        	key: 'tab1',
-        	tab: 'Facturas Luz',
-        },
-        {
-        	key: 'tab2',
-        	tab: 'Facturas Agua',
-        },
-        {
-            key:'tab3',
-            tab: 'Facturas Gas'
-        },
-        {
-            key:'tab4',
-            tab:'Facturas Papeleria'
-        },
-        {
-            key:'tab5',
-            tab:'Facturas de material de construcción'
-        },
-        {
-            key:'tab6',
-            tab:'Facturas Predial'
-        },
-        {
-            key:'tab7',
-            tab:'Facturas de otros tipos'
+            default:
+                return (<DashboardOficina oficinaInfo={oficinaInfo}/>) 
         }
-    ];
-
-    const contentList = 
-        {
-		    tab1:<FacturasGeneralOficina coleccion={"Luz"} socket={socket} oficinaInfo={oficinaInfo}/>,
-		    tab2:<FacturasGeneralOficina coleccion={"Agua"} socket={socket} oficinaInfo={oficinaInfo}/>,
-		    tab3:<FacturasGeneralOficina coleccion={"Gas"} socket={socket} oficinaInfo={oficinaInfo}/>,
-            tab4:<FacturasGeneralOficina coleccion={"Papeleria"} socket={socket} oficinaInfo={oficinaInfo}/>,
-            tab5:<FacturasGeneralOficina coleccion={"Material"} socket={socket} oficinaInfo={oficinaInfo}/>,
-            tab6:<FacturasGeneralOficina coleccion={"Predial"} socket={socket} oficinaInfo={oficinaInfo}/>,
-            tab7:<FacturasGeneralOficina coleccion={"Otros"} socket={socket} oficinaInfo={oficinaInfo}/>
-        };
+    }
 
     if(oficinaInfo === null){
-        return <h1>Loading</h1>
+        return <SanzSpinner/>
     }else{
         return (
-            <div className="container p-5 shadow rounded">
-                <div className="d-flex justify-content-between align-items-center flex-wrap">
-                    <h1 className="display-5 fw-bold">Gestion de gastos de oficina</h1>
-                    <div className="d-flex justify-content-center align-items-center gap-2">
-                        <Dropdown overlay={menuReporte}>
-                            <Button onClick={(e)=> e.preventDefault()}>...</Button>
-                        </Dropdown>
-                    </div>
-                    {/*Tarjetas de información*/}
-                    <div className="d-flex justify-content-start flex-wrap mt-3 gap-2">
-                        <Card style={{width:"300px"}}>
-                            <Statistic
-                                title="Numero de facturas registradas totales de todas las categorias"
-                                value={oficinaInfo.gastos.registrosTotales}
-                                precision={0}
-                                prefix="Total:"
-                            />
-                        </Card>
-                        <Card style={{width:"300px"}}>
-                            <Statistic
-                                title="Gasto totales de oficina de todas las categorias"
-                                value={oficinaInfo.gastos.gastosTotales}
-                                precision={2}
-                                prefix="Total:"
-                            />
-                        </Card>
-                    </div>
-                    <Divider/>
-                </div>
-                <Card
-                    className="col-12 mt-3"
-				    bordered={false}
-            	    tabList={tabList}
-            	    activeTabKey={activeTabKey1}
-            	    onTabChange={key => {
-            	        onTab1Change(key);
-            	    }}
-        	    >
-                    {contentList[activeTabKey1]}
-        	    </Card>
-            </div>
-        )
+            <Layout>
+                <Sider
+                    breakpoint="lg"
+                    collapsedWidth="0"
+                    onBreakpoint={(broken) => {
+                        console.log(broken);
+                    }}
+                    onCollapse={(collapsed, type) => {
+                        console.log(collapsed, type);
+                    }}
+                >
+                    <div className="logo" />
+                    <Menu
+                        theme="light"
+                        mode="inline"
+                        style={{ padding: 24, minHeight: "100vh" }}
+                        defaultSelectedKeys={["1"]}
+                        onClick={({ key }) => setKey(key)}
+                        items={[
+                            {
+                                key: "1",
+                                icon:<InfoCircleOutlined style={{fontSize:"18px"}}/>,
+                                label: "Dashboard",
+                            },
+
+                            {
+                                key: "2",
+                                icon: <TeamOutlined />,
+                                label: "Subir facturas",
+                            },
+                      ]}
+                    />
+                </Sider>
+            <Layout>
+                    <Content>
+                            {renderizarComponente()}
+                    </Content>
+               </Layout>
+            </Layout>
+        );
     }
 }
