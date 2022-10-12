@@ -1,7 +1,9 @@
 import React, { useEffect, useState,useMemo } from 'react'
 import { Link } from 'react-router-dom';
 import moment from "moment";
-import { Card } from 'antd';
+import { Card, Divider } from 'antd';
+import { useSelector } from 'react-redux';
+
 
 //<---- TODO CREAR UN INDEX EN LA CARPETA DE HOOKS ----->
 import { useSalidas } from '../../../../hooks/useSalidas';
@@ -17,10 +19,16 @@ import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
 
 //CSS
 import "./assets/style.css";
+import { ShoppingCartOutlined,TeamOutlined, ToolOutlined, FrownOutlined } from "@ant-design/icons";
+import welcomeImage from"./assets/imgs/juicy-man-studying-financial-analytics.gif";
+import { ArrowLeft, ArrowReturnRight, Bookmark, BoxSeam } from 'react-bootstrap-icons';
+
 
 
 export const PanelDeControl = () => {
-    const fecha = moment().locale('es').format("YYYY-MM-DD");
+    const fecha = moment().format("YYYY-MM-DD");
+
+    const { name } = useSelector(store => store.auth);
     const startOfMonth = moment().startOf('month').locale('es').format("YYYY-MM-DD");
     const endOfMonth   = moment().endOf('month').locale('es').format("YYYY-MM-DD");
     const startOfLastMonth = moment().startOf('month').locale('es').subtract(1, "month").format("YYYY-MM-DD");
@@ -298,70 +306,113 @@ export const PanelDeControl = () => {
         return <SanzSpinner/>
     }else{
         return (
-            <>
-                <section className="d-flex justify-content-center align-items-center flex-wrap gap-3 bg-body p-5">
-                   <Card className="text-center p-3 d-flex justify-content-center align-items-center shadow" style={{width:"350px",height:"360px"}}>
-                        <h1 className="titulo" style={{fontSize:"30px"}}>Categorias</h1>
-                        <h1 style={{fontSize:"50px"}}>{categoriasInformacion.total}</h1>
-                        <Link to={"/almacen/categorias/"} className="text-link" style={{fontSize:"15px"}}>Registrar una nueva categoria</Link>
-                    </Card>
-                    <Card className="text-center p-3 d-flex justify-content-center align-items-center shadow" style={{width:"350px",height:"360px"}}>
-                        <h1 className="titulo" style={{fontSize:"30px"}}>Productos</h1>
-                        <h1 style={{fontSize:"50px"}}>{productosInfo.total}</h1>
-                        <Link to={"/almacen/productos/registrar/"} className="text-link" style={{fontSize:"15px"}}>Registrar un nuevo prodcucto</Link>
-                    </Card>
-                    <Card className="text-center p-3 d-flex justify-content-center align-items-center shadow" style={{width:"350px",height:"360px"}}>
-                        <h1 className="titulo" style={{fontSize:"30px"}}>Salidas</h1>
-                        <h1 style={{fontSize:"50px"}}>{salidasOfMonth.totalRegistros}</h1>
-                        <Link to={"/almacen/retirar/"} className="text-link" style={{fontSize:"15px"}}>Realizar un retiro de almacen</Link>
-                    </Card>
-                    <Card className="text-center p-3 d-flex justify-content-center align-items-center shadow" style={{width:"350px",height:"360px"}}>
-                        <h1 className="titulo" style={{fontSize:"30px"}}>Entradas</h1>
-                        <h1 style={{fontSize:"50px"}}>{entradasOfMonth.totalRegistros}</h1>
-                        <Link to={"/almacen/ingresar/"} className="text-link" style={{fontSize:"15px"}}>Realizar una entrada</Link>
-                    </Card>
-               </section>
+            <div className="p-3 p-lg-5">
+                
+                <div className="d-flex justify-content-between align-items-center flex-wrap">
+                    <h1 className="titulo-descripcion">Dashboard</h1>
+                    <h1 className="titulo-descripcion text-muted">{fecha}</h1>
+                </div>
 
-                <section className="d-flex justify-content-center align-items-center gap-3 flex-wrap bg-light p-5">
-                    <div className="bg-body d-flex justify-content-center align-items-center text-center flex-column contenedorGrafica">
-                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Salidas por mes</p>
-                        {(salidasOfLastMonth.length === 0 && salidasOfMonth.length === 0) && <p className="text-danger danger mt-3">Ningun registro por el momento...</p>}
-                        <BarChart data={dataSalidas}/>
+
+                {/*Rectangulo con mensaje de bienvenida*/}
+                <div className="welcomeDivAlmacen">
+                    <div className="content">
+                        <h1 className="titulo text-warning">Bienvenid@ de vuelta <b>{name}</b>!</h1>
+                        <p className="descripcion">
+                            Seccion donde podras <b>analizar</b> el estado del almacen , ver <b>salidas</b>, <b>entradas</b> y <b>inventarios</b>,
+                            <br/>tambien podras ver estadisticas sobre ellos y informarte mas sobre estos.
+                        </p>
                     </div>
-                    <div className="bg-body d-flex justify-content-center align-items-center text-center flex-column contenedorGrafica">
-                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Entradas por mes</p>
-                        {(entradasOfLastMonth.length === 0 && entradasOfMonth.length === 0) && <p className="text-danger danger mt-3">Ningun registro por el momento...</p>}
-                        <BarChart data={dataEntradas}/>
-                    </div>
-                </section>
+                    <img src={welcomeImage} className="imageWelcomeDiv"/>
+                </div>
+                
 
-
-                <section className="d-flex justify-content-center align-items-center gap-4 flex-wrap bg-body p-5">
-                    <div className="p-3 bg-body d-flex flex-column justify-content-center align-items-center contenedorGrafica">
-                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Dinero por categoria</p>
+                <Divider/>
+                <h1 className="titulo-descripcion">Datos estadisticos</h1>
+                <div className="statistics">
+                    <div className="statisticDiv">
+                        <div className="content">
+                            <h1 className="titulo-descripcion">Dinero de almacen por categoria</h1>
+                            <Divider/>
+                        </div>
                         <PieChart data={dataProductosAlmacenDineroPorCategoria}/>
                     </div>
-
-                    <div className="p-3 bg-body d-flex flex-column justify-content-center align-items-center contenedorGrafica">
-                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Productos por categoria</p>
-                        {(productos.length === 0) && <p className="text-danger mt-3">Ningun producto registrado aun...</p>}
+                    <div className="statisticDiv">
+                        <div className="content">
+                            <h1 className="titulo-descripcion">Productos de almacen por categoria</h1>
+                            <Divider/>
+                        </div>
                         <PieChart data={dataProductosAlmacen}/>
                     </div>
-                </section>
+                </div>
 
-                <section className="d-flex justify-content-center align-items-center gap-4 flex-wrap bg-light p-5">
-                    <div className="p-3 bg-body d-flex flex-column justify-content-center align-items-center contenedorGrafica">
-                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Tipos de salidas este mes</p>
-                        {(salidas.length === 0) && <p className="text-danger mt-3">Ninguna salida registrada aun...</p>}
+                <div className="statistics">
+                    <div className="statisticDiv">
+                        <div className="content">
+                            <h1 className="titulo-descripcion">Salidas</h1>
+                            <Divider/>
+                        </div>
+                        <BarChart data={dataSalidas}/>
+                    </div>
+                    <div className="statisticDiv">
+                        <div className="content">
+                            <h1 className="titulo-descripcion">Entradas</h1>
+                            <Divider/>
+                        </div>
+                        <BarChart data={dataEntradas}/>
+                    </div>
+                </div>
+
+                <div className="statistics">
+                    <div className="statisticDiv">
+                        <div className="content">
+                            <h1 className="titulo-descripcion">Tipos de salidas en el mes</h1>
+                            <Divider/>
+                        </div>
                         <PieChart data={dataTiposSalida}/>
-                     </div>
-                    <div className="p-3 bg-body d-flex flex-column justify-content-center align-items-center contenedorGrafica">
-                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Tipos de entradas este mes</p>
-                        {(entradas.length === 0) && <p className="text-danger mt-3">Ninguna entrada registrada aun...</p>}
+                    </div>
+                    <div className="statisticDiv">
+                        <div className="content">
+                            <h1 className="titulo-descripcion">Tipos de entradas en el mes </h1>
+                            <Divider/>
+                        </div>
                         <PieChart data={dataTiposEntrada}/>
                     </div>
-                </section>
-            </>
+                </div>
+                <Divider/>
+                <h1 className="titulo-descripcion">Datos numericos</h1>
+
+                <section className="d-flex justify-content-center align-items-center flex-wrap gap-3 p-5">
+                    <div className="text-center bg-body d-flex justify-content-center flex-column gap-2" style={{width:"350px",height:"250px"}}>
+                        <p className="text-warning" style={{fontSize:"50px",margin:"0px"}}><Bookmark/></p>
+                        <p className="titulo" style={{fontSize:"50px",fontWeight:"700",color:"black",margin:"0px"}}>{categoriasInformacion.total}</p>
+                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Categorias</p>
+                    </div>
+
+                    <div className="text-center bg-body d-flex justify-content-center flex-column gap-2" style={{width:"350px",height:"250px"}}>
+                        <p className="text-warning" style={{fontSize:"50px",margin:"0px"}}><BoxSeam/></p>
+                        <p className="titulo" style={{fontSize:"50px",fontWeight:"700",color:"black",margin:"0px"}}>{productosInfo.total}</p>
+                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Productos</p>
+                    </div>
+
+                    <div className="text-center bg-body d-flex justify-content-center flex-column gap-2" style={{width:"350px",height:"250px"}}>
+                        <p className="text-warning" style={{fontSize:"50px",margin:"0px"}}><ArrowLeft/></p>
+                        <p className="titulo" style={{fontSize:"50px",fontWeight:"700",color:"black",margin:"0px"}}>{salidasOfMonth.totalRegistros}</p>
+                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Salidas en el mes</p>
+                    </div>
+
+                    <div className="text-center bg-body d-flex justify-content-center flex-column gap-2" style={{width:"350px",height:"250px"}}>
+                        <p className="text-warning" style={{fontSize:"50px",margin:"0px"}}><ArrowReturnRight/></p>
+                        <p className="titulo" style={{fontSize:"50px",fontWeight:"700",color:"black",margin:"0px"}}>{entradasOfMonth.totalRegistros}</p>
+                        <p className="titulo" style={{fontSize:"20px",fontWeight:"700"}}>Entradas en el mes</p>
+                    </div>
+
+
+               </section>
+
+
+            </div>
+
         )
     }
 }

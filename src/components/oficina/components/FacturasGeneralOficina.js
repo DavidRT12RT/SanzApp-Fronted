@@ -401,55 +401,45 @@ export const FacturasGeneralOficina = ({coleccion,socket,oficinaInfo}) => {
     //Colunmas de la tabla
     const columns = [
         {
-            title: 'Importe total factura',
-            dataIndex: 'importeFactura',
-            key: 'importeFactura',
+            title:<p className="titulo-descripcion">Importe total factura</p>,
+            render:(text,record) => (<p className="descripcion">{record.importeFactura}</p>),
             sorter: (a, b) => a.importeFactura - b.importeFactura,
             sortDirections: ['descend', 'ascend'],
         },
         {
-            title: 'Descripción o motivo de la factura',
-            dataIndex: 'descripcionFactura',
-            key: 'descripcionFactura',
+            title:<p className="titulo-descripcion">Descripción o motivo de la factura</p>,
+            render:(text,record) => (<p className="descripcion">{record.descripcionFactura}</p>),
         },
         {
-            title: 'Fecha de la factura',
-            dataIndex: 'fechaFactura',
-            key: 'fechaFactura',
+            title:<p className="titulo-descripcion">Fecha factura</p>,
+            render:(text,record) => (<p className="descripcion">{record.fechaFactura}</p>),
         },
         {
-            title:'Ver documentos',
+            title:<p className="titulo-descripcion">Ver documentos</p>,
             render:(text,record) => {
                 return (
-                    <Space size="middle">
-                        <Dropdown overlay={menuVisualizar(record)}>
-                            <a>
-                                Visualizar documentos<DownOutlined/>
-                            </a>
-                        </Dropdown>
-                    </Space>
+                    <Dropdown overlay={menuVisualizar(record)}>
+                        <a className="descripcion text-primary">
+                            Visualizar documentos<DownOutlined/>
+                        </a>
+                    </Dropdown>
                 )
             }
         },
         {
-            title: 'Descargar documentos',
-            dataIndex: 'documentos',
-            key: 'tags',
+            title:<p className="titulo-descripcion">Descargar documentos</p>,
             render: (text,record) => {
                 return (
-                    <Space size="middle">
-                        <Dropdown overlay={menuDescargar(record)}>
-                            <a>
-                                Descargar <DownOutlined />
-                            </a>
-                        </Dropdown>
-                    </Space>
+                    <Dropdown overlay={menuDescargar(record)}>
+                        <a className="descripcion text-primary">
+                            Descargar <DownOutlined />
+                        </a>
+                    </Dropdown>
                 )
             },
         },
         {
-            title:'Acciones',
-            key:'tags',
+            title:<p className="titulo-descripcion">Acciones</p>,
             render:(text,record) => {
                 return (
                     record.abono ? 
@@ -474,7 +464,8 @@ export const FacturasGeneralOficina = ({coleccion,socket,oficinaInfo}) => {
 
 
     return (
-        <>
+        <div className="p-lg-5 p-3" style={{minHeight:"100vh"}}>
+            <h1 className="titulo">Facturas <span className="text-primary">{coleccion}</span></h1>
             <Button type="primary" className="my-3" onClick={()=>{setIsModalVisible(true)}}>Agregar nueva factura!</Button>
             <p className="nota text-start">(Por defecto se mostraran solo se mostraran las facturas de este mes, <br/>si deseas puedes cambiar esto en la editor de fecha de abajo)</p>
             <div className="d-flex justify-content-start flex-wrap mt-3 gap-2">
@@ -527,12 +518,12 @@ export const FacturasGeneralOficina = ({coleccion,socket,oficinaInfo}) => {
                 <RangePicker onChange={onChangeDate} size="large" locale={locale} />
             </div>
             
-            <Table columns={columns} dataSource={facturasColeccionRegistros} className="mt-3"/>
+            <Table columns={columns} dataSource={facturasColeccionRegistros} className="mt-3" bordered/>
 
             {/*Modal para subir una factura*/}
-            <Modal title="Agregar factura" visible={isModalVisible} onOk={()=>{setIsModalVisible(false)}} onCancel={()=>{setIsModalVisible(false)}} footer={null}>
-                <h1>Subir factura de mantenimiento</h1>
-                <p className="lead">Para poder realizar esta operación necesitaras el documento XML y PDF.</p>
+            <Modal visible={isModalVisible} onOk={()=>{setIsModalVisible(false)}} onCancel={()=>{setIsModalVisible(false)}} footer={null}>
+                <h1 className="titulo">Subir factura de mantenimiento</h1>
+                <p className="descripcion">Para poder realizar esta operación necesitaras el documento XML y PDF.</p>
                 <Upload {...props} className="upload-list-inline" >
                     <Button icon={<UploadOutlined/>}>Selecciona el archivo</Button>
                 </Upload>
@@ -547,9 +538,9 @@ export const FacturasGeneralOficina = ({coleccion,socket,oficinaInfo}) => {
             </Modal>                
 
             {/*Modal para abonos en una factura*/}
-            <Modal title="Agregar abono a una factura" visible={isModalVisibileAbonos} onOk={()=>{setIsModalVisibileAbonos(false)}} onCancel={()=>{setIsModalVisibileAbonos(false)}} footer={null}>
-                    <h1>Subir abono a la factura</h1>
-                    <p className="lead">Para poder realizar esta acción necesitaras el documento PDF del abono</p>
+            <Modal visible={isModalVisibileAbonos} onOk={()=>{setIsModalVisibileAbonos(false)}} onCancel={()=>{setIsModalVisibileAbonos(false)}} footer={null}>
+                    <h1 className="titulo">Subir abono a la factura</h1>
+                    <p className="descripcion">Para poder realizar esta acción necesitaras el documento PDF del abono</p>
                     <Upload {...propsAbono} className="upload-list-inline" >
                         <Button icon={<UploadOutlined/>}>Selecciona el archivo del abono</Button>
                     </Upload>
@@ -565,6 +556,6 @@ export const FacturasGeneralOficina = ({coleccion,socket,oficinaInfo}) => {
             <Drawer width={640} closable={false} title="Visualizar archivo" placement="left" visible={isDrawerVisible} onClose={()=>{setIsDrawerVisible(false)}}>
                 <iframe type="text/plain" src={`http://localhost:4000/api/uploads/oficina/gastos/${coleccion}/${facturaActual.folioFactura}/${facturaActual.nombreArchivo}`} style={{height:"100%",width:"100%"}} frameBorder="0" allowFullScreen></iframe>
             </Drawer>
-        </>
+        </div>
     )
 }

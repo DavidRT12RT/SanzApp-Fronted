@@ -15,7 +15,7 @@ const moment = extendMoment(Moment);
 
 export const DashboardOficina = ({oficinaInfo}) => {
     //Hooks 
-    const { name } = useSelector(store => store.auth)
+    const { name } = useSelector(store => store.auth);
 
     const intervalo = 6;
     let fecha = moment().format("YYYY-MM-DD");
@@ -161,7 +161,7 @@ export const DashboardOficina = ({oficinaInfo}) => {
 
 
     return (
-        <div className="p-5">
+        <div className="p-lg-5 p-3">
 
             {/*Titulo y fecha*/}
             <div className="d-flex justify-content-between align-items-center flex-wrap">
@@ -180,6 +180,9 @@ export const DashboardOficina = ({oficinaInfo}) => {
                 </div>
                 <img src={welcomeImagen} className="imageWelcomeDiv"/>
             </div>
+
+            <Divider/>
+            <h1 className="titulo-descripcion">Datos estadisticos</h1>
 
             {/*Estadisticas sobre las facturas*/}
             <div className="statistics">

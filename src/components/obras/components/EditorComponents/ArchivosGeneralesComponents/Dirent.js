@@ -1,9 +1,6 @@
-import { message,Modal } from 'antd';
+import { Modal } from 'antd';
 import React from 'react'
-import { ExclamationCircleOutlined, WarningOutlined } from '@ant-design/icons';
 import { FolderFill,FileEarmarkTextFill,FileArrowDownFill,TrashFill,Eye } from 'react-bootstrap-icons';
-import { fetchConToken } from '../../../../../helpers/fetch';
-const { confirm } = Modal;
 
 
 export const Dirent = ({obraId="",isDirectory,name,path,setSearchParams,socket}) => {

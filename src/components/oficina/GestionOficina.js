@@ -48,11 +48,31 @@ export const GestionOficina = () => {
 
     const renderizarComponente = () => {
         switch (key) {
+            
             case "1":
+            case "2":
                 return (<DashboardOficina oficinaInfo={oficinaInfo}/>) 
             
-            case "2":
-                return <h1>Subir facturas</h1>
+            case "Agua":
+		        return (<FacturasGeneralOficina coleccion={"Agua"} socket={socket} oficinaInfo={oficinaInfo}/>)
+            
+            case "Luz":
+                return <FacturasGeneralOficina coleccion={"Luz"} socket={socket} oficinaInfo={oficinaInfo}/>
+            
+            case "Gas":
+		        return <FacturasGeneralOficina coleccion={"Gas"} socket={socket} oficinaInfo={oficinaInfo}/>
+
+            case "Papeleria":
+                return <FacturasGeneralOficina coleccion={"Papeleria"} socket={socket} oficinaInfo={oficinaInfo}/>
+
+            case "Material":
+                return <FacturasGeneralOficina coleccion={"Material"} socket={socket} oficinaInfo={oficinaInfo}/>
+
+            case "Predial":
+                return <FacturasGeneralOficina coleccion={"Predial"} socket={socket} oficinaInfo={oficinaInfo}/>
+
+            case "Otros":
+                return <FacturasGeneralOficina coleccion={"Otros"} socket={socket} oficinaInfo={oficinaInfo}/>
 
             default:
                 return (<DashboardOficina oficinaInfo={oficinaInfo}/>) 
@@ -92,6 +112,36 @@ export const GestionOficina = () => {
                                 key: "2",
                                 icon: <TeamOutlined />,
                                 label: "Subir facturas",
+                                children:[
+                                    {
+                                        key: "Agua",
+                                        label: "Agua",
+                                    },
+                                    {
+                                        key: "Luz",
+                                        label: "Luz",
+                                    },
+                                    {
+                                        key: "Gas",
+                                        label: "Gas",
+                                    },
+                                    {
+                                        key:"Material",
+                                        label:"Material"
+                                    },
+                                    {
+                                        key:"Papeleria",
+                                        label:"Papeleria"
+                                    },
+                                    {
+                                        key:"Predial",
+                                        label:"Predial"
+                                    },
+                                    {
+                                        key:"Otros",
+                                        label:"Otros"
+                                    }
+                                ]
                             },
                       ]}
                     />

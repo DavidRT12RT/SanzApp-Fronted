@@ -1,3 +1,4 @@
+
 .titulo{
 	color:#4a4a4a;
   	font-family: 'Lato', sans-serif;
@@ -24,6 +25,36 @@
   	font-size: 16px;
 }
 
+.welcomeDivAlmacen{
+    background-color: #f5f8e5;
+    /*height: 200px;*/
+    margin-top: 15px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.welcomeDivAlmacen .titulo{
+    font-size: 24px;
+}
+
+.welcomeDivAlmacen .descripcion{
+    font-size:18px;
+}
+
+@media (min-width:200px) and (max-width:1500px) {
+    .imageWelcomeDiv{
+        display: none;
+    }
+
+    .welcomeDivAlmacen{
+        padding:20px;
+    }
+
+}
 
 .contenedorGraficaBarra{
     width: 45%;
@@ -65,5 +96,4 @@
     .cantidadTotalAlmacen {
         font-size:50px;
     }
-    
 }

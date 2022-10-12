@@ -22,6 +22,7 @@ export const useSalidas = () => {
     return {
         isLoading,
         salidas,
-        salidasInformacion
+        salidasInformacion,
+        setSalidas
     };
 }
