@@ -1,0 +1,81 @@
+.containerInventarios{
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.containerInventarios .titulo{
+    color:#000;
+}
+
+.barraBusquedaInventarios{
+    width: 100%;
+}
+
+.containerCategorias{
+    display: flex;
+    justify-content: start;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow-x: hidden;
+}
+
+.categoriaCard{
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 200px;
+    height: 250px;
+    text-align: center;
+}
+
+
+.containerInventariosRegistros{
+    width: 100%;
+    gap: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.inventarioCard{
+    width: 60%; 
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+    display: flex;
+    justify-content:space-evenly;
+    align-items: center;
+    gap: 10px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+
+@media (min-width:100px) and (max-width:1000px){
+    .containerInventarios .containerCategorias{
+        overflow-x: scroll;
+    }
+
+    .inventarioCard{
+        width: 100%;
+    }
+    .categoriaCard{
+        width: 90%;
+    }
+
+    .containerInventarios{
+        width:100%;
+        padding: 20px;
+    }
+}

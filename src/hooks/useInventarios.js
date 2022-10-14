@@ -17,6 +17,7 @@ export const useInventarios = () => {
     
     return {
         isLoading,
-        inventarios
+        inventarios,
+        setInventarios
     };
 }

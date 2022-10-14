@@ -21,6 +21,7 @@ export const useEntradas = () => {
     return {
         isLoading,
         entradas,
-        entradasInformacion
+        entradasInformacion,
+        setEntradas
     };
 }

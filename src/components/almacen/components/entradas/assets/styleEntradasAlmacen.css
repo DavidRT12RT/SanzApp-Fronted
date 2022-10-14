@@ -1,9 +1,4 @@
-*{
-    margin: 0px;
-    padding: 0px;
-}
-
-.containerSalidas{
+.containerEntradas{
     padding: 30px;
     display: flex;
     justify-content: center;
@@ -14,36 +9,14 @@
     margin: 0 auto;
 }
 
-.containerSalidas .titulo{
-    color:#000;
+.containerEntradas .imagenRegister{
+    margin-top: -40px;
 }
-
-
-.containerSalidas .containerBusquedaSalidas{
+.containerEntradas .containerBusquedaEntradas{
     width: 100%;
 }
 
-
-.containerRegister{
-    background-color: #f5f8e5;
-    padding: 20px;
-    border-radius: 10px;
-    overflow: hidden;
-    height:200px;
-    width: 80%;
-}
-.containerRegister .titulo{
-    font-size:24px;
-}
-
-.containerRegister .btnRegister{
-    background-color:#fd842a;
-    color:#fff;
-    padding:20px;
-    text-align: center;
-}
-
-.containerSalidasCards{
+.containerEntradasCards{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -53,7 +26,7 @@
 }
 
 
-.containerSalidasCards .salidaCard{
+.containerEntradasCards .entradaCard{
     background-color: #fff; 
     border-radius: 10px;
     padding: 20px;
@@ -62,9 +35,8 @@
     align-items: center;
     flex-direction: row;
     gap: 50px;
-    width: 80%;/* Ajustando al 80% de su padre en este caso el container de salidas*/
+    width: 80%;/* Ajustando al 80% de su padre en este caso el container de entradas*/
 }
-
 
 @media (min-width:200px) and (max-width:1000px){
     .containerRegister {
@@ -73,11 +45,11 @@
         height: fit-content;
     }
 
-    .containerSalidas{
+    .containerEntradas{
         width:100%;
         padding: 20px;
     }
-    .containerSalidasCards .salidaCard{
+    .containerEntradasCards .entradaCard{
         width: 100%;
     }
 }

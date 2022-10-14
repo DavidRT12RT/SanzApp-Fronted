@@ -1,0 +1,26 @@
+.containerBusquedaRetiro{
+    text-align: center;
+}
+
+.containerBusquedaRetiro .barraBusqueda{
+    width: 70%;
+}
+
+.containerProductosARetirar{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    background-color: #fff;
+    gap:15px;
+    text-align: center;
+    width: 80%;
+    padding: 20px;
+}
+
+@media (min-width:100px) and (max-width:1000px){
+    .containerBusquedaRetiro .barraBusqueda{
+        width: 100%;
+    }
+}
