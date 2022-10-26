@@ -3,8 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { fetchConToken } from '../../../../helpers/fetch';
 import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
+import { ReporteSalidaAlmacen } from '../../../../reportes/Almacen/ReporteSalidaAlmacen';
+import { pdf } from '@react-pdf/renderer';
+import { saveAs } from 'file-saver';
 import "./assets/styles.css";
-
 
 export const SalidaScreen = () => {
 
@@ -57,6 +59,7 @@ export const SalidaScreen = () => {
         }
     }
 
+    /*
     const handleDownloadEvidencia = async () => {
         try {
             const resp = await fetchConToken("/salidas/documento-pdf",{salidaId:id},"POST");
@@ -69,6 +72,13 @@ export const SalidaScreen = () => {
            message.error("No se pudo descargar el archivo del servidor :("); 
         }
     }
+    */
+   const handleDownloadEvidencia = async() => {
+        const blob = await pdf((
+            <ReporteSalidaAlmacen salida={informacionSalida}/>
+        )).toBlob();
+        saveAs(blob,`salida_almacen_${informacionSalida._id}.pdf`)
+   }
 
 
     const columnsProductosRetirados = [
@@ -166,6 +176,8 @@ export const SalidaScreen = () => {
                             <h1 className="col-6 descripcion text-success">${informacionSalida.costoTotal}</h1>
                             <h1 className="titulo-descripcion col-6">Fecha creacion: </h1>
                             <h1 className="col-6 descripcion">{informacionSalida.fechaCreacion}</h1>
+                            <h1 className="titulo-descripcion col-6">Fecha ultima actualizacion: </h1>
+                            <h1 className="col-6 descripcion">{informacionSalida.fechaUltimaActualizacion}</h1>
                             {informacionSalida.tipo === "resguardo" && (
                                 <>
                                     <h1 className="titulo-descripcion col-6">Devuelto total: </h1>

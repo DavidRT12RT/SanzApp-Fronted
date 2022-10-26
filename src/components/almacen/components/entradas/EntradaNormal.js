@@ -35,7 +35,7 @@ export const EntradaNormal = () => {
             }
             return producto;
         });
-        bandera ? setListaProductos(nuevaListaProductos) : setListaProductos(productos => [...productos,{id,cantidad:1,}]);
+        bandera ? setListaProductos(nuevaListaProductos) : setListaProductos(productos => [...productos,{id,cantidad:1,costoXunidad:body.costo}]);
         setValueSearch("");
     }
 

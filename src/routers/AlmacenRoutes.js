@@ -22,6 +22,7 @@ import { MySpace } from '../components/mi-espacio/components/MySpace';
 import { SalidasAlmacenNew } from '../components/almacen/components/salidas/SalidasAlmacenNew';
 import { EntradasAlmacenNew } from '../components/almacen/components/entradas/EntradasAlmacenNew';
 import { InventariosAlmacen } from '../components/almacen/components/inventarios/InventariosAlmacen';
+import { EntradaScreen } from '../components/almacen/components/entradas/EntradaScreen';
 
 export const AlmacenRoutes = () => {
     const { socket } = useContext(SocketContext);
@@ -41,6 +42,7 @@ export const AlmacenRoutes = () => {
                 <Route path="/salidas" element={<SalidasAlmacenNew/>}/>
                 <Route path="/salidas/:id/" element={<SalidaScreen/>}/>
                 <Route path="/entradas" element={<EntradasAlmacenNew/>}/>
+                <Route path="/entradas/:id" element={<EntradaScreen/>}/>
                 <Route path="/inventarios/" element={<InventariosAlmacen/>}/>
                 <Route path="/inventarios/:id" element={<Inventario/>}/>
                 <Route path="/inventarios/registrar-inventario/" element={<RegistrarInventario/>}></Route>

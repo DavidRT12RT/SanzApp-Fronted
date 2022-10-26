@@ -5,8 +5,11 @@ import { ExclamationCircleOutlined, InfoCircleOutlined } from '@ant-design/icons
 import { Link } from 'react-router-dom';
 import { fetchConToken } from '../../../../helpers/fetch';
 import { ProductoCardAlmacen } from '../salidas/ProductoCardAlmacen';
+import { pdf } from '@react-pdf/renderer';
+import { saveAs } from 'file-saver';
 import "./assets/styles.css";
 import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
+import { ReporteSalidaAlmacen } from '../../../../reportes/Almacen/ReporteSalidaAlmacen';
 const { confirm } = Modal;
 const { Paragraph, Text } = Typography;
 const { Search } = Input;
@@ -55,7 +58,7 @@ export const EntradaDevolucion = ({ socket }) => {
                 if(flag){
                     setListaProductosDevueltos(nuevaListaProductos)
                 }else{
-                    setListaProductosDevueltos(productos => [...productos,{id,cantidad:1,}]);
+                    setListaProductosDevueltos(productos => [...productos,{id,cantidad:1,costoXunidad:body.costo}]);
                     setIsBotonDisabled(false);
                 }
                 setValueSearchCodigoProducto("");
@@ -80,6 +83,7 @@ export const EntradaDevolucion = ({ socket }) => {
         });
     }
 
+    /*
     const handleDownloadEvidencia = async () => {
         try {
             const resp = await fetchConToken("/salidas/documento-pdf",{salidaId:informacionSalida._id},"POST");
@@ -91,6 +95,19 @@ export const EntradaDevolucion = ({ socket }) => {
         } catch (error) {
            message.error("No se pudo descargar el archivo del servidor :("); 
         }
+    }
+    */
+    const handleDownloadEvidencia = async() => {
+        //Volver a hacer peticion
+        const resp = await fetchConToken(`/salidas/${informacionSalida._id}`);
+        const body = await resp.json();
+        if(resp.status != 200) return message.error(body.msg);
+        setInformacionSalida(body);
+
+        const blob = await pdf((
+            <ReporteSalidaAlmacen salida={informacionSalida}/>
+        )).toBlob();
+        saveAs(blob,`salida_almacen_${informacionSalida._id}.pdf`)
     }
 
     switch (processPhase) {

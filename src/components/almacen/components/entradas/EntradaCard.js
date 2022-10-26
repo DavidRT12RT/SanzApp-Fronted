@@ -8,8 +8,9 @@ import "./assets/styleEntradasAlmacen.css";
 export const EntradaCard = ({entrada}) => {
     
     const renderizarIcono = (tipo) => {
+        console.log(tipo);
         switch (tipo) {
-            case "sobrente-obra":
+            case "sobrante-obra":
                 return <span style={{color:"#61AFEF",fontSize:"34px"}}><Bank2/></span>;
             
             case "devolucion-resguardo":
@@ -36,7 +37,7 @@ export const EntradaCard = ({entrada}) => {
                     </div>
                 </div>
 
-               <span style={{color:"#61AFEF",fontSize:"34px"}}><ArrowRightSquareFill/></span>
+               <Link to={`/almacen/entradas/${entrada._id}`}><span style={{color:"#61AFEF",fontSize:"34px"}}><ArrowRightSquareFill/></span></Link>
 
             </div>
         </>
