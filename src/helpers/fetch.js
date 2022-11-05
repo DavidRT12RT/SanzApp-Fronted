@@ -1,9 +1,11 @@
 
 
+console.log("ENVIRONMENT:",process.env.REACT_APP_ENVIRONMENT);
+console.log("BACKEND URL",process.env.REACT_APP_BACKEND_URL);
 //fetch con token y sin token
 //const baseUrl = "https://backendsanzconstructora.herokuapp.com/api";
 //const baseUrl = "http://localhost:4000/api";
-const baseUrl = "http://54.91.5.96:4000/api";
+const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const fetchSinToken = (endpoint,data,method = "GET") =>{
 
