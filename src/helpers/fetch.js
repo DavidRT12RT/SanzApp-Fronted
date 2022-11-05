@@ -2,7 +2,9 @@
 
 //fetch con token y sin token
 //const baseUrl = "https://backendsanzconstructora.herokuapp.com/api";
-const baseUrl = "http://localhost:4000/api";
+//const baseUrl = "http://localhost:4000/api";
+const baseUrl = "http://54.91.5.96:4000/api";
+
 const fetchSinToken = (endpoint,data,method = "GET") =>{
 
     const url = `${baseUrl}${endpoint}`;
