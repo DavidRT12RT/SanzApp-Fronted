@@ -10,7 +10,8 @@ import LatoRegular from "../assets/fuentes/Lato-Regular.ttf";
 
 export const ReporteSalidas = ({ informacionProducto,intervaloFecha,salidas,salidasCategorias}) => {
     const fecha = moment().locale('es').format("YYYY-MM-DD");
-    const urlImagen = `http://localhost:4000/api/uploads/productos/${informacionProducto._id}`
+
+    const urlImagen = `${process.env.REACT_APP_BACKEND_URL}/api/uploads/productos/${informacionProducto._id}`
 
     Font.register({
         family:"Lato",

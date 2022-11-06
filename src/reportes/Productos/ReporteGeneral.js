@@ -13,7 +13,7 @@ ponemos entradas y asi
 
 export const ReporteGeneral = ({ informacionProducto,productoId,intervaloFecha,entradas,salidas,entradasCategorias,salidasCategorias}) => {
     const fecha = moment().locale('es').format("YYYY-MM-DD");
-    const urlImagen = `http://localhost:4000/api/uploads/productos/${productoId}`
+    const urlImagen = `${process.env.REACT_APP_BACKEND_URL}/api/uploads/productos/${productoId}`
 
     Font.register({
         family:"Lato",

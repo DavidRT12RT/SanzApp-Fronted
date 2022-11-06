@@ -22,7 +22,7 @@ export const ProductoCard = ({producto,rol}) => {
                 navigate(ruta);
             }}>
                 <div className="col-12 mb-3 mb-lg-0 d-flex justify-content-center align-items-center">
-                    <img style={{height:"186.67px",width:"186.67px"}} src={`http://localhost:4000/api/uploads/productos/${producto._id}`}/>
+                    <img style={{height:"186.67px",width:"186.67px"}} src={`${process.env.REACT_APP_BACKEND_URL}/api/uploads/productos/${producto._id}`}/>
                 </div>
                 <div className="col-12 mt-3">
                     <p className="titulo-descripcion text-success">${producto.costo}</p>

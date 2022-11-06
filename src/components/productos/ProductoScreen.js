@@ -75,7 +75,7 @@ export const ProductoScreen = () => {
                  <div className="row">
                     {/* Imagen del producto*/}
                     <div className="col-lg-6 col-12 d-flex justify-content-center align-items-center">
-                        <img src={`http://localhost:4000/api/uploads/productos/${informacionProducto._id}`} className="imagen-producto"/>
+                        <img src={`${process.env.REACT_APP_BACKEND_URL}/api/uploads/productos/${informacionProducto._id}`} className="imagen-producto" key={informacionProducto._id}/>
                     </div>
 
                     {/* Informacion basica del producto*/}

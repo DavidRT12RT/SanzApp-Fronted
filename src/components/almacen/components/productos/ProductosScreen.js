@@ -46,7 +46,7 @@ export const ProductosScreen = () => {
             });
             return setValuesTable(resultadosBusqueda);
         }
-//Solo filtrar por nombre 
+        //Solo filtrar por nombre 
         if(categorias.length === 0 && valueSearch.length > 0){
             const resultadosBusqueda = productos.filter(producto => {
                 if(producto.nombre.toLowerCase().includes(valueSearch.toLowerCase())) return producto;

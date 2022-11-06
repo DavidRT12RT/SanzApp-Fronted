@@ -10,7 +10,7 @@ import LatoRegular from "../assets/fuentes/Lato-Regular.ttf";
 export const ReporteMovimientos = ({movimientos,intervaloFecha,categorias,informacionProducto}) => {
 
     const fecha = moment().locale('es').format("YYYY-MM-DD");
-    const urlImagen = `http://localhost:4000/api/uploads/productos/${informacionProducto._id}`
+    const urlImagen = `${process.env.REACT_APP_BACKEND_URL}/api/uploads/productos/${informacionProducto._id}`
 
     movimientos = movimientos.map(movimiento => {
         return [movimiento.cantidadTeorica,movimiento.cantidadContada,movimiento.inventario.fechaRegistro,movimiento.tipo]

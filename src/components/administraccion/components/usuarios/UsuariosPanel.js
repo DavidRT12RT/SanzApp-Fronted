@@ -34,7 +34,7 @@ export const UsuariosPanel = () => {
     if(isLoading) return <SanzSpinner/>
     return (
         <>
-            <div className="bg-body p-3" style={{minHeight:"100vh"}}>
+            <div className="bg-body p-3 container" style={{minHeight:"100vh"}}>
                 <div className="container text-center mt-3">
                     <div className="d-flex justify-content-end">
                         <Link to={`/administracion/usuarios/registrar/`}><Button type="primary">Registrar usuario</Button></Link>
