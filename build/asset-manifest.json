@@ -1,11 +1,10 @@
 {
   "files": {
-    "main.css": "/static/css/main.f3bd607b.css",
-    "main.js": "/static/js/main.44b98b3f.js",
+    "main.css": "/static/css/main.b183df00.css",
+    "main.js": "/static/js/main.67673024.js",
     "static/media/backgroundVideo.mp4": "/static/media/backgroundVideo.5bc82e6266e9774b5652.mp4",
     "static/media/juicy-girl-working-at-home.gif": "/static/media/juicy-girl-working-at-home.e59d92d441dcd4d09d3e.gif",
     "static/media/juicy-man-studying-financial-analytics.gif": "/static/media/juicy-man-studying-financial-analytics.649103201b9cc51c66a4.gif",
-    "static/media/amazon-maquina.jpg": "/static/media/amazon-maquina.098c6568ec0259175a32.jpg",
     "static/media/Business-HD-Wallpaper-1.jpg": "/static/media/Business-HD-Wallpaper-1.b3140f7a7b1ca3775540.jpg",
     "static/media/BGRegistro.jpg": "/static/media/BGRegistro.a427affa1f9c32ed04c0.jpg",
     "static/media/fondoRegistro.jpg": "/static/media/fondoRegistro.eedfa5bc33ff46b76f81.jpg",
@@ -13,6 +12,7 @@
     "static/media/BG.jpg": "/static/media/BG.51087792e7d2237adeb7.jpg",
     "static/media/logo.png": "/static/media/logo.3cbfcf72d0aec3b80801.png",
     "static/media/favicon.png": "/static/media/favicon.dfc86943c24396d63caa.png",
+    "static/media/juicy-business-coach-explains-the-material-to-the-woman.png": "/static/media/juicy-business-coach-explains-the-material-to-the-woman.1f51968ef27180fd546d.png",
     "static/media/Lato-Regular.ttf": "/static/media/Lato-Regular.9d883d540ee2b4de8024.ttf",
     "static/media/Lato-Bold.ttf": "/static/media/Lato-Bold.636be8de934918e38ed9.ttf",
     "static/media/logoCompleto.jpg": "/static/media/logoCompleto.ae06f2e37257586ec6aa.jpg",
@@ -21,11 +21,11 @@
     "static/media/juicy-boy-with-open-laptop.png": "/static/media/juicy-boy-with-open-laptop.cca1a14d6654a076f743.png",
     "static/media/juicy-man-programmer-writing-code-and-make-web-design-on-a-pc.png": "/static/media/juicy-man-programmer-writing-code-and-make-web-design-on-a-pc.8e2ec5daad1f934b6982.png",
     "index.html": "/index.html",
-    "main.f3bd607b.css.map": "/static/css/main.f3bd607b.css.map",
-    "main.44b98b3f.js.map": "/static/js/main.44b98b3f.js.map"
+    "main.b183df00.css.map": "/static/css/main.b183df00.css.map",
+    "main.67673024.js.map": "/static/js/main.67673024.js.map"
   },
   "entrypoints": [
-    "static/css/main.f3bd607b.css",
-    "static/js/main.44b98b3f.js"
+    "static/css/main.b183df00.css",
+    "static/js/main.67673024.js"
   ]
 }

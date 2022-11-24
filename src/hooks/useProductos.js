@@ -20,6 +20,7 @@ export const useProductos = () => {
     return {
         isLoading,
         productos,
-        productosInfo
+        productosInfo,
+        setProductos
     }
 }

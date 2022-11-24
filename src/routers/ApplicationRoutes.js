@@ -21,13 +21,13 @@ import { CamionetaScreen } from "../components/camionetas/CamionetaScreen";
 import { RegistrarCamioneta } from "../components/camionetas/RegistrarCamioneta";
 import { GestionOficina } from "../components/oficina/GestionOficina";
 import { SeccionNoticias } from "../components/noticias/SeccionNoticias";
-import { ProductosScreen } from "../components/almacen/components/productos/ProductosScreen";
 
 import { Empresas } from "../components/empresas/Empresas";
 import { RegistrarEmpresa } from "../components/empresas/components/RegistrarEmpresa";
 import { EmpresaScreen } from "../components/empresas/components/EmpresaScreen";
 import { SucursalScreen } from "../components/empresas/components/SucursalScreen";
 import { MySpace } from "../components/mi-espacio/components/MySpace";
+import { ProductosScreen } from "../components/almacen/components/productosAlmacen/ProductosScreen";
 
 export const ApplicationRoutes = () => {
 

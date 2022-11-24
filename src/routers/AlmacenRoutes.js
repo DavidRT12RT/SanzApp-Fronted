@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom';
 import { IngresarAlmacen } from '../components/almacen/components/entradas/IngresarAlmacen';
 import { RetirarAlmacen } from '../components/almacen/components/salidas/RetirarAlmacen';
 import { ProductoScreen } from '../components/almacen/components/productos/ProductoScreen';
-import { ProductosScreen } from '../components/almacen/components/productos/ProductosScreen';
 import { SalidasAlmacen } from '../components/almacen/components/salidas/SalidasAlmacen';
 import { AlmacenNavbar } from '../components/almacen/ui/AlmacenNavbar';
 import { Component404 } from '../components/component404/Component404';
@@ -23,6 +22,7 @@ import { SalidasAlmacenNew } from '../components/almacen/components/salidas/Sali
 import { EntradasAlmacenNew } from '../components/almacen/components/entradas/EntradasAlmacenNew';
 import { InventariosAlmacen } from '../components/almacen/components/inventarios/InventariosAlmacen';
 import { EntradaScreen } from '../components/almacen/components/entradas/EntradaScreen';
+import { ProductosScreen } from '../components/almacen/components/productosAlmacen/ProductosScreen';
 
 export const AlmacenRoutes = () => {
     const { socket } = useContext(SocketContext);
@@ -32,7 +32,8 @@ export const AlmacenRoutes = () => {
             <AlmacenNavbar/>
             <Routes>
                 <Route path="/" element={<SeccionNoticias/>}/>
-                <Route path="/productos" element={<ProductosScreen/>}/>
+                {/*<Route path="/productos" element={<ProductosScreen/>}/> */}
+                <Route path="/productos/" element={<ProductosScreen/>}/>
                 <Route path="/panel-de-control/" element={<PanelDeControl/>}/>
                 <Route path="/productos/:productoId/" element={<ProductoScreen/>}/>
                 <Route path="/retirar/" element={<RetirarAlmacen/>}/>

@@ -71,13 +71,13 @@ export const EntradasAlmacenNew = () => {
 
     return (
         <div className="containerEntradas">
-            <Input.Search size="large" enterButton className="descripcion barraBusquedaSalidas" placeholder="Buscar una entrada por su numero de barras..."/>
             <div className="containerRegister row mt-3">
                 <div className="col-12 col-lg-9">
                     <h1 className="titulo text-warning">Buscar ingresar un producto a almacen o generar un reporte?</h1>
                     <p className="descripcion">Crea una nueva entrada en el almacen o genera un <b>reporte</b> sobre las entradas que ha tenido el sistema.</p>
 
                     <div className="d-flex justify-content-start align-items-center flex-wrap gap-2">
+                        {/*                        <Input.Search size="large" enterButton className="descripcion barraBusquedaSalidas" placeholder="Buscar una entrada por su numero de barras..."/> */}
                         <Link to={`/almacen/ingresar/`}><button type="button" className="btn btn-warning">Ingresar almacen</button></Link>
                         <button type="primary" className="btn btn-primary" onClick={() => {setIsModalVisible(true)}}>Generar reporte</button>
                     </div>

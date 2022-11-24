@@ -17,7 +17,7 @@
     width: 100%;
 }
 
-.containerCategorias{
+.containerInventarios .containerCategorias{
     display: flex;
     justify-content: start;
     flex-direction: row;
@@ -27,7 +27,7 @@
     overflow-x: hidden;
 }
 
-.categoriaCard{
+.containerInventarios .categoriaCard{
     padding: 20px;
     display: flex;
     justify-content: center;

@@ -1,7 +1,6 @@
-import { Avatar, Button, Tag } from 'antd';
 import React from 'react'
 import { Loading } from '../../../../obras/Loading';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import "./assets/styleProductoCard.css";
 
 export const ProductoCard = ({producto,rol}) => {
@@ -18,7 +17,7 @@ export const ProductoCard = ({producto,rol}) => {
         return <Loading/>
     }else{
         return (
-            <div className="row p-4 producto-card-container border" style={{width:"300px"}} onClick={() => {
+            <div className="row p-4 bg-body producto-card-container" onClick={() => {
                 navigate(ruta);
             }}>
                 <div className="col-12 mb-3 mb-lg-0 d-flex justify-content-center align-items-center">

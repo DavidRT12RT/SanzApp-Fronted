@@ -215,7 +215,7 @@ export const RegistrarProductoNew = () => {
 		)
 	}else return (
         <div className="padre">
-            <div className="container hijo p-5">
+            <div className="container hijo p-3 p-lg-5">
         		<h1 className="nombre-producto text-center">Registrar un nuevo producto</h1>
                 <h1 className="descripcion-producto text-center mb-5">Llenar los siguientes datos para registrar un nuevo producto a almacen.</h1>
                 <Steps current={current}>

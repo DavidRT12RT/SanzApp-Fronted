@@ -218,9 +218,6 @@ export const SalidasAlmacenNew = () => {
 						<Button type="primary" htmlType="submit">Descargar PDF</Button>
 					</Form>
 				</Modal>
-
-
        </div>
-
     )
 }

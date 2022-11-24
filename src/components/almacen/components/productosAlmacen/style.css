@@ -1,0 +1,131 @@
+.contenedorPrincipalProductosScreen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+@media (min-width:200px) and (max-width:1000px){
+    .contenedorPrincipalProductosScreen{
+        padding: 15px;
+    }
+}
+
+/*HEADER PRODUCTOS COMPONENT STYLES*/
+.headerProductos{
+    background-color:#d6effa;
+    margin-top: 15px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 80%;
+    height: 300px;
+    padding: 20px;
+}
+.headerProductos .titulo{
+    font-size: 24px;
+}
+
+.headerProductos .descripcion{
+    font-size:18px
+}
+
+.headerBarraBusqueda{
+    border-radius: 20px;
+}
+@media (min-width:200px) and (max-width:1000px){
+   .headerProductos{
+        width: 100%;
+    }
+}
+
+@media (min-width:200px) and (max-width:1300px){
+    .imageHeaderProductos{
+        display: none;
+    }
+}
+
+/*FILTROS COMPONENT STYLES*/
+.filtrosContenedorPrincipal{
+    width: 80%;
+    margin-top: 15px;
+}
+
+.categoriasContainer{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+}
+
+.categoriaCard{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 150px;
+    height: 150px;
+    background-color: #fff;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.costoContainer{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+}
+.costoContainer .precioFiltro {
+    width: 200px;
+}
+
+@media (min-width:200px) and (max-width:1000px){
+    .filtrosContenedorPrincipal{
+        width: 100%;
+    }
+    .categoriasContainer{
+        justify-content: center;
+    }
+    .costoContainer{
+        justify-content: center;
+    }
+
+}
+
+/*PRODUCTOS COMPONENT STYLES*/
+.productosContenedorPrincipal{
+    width: 80%;
+    margin-top: 15px;
+}
+
+.productosContainer{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+
+@media (min-width:200px) and (max-width:1000px){
+    .productosContenedorPrincipal{
+        width: 100%;
+    }
+    .productosContainer{
+        justify-content: center;
+    }
+
+}
+
