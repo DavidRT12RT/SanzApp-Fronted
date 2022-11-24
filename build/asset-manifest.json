@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.b183df00.css",
-    "main.js": "/static/js/main.67673024.js",
+    "main.js": "/static/js/main.9338af3b.js",
     "static/media/backgroundVideo.mp4": "/static/media/backgroundVideo.5bc82e6266e9774b5652.mp4",
     "static/media/juicy-girl-working-at-home.gif": "/static/media/juicy-girl-working-at-home.e59d92d441dcd4d09d3e.gif",
     "static/media/juicy-man-studying-financial-analytics.gif": "/static/media/juicy-man-studying-financial-analytics.649103201b9cc51c66a4.gif",
@@ -22,10 +22,10 @@
     "static/media/juicy-man-programmer-writing-code-and-make-web-design-on-a-pc.png": "/static/media/juicy-man-programmer-writing-code-and-make-web-design-on-a-pc.8e2ec5daad1f934b6982.png",
     "index.html": "/index.html",
     "main.b183df00.css.map": "/static/css/main.b183df00.css.map",
-    "main.67673024.js.map": "/static/js/main.67673024.js.map"
+    "main.9338af3b.js.map": "/static/js/main.9338af3b.js.map"
   },
   "entrypoints": [
     "static/css/main.b183df00.css",
-    "static/js/main.67673024.js"
+    "static/js/main.9338af3b.js"
   ]
 }
