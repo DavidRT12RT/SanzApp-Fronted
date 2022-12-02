@@ -22,12 +22,14 @@ import { RegistrarCamioneta } from "../components/camionetas/RegistrarCamioneta"
 import { GestionOficina } from "../components/oficina/GestionOficina";
 import { SeccionNoticias } from "../components/noticias/SeccionNoticias";
 
-import { Empresas } from "../components/empresas/Empresas";
 import { RegistrarEmpresa } from "../components/empresas/components/RegistrarEmpresa";
-import { EmpresaScreen } from "../components/empresas/components/EmpresaScreen";
 import { SucursalScreen } from "../components/empresas/components/SucursalScreen";
 import { MySpace } from "../components/mi-espacio/components/MySpace";
 import { ProductosScreen } from "../components/almacen/components/productosAlmacen/ProductosScreen";
+import Footer from "../components/Footer";
+import { Empresas } from "../components/empresass/EmpresasScreen/Empresas";
+import Obras from "../components/obrass/ObrasScreen/Obras";
+import { EmpresaScreen } from "../components/empresas/components/EmpresaScreen";
 
 export const ApplicationRoutes = () => {
 
@@ -80,7 +82,7 @@ export const ApplicationRoutes = () => {
                 <Route path="/empresas/registrar/" element={<RegistrarEmpresa/>}/>
                 <Route path="/empresas/:empresaId/sucursales/:sucursalId/" element={<SucursalScreen/>}/>
 
-                <Route path="/obras/" element={<ObrasScreen />} />
+                <Route path="/obras/" element={<Obras/>} />
                 <Route path="/obras/registrar/" element={
                     <PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","INGE_ROLE"]}>
                         <RegistrarObra/>
@@ -137,6 +139,7 @@ export const ApplicationRoutes = () => {
 
                 <Route path="/*" element={<Component404 />} />
             </Routes>
+            <Footer/>
         </>
     );
 };

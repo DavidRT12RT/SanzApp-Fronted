@@ -53,16 +53,15 @@ export const InformacionGeneral = ({obraInfo,socket}) => {
                         <Breadcrumb.Item>{obraInfo.titulo}</Breadcrumb.Item>
                     </Breadcrumb>
 
-            </div>
-                <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
-                    {isEditing ? <input style={{width:"100%"}} name="titulo" onChange={handleInputChange} value={formValues.titulo} className="mt-3 titulo form-control w-50"></input>:<h1 className="titulo">{obraInfo.titulo}</h1>}
                     {isEditing ? <div className="d-flex justify-content-start align-items-center gap-2"><Button type="primary" danger onClick={()=>{setIsEditing(false)}}>Salir sin guardar</Button><Button type="primary" onClick={actualizarInformacionObra}>Editar informacion</Button></div>: <Button type="primary" danger onClick={()=>{setIsEditing(true)}}>Editar informacion</Button>}
+
                 </div>
+                {isEditing ? <input style={{width:"100%"}} name="titulo" onChange={handleInputChange} value={formValues.titulo} className="mt-3 titulo form-control w-50"></input>:<h1 className="titulo">{obraInfo.titulo}</h1>}
                 <Divider/>
                 <h1 className="titulo col-6">Descripcion:</h1>
                 {isEditing ? <textarea style={{width:"100%"}} rows="5" name="descripcion" onChange={handleInputChange} value={formValues.descripcion} className="descripcion form-control"/> : <p className="descripcion">{obraInfo.descripcion}</p>}
                 <Divider/>
-                <h1 className="titulo col-6">Informacion de la obra:</h1>
+                <h1 className="titulo">Informacion:</h1>
                 <div className="row">
                     <h1 className="col-6 titulo-descripcion">Estado de la obra:</h1>
                     {isEditing 

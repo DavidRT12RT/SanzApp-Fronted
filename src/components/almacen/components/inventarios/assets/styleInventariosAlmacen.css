@@ -1,12 +1,32 @@
 .containerInventarios{
-    padding: 30px;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     flex-wrap: wrap;
-    width: 90%;
     margin: 0 auto;
+}
+
+.containerInventarios .containerRegister{
+    margin-top: 15px;
+    border-radius:20px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 80%;
+    height: fit-content;
+    padding: 20px;
+}
+@media (min-width:100px) and (max-width:1200px) {
+    .containerInventarios .containerRegister {
+        width: 100%;
+    }
+    .containerInventarios .categoriaCard{
+        width: 100%;
+    }
 }
 
 .containerInventarios .titulo{
@@ -36,6 +56,12 @@
     width: 200px;
     height: 250px;
     text-align: center;
+}
+
+@media (min-width:100px) and (max-width:1200px) {
+   .containerInventarios .categoriaCard{
+        width: 100%;
+    }
 }
 
 

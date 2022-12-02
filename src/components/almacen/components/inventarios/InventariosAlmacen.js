@@ -65,19 +65,15 @@ export const InventariosAlmacen = () => {
         return (
             <>
                 <div className="containerInventarios">
-                    <Input.Search size="large" enterButton className="descripcion barraBusquedaInventarios" placeholder="Buscar un inventario por su concepto..."/>
 
-                    <div className="containerRegister row mt-3">
-                        <div className="col-12 col-lg-9">
+                    <div className="containerRegister">
+                        <div>
                             <h1 className="titulo text-warning">Buscar crear un nuevo inventario o generar un reporte?</h1>
                             <p className="descripcion">Crea un nuevo inventario del almacen respecto a varias categorias y genera <br/>un reporte de los inventarios que ha tenido el sistema.</p>
-                            <div className="d-flex justify-content-start align-items-center flex-wrap gap-2">
-                                <Link to={`/almacen/inventarios/registrar-inventario/`}><button type="button" className="btn btn-warning">Crear nuevo inventario</button></Link>
-                            </div>
+                            <Input.Search size="large" enterButton className="descripcion barraBusquedaInventarios" placeholder="Buscar un inventario por su concepto..."/>
+                            <Link to={`/almacen/inventarios/registrar-inventario/`}><button type="button" className="btn btn-warning mt-3">Crear nuevo inventario</button></Link>
                         </div>
-                        <div className="col-lg-3 d-none d-lg-block">
-                            <img src={imagenInventarios} className="imagenRegister"/>
-                        </div>
+                       <img src={imagenInventarios} className="imagenRegister"/>
                     </div>
 
                     <h1 className="titulo-descripcion mt-5" style={{fontSize:"20px"}}>FILTRAR POR:</h1>

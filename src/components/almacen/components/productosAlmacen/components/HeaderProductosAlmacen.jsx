@@ -36,10 +36,12 @@ export const HeaderProductosAlmacen = ({setParametrosBusqueda}) => {
                     onSearch={handleSearch}  
                 >
                 </Input.Search>
-                <Link to={`/almacen/productos/registrar`}>
-                    <button className="btn btn-warning mt-3">Registrar producto</button>
-                </Link>
-
+                <div className="mt-3">
+                    <Link to={`/almacen/productos/registrar`}>
+                        <button className="btn btn-warning">Registrar producto</button>
+                    </Link>
+                    <button className="btn btn-primary ms-2">Crear reporte</button>
+                </div>
             </div>
             <img src={welcomeImage} className="imageHeaderProductos"/>
         </section>

@@ -8,6 +8,7 @@ export const ProductosCards = ({productos}) => {
     return (
         <section className="productosContenedorPrincipal">
             <h1 className="titulo-descripcion">Productos</h1>
+
             <div className="productosContainer">
                 {
                     productos.length > 0 ?

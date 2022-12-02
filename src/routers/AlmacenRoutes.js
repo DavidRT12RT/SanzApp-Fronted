@@ -23,6 +23,7 @@ import { EntradasAlmacenNew } from '../components/almacen/components/entradas/En
 import { InventariosAlmacen } from '../components/almacen/components/inventarios/InventariosAlmacen';
 import { EntradaScreen } from '../components/almacen/components/entradas/EntradaScreen';
 import { ProductosScreen } from '../components/almacen/components/productosAlmacen/ProductosScreen';
+import Footer from '../components/Footer';
 
 export const AlmacenRoutes = () => {
     const { socket } = useContext(SocketContext);
@@ -52,6 +53,7 @@ export const AlmacenRoutes = () => {
                 }/>
                 <Route path="/*" element={<Component404 />} />
             </Routes>
+            <Footer/>
         </>
     )
 }

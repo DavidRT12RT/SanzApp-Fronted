@@ -154,19 +154,18 @@ export const SalidasAlmacenNew = () => {
 
     return (
         <div className="containerSalidas">
-            <Input.Search size="large" onSearch={filtrarSalidaPorCodigo} enterButton className="descripcion barraBusquedaSalidas" placeholder="Buscar una salida por su numero de barras..."/>
-            <div className="containerRegister row mt-3">
-                <div className="col-12 col-lg-9">
+
+            <div className="containerRegister">
+                <div>
                     <h1 className="titulo text-warning">Buscar crear una nueva salida o generar un reporte?</h1>
                     <p className="descripcion">Crea una nueva salida en el almacen o genera un <b>reporte</b> sobre las salidas que ha tenido el sistema.</p>
-                    <div className="d-flex justify-content-start align-items-center flex-wrap gap-2">
+                    <Input.Search size="large" onSearch={filtrarSalidaPorCodigo} enterButton className="descripcion barraBusquedaSalidas" placeholder="Buscar una salida por su numero de barras..."/>
+                    <div className="mt-3">
                         <Link to={`/almacen/retirar/`}><button type="button" className="btn btn-warning">Retirar almacen</button></Link>
-                        <button type="primary" className="btn btn-primary" onClick={() => {setIsModalVisible(true)}}>Generar reporte</button>
+                        <button type="primary" className="btn btn-primary ms-2" onClick={() => {setIsModalVisible(true)}}>Generar reporte</button>
                     </div>
-               </div>
-                <div className="col-lg-3 d-none d-lg-block">
-                    <img src={imagenSalidas} className="imagenRegister"/>
                 </div>
+                <img src={imagenSalidas} className="imagenRegister"/>
             </div>
 
 
@@ -190,7 +189,7 @@ export const SalidasAlmacenNew = () => {
                     <h1 className="titulo-descripcion" style={{fontSize:"20px"}}>SALIDAS ENCONTRADAS</h1>
                     <Divider/>
                     {registrosSalidas.length === 0 && <p className="titulo-descripcion text-danger">Ninguna salida encontrada</p>}
-                    <div className="containerSalidasCards">
+                    <div className="containerSalidasCardsAlmacen">
                         {
                             registrosSalidas.map(salida => (
                                 <SalidaCard salida={salida} key={salida.key}/>
@@ -217,7 +216,7 @@ export const SalidasAlmacenNew = () => {
 						<p>(Por defecto la fecha sera la del mes actual)</p>
 						<Button type="primary" htmlType="submit">Descargar PDF</Button>
 					</Form>
-				</Modal>
+			</Modal>
        </div>
     )
 }

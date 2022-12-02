@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react'
 import { fetchConToken, fetchConTokenSinJSON } from '../../../../../helpers/fetch';
 import moment from 'moment';
 import locale from "antd/es/date-picker/locale/es_ES"
+import { ReporteGastos } from '../../../../../reportes/Obras/ReporteGastos';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
@@ -139,6 +141,10 @@ export const GastosGeneral = ({tipo,obraInfo,socket}) => {
         }
     }
 
+    const handleDownloadReporte = () => {
+
+    }
+
     const menuDescargar = (record) => {
         const {folioFactura,nombrePDF,nombreXML} = record
         return (
@@ -163,6 +169,12 @@ export const GastosGeneral = ({tipo,obraInfo,socket}) => {
                         },
                         sorter: (a, b) => a.importeFactura - b.importeFactura,
                         sortDirections: ['descend', 'ascend'],
+                    },
+                    {
+                        title:<p className="titulo-descripcion">Emisor factura</p>,
+                        render:(text,record) => {
+                            return <p className="descripcion">{record.emisorFactura}</p>
+                        }
                     },
                     {
                         title:<p className="titulo-descripcion">Descripción o motivo de la factura</p>,
@@ -228,7 +240,9 @@ export const GastosGeneral = ({tipo,obraInfo,socket}) => {
     return (
         <div>
             <div className="d-flex justify-content-end align-items-center gap-2">
-                <Button type="primary">Descargar resumen</Button>
+                <PDFDownloadLink  document={<ReporteGastos gastos={registrosGastos} tipo={tipo} obraInfo={obraInfo}/>} fileName={`reporte_gastos_${tipo}.pdf`}>
+                    {({ blob, url, loading, error }) => (<Button type="primary" loading={loading}>{loading ? "Cargando documento..." : "Descargar reporte"}</Button>)}
+                </PDFDownloadLink> 
             </div>
             <h1 className="titulo">Gastos <span className="text-warning">{tipo.toUpperCase()}</span></h1>
             <p className="descripcion">Seccion para subir gastos del tipo {tipo} asi como ver y descargar los documentos PDF y XML.</p>
@@ -255,7 +269,7 @@ export const GastosGeneral = ({tipo,obraInfo,socket}) => {
                     <Card>
                         <Statistic
                             title="Numero de registros"
-                            value={obraInfo.gastos[tipo].totalFacturas | obraInfo.gastos[tipo].numeroGastos}
+                            value={obraInfo.gastos[tipo].numeroFacturas | obraInfo.gastos[tipo].numeroGastos}
                             valueStyle={{color: '#3f8600',}}
                             prefix={<CopyOutlined/>}
                             //suffix="%"
@@ -282,13 +296,13 @@ export const GastosGeneral = ({tipo,obraInfo,socket}) => {
             </Modal>
             <Modal visible={isModalVisibleNoComprobable} onOk={()=>{setIsModalVisibleNoComprobable(false)}} onCancel={()=>{setIsModalVisibleNoComprobable(false)}} footer={null}>
                 <h1 className="titulo">Subir un gasto NO comprobable</h1>
-                <p className="descripcion">Subir un nuevo gasto de tipo <span className="text-warning">{tipo}</span> a la obra necesitaras el documento XML y PDF.</p>                        
+                {tipo == "NoComprobables " ? <p className="descripcion">Subir un nuevo gasto de tipo <span className="text-warning">{tipo}</span> a la obra necesitaras el documento XML y PDF.</p> : <p className="descripcion">Subir un nuevo gasto de tipo <span className="text-warning">{tipo}</span></p>}
                 <Form onFinish={handleUpload} layout="vertical" form={form}>
                     <Form.Item name="conceptoGasto" label="Concepto gasto" rules={[{required: true,message:"Introuce el concepto del gasto",},]}>
                         <Input/>
                     </Form.Item>
                     <Form.Item name="descripcionGasto" label="Descripción del gasto" rules={[{required: true,message:"Introduce la descripcion del gasto",},]}>
-                        <TextArea/>
+                        <TextArea maxLength={50}/>
                     </Form.Item>
                     <Form.Item name="importeGasto" label="Importe total del gasto" rules={[{required: true,message:"introduce el importe total del gasto",},]}>
                         <InputNumber min={0} style={{width:"100%"}}/>

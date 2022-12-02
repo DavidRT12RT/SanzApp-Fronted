@@ -1,0 +1,41 @@
+/* Empresa Screen component*/
+.empresaContenedorPrincipal{
+    padding: 20px;
+}
+
+
+
+/* Empresa basic information component*/
+
+.basicInformationContainer{
+    width: 100%;
+    height: 100vh;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+.basicInformationContainer .logoContainer{
+    width: 100%;
+    height: 150px;
+    background-color:#f5f2fd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.basicInformationContainer .logoContainer img{
+    width: 80%;
+}
+
+
+
+/* Empresa advanced information component*/
+
+.advancedInformationContainer{
+    width: 100%;
+    height: 100%;
+    background-color: #fefefe;
+    padding: 20px;
+}

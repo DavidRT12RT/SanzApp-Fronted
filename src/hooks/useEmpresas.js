@@ -22,6 +22,7 @@ export const useEmpresas = () => {
     
     return {
         isLoading,
-        empresas
+        empresas,
+        setEmpresas
     }
 }

@@ -1,0 +1,191 @@
+/*Obras screen component*/
+.obrasContenedorPrincipal{
+    padding: 30px 60px 30px 60px;
+}
+
+.obraBorder{
+    height:30px;
+    width: 100%;
+    margin:20px 0px 20px 0px;
+}
+
+.obrasContenedorPrincipal .contenedorIzquierdo{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+
+}
+
+.obrasContenedorPrincipal .contenedorDerecho {
+    border-radius: 15px;
+}
+
+@media (min-width:100px) and (max-width:1200px){
+    .obrasContenedorPrincipal{
+        padding:0px;
+    }
+
+    .obrasContenedorPrincipal .contenedorIzquierdo {
+        padding: 20px;
+    }
+
+    .obrasContenedorPrincipal .contenedorDerecho {
+        padding: 20px;
+    }
+}
+ 
+/*Obras header component*/
+
+.obrasHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color:#f5f8e5;
+    border-radius: 15px;
+}
+
+.obrasHeader img {
+    display: block;
+    width: 30%;
+}
+
+@media (min-width:100px) and (max-width:1300px) {
+    .obrasHeader {
+        padding: 20px;
+    }
+
+    .obrasHeader img{
+        display: none;
+    }
+
+}
+
+/* Filtros component*/
+
+.contenedorIzquierdo .filtro {
+    width: 100%;
+    height: fit-content;
+    border-radius: 15px;
+    background-color: #fff;
+    padding: 30px;
+}
+
+.filtro .titulo {
+    font-size: 20px; 
+}
+
+.filtroBorder {
+    height:10px;
+    width: 100%;
+    margin:20px 0px 20px 0px;
+}
+
+
+/*Obras Cards component*/
+.obrasCardsContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 25px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+
+/* Obra card component*/
+.obraCard{
+    width: 100%;
+    height: 200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+
+
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 100px;
+    padding-bottom: 100px;
+    border-radius: 15px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    background-color: #ffffff;
+    cursor: pointer;
+
+    position:relative;
+}
+
+.obraCard .triangulo{
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 80px 80px;
+    border-color: transparent transparent #ffc107 transparent;
+}
+
+.obraCard .contentLeft .logoContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    width: 150px;
+    height: 150px;
+    background-color:#f5f2fd;
+}
+
+.obraCard .contentLeft .logoContainer img{
+    width: 100%;
+}
+
+
+.obraCard .contentLeft{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+
+.obraCard .contentLeft .empresaInformation .titulo-descripcion{
+    font-size: 25px;
+}
+
+.obraCard .contentLeft .empresaInformation .descripcion{
+    font-size: 20px;
+}
+
+.empresaInformation{
+    margin-left: 20px;
+}
+
+.obraCard:hover {
+    border: 3px solid #ffc107;
+    overflow: hidden;
+}
+
+@media (min-width:100px) and (max-width:1200px){
+    .obrasCardsContainer{
+        width: 100%;
+    }
+    .obraCard {
+        padding: 10px;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .obraCard .contentRight {
+        display: none;
+    }
+}
+
+

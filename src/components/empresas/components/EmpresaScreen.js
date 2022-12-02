@@ -136,7 +136,7 @@ export const EmpresaScreen = () => {
         return <SanzSpinner/>
     }else{
         return (
-            <div className="container p-5" style={{minHeight:"100vh"}}>
+            <div className="container p-5">
                 <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap">
                     <div>
                         <h1 className="titulo" style={{fontSize:"32px"}}>{empresaInfo.nombre}</h1>
