@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { fetchConToken } from '../../../helpers/fetch'
 import { Divider, message, Table,Input, Button, Modal, Form, Select, InputNumber } from 'antd';
 import { ExclamationCircleOutlined,UploadOutlined } from '@ant-design/icons';
@@ -18,10 +18,25 @@ export const EmpresaScreen = () => {
     const [empresaInfo, setEmpresaInfo] = useState(null);
     const [sucursales, setSucursales] = useState([]);
     const [isModalRegistrarSucursalVisible, setIsModalRegistrarSucursalVisible] = useState(false);
-    
+
+    //Buscar sucursales
+    const [parametrosBusqueda, setParametrosBusqueda] = useState({});
+    const [searchParams, setSearchParams] = useSearchParams();
+    const { search } = useLocation();
+
+    useEffect(() => {
+        //Hacer una peticion a el servidor de obras y pasarle el parametro de busqueda
+        let query = {};
+        for(const property in parametrosBusqueda){
+            query = {...query,[property]:parametrosBusqueda[property]}
+        }
+        setSearchParams(query);
+
+    }, [parametrosBusqueda]);
+
     useEffect(() => {
         const fetchDataEmpresa = async() => {
-            const resp = await fetchConToken(`/empresas/${empresaId}`);
+            const resp = await fetchConToken(`/empresas/${empresaId}/${search}`);
             const body = await resp.json();
             if(resp.status !== 200) {
                 message.error(body.msg);
@@ -31,7 +46,7 @@ export const EmpresaScreen = () => {
             setEmpresaInfo(body);
         }
         fetchDataEmpresa();
-    }, []);
+    }, [search]);
 
     useEffect(() => {
         if(empresaInfo != null){
@@ -61,19 +76,6 @@ export const EmpresaScreen = () => {
             }
         });
     }
-
-    const filtrarSucursalPorNombre = (values) => {
-        if(values.length === 0) {
-            return setSucursales(empresaInfo.sucursales);
-        }
-
-        const resultadosBusqueda = empresaInfo.sucursales.filter(sucursal => {
-            if(sucursal.nombre.toLowerCase().includes(values.toLowerCase())) return sucursal;
-        })
-        setSucursales(resultadosBusqueda);
-    }
-
-
 
     const columns = [
         {
@@ -142,7 +144,7 @@ export const EmpresaScreen = () => {
                         <h1 className="titulo" style={{fontSize:"32px"}}>{empresaInfo.nombre}</h1>
                         <h1 className="descripcion col-6">{empresaInfo._id}</h1>
                     </div>
-                   <img src={`http://localhost:4000/api/uploads/empresas/empresa/${empresaInfo._id}`} style={{height:"50px"}}/>
+                    <img src={`${process.env.REACT_APP_BACKEND_URL}/api/uploads/empresas/empresa/${empresaInfo._id}`} style={{height:"50px"}}/>
                 </div>
                 <div className="row">
                     <div className="col-12 col-lg-6">
@@ -175,7 +177,12 @@ export const EmpresaScreen = () => {
                     enterButton="Buscar" 
                     size="large"
                     className="mt-3"
-                    onChange={(e)=>{filtrarSucursalPorNombre(e.target.value)}}
+                    onSearch={(e) => {
+                        setParametrosBusqueda((parametrosAnteriores) => ({
+                            ...parametrosAnteriores,
+                            nombre:e
+                        }));
+                    }}
                 />
                 <Table bordered className="mt-3" columns={columns} dataSource={sucursales}/>
 

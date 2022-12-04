@@ -10,37 +10,24 @@ const Filtros = ({setParametrosBusqueda}) => {
 
     const handleChangeEmpresa = (e) => {
         setEmpresaSeleccionadas([...e]);
+        setParametrosBusqueda((parametrosAnteriores) => {
+            delete parametrosAnteriores.pagina;
+            return {
+                ...parametrosAnteriores,
+                empresa:e.map(empresa => empresa._id)
+            }
+        });
     }
 
-    useEffect(() => {
-        setParametrosBusqueda((parametrosAnteriores) => ({
-            ...parametrosAnteriores,
-            empresa:empresaSeleccionadas.map(empresa => empresa._id)
-        }));
-    }, [empresaSeleccionadas]);
-    
-
-    const handleChangeSucursal = (e) => {
-        setParametrosBusqueda((parametrosAnteriores) => ({
-            ...parametrosAnteriores,
-            sucursal:[...e]
-        }));
+    const handleChangeParametrosBusqueda = (e,tipo) => {
+        setParametrosBusqueda((parametrosAnteriores) => {
+            delete parametrosAnteriores.pagina;
+            return {
+                ...parametrosAnteriores,
+                [tipo]:e
+            };
+        });
     }
-
-    const handleChangeTipoReporte = (e) => {
-        setParametrosBusqueda((parametrosAnteriores) => ({
-            ...parametrosAnteriores,
-            tipoReporte:e
-        }));
-    }
-
-    const handleChangeEstadoObra = (e) => {
-        setParametrosBusqueda((parametrosAnteriores) => ({
-            ...parametrosAnteriores,
-            estado:e
-        }));
-    }
-
 
     return (
         <>
@@ -60,14 +47,15 @@ const Filtros = ({setParametrosBusqueda}) => {
             <div className="filtro">
                 <h1 className="titulo">Sucursales</h1>
                 <div className="filtroBorder bg-warning"/>
-                <Checkbox.Group className="d-flex flex-column gap-3" onChange={handleChangeSucursal}>
+                <Checkbox.Group className="d-flex flex-column gap-3" onChange={(e) => handleChangeParametrosBusqueda(e,"sucursal")}>
                     {
                         empresaSeleccionadas.length > 0 ? 
                         empresaSeleccionadas.map(empresa => {
                             return (
                                <>
                                     <h1 className="titulo-descripcion">{empresa.nombre}</h1>
-                                    {empresa.sucursales.map(sucursal => {
+                                    {empresa.sucursales.map((sucursal,index) => {
+                                        if(index === 0) return <Checkbox className="ms-2" value={sucursal._id} key={sucursal._id}>{sucursal.nombre}</Checkbox>
                                         return <Checkbox value={sucursal._id} key={sucursal._id}>{sucursal.nombre}</Checkbox>
                                     })}
                                 </> 
@@ -88,7 +76,7 @@ const Filtros = ({setParametrosBusqueda}) => {
            <div className="filtro">
                 <h1 className="titulo">Tipo de reporte</h1>
                 <div className="filtroBorder bg-warning"/>
-                <Checkbox.Group className="d-flex flex-column" onChange={handleChangeTipoReporte}>
+                <Checkbox.Group className="d-flex flex-column" onChange={(e) => {handleChangeParametrosBusqueda(e,"tipoReporte")}}>
                     <Checkbox value={"CORRECTIVO"} key={"CORRECTIVO"} className="ms-2">Correctivo</Checkbox>
                     <Checkbox value={"PREVENTIVO"} key={"PREVENTIVO"}>Preventivo</Checkbox>
                 </Checkbox.Group>
@@ -97,7 +85,7 @@ const Filtros = ({setParametrosBusqueda}) => {
            <div className="filtro">
                 <h1 className="titulo">Estado de la obra</h1>
                 <div className="filtroBorder bg-warning"/>
-                <Checkbox.Group className="d-flex flex-column" onChange={handleChangeEstadoObra}>
+                <Checkbox.Group className="d-flex flex-column" onChange={(e) => {handleChangeParametrosBusqueda(e,"estado")}}>
                     <Checkbox value={"PRESUPUESTO-CLIENTE"} key={"PRESUPUESTO-CLIENTE"} className="ms-2">Presupuesto con cliente</Checkbox>
                     <Checkbox value={"EN-PROGRESO"} key={"EN-PROGRESO"}>En progreso</Checkbox>
                     <Checkbox value={"FINALIZADA"} key={"FINALIZADA"}>Finalizada</Checkbox>

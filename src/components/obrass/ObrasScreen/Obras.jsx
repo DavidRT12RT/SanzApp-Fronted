@@ -1,5 +1,6 @@
 import { message } from 'antd';
 import React, { useEffect, useState } from 'react'
+import { createSignatureFunctionForTransform } from 'react-refresh';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { fetchConToken } from '../../../helpers/fetch';
 import { SanzSpinner } from '../../../helpers/spinner/SanzSpinner';
@@ -19,7 +20,7 @@ const Obras = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { search } = useLocation();
 
-    const { isLoading,obras,setObras } = useObras();
+    const { isLoading,obras,setObras,informacionObras,setInformacionObras } = useObras();
 
     useEffect(() => {
         //Hacer una peticion a el servidor de obras y pasarle el parametro de busqueda
@@ -38,6 +39,11 @@ const Obras = () => {
             if(resp.status != 200) return message.error(body.msg);  
             //Busqueda con exito!
             setObras(body.obras);
+            setInformacionObras({
+                totalObrasActivas:body.totalObrasActivas,
+                totalObrasFinalizadas:body.totalObrasFinalizadas,
+                totalObrasEncontradas:body.totalObrasEncontradas
+            });
         }
         fetchData();
     }, [search]);
@@ -52,7 +58,7 @@ const Obras = () => {
             <section className="col-12 col-lg-9 contenedorDerecho">
                 <HeaderObras/>
                 <div className="obraBorder bg-warning"/>
-                <ObrasCards setParametrosBusqueda={setParametrosBusqueda} obras={obras}/>
+                <ObrasCards setObras={setObras} search={search} setParametrosBusqueda={setParametrosBusqueda} obras={obras} informacionObras={informacionObras}/>
             </section>
         </div>
     )

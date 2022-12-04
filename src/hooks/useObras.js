@@ -5,13 +5,24 @@ export const useObras = () => {
 
     const [isLoading,setisloading] = useState(true);
     const [obras, setObras] = useState([]);
+    const [informacionObras, setInformacionObras] = useState({});
 
     useEffect(() => {
         //Carga de empleados
-        fetchConToken("/obras",{},"GET")
-            .then(response => response.json())
-            .then(resp => setObras(resp.obras));
-        setisloading(false);
+        const fetchData = async() => {
+            setisloading(true);
+            const resp = await fetchConToken("/obras");
+            const body = await resp.json();
+
+            setObras(body.obras);
+            setInformacionObras({
+                totalObrasActivas:body.totalObrasActivas,
+                totalObrasFinalizadas:body.totalObrasFinalizadas,
+                totalObrasEncontradas:body.totalObrasEncontradas
+            });
+            setisloading(false);
+        }
+        fetchData();
     }, []);
 
 
@@ -19,6 +30,8 @@ export const useObras = () => {
     return {
         isLoading,
         obras,
-        setObras
+        setObras,
+        informacionObras,
+        setInformacionObras
     }
 }
