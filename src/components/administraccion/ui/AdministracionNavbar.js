@@ -47,9 +47,29 @@ export const AdministracionNavbar = () =>{
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/administracion/usuarios/" aria-current="page">Usuarios registrados</NavLink>
+                            } to="/administracion/almacen/" aria-current="page">Almacen</NavLink>
                         </li>
 
+
+                        <li className="nav-item">
+                            <NavLink className={({isActive})=>
+                                "nav-link h6" + (isActive ? " active" : "")
+                            } to="/administracion/usuarios/" aria-current="page">Usuarios registrados</NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className={({isActive})=>
+                                "nav-link h6" + (isActive ? " active" : "")
+                            } to="/administracion/oficina/" aria-current="page">Gestion de oficina</NavLink>
+                        </li>
+
+                        <li className="nav-item dropdown">
+                           <NavLink className={({isActive})=>
+                                "nav-link dropdown-toggle h6" + (isActive ? " active" : "")} to="/aplicacion/camionetas" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded={false}>Control de camionetas</NavLink>
+                            <ul className="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                                <li><NavLink className={({isActive})=>"h6 dropdown-item" +(isActive ? " active" : "")} to="/administracion/camionetas/localizacion/">Localización de camionetas</NavLink></li>
+                                <li><NavLink  className={({isActive})=>"h6 dropdown-item" +(isActive ? " active" : "")} to="/administracion/camionetas/">Gestion de camionetas</NavLink></li>
+                            </ul>
+                        </li>
                     </ul>
 
                     {

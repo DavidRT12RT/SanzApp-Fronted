@@ -59,7 +59,7 @@ export const AlmacenNavbar = () =>{
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/almacen/panel-de-control/" aria-current="page">Panel de control</NavLink>
+                            } to="/almacen/dashboard/" aria-current="page">Dashboard</NavLink>
                         </li>
 
 

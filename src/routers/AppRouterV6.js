@@ -46,7 +46,7 @@ export const AppRouter = ()=>{
                 	}
 				/>
               	<Route path="/almacen/*" element={
-					<PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ENCARGADO_ALMACEN_ROL"]}>
+					<PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ENCARGADO_ALMACEN_ROL","ADMINISTRADOR_ROLE"]}>
                     	<SocketProvider>
                         	<AlmacenRoutes/>
                       	</SocketProvider>
@@ -54,7 +54,7 @@ export const AppRouter = ()=>{
                 	}
               	/>
 				<Route path="/administracion/*" element={
-					<PrivateRoutePorRole rolRequerido={["ADMIN_ROLE"]}>
+					<PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
 						<SocketProvider>
 							<AdministracionRoutes/>
 						</SocketProvider>
