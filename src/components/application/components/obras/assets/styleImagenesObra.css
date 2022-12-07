@@ -1,0 +1,70 @@
+/*
+.ant-upload-list-picture-card-container{
+  margin-right: 220px;
+}
+*/
+
+
+.imagenes-obra .ant-upload-list-item{
+  width: 300px;
+  height: 300px;
+  object-fit: scale-down;
+}
+
+.imagenes-obra .ant-upload-list-item-thumbnail{
+  height: fit-content;
+  width: fit-content;
+}
+
+.imagenes-obra .ant-upload-list-picture-card-container{
+    /*grid-column: span 1;*/
+    flex-basis: 40%;
+    height: fit-content;
+}
+@media (min-width:1600px){
+.imagenes-obra .ant-upload-list-picture-card-container{
+    /*grid-column: span 1;*/
+    flex-basis: 25%;
+}
+}
+
+@media(max-width:800px){
+.imagenes-obra .ant-upload-list-picture-card-container{
+    /*grid-column: span 1;*/
+    flex-basis:100%;
+    display: flex;
+    justify-content: center;
+}
+}
+
+@media(min-width:1001px ) and (max-width:1600px){
+.imagenes-obra .ant-upload-list-picture-card-container{
+    /*grid-column: span 1;*/
+    flex-basis:33.333%;
+    display: flex;
+    justify-content: center;
+}
+}
+
+.ant-upload-list{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  /*height: 100vh;*/
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+
+/*
+.ant-upload-list{
+  height: 100vh;
+  justify-content: center;
+  display:grid;
+  grid-template-columns: repeat(3,1fr);
+}
+*/
+
+.ant-upload-list::before {
+  content: none;
+}

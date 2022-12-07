@@ -1,26 +1,27 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
-import {Component404} from "../components/component404/Component404";
 import { notification } from 'antd';
+
 //Components
 import {AplicationNavbar} from "../components/application/ui/AplicationNavbar";
-import { ObraScreen } from "../components/obras/ObraScreen";
-import { CalendarScreen } from "../components/calendar/CalendarScreen";
-import {ProductoScreen} from "../components/productos/ProductoScreen";
 import { PrivateRoutePorRole } from "./PrivateRoutePorRole";
 import { useContext, useEffect } from "react";
 import { SocketContext } from "../context/SocketContext";
-import { RegistrarObra } from "../components/obras/RegistrarObra";
-import { EditorObra } from "../components/obras/EditorObra";
 
-import { RegistrarEmpresa } from "../components/empresas/components/RegistrarEmpresa";
-import { SucursalScreen } from "../components/empresas/components/SucursalScreen";
-import { MySpace } from "../components/mi-espacio/components/MySpace";
+import Footer from '../components/componentesGenerales/Footer';
+import { SeccionNoticias } from '../components/componentesGenerales/noticias/SeccionNoticias';
+import { Empresas } from "../components/application/components/empresass/EmpresasScreen/Empresas";
+import { EmpresaScreen } from "../components/application/components/empresas/components/EmpresaScreen";
+import { RegistrarEmpresa } from "../components/application/components/empresas/components/RegistrarEmpresa";
+import { SucursalScreen } from "../components/application/components/empresas/components/SucursalScreen";
+import { RegistrarObra } from "../components/application/components/obras/RegistrarObra";
+import Obras from "../components/application/components/obrass/ObrasScreen/Obras";
+import { EditorObra } from "../components/application/components/obras/EditorObra";
+import { ObrasScreen } from "../components/application/components/obras/ObrasScreen";
+import { Component404 } from "../components/componentesGenerales/component404/Component404";
+import { CalendarScreen } from "../components/componentesGenerales/calendar/CalendarScreen";
+import { MySpace } from "../components/componentesGenerales/mi-espacio/components/MySpace";
 import { ProductosScreen } from "../components/almacen/components/productosAlmacen/ProductosScreen";
-import Footer from "../components/Footer";
-import { Empresas } from "../components/empresass/EmpresasScreen/Empresas";
-import Obras from "../components/obrass/ObrasScreen/Obras";
-import { EmpresaScreen } from "../components/empresas/components/EmpresaScreen";
-import { SeccionNoticias } from "../components/noticias/SeccionNoticias";
+import { ProductoScreen } from "../components/almacen/components/productos/ProductoScreen";
 
 export const ApplicationRoutes = () => {
 
@@ -65,7 +66,7 @@ export const ApplicationRoutes = () => {
             <AplicationNavbar/> 
             <Routes>
                 <Route path="/" element={<SeccionNoticias />} />
-                <Route path="/almacen/" element={<ProductosScreen />} />
+                <Route path="/almacen/" element={<ProductosScreen/>} />
                 <Route path="/almacen/:productoId/" element={<ProductoScreen />} />
 
                 <Route path="/empresas/" element={<Empresas/>}/>
@@ -86,12 +87,10 @@ export const ApplicationRoutes = () => {
                     </PrivateRoutePorRole>
                 }/>
 
-                <Route path="/obras/:obraId/" element={<ObraScreen />} />
+                <Route path="/obras/:obraId/" element={<ObrasScreen />} />
                 <Route path="/calendario/" element={<CalendarScreen/>} />
 
-				<Route path="/mi-espacio/" element={
-                    <MySpace/>
-                }/>
+				<Route path="/mi-espacio/" element={<MySpace/>}/>
 
                 <Route path="/*" element={<Component404 />} />
             </Routes>

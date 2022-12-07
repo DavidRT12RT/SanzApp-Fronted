@@ -1,6 +1,6 @@
 import { Avatar, Tag } from 'antd';
 import React, { useEffect, useState } from 'react'
-import { Loading } from '../../../obras/Loading';
+import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
 
 export const ProductoCardDevolucion = ({producto,listaProductosDevueltos}) => {
 
@@ -15,7 +15,7 @@ export const ProductoCardDevolucion = ({producto,listaProductosDevueltos}) => {
     }, [listaProductosDevueltos]);
 
     if(producto === null){
-        return <Loading/>
+        return <SanzSpinner/>
     }else{
         return (
             <div className="row p-5 border" style={{maxWidth:"600px",minWidth:"350px"}}>

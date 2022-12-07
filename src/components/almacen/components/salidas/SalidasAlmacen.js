@@ -3,7 +3,6 @@ import { DownloadOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react'
 import { fetchConToken } from '../../../../helpers/fetch';
 import { useSalidas } from '../../../../hooks/useSalidas';
-import { Loading } from '../../../obras/Loading';
 import { ProductoCardAlmacen } from './ProductoCardAlmacen';
 import moment from 'moment';
 import locale from "antd/es/date-picker/locale/es_ES"
@@ -14,6 +13,7 @@ import { saveAs } from 'file-saver';
 import "./assets/styles.css";
 import { ReporteSalidasAlmacen } from '../../../../reportes/Almacen/ReporteSalidasAlmacen';
 import { Link } from 'react-router-dom';
+import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
 const { Search } = Input;
 const { RangePicker } = DatePicker;
 
@@ -256,7 +256,7 @@ export const SalidasAlmacen = () => {
 	}
 
 	if(isLoading || isLoadingEmpleados || isLoadingObras){
-		return <Loading/>
+		return <SanzSpinner/>
 	}else{
 		return (				
 			<>

@@ -18,7 +18,6 @@ export const EntradasProducto = ({registros,informacionProducto}) => {
     const location = useLocation();
 
 
-
     useEffect(() => {
         setRegistrosEntradas([...registros.sobranteObra,...registros.devolucionResguardo,...registros.compraDirecta]);
     }, [registros]);

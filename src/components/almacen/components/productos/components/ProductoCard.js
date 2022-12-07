@@ -1,5 +1,4 @@
 import React from 'react'
-import { Loading } from '../../../../obras/Loading';
 import { useLocation, useNavigate } from 'react-router-dom';
 import "./assets/styleProductoCard.css";
 
@@ -13,22 +12,18 @@ export const ProductoCard = ({producto,rol}) => {
     const navigate = useNavigate();
 
 
-    if(producto === null){
-        return <Loading/>
-    }else{
-        return (
-            <div className="row p-4 bg-body producto-card-container" onClick={() => {
-                navigate(ruta);
-            }}>
-                <div className="col-12 mb-3 mb-lg-0 d-flex justify-content-center align-items-center">
-                    <img style={{height:"186.67px",width:"186.67px"}} src={`${process.env.REACT_APP_BACKEND_URL}/api/uploads/productos/${producto._id}`}/>
-                </div>
-                <div className="col-12 mt-3">
-                    <p className="titulo-descripcion text-success">${producto.costo}</p>
-                    <h6 className="fw-bold">{producto.nombre}</h6>
-                    {producto.estatus ? <p className="text-success">Disponible</p> : <p className="text-danger">No disponible</p>}
-                </div>
+    return (
+        <div className="row p-4 bg-body producto-card-container" onClick={() => {
+            navigate(ruta);
+        }}>
+            <div className="col-12 mb-3 mb-lg-0 d-flex justify-content-center align-items-center">
+                <img style={{height:"186.67px",width:"186.67px"}} src={`${process.env.REACT_APP_BACKEND_URL}/api/uploads/productos/${producto._id}`}/>
             </div>
-        )
-    }
+            <div className="col-12 mt-3">
+                <p className="titulo-descripcion text-success">${producto.costo}</p>
+                <h6 className="fw-bold">{producto.nombre}</h6>
+                {producto.estatus ? <p className="text-success">Disponible</p> : <p className="text-danger">No disponible</p>}
+            </div>
+        </div>
+    )
 }

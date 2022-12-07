@@ -96,7 +96,6 @@ export const SalidasProducto = ({registros,informacionProducto}) => {
             title:"Beneficiario del producto",
             key:"beneficiario",
             dataIndex:"beneficiario",
-            responsive: ["xs"],
             render:(text,record) => {
                 switch (record.tipo) {
                     case "obra":

@@ -1,9 +1,8 @@
 //React
 import {BrowserRouter, Route, Routes} from "react-router-dom"
 //Importaciones propias
-import {PrivateRoute} from "./PrivateRoute";
+//import {PrivateRoute} from "./PrivateRoute";
 import { ApplicationRoutes } from "./ApplicationRoutes";
-import { LoginScreen } from "../components/auth/LoginScreen";
 import { PublicRoute } from "./PublicRoute";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
@@ -13,6 +12,11 @@ import { PrivateRoutePorRole } from "./PrivateRoutePorRole";
 import { AlmacenRoutes } from "./AlmacenRoutes";
 import { SanzSpinner } from "../helpers/spinner/SanzSpinner";
 import { AdministracionRoutes } from "./AdministracionRoutes";
+
+//Cargando estilos de ant design (General para todos los componentes)
+import "antd/dist/antd.css";
+import { LoginScreen } from "../components/componentesGenerales/auth/LoginScreen";
+
 
 export const AppRouter = ()=>{
 	const dispatch = useDispatch();
@@ -25,9 +29,7 @@ export const AppRouter = ()=>{
 
     //Cargando mientras se hace la autenticación automatica
 
-    if(checking){
-	  return <SanzSpinner/>
-    }
+    if(checking) return <SanzSpinner/>
     return (
 		<BrowserRouter>
         	<Routes>

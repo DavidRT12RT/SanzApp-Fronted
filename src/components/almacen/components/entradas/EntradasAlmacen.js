@@ -2,7 +2,6 @@ import { Button, Col, DatePicker, Divider, Drawer, Dropdown, Form, Input, Menu, 
 import { DownloadOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react'
 import { useEntradas } from '../../../../hooks/useEntradas';
-import { Loading } from '../../../obras/Loading';
 import { ProductoCardAlmacen } from '../salidas/ProductoCardAlmacen';
 import moment from 'moment';
 import locale from "antd/es/date-picker/locale/es_ES"
@@ -11,6 +10,7 @@ import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
 import { ReporteEntradasAlmacen } from '../../../../reportes/Almacen/ReporteEntradasAlmacen';
 import { Link } from 'react-router-dom';
+import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
 const { Search } = Input;
 const { RangePicker } = DatePicker;
 
@@ -125,7 +125,7 @@ export const EntradasAlmacen = () => {
     }
 
     if(isLoading){
-       return <Loading/> 
+       return <SanzSpinner/> 
     }else{
         return (
             <>

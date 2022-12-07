@@ -1,0 +1,69 @@
+.titulo{
+	color:#4a4a4a;
+  	font-family: 'Lato', sans-serif;
+  	line-height: 1.5;
+  	font-size: 32px;
+  	font-weight: 900;
+}
+.descripcion{
+  	color:#000;
+  	font-family: 'Lato',sans-serif;
+  	font-size:20px; 
+	font-weight: 400;
+}
+.titulo-descripcion{
+  color:#000;
+  font-family: 'Lato',sans-serif;
+  font-size:18px; 
+  font-weight: 700;
+}
+
+.nota {
+  font-family: 'Lato', sans-serif;
+  font-weight:300;
+  font-size: 16px;
+}
+
+
+
+.informacionEmpresa{
+	padding:20px;
+}
+
+
+/* Estilos de Empresas screen*/
+
+.contenedorBuscadorEmpresas {
+    background-image: url("../assets/imgs/Business-HD-Wallpaper-1.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 300px;
+}
+
+.contenedorBuscadorEmpresas .content{
+    background-color:rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+
+.contenedorBuscadorEmpresas .content h1,.contenedorBuscadorEmpresas .content p {
+    color:white;
+    text-align: center;
+}
+
+.barra-busqueda{
+    max-width: 80%;
+}
+
+@media (min-width:1000px){
+    .barra-busqueda{
+        max-width: 50%;
+    }
+}

@@ -1,0 +1,38 @@
+.titulo{
+    font-family: "Roboto",sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.numeros{
+    font-family: "Roboto",sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+}
+
+
+.box1{
+  background: white;
+  padding: 15px;
+  border-radius: 5px;
+  width: 500px;
+  height: fit-content;
+  margin: 10px;
+}
+
+.filtro{
+  margin-left: -15px;
+}
+
+
+@media(max-width:800px){
+  .search-bar-class{
+    width: 100%;
+  }
+}
+
+@media(min-width:1001px ){
+  .search-bar-class{
+    width: 50%;
+  }
+}
