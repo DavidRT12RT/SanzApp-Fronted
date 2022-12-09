@@ -16,6 +16,7 @@ export const InformacionGeneral = ({obraInfo,socket}) => {
     const [formValues,handleInputChange,setValues ] = useForm({
 		titulo:obraInfo.titulo,
 		descripcion:obraInfo.descripcion,
+        observaciones:obraInfo.observaciones,
 		tipoReporte:obraInfo.tipoReporte,
 		numeroTrack:obraInfo.numeroTrack,
 		estado:obraInfo.estado,
@@ -57,11 +58,20 @@ export const InformacionGeneral = ({obraInfo,socket}) => {
 
                 </div>
                 {isEditing ? <input style={{width:"100%"}} name="titulo" onChange={handleInputChange} value={formValues.titulo} className="mt-3 titulo form-control w-50"></input>:<h1 className="titulo">{obraInfo.titulo}</h1>}
+                <div className="row">
+                    <div className="col-12 col-lg-6">
+                        <Divider/>
+                        <h1 className="titulo">Descripcion de la obra:</h1>
+                        {isEditing ? <textarea style={{width:"100%"}} rows="5" name="descripcion" onChange={handleInputChange} value={formValues.descripcion} className="descripcion form-control"/> : <p className="descripcion">{obraInfo.descripcion}</p>}
+                    </div>
+                    <div className="col-12 col-lg-6">
+                        <Divider/>
+                        <h1 className="titulo">Observaciones de la obra:</h1>
+                        {isEditing ? <textarea style={{width:"100%"}} rows="5" name="observaciones" onChange={handleInputChange} value={formValues.observaciones} className="descripcion form-control"/> : <p className="descripcion">{obraInfo.observaciones}</p>}
+                    </div>
+                </div>
                 <Divider/>
-                <h1 className="titulo col-6">Descripcion:</h1>
-                {isEditing ? <textarea style={{width:"100%"}} rows="5" name="descripcion" onChange={handleInputChange} value={formValues.descripcion} className="descripcion form-control"/> : <p className="descripcion">{obraInfo.descripcion}</p>}
-                <Divider/>
-                <h1 className="titulo">Informacion:</h1>
+                <h1 className="titulo">Informacion de la obra:</h1>
                 <div className="row">
                     <h1 className="col-6 titulo-descripcion">Estado de la obra:</h1>
                     {isEditing 
@@ -77,14 +87,17 @@ export const InformacionGeneral = ({obraInfo,socket}) => {
                             <p className="col-6 descripcion">{obraInfo.estado}</p>
                         </> 
                     }
-                    <h1 className="col-6 titulo-descripcion">Fecha de creacion:</h1>
-                    <p className="col-6 descripcion">{obraInfo.fechaCreacion}</p>
-                    {obraInfo.fechaFinalizado && (
+                    <h1 className="col-6 titulo-descripcion">Fecha de creacion del servicio:</h1>
+                    <p className="col-6 descripcion text-success">{obraInfo.fechaCreacionServicio}</p>
+                    {obraInfo.estado === "FINALIZADA" && (
                         <>
-                            <h1 className="col-6 titulo-descripcion">Fecha de finalizado:</h1>
-                            <p className="col-6 descripcion text-danger">{obraInfo.fechaFinalizado}</p>
+                            <h1 className="col-6 titulo-descripcion">Fecha de finalizado del servicio:</h1>
+                            <p className="col-6 descripcion text-danger">{obraInfo.fechaFinalizacionServicio}</p>
                         </>
                     )}
+                    <h1 className="col-6 titulo-descripcion">Fecha registro en sistema:</h1>
+                    <p className="col-6 descripcion text-info">{obraInfo.fechaCreacionSistema}</p>
+
                     <h1 className="col-6 titulo-descripcion">Numero track:</h1>
                     {isEditing 
                         ?

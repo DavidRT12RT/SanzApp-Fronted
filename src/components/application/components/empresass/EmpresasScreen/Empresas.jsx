@@ -11,7 +11,7 @@ import EmpresasCards from './components/EmpresasCards';
 import HeroSection from './components/HeroSection';
 
 
-//Style css
+//Estilos CSS
 import "./style.css";
 
 export const Empresas = () => {

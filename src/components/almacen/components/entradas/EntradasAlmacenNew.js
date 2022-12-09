@@ -2,9 +2,7 @@ import { Checkbox, Input,Divider,message, Modal, Form, Select,Button, DatePicker
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 
-import "./assets/styleEntradasAlmacen.css";
-
-import imagenEntradas from "./assets/imgs/juicy-girl-and-guy-preparing-start-up-rocket-to-launch-with-ideas.png";
+//Components y hooks
 import { useEntradas } from '../../../../hooks/useEntradas';
 import { fetchConToken } from '../../../../helpers/fetch';
 import { EntradaCard } from './EntradaCard';
@@ -17,6 +15,10 @@ import locale from "antd/es/date-picker/locale/es_ES"
 import { ReporteEntradasAlmacen } from '../../../../reportes/Almacen/ReporteEntradasAlmacen';
 import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
+
+//Estilos CSS
+import "./assets/styleEntradasAlmacen.css";
+import imagenEntradas from "./assets/imgs/juicy-girl-and-guy-preparing-start-up-rocket-to-launch-with-ideas.png";
 
 
 const { RangePicker } = DatePicker;

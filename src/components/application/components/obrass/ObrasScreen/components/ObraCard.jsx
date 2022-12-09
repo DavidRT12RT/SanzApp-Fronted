@@ -16,7 +16,7 @@ const ObraCard = ({obra}) => {
                     <img src={`${process.env.REACT_APP_BACKEND_URL}/api/uploads/empresas/empresa/${obra.empresa._id}`}/>
                 </div>
                 <div className="obraInformation">
-                    <h1 className="titulo-descripcion">{obra.titulo} <span className="ms-3"><Tag color="green">Activa</Tag><span className="ms-2"><Tag color="yellow">{obra.tipoReporte}</Tag></span></span></h1>
+                    <h1 className="titulo-descripcion">{obra.titulo} <span className="ms-3"><Tag color={obra.estado === "FINALIZADA" ? "red" : "green"}>{obra.estado}</Tag><span className="ms-2"><Tag color={obra.tipoReporte == "CORRECTIVO" ? "yellow" : "blue"}>{obra.tipoReporte}</Tag></span></span></h1>
                     <span className="text-warning"><hr/></span>
                     <p className="descripcion">{obra.empresa.nombre} <span className="text-warning">----</span> {obra.sucursal.nombre}</p> 
                 </div>

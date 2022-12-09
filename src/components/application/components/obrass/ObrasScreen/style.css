@@ -1,6 +1,8 @@
 /*Obras screen component*/
 .obrasContenedorPrincipal{
     padding: 30px 60px 30px 60px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .obraBorder{
@@ -9,16 +11,13 @@
     margin:20px 0px 20px 0px;
 }
 
-.obrasContenedorPrincipal .contenedorIzquierdo{
+.contenedorIzquierdo .filtrosCardsContainer{
     display: flex;
-    align-items: center;
     flex-direction: column;
-    gap: 20px;
-
-}
-
-.obrasContenedorPrincipal .contenedorDerecho {
-    border-radius: 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    width: 100%;
 }
 
 @media (min-width:100px) and (max-width:1200px){
@@ -27,11 +26,11 @@
     }
 
     .obrasContenedorPrincipal .contenedorIzquierdo {
-        padding: 20px;
+        padding: 10px;
     }
 
     .obrasContenedorPrincipal .contenedorDerecho {
-        padding: 20px;
+        padding: 10px;
     }
 }
  
@@ -66,7 +65,7 @@
 
 /* Filtros component*/
 
-.contenedorIzquierdo .filtro {
+.filtro {
     width: 100%;
     height: fit-content;
     border-radius: 15px;
@@ -89,9 +88,9 @@
 /*Obras Cards component*/
 .obrasCardsContainer{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
     gap: 25px;
     width: 100%;
     margin-top: 20px;

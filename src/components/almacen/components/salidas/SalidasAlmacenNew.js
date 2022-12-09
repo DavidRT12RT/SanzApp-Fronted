@@ -1,10 +1,6 @@
 import { Button, Checkbox, DatePicker, Divider, Form, Input, message, Modal, Select, Table, Tag } from 'antd'
 import React, { useEffect, useState } from 'react'
 
-//CSS
-import "./assets/styleSalidasAlmacen.css";
-import imagenSalidas from "./assets/imgs/juicy-boy-with-open-laptop.png";
-
 import { SalidaCard } from './SalidaCard';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { fetchConToken } from '../../../../helpers/fetch';
@@ -21,6 +17,12 @@ import locale from "antd/es/date-picker/locale/es_ES"
 //PDF REPORTE
 import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
+
+//Estilos CSS
+import "./assets/styleSalidasAlmacen.css";
+import imagenSalidas from "./assets/imgs/juicy-boy-with-open-laptop.png";
+
+
 
 const { RangePicker } = DatePicker;
 
@@ -159,7 +161,6 @@ export const SalidasAlmacenNew = () => {
                 <div>
                     <h1 className="titulo text-warning">Buscar crear una nueva salida o generar un reporte?</h1>
                     <p className="descripcion">Crea una nueva salida en el almacen o genera un <b>reporte</b> sobre las salidas que ha tenido el sistema.</p>
-                    <Input.Search size="large" onSearch={filtrarSalidaPorCodigo} enterButton className="descripcion barraBusquedaSalidas" placeholder="Buscar una salida por su numero de barras..."/>
                     <div className="mt-3">
                         <Link to={`/almacen/retirar/`}><button type="button" className="btn btn-warning">Retirar almacen</button></Link>
                         <button type="primary" className="btn btn-primary ms-2" onClick={() => {setIsModalVisible(true)}}>Generar reporte</button>
@@ -188,7 +189,9 @@ export const SalidasAlmacenNew = () => {
                 <div className="col-12 col-lg-10 mt-5 mt-lg-0">
                     <h1 className="titulo-descripcion" style={{fontSize:"20px"}}>SALIDAS ENCONTRADAS</h1>
                     <Divider/>
-                    {registrosSalidas.length === 0 && <p className="titulo-descripcion text-danger">Ninguna salida encontrada</p>}
+
+                    <Input.Search size="large" onSearch={filtrarSalidaPorCodigo} enterButton className="descripcion barraBusquedaSalidas" placeholder="Buscar una salida por su numero de barras..."/>
+                    {registrosSalidas.length === 0 && <p className="titulo-descripcion text-danger mt-4">Ninguna salida encontrada en el sistema aun...</p>}
                     <div className="containerSalidasCardsAlmacen">
                         {
                             registrosSalidas.map(salida => (
@@ -197,7 +200,7 @@ export const SalidasAlmacenNew = () => {
                         }
                     </div>
                 </div>
-           </div>
+            </div>
 			<Modal footer={null} onCancel={()=>{setIsModalVisible(false);}} onOk={()=>{setIsModalVisible(false)}} visible={isModalVisible}>
 					<h1 className="titulo"  style={{fontSize:"30px"}}>Filtrar registros del reporte</h1>
 					<p className="descripcion">Filtrar los registros que tendra el reporte.</p> 

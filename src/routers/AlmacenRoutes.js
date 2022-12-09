@@ -18,7 +18,7 @@ import { EntradaScreen } from '../components/almacen/components/entradas/Entrada
 import { Component404 } from "../components/componentesGenerales/component404/Component404";
 import Footer from '../components/componentesGenerales/Footer';
 import { MySpace } from '../components/componentesGenerales/mi-espacio/components/MySpace';
-import { ProductoScreen, ProductoScreenAlmacen } from '../components/almacen/components/productos/ProductoScreenAlmacen';
+import { ProductoScreenAlmacen } from '../components/almacen/components/productos/ProductoScreenAlmacen';
 import { ProductosScreen } from '../components/almacen/components/productosAlmacen/ProductosScreen';
 
 export const AlmacenRoutes = () => {

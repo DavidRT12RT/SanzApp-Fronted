@@ -1,19 +1,18 @@
 .containerEntradas{
-    padding: 30px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    flex-direction: column;
+    flex-direction:column ;
     flex-wrap: wrap;
-    width: 90%;
-    margin: 0 auto;
+
+    height: 100vh;
 }
 
 .containerEntradas .imagenRegister{
     margin-top: -40px;
 }
+
 .containerEntradas .containerBusquedaEntradas{
-    width: 100%;
+    width: 80%;
 }
 
 .containerEntradasCards{
@@ -39,17 +38,16 @@
 }
 
 @media (min-width:200px) and (max-width:1000px){
-    .containerRegister {
-        width: 100%;
-        padding: 15px;
-        height: fit-content;
-    }
 
     .containerEntradas{
-        width:100%;
-        padding: 20px;
+        padding: 10px;
     }
+
     .containerEntradasCards .entradaCard{
+        width: 100%;
+    }
+
+    .containerEntradas .containerBusquedaEntradas{
         width: 100%;
     }
 }

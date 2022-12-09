@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Link,Navigate,useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Navigate,useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import queryString from 'query-string'
-import { Form, Button,  message, Modal, Result, Select, Steps, Upload, Input } from 'antd';
+import { Button,  message, Modal, Steps, DatePicker } from 'antd';
 import { ExclamationCircleOutlined,UploadOutlined } from '@ant-design/icons';
 import { useEmpleados } from '../../../../hooks/useEmpleados';
 import { useForm } from '../../../../hooks/useForm';
 import { fetchConToken } from '../../../../helpers/fetch';
 import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
+
+//Fechas
+import locale from "antd/es/date-picker/locale/es_ES";
+import moment from "moment";
+
 const { Step } = Steps;
 const { confirm } = Modal;
 
@@ -22,11 +27,13 @@ export const RegistrarObra = () => {
     const [formValues,handleInputChange,setValues ] = useForm({
 		titulo:"",
 		descripcion:"",
+        observaciones:"",
 		empresa:"",
 		sucursal:"",
 		tipoReporte:"CORRECTIVO",
 		numeroTrack:0,
 		estado:"PRESUPUESTO-CLIENTE",
+        fechaCreacionServicio:moment(),
         jefeObra:empleados.length && empleados[0].uid
 	});
 
@@ -72,6 +79,13 @@ export const RegistrarObra = () => {
         for (const property in formValues){
             if(formValues[property] === "") return message.error("Faltan registros por completar!");
         }
+
+        //Limpiamos fecha de registro y finalizacion del servicio de la obra en tiempo de SANZ NO DEL PROGRAMA
+        formValues.fechaCreacionServicio = moment(formValues.fechaCreacionServicio).format("YYYY-MM-DD");
+
+        if(formValues.estado === "FINALIZADA") formValues.fechaFinalizacionServicio = moment(formValues.fechaFinalizacionServicio).format("YYYY-MM-DD");
+
+
 		confirm({
             title:"¿Seguro quieres registrar la obra en el sistema?",
             icon:<ExclamationCircleOutlined />,
@@ -113,11 +127,18 @@ export const RegistrarObra = () => {
                         onChange={handleInputChange}
                         placeholder="Se remodelara la sucursal tal de tal para..." 
                     />
-                    <label className="form-label mt-3">Tipo de reporte: </label>
-                    <select className="form-select" aria-describedby="inventariableHelpBlock" value={formValues.tipoReporte} name="tipoReporte" onChange={handleInputChange}>
-	                	<option value={"CORRECTIVO"} key={"CORRECTIVO"}>Correctivo</option>
-                        <option value={"PREVENTIVO"} key={"PREVENTIVO"}>Preventivo</option>
-					</select>
+
+                    <label className="form-label mt-3">Observaciones de la obra: </label>
+                	<textarea
+					    rows={5}
+                        className="form-control"
+                        value={formValues.observaciones}
+                        name="observaciones" 
+                        onChange={handleInputChange}
+                        placeholder="Se remodelo y hubo 3 percanses y no se que..." 
+                    />
+
+
 			</div>
         },
         {
@@ -153,10 +174,16 @@ export const RegistrarObra = () => {
                             ))
                         }
 					</select>
+
+                    <label className="form-label mt-3">Tipo de reporte: </label>
+                    <select className="form-select" aria-describedby="inventariableHelpBlock" value={formValues.tipoReporte} name="tipoReporte" onChange={handleInputChange}>
+	                	<option value={"CORRECTIVO"} key={"CORRECTIVO"}>Correctivo</option>
+                        <option value={"PREVENTIVO"} key={"PREVENTIVO"}>Preventivo</option>
+					</select>
 				</div>
         },
 		{
-			title:'Estado de la obra y archivos',
+			title:'Estado de la obra y fecha de servicios',
 			content:
                 <div className="d-flex align-items-start flex-column">
                 	<label className="form-label mt-3">Estado del reporte: </label>
@@ -165,13 +192,27 @@ export const RegistrarObra = () => {
                         <option value={"EN-PROGRESO"} key={"EN-PROGRESO"}>En progreso</option>
                         <option value={"FINALIZADA"} key={"FINALIZADA"}>Finalizada</option>
 					</select>
-					{/*formValues.estado !="PRESUPUESTO-CLIENTE" && 
+                    <label className="form-label mt-3">Fecha de creacion servicio</label>
+                    <DatePicker size="large" className="form-select" locale={locale} format={"YYYY-MM-DD"} value={formValues.fechaCreacionServicio} onChange={(date,dateString) => {
+                        handleInputChange({
+                            target:{
+                                name:"fechaCreacionServicio",
+                                value:date
+                            }
+                        })
+                    }}/>
+					{formValues.estado === "FINALIZADA" && 
 					    <>
-                			<label className="form-label mt-3">Archivo del presupuesto: </label>
-							<Upload {...props}>
-	                    		<Button icon={<UploadOutlined/>} style={{width:"100%"}} size="large">Selecciona el archivo</Button>
-                    		</Upload>
-						</>*/
+                			<label className="form-label mt-3">Fecha finalizacion del servicio: </label>
+                            <DatePicker size="large" className="form-select" locale={locale} format={"YYYY-MM-DD"}  value={formValues?.fechaFinalizacionServicio || moment()} onChange={(date,dateString) => {
+                                handleInputChange({
+                                    target:{
+                                        name:"fechaFinalizacionServicio",
+                                        value:date
+                                    }
+                                })
+                            }}/>
+						</>
 					}
 				</div>
 		}

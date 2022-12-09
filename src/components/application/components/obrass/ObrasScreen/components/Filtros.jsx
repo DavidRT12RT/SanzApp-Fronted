@@ -30,7 +30,7 @@ const Filtros = ({setParametrosBusqueda}) => {
     }
 
     return (
-        <>
+        <div className="filtrosCardsContainer">
             <div className="filtro">
                 <h1 className="titulo">Empresa</h1>
                 <div className="filtroBorder bg-warning"/>
@@ -93,7 +93,7 @@ const Filtros = ({setParametrosBusqueda}) => {
 
            </div>
 
-        </>
+        </div>
     )
 }
 

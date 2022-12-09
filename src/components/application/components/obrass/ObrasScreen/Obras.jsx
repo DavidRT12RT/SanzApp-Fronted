@@ -2,15 +2,16 @@ import { message } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { fetchConToken } from '../../../../../helpers/fetch';
-import { SanzSpinner } from '../../../../../helpers/spinner/SanzSpinner';
 import { useObras } from '../../../../../hooks/useObras';
+import { SanzSpinner } from '../../../../../helpers/spinner/SanzSpinner';
 
 //Components
 import Filtros from './components/Filtros';
 import HeaderObras from './components/HeaderObras';
 import ObrasCards from './components/ObrasCards';
 
-//Estilos 
+
+//Estilos CSS
 import "./style.css";
 
 const Obras = () => {
@@ -54,7 +55,7 @@ const Obras = () => {
             <section className="col-12 col-lg-3 contenedorIzquierdo">
                 <Filtros setParametrosBusqueda={setParametrosBusqueda}/>
             </section>
-            <section className="col-12 col-lg-9 contenedorDerecho">
+            <section className="col-12 col-lg-9 contenedorDerecho mt-5 mt-lg-0">
                 <HeaderObras/>
                 <div className="obraBorder bg-warning"/>
                 <ObrasCards setObras={setObras} search={search} setParametrosBusqueda={setParametrosBusqueda} obras={obras} informacionObras={informacionObras}/>

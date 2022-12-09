@@ -127,9 +127,6 @@ export const EditorObra = () => {
     };
     if (Object.keys(obraInfo).length === 0 ) {
         return <h1>Cargando informacion de la obra..</h1>;
-    }else if(obraInfo.estado === "FINALIZADA"){
-        navigate("/aplicacion/obras");
-        return message.error("Obra se encuentra finalizada NO puedes editarla");
     }
     else{
         return (

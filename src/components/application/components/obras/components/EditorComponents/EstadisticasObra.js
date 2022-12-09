@@ -71,7 +71,7 @@ export const EstadisticasObra = ({obraInfo,socket}) => {
 
     return (
         <div >
-            <section className="d-flex justify-content-center align-items-center flex-wrap gap-3 mt-5">
+            <section className="d-flex justify-content-center align-items-center flex-wrap gap-3 my-5">
 
                 <div className="text-center bg-body d-flex justify-content-center flex-column gap-2" style={{width:"350px",height:"250px"}}>
                     <p className="text-warning" style={{fontSize:"50px",margin:"0px"}}><TeamOutlined/></p>
