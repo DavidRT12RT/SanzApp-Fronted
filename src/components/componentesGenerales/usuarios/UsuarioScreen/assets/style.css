@@ -1,0 +1,216 @@
+/* Estilos usuario screen*/
+.contenedorPrincipalUsuario{
+    width: 100%;
+    margin:0 auto;
+    margin-bottom: 30px;
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* Estilos usuario header*/
+.userHeader{
+    width: 80%;
+    height: 650px;
+    border-radius: 15px;
+    background-color:#fff;
+
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.headerUser{
+    width: 100%;
+    height: 400px; 
+    position: relative;
+}
+
+.headerUser .headerUserImage{
+    width: 100%;
+    height: 100%;
+    object-fit:cover;
+}
+
+.imagePerfilUser {
+    width: 100%;
+    height: 100%;
+    position:absolute;
+    bottom: -230px;
+
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+
+}
+
+
+.imagePerfilUser .imagePerfilUserImage{
+    width: 200px;
+    min-width: 200px;
+    height: 200px;
+    min-height: 200px;
+
+    display: block;
+    object-fit:cover;
+}
+
+input#inputImagePerfilUser{
+    display: none;
+}
+
+.imagePerfilUserEditor{
+    cursor:pointer;
+    min-width: 200px;
+    max-width: 200px;
+    min-height:200px;
+    max-height: 200px;
+    background-color:#fff;
+
+    border: 1px dashed black;
+
+
+    text-align: center;
+
+
+    display: grid;
+    place-items: center;
+}
+
+.imagePerfilUserEditor input {
+    display: none;
+}
+
+
+.basicInfoUser{
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    gap: 10px;
+
+    padding-left:20px;
+    padding-right:20px
+}
+
+.basicInfoUser .titulo{
+    color:#000;
+    margin:0;/* Quitandole el margin que viene por defecto en la clase suprema*/
+}
+
+.basicInfoUser .descripcionUser{
+    width: 60%;
+}
+
+
+
+.basicInfoUser .editInfoUser{
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+.basicInfoUser .editInfoUser .icon{
+    margin-right: 5px;
+}
+
+@media (min-width:100px) and (max-width:1200px){
+    .userHeader{
+        width: 100%;
+    }
+
+    .imagePerfilUser{
+        align-items: center;
+    }
+
+    .basicInfoUser{
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+    }
+    .headerUser{
+        height: 300px;
+    }
+    .basicInfoUser .descripcionUser{
+        width: 100%;
+    }
+}
+
+
+/* Estilos contenedor secundario*/
+.contenedorSecundarioUsuario{
+    width: 80%;
+    margin-top: 30px;
+}
+
+
+@media(min-width:100px) and (max-width:1200px){
+    .contenedorSecundarioUsuario{
+        width: 100%;
+    }
+}
+
+/* Estilos usuario informacion*/
+
+.userInfoContainer{
+    width:490px;
+    max-height: 500px;
+    overflow-y: auto;
+
+    background-color: #fff;
+
+    border-radius: 15px;
+
+    padding: 20px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+@media(min-width:100px) and (max-width:1200px){
+    .userInfoContainer{
+        width: 100%;
+    }
+}
+
+
+
+/* User new publication component estilos*/
+.newPublicUserContainer{
+    width: 100%;
+
+    padding:15px 10px;
+
+    background-color: #fff;
+
+    border-radius: 15px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap:10px;
+}
+
+.newPublicUserContainer .form-control{
+    width: 85%;
+    height: 40px;
+}
+
+.newPublicUserContainer .btnPublicUser{
+   border:none; 
+   background-color:#fff;
+   padding:10px;
+   border-radius: 10px;
+}
+
+.newPublicUserContainer .btnPublicUser:hover{
+   background-color:#f0f2f5;
+}

@@ -1,5 +1,5 @@
 import { Button,  message, Modal, Result, Select, Steps, Upload } from 'antd';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useCategorias } from '../../../../hooks/useCategorias';
 import { ExclamationCircleOutlined,UploadOutlined } from '@ant-design/icons';
 import "./components/assets/style.css";

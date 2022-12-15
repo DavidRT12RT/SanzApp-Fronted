@@ -6,6 +6,8 @@ import { startLogout } from "../../../actions/authActions";
 import { eventLogout } from "../../../actions/eventsActions";
 import { SocketContext } from "../../../context/SocketContext";
 //import {AuthContext} from "../../../auth/authContext";
+
+//Estilos CSS
 import "./style.css";
 
 
@@ -107,7 +109,7 @@ export const AlmacenNavbar = () =>{
                             <img src={`${process.env.REACT_APP_BACKEND_URL}/api/uploads/usuarios/${uid}`} alt="mdo" width="40" height="40" className="rounded-circle" style={{"objectFit":"cover"}}/>
                         </a>
                         <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                            <li><a className="dropdown-item" href="#">Perfil</a></li>
+                            <li><Link className="dropdown-item" to={`/usuarios/${uid}/`} target="_blank">Mi perfil</Link></li>
                             {rol === "ADMIN_ROLE" && renderizarBoton()}
                             <li><Link className="dropdown-item" to={`/almacen/mi-espacio/`}>Mi espacio</Link></li>
                             <li><hr className="dropdown-divider"/></li>

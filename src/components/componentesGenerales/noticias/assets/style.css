@@ -1,0 +1,16 @@
+.containerPrincipalNoticias{
+    width:60%;
+    min-height: 100vh;
+
+    margin:0 auto;
+    padding:20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:10px;
+
+    border:1px solid black;
+}
+
+/* Estilo de publicacion*/

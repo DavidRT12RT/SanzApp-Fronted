@@ -23,7 +23,6 @@ export const AuthRouter = () => {
 
                     <Redirect to="/auth/login" />
 
-
                 </Switch>
             </div>
 

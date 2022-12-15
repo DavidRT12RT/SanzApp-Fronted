@@ -13,9 +13,8 @@ import { AlmacenRoutes } from "./AlmacenRoutes";
 import { SanzSpinner } from "../helpers/spinner/SanzSpinner";
 import { AdministracionRoutes } from "./AdministracionRoutes";
 
-//Cargando estilos de ant design (General para todos los componentes)
-import "antd/dist/antd.css";
 import { LoginScreen } from "../components/componentesGenerales/auth/LoginScreen";
+import { UsuarioScreen } from "../components/componentesGenerales/usuarios/UsuarioScreen/UsuarioScreen";
 
 
 export const AppRouter = ()=>{
@@ -62,6 +61,13 @@ export const AppRouter = ()=>{
 						</SocketProvider>
 					</PrivateRoutePorRole>
 				}/>
+
+				<Route path="/usuarios/:usuarioId/" element={
+                    <SocketProvider>
+						<UsuarioScreen/>
+					</SocketProvider>
+				}/>
+
               	<Route path="/*" element={
 					<PublicRoute uid={uid}>
                     	<LoginScreen/>

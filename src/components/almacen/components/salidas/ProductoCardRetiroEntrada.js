@@ -1,9 +1,11 @@
-import { Avatar, InputNumber, message, Select } from 'antd';
+import { Avatar, InputNumber, message } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { fetchConToken } from '../../../../helpers/fetch';
+import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
 
 export const ProductoCardRetiroEntrada = ({producto,socket,cambiarCantidadProducto,eliminarProducto,tipo=""}) => {
 
+    console.log("PRODUCTO",producto);
     const [productoInfo, setProductoInfo] = useState(null);
 
     //Cada vez que el componente se renderize mandaremos a llamar a la información del producto
@@ -17,6 +19,7 @@ export const ProductoCardRetiroEntrada = ({producto,socket,cambiarCantidadProduc
         }
         fetchData();
     }, []);
+    
 
     //Escuchar en la targeta del producto por si este se actualiza 
     useEffect(() => {
@@ -25,7 +28,8 @@ export const ProductoCardRetiroEntrada = ({producto,socket,cambiarCantidadProduc
         });
     }, [socket,productoInfo,setProductoInfo]);
 
-    return (
+    if(productoInfo === null) return <SanzSpinner/>
+    else return (
         <div className="row p-5 border" style={{maxWidth:"600px",minWidth:"350px"}}>
             <div className="col-12 col-lg-6 mb-3 mb-lg-0">
                 <Avatar shape="square" style={{height:"150px",width:"150px"}} src={`http://localhost:4000/api/uploads/productos/${productoInfo._id}`}/>

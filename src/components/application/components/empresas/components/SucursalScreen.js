@@ -43,9 +43,9 @@ export const SucursalScreen = () => {
             }
         },
         {
-            title:<p className="titulo-descripcion">Fecha de creacion</p>,
+            title:<p className="titulo-descripcion">Fecha registro en sistema</p>,
             render:(text,record) => {
-                return <p className="descripcion">{record.fechaCreacion}</p>
+                return <p className="descripcion">{record.fechaCreacionSistema}</p>
             }
             
         },
@@ -70,7 +70,7 @@ export const SucursalScreen = () => {
         {
             title:<p className="titulo-descripcion">Ver mas detalles</p>,
             render:(text,record) => {
-                return record.estado === "FINALIZADA" ? <Button type="primary"><Link to={`/aplicacion/obras/${record._id}`}></Link></Button> : <div className="d-flex gap-2"><Button type="primary" danger><Link to={`/aplicacion/obras/editor/${record._id}/`}>Editor de obra</Link></Button><Button type="primary"><Link to={`/aplicacion/obras/${record._id}/`}>Visor de obra</Link></Button></div> 
+                return <Button type="primary"><Link to={`/aplicacion/obras/editor/${record._id}`}>Visualizador de obra</Link></Button>
             }
         }
     ];

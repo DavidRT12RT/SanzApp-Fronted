@@ -49,6 +49,7 @@ export const RetirarAlmacen = () => {
             return message.error("Producto sin cantidad en stock registrado!");
         }
 
+
         let bandera = false;
         const nuevaListaProductos = listaProductos.map(producto => {
             if(producto.id === id){
@@ -57,7 +58,13 @@ export const RetirarAlmacen = () => {
             }
             return producto;
         });
-        bandera ? setListaProductos(nuevaListaProductos) : setListaProductos(productos => [...productos,{id,cantidad:1,costoXunidad:body.costo}]);
+
+        if(bandera) {
+            setListaProductos(nuevaListaProductos);//El producto ya se encontraba en la lista y solo aumentamos la cantidad de este
+        } 
+        if(!bandera) {
+            setListaProductos(productos => [...productos,{id,cantidad:1,costoXunidad:body.costo}]);//El producto NO estaba asi que lo agregamos
+        }
         setValueSearch("");
     }
 
@@ -117,10 +124,6 @@ export const RetirarAlmacen = () => {
         }
     }
 
-    useEffect(() => {
-        console.log(listaProductos);
-    }, [listaProductos]);
-    
 
     //Buscar información de las obras y empleados
     useEffect(() => {

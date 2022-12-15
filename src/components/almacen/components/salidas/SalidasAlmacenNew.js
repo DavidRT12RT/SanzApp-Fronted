@@ -189,10 +189,9 @@ export const SalidasAlmacenNew = () => {
                 <div className="col-12 col-lg-10 mt-5 mt-lg-0">
                     <h1 className="titulo-descripcion" style={{fontSize:"20px"}}>SALIDAS ENCONTRADAS</h1>
                     <Divider/>
-
                     <Input.Search size="large" onSearch={filtrarSalidaPorCodigo} enterButton className="descripcion barraBusquedaSalidas" placeholder="Buscar una salida por su numero de barras..."/>
                     {registrosSalidas.length === 0 && <p className="titulo-descripcion text-danger mt-4">Ninguna salida encontrada en el sistema aun...</p>}
-                    <div className="containerSalidasCardsAlmacen">
+                    <div className="containerSalidasCardsAlmacen mt-3">
                         {
                             registrosSalidas.map(salida => (
                                 <SalidaCard salida={salida} key={salida.key}/>
