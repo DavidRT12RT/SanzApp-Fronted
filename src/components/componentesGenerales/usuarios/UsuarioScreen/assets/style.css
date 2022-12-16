@@ -106,11 +106,6 @@ input#inputImagePerfilUser{
     margin:0;/* Quitandole el margin que viene por defecto en la clase suprema*/
 }
 
-.basicInfoUser .descripcionUser{
-    width: 60%;
-}
-
-
 
 .basicInfoUser .editInfoUser{
     padding: 10px;

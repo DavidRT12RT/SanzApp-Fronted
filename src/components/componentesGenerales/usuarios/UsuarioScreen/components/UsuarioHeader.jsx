@@ -108,18 +108,20 @@ const UsuarioHeader = ({userInfo,isEditing,setIsEditing,values,handleInputChange
                             {renderizarEtiqueta()}
                             {isEditing ? <textarea name="descripcion" value={values.descripcion} onChange={handleInputChange} className="form-control descripcion mt-3" rows="3"></textarea> : <p className="descripcion descripcionUser mt-3">{(userInfo.descripcion === undefined || userInfo?.descripcion?.length == 0) ? "Aun no sabemos nada de ti pero sabemos que eres asombroso!" : userInfo.descripcion}</p>}
                         </div>
-                        <div className="contentRight row">
-                            {(uid === userInfo.uid) && 
-                                isEditing 
-                                    ? 
-                                        <div className="d-flex justify-content-center gap-2 flex-wrap">
-                                            <button type="primary" className="editInfoUser titulo-descripcion btn btn-danger" onClick={handleEditInfoUser}><span className="icon"><PencilFill/></span>Guardar cambios!</button>
-                                            <button type="primary" className="editInfoUser titulo-descripcion btn btn-warning" onClick={handleSetEditing}>Salir sin guardar cambios</button>
-                                        </div>
-                                    :
-                                        <button type="primary" className="editInfoUser titulo-descripcion btn btn-warning" onClick={handleSetEditing}><span className="icon"><PencilFill/></span>Editar perfil</button>
-                            }
-                        </div>
+                        { uid === userInfo.uid && 
+                            <div className="contentRight row">
+                                {
+                                    isEditing 
+                                        ? 
+                                            <div className="d-flex justify-content-center gap-2 flex-wrap">
+                                                <button type="primary" className="editInfoUser titulo-descripcion btn btn-danger" onClick={handleEditInfoUser}><span className="icon"><PencilFill/></span>Guardar cambios!</button>
+                                                <button type="primary" className="editInfoUser titulo-descripcion btn btn-warning" onClick={handleSetEditing}>Salir sin guardar cambios</button>
+                                            </div>
+                                        :
+                                            <button type="primary" className="editInfoUser titulo-descripcion btn btn-warning" onClick={handleSetEditing}><span className="icon"><PencilFill/></span>Editar perfil</button>
+                                }
+                            </div>
+                        }
                    </div>
                 </div>
 

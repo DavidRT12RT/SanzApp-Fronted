@@ -6,6 +6,7 @@ import { fetchConToken, fetchConTokenSinJSON } from '../../../../helpers/fetch';
 import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
 import { useForm } from '../../../../hooks/useForm';
 import { SocketContext } from '../../../../context/SocketContext';
+import { useSelector } from 'react-redux';
 
 //Components
 import UsuarioHeader from './components/UsuarioHeader';
@@ -42,6 +43,9 @@ export const UsuarioScreen = () => {
 
     //socket para recibir informacion del usuario si es que se actualiza
     const { socket } = useContext(SocketContext);
+
+    //Obtener el uid del usuario actual que esta viendo el perfil (Puede o no ser el usuario)
+    const { uid } = useSelector(store => store.auth);
 
     /*
     useEffect(() => {
@@ -121,7 +125,9 @@ export const UsuarioScreen = () => {
                         <UsuarioResguardos userInfo={userInfo}/>
                     </div>
                     <div className="col-12 col-xl-8 mt-3 mt-lg-0">
-                        <UsuarioNewPublication userInfo={userInfo}/> 
+                        {
+                            uid === usuarioId && <UsuarioNewPublication userInfo={userInfo}/> 
+                        }
                     </div>
                 </section>
             </div>

@@ -7,20 +7,9 @@ import { BookmarkPlusFill, FlagFill, Images, MegaphoneFill, Newspaper } from 're
 import { InboxOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { fetchConTokenSinJSON } from '../../../../../helpers/fetch';
 
-//TEST
-import moment from "moment";
-import 'moment/locale/es';
-moment.locale('es');
-
 //Componentes extra
 const { Dragger } = Upload;
 const { confirm } = Modal;
-
-
-
-//Solucion!
-const fecha = "jueves, 15 de diciembre de 2022 22:39";
-console.log("Diferencia: ",moment(fecha,"LLLL").fromNow());
 
 
 const UsuarioNewPublication = ({userInfo}) => {
@@ -123,7 +112,6 @@ const UsuarioNewPublication = ({userInfo}) => {
         fileList:filesList
     };
 
-    console.log();
     return (            
         <>
             <div className="newPublicUserContainer" id="form" onSubmit={handleAddNewPublic}>

@@ -1,13 +1,13 @@
 
-import { message, Skeleton } from "antd";
+import { message } from "antd";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { fetchConToken } from "../../../helpers/fetch";
 import { SanzSpinner } from "../../../helpers/spinner/SanzSpinner";
-import UsuarioNewPublication from "../usuarios/UsuarioScreen/components/UsuarioNewPublication";
 
 
 //Componets
+import UsuarioNewPublication from "../usuarios/UsuarioScreen/components/UsuarioNewPublication";
 import Publicacion from "./components/Publicacion";
 
 //Estilos CSS
@@ -22,6 +22,7 @@ export const SeccionNoticias = () => {
     //Publicaciones(Noticias)
     const [publicaciones, setPublicaciones] = useState([]);
 
+    //UseEffect for user data
     useEffect(() => {
         const fetchUserData = async() => {
             const resp = await fetchConToken(`/usuarios/${uid}`);
@@ -35,17 +36,39 @@ export const SeccionNoticias = () => {
 
         fetchUserData();
     }, [uid]);
-    
+
+    //Usereffect for all publications 
+    useEffect(() => {
+        const fetchPublicationData = async() => {
+            const resp = await fetchConToken(`/publicaciones`);
+            const body = await resp.json();
+
+            if(resp.status != 200) return message.error(body.msg);
+
+            //PETICION HECHA CON EXITO!
+
+            setPublicaciones(body.publicaciones);
+        }
+        fetchPublicationData();
+    },[]);
+
+
+
+
 
     if(userInfo === null) return <SanzSpinner/>
     else return (
         <div className="containerPrincipalNoticias">
-            <UsuarioNewPublication userInfo={userInfo}/>
-            {
-                publicaciones.map(publicacion => (
-                    <Publicacion publicacion={publicacion} key={publicacion._id}/>
-                ))
-            }
+            <div className="newPublicationContainer">
+                <UsuarioNewPublication userInfo={userInfo}/>
+            </div>
+            <div className="publicacionesContainer">
+                {
+                    publicaciones.map(publicacion => (
+                        <Publicacion publicacion={publicacion} key={publicacion._id}/>
+                    ))
+                }
+            </div>
         </div>
     )
 };
