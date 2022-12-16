@@ -214,3 +214,25 @@ input#inputImagePerfilUser{
 .newPublicUserContainer .btnPublicUser:hover{
    background-color:#f0f2f5;
 }
+
+.containerTiposPublicacion{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: start;
+    align-items: center;
+}
+
+.btnTypeOfPublic{
+   border:none; 
+   width: 110px;
+   height: 110px;
+   background-color:#fff;
+   padding:10px;
+   border-radius: 10px;
+}
+
+.btnTypeOfPublic:hover{
+   background-color:#f0f2f5;
+}
