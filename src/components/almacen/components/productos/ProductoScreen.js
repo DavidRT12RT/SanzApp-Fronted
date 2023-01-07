@@ -45,7 +45,7 @@ export const ProductoScreen = () => {
 
     useEffect(() => {
 
-       socket.on("actualizar-producto",(producto)=>{
+       socket?.on("actualizar-producto",(producto)=>{
             if(productoId === producto._id) {
                 producto.registrosEntradas.sobranteObra.map(registro => {registro.tipo = "sobranteObra"; registro.key = registro._id;});
                 producto.registrosEntradas.devolucionResguardo.map(registro => {registro.tipo = "devolucionResguardo"; registro.key = registro._id})

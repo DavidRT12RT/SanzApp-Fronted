@@ -19,7 +19,7 @@ import { UsuarioScreen } from "../components/componentesGenerales/usuarios/Usuar
 
 export const AppRouter = ()=>{
 	const dispatch = useDispatch();
-    const {checking,uid} =  useSelector(state => state.auth);
+    const { checking,uid } =  useSelector(state => state.auth);
 
     //Esta al pendiente de el uid que nunca sea null o lo envia al login
     useEffect(()=>{
@@ -27,7 +27,6 @@ export const AppRouter = ()=>{
     },[dispatch]);
 
     //Cargando mientras se hace la autenticación automatica
-
     if(checking) return <SanzSpinner/>
     return (
 		<BrowserRouter>

@@ -1,10 +1,11 @@
-
 import { message } from "antd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { SocketContext } from "../../../context/SocketContext";
+
+//Helpers
 import { fetchConToken } from "../../../helpers/fetch";
 import { SanzSpinner } from "../../../helpers/spinner/SanzSpinner";
-
 
 //Componets
 import UsuarioNewPublication from "../usuarios/UsuarioScreen/components/UsuarioNewPublication";
@@ -21,6 +22,8 @@ export const SeccionNoticias = () => {
 
     //Publicaciones(Noticias)
     const [publicaciones, setPublicaciones] = useState([]);
+
+    //const {socket} = useContext(SocketContext);
 
     //UseEffect for user data
     useEffect(() => {
@@ -51,10 +54,6 @@ export const SeccionNoticias = () => {
         }
         fetchPublicationData();
     },[]);
-
-
-
-
 
     if(userInfo === null) return <SanzSpinner/>
     else return (

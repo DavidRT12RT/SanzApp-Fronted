@@ -49,14 +49,14 @@ export const ApplicationRoutes = () => {
 
    //Escuchando nuevos productos
     useEffect(()=>{
-        socket.on("producto-nuevo",(producto)=>{
+        socket?.on("producto-nuevo",(producto)=>{
             openNotification("topRight",producto._id,producto.nombre,"Se ha agregado al almacen!");
         });
     },[socket]);
  
     //Escuchar cuando el producto se actualiza 
     useEffect(() => {
-      socket.on("producto-actualizado",(producto)=>{
+      socket?.on("producto-actualizado",(producto)=>{
           openNotification("topRight",producto._id,producto.nombre,"Se ha actualizado en el almacen");
       }) 
     }, [socket]);

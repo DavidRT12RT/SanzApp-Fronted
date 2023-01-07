@@ -50,7 +50,29 @@
 
     border-radius: 15px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+
+    position:relative;
 }
+
+.publicacionContainer .optionsPublicationContainer{
+    width: 300px;
+    height: fit-content;
+    padding:10px;
+    background-color:#fff;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    border-radius: 15px;
+    border:1px solid black;
+    z-index: 1;
+    position:absolute;
+    right: 30px;
+    top: 60px;
+}
+
+.optionsPublicationContainer:nth-child():hover{
+    cursor:pointer;
+    background-color:#f0f2f5;
+}
+
 
 @media(min-width:100px) and (max-width:1200px){
     .publicacionContainer{
@@ -58,21 +80,72 @@
     }
 }
 
+.userInformationContainer{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.userInformationContainer .content{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.editPublicationButton{
+    width: 40px;
+    height: 40px;
+
+    cursor:pointer;
+}
+
 .publicacionContainer .fotosContainer{
     margin-bottom: 10px;
+    /*
     display: flex;
     justify-content: center;
     flex-wrap: nowrap;
     overflow-x: auto;
+    */
+
+    /* Display grid*/
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(400px,1fr));
+    --grid-column-count:1;
+    /* Sets a size for the rows in a grid container*/
+    gap:5px;
+    /*grid-auto-flow: dense; */
+    overflow: hidden;
 }
 
 .publicacionContainer .fotosContainer img{
     width: 100%;
-    height:400px;
+    height: 100%;
     object-fit: cover;
+
 }
 
-.reaccionesContainer {
+.wide {
+    grid-column: 1 / -1;
+}
+
+.tall{
+    grid-row:span 2;
+}
+
+.accionesregistradascontainer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin:10px 0px 5px 0px;
+}
+
+.botonesReaccionesContainer {
     display: flex;
     justify-content: start;
     align-items: center;
@@ -81,16 +154,47 @@
 }
 
 
-.reaccionesContainer button {
+.botonesReaccionesContainer button {
    border:none; 
    background-color:#fff;
    padding:10px;
    border-radius: 10px;
 }
 
-.reaccionesContainer button:hover{
+.botonesReaccionesContainer button:hover{
    background-color:#f0f2f5;
 }
+
+.comentariosContainer {
+    margin-top: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+}
+
+.comentariosContainer .comentario{
+    display: flex;
+    justify-content: start;
+    gap: 10px;
+    width: 100%;
+}
+
+.comentariosContainer .comentario .content h1{
+    font-size: 13px;
+}
+
+.comentariosContainer .comentario .content p{
+    font-size: 15px;
+}
+
+.comentariosContainer .comentario .content{
+    background-color:#F2F3F5;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+
 @media (min-width:100px) and (max-width:500px){
     .reaccionesContainer {
         justify-content: center;
@@ -104,6 +208,7 @@
     align-items: center;
     gap: 10px;
     flex-wrap: nowrap;
+    
 }
 
 .comentarioContainer input{
