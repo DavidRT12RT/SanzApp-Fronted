@@ -24,6 +24,7 @@ import { ProductosScreen } from '../components/almacen/components/productosAlmac
 export const AlmacenRoutes = () => {
     const { socket } = useContext(SocketContext);
     //TODO: Alertas de almacen 
+
     return (
         <>
             <AlmacenNavbar/>

@@ -4,6 +4,7 @@ import {error, success} from '../alerts/botons';
 import {fetchConToken, fetchSinToken} from "../helpers/fetch";
 
 export const startLogincorreoPassword = (correo, password) => {
+
     return async(dispatch) => {
 
         dispatch(uistartLoading());
@@ -20,7 +21,8 @@ export const startLogincorreoPassword = (correo, password) => {
             dispatch(login({
                 uid:body.usuario.uid,
                 name:body.usuario.nombre,
-                rol:body.usuario.rol
+                rol:body.usuario.rol,
+               //...body.usuario
             }));
             success("inicio de sesión con éxito");
             dispatch(uiStopLoading());

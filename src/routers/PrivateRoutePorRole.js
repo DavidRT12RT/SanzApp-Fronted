@@ -1,12 +1,25 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+
+//Provider's
+import { ChatProvider } from "../context/ChatContext";
+import { SocketProvider } from "../context/SocketContext";
+
+//Alert's
 import {error} from "../alerts/botons";
 
 export const PrivateRoutePorRole = ({children,rolRequerido}) =>{
     const {rol,uid} = useSelector(store => store.auth);
     if(rolRequerido.includes(rol) && uid != ""){
-        return children;
-    }else if(uid !=""){
+        console.log("Rol requerido!");
+        return (
+            <ChatProvider>
+                <SocketProvider>
+                    {children}
+                </SocketProvider>
+            </ChatProvider>
+        )
+   }else if(uid ===""){
         //El usuario intento entrar a la ruta pero no tiene uid osea no esta logeado vaya
         return <Navigate to="/login"/>
     }else{

@@ -15,6 +15,7 @@ export const useSocket = ( serverPath ) => {
 
     const conectarSocket = useCallback(() => {
 
+        console.log("Conectando a socket!");
         const token = localStorage.getItem("token");
 
         const socketTemp = io.connect(serverPath,{

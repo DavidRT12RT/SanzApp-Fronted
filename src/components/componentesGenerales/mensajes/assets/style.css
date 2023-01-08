@@ -1,0 +1,88 @@
+.messagesContainer{
+    background-color:rgba(255,255,255,1.00);
+    min-height: 100vh;
+
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+
+
+}
+
+/* Inbox People component*/
+.InboxPeople{
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    height: 100%;
+
+}
+
+.InboxPeopleUsersContainer{
+    margin-top:20px;
+}
+
+.mensajes-titulo{
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.InboxPeopleUsersContainer{
+    display: flex;
+    flex-direction: column;
+}
+
+.InboxpeopleItem {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+
+    padding: 20px;
+}
+
+.active-chat{
+    background-color: rgb(247, 249, 249);
+}
+
+
+.InboxpeopleItem *{
+    font-size: 15px;
+    margin:0px;
+}
+
+.InboxpeopleItem:hover{
+
+    background-color: rgb(247, 249, 249);
+}
+
+.InboxPeopleItemUserInfo{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 5px;
+}
+
+.InboxPeopleItemUserInfo h1, .InboxPeopleItemUserInfo p{
+    font-size: 15px;
+}
+
+.InboxpeopleItem .lastMessage{
+    color:#536471;
+}
+
+
+.SelectChatContainer{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.SelectChatContainer .titulo{
+    font-size:31px;
+    color:rgb(0, 0, 0);
+}
+
+.SelectChatContainer .descripcion{
+    font-size: 15px;
+    color:#536471;
+}

@@ -24,7 +24,12 @@ export const types = {
     uiStartLoading : "[UI] Start loading",
     uiStopLoading : "[UI] Stop Loading",
 
-    authCheckingFinish : "[auth] Finish checking login state"
+    authCheckingFinish : "[auth] Finish checking login state",
 
+    usuariosCargados:"[Chat] Usuarios cargados",
+    activarChat:"[Chat] Activar chat",
+    nuevoMensaje:"[Chat] Nuevo mensaje",
+    cargarMensajes:"[Chat] Cargar mensajes",
+    borrarMensajes:"[Chat] Borrar mensajes"
 
 };

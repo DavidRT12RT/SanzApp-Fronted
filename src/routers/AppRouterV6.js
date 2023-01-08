@@ -1,20 +1,29 @@
-//React
-import {BrowserRouter, Route, Routes} from "react-router-dom"
-//Importaciones propias
-//import {PrivateRoute} from "./PrivateRoute";
-import { ApplicationRoutes } from "./ApplicationRoutes";
-import { PublicRoute } from "./PublicRoute";
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { startChecking } from "../actions/authActions";
-import { SocketProvider } from "../context/SocketContext";
-import { PrivateRoutePorRole } from "./PrivateRoutePorRole";
-import { AlmacenRoutes } from "./AlmacenRoutes";
-import { SanzSpinner } from "../helpers/spinner/SanzSpinner";
-import { AdministracionRoutes } from "./AdministracionRoutes";
 
+//React Router Dom
+import { BrowserRouter, Route, Routes, Redirect, Navigate } from "react-router-dom"
+
+//Redux
+import { useDispatch, useSelector } from "react-redux";
+import { startChecking } from "../actions/authActions";
+
+//Importaciones propias
+import { SanzSpinner } from "../helpers/spinner/SanzSpinner";
+
+//Routes secundarias
+import { ApplicationRoutes } from "./ApplicationRoutes";
+import { AdministracionRoutes } from "./AdministracionRoutes";
+import { AlmacenRoutes } from "./AlmacenRoutes";
+
+//Helpers to protect routes
+import { PublicRoute } from "./PublicRoute";
+import { PrivateRoutePorRole } from "./PrivateRoutePorRole";
+import { PrivateRoute } from "./PrivateRoute";
+
+//Component's
 import { LoginScreen } from "../components/componentesGenerales/auth/LoginScreen";
 import { UsuarioScreen } from "../components/componentesGenerales/usuarios/UsuarioScreen/UsuarioScreen";
+import { Mensajes } from "../components/componentesGenerales/mensajes/Mensajes";
 
 
 export const AppRouter = ()=>{
@@ -39,40 +48,38 @@ export const AppRouter = ()=>{
               	/>
               	<Route path="/aplicacion/*" element={
 					<PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","INGE_ROLE","ADMINISTRADOR_ROLE","USER_ROLE"]}>
-                      	<SocketProvider>
-                        	<ApplicationRoutes/>
-                      	</SocketProvider>
+                        <ApplicationRoutes/>
                   	</PrivateRoutePorRole>
                 	}
 				/>
               	<Route path="/almacen/*" element={
 					<PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ENCARGADO_ALMACEN_ROL","ADMINISTRADOR_ROLE"]}>
-                    	<SocketProvider>
-                        	<AlmacenRoutes/>
-                      	</SocketProvider>
+                        <AlmacenRoutes/>
                   	</PrivateRoutePorRole>
                 	}
               	/>
 				<Route path="/administracion/*" element={
 					<PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","ADMINISTRADOR_ROLE"]}>
-						<SocketProvider>
-							<AdministracionRoutes/>
-						</SocketProvider>
+						<AdministracionRoutes/>
 					</PrivateRoutePorRole>
 				}/>
 
 				<Route path="/usuarios/:usuarioId/" element={
-                    <SocketProvider>
+					<PrivateRoute uid={uid}>
 						<UsuarioScreen/>
-					</SocketProvider>
+					</PrivateRoute>
+				}/>
+
+				<Route path="/mensajes" element={
+					<PrivateRoute uid={uid}>
+						<Mensajes/>
+					</PrivateRoute>
 				}/>
 
               	<Route path="/*" element={
-					<PublicRoute uid={uid}>
-                    	<LoginScreen/>
-                    </PublicRoute>
-                	} 
-              	/>
+					<Navigate to="/login"></Navigate>
+                }/>
+
 			</Routes>
       	</BrowserRouter>
     )
