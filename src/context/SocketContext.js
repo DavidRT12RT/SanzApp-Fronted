@@ -9,6 +9,7 @@ import { ChatContext } from './ChatContext';
 
 //Type's
 import { types } from '../types/types';
+import { scrollToBottomAnimated } from '../helpers/scrollToBottom';
 
 export const SocketContext = createContext();
 
@@ -32,6 +33,7 @@ export const SocketProvider = ({ children }) => {
     //Escuchar cambios de usuarios conectados
     useEffect(() => {
         //Solo se ejecuta si el socket tiene valor
+        //Habra un momento en donde el socket no tendra valor
         socket?.on("lista-usuarios",(usuarios) => {
             console.log("Lista usuarios",usuarios);
             dispatch({
@@ -45,14 +47,11 @@ export const SocketProvider = ({ children }) => {
     useEffect(() => {
 
         socket?.on("mensaje-personal",(mensaje) => {
-            console.log("Mensaje personal: ",mensaje);
-            //Dispatch de una accion que
             dispatch({
                 type:types.nuevoMensaje,
                 payload:mensaje
             });
-            //TODO:Mover el scroll al final
-            //scrollToBottomAnimated("mensajes");
+            scrollToBottomAnimated("MessagesChatMainContainer");
         });
 
     }, [socket,dispatch]);

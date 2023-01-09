@@ -25,6 +25,7 @@ export const chatReducer = (state,action) => {
                 state.chatActivo === action.payload.para ){
                 return {
                     ...state,
+                    nuevoMensaje:action.payload,
                     mensajes:[...state.mensajes,action.payload]
                 }
             }else{

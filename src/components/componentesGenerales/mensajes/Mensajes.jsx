@@ -8,6 +8,7 @@ import "./assets/style.css";
 
 //Component's
 import { InboxPeople } from './components/InboxPeople';
+import { MessagesChat } from './components/MessagesChat';
 import { SelectChat } from './components/SelectChat';
 
 export const Mensajes = () => {
@@ -15,7 +16,6 @@ export const Mensajes = () => {
 
     const { chatState } = useContext(ChatContext);
     
-    console.log(chatState)
 
 
     return (
@@ -24,8 +24,9 @@ export const Mensajes = () => {
             {
                 (chatState.chatActivo === null) 
                     ? <SelectChat/>
-                    : null
+                    : <MessagesChat/>
             }
+
         </div>
     )
 }

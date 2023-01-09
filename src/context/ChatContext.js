@@ -7,7 +7,7 @@ const initialState = {
     uid:"",
     chatActivo:null,
     usuarios:[],
-    mensajes:[]
+    mensajes:[],
 };
 
 export const ChatProvider = ({children}) => {

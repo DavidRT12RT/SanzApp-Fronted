@@ -1,10 +1,12 @@
 import React from 'react'
-
+import { useSelector } from 'react-redux'
 
 //Component's
 import { InboxPeopleItem } from './InboxPeopleItem'
 
 export const InboxPeople = ({usuarios}) => {
+
+    const auth = useSelector(store => store.auth);
 
     return (
         <div className="InboxPeople">
@@ -14,9 +16,9 @@ export const InboxPeople = ({usuarios}) => {
             </div>
             <div className="InboxPeopleUsersContainer">
                 {
-                    usuarios.map(usuario => (
-                        <InboxPeopleItem usuario={usuario} key={usuario.uid}/>
-                    ))
+                    usuarios.map(usuario => {
+                        if(usuario.uid !== auth.uid) return <InboxPeopleItem usuario={usuario} key={usuario.uid}/>
+                    })
                 }
             </div>
         </div>
