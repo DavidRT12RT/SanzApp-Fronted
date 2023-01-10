@@ -18,17 +18,19 @@ export const InboxPeopleItem = ({usuario}) => {
     const [lastMessage, setLastMessage] = useState(null);
 
     useEffect(() => {
-        console.log("useEffect ejecutandose!");
+        //console.log("useEffect ejecutandose!");
         const fetchLastMessage = async() => {
             const resp = await fetchConToken(`/mensajes/ultimoMensaje/${usuario.uid}`);
             if (resp.status === 404) return null;
             const body = await resp.json();
-            setLastMessage(body.lastMessage.mensaje);
+            const lastMessage = body.lastMessage.mensaje;
+            (lastMessage.length > 30) ? setLastMessage(`${lastMessage.slice(0,30)}...`) : setLastMessage(lastMessage);
         }
         fetchLastMessage();
     }, [chatState]);
 
     /* 
+
         Nota de desarollador:
         Obtener el ultimo mensaje de cada chat por una solicitud al backend 
         parece ser lo mas viable ya que si lo pensamos bien y obtenemos 
@@ -36,6 +38,7 @@ export const InboxPeopleItem = ({usuario}) => {
         mensajes de todas las personas con las que ha hablado el usuario
         tendria mucho peso para la solicitud al backend y el usuario podria o no
         abrir el chat y simplemente hariamos la peticion por las "puras".
+
     */
 
 
@@ -55,7 +58,6 @@ export const InboxPeopleItem = ({usuario}) => {
             type:types.cargarMensajes,
             payload:body.mensajes
         });
-
 
         //Scroll hacia abajo
         scrollToBottom("MessagesChatMainContainer");

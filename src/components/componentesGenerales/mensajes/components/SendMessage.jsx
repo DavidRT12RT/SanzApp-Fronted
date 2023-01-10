@@ -48,7 +48,7 @@ export const SendMessage = () => {
             >
 
             </input>
-            <button type="submit" className="SendMessageBtn"><SendFill className="SendMessageIcon"/></button>
+            <button type="submit" disabled={values.message.length === 0 ? true : false} className="SendMessageBtn"><SendFill className="SendMessageIcon"/></button>
         </form>
     )
 }

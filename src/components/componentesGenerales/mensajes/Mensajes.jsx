@@ -13,18 +13,15 @@ import { SelectChat } from './components/SelectChat';
 
 export const Mensajes = () => {
     
-
-    const { chatState } = useContext(ChatContext);
-    
-
+    const { chatState,dispatch } = useContext(ChatContext);
 
     return (
         <div className="messagesContainer">
-            <InboxPeople usuarios={chatState.usuarios}/>
+            <InboxPeople chatState={chatState} usuarios={chatState.usuarios}/>
             {
                 (chatState.chatActivo === null) 
                     ? <SelectChat/>
-                    : <MessagesChat/>
+                    : <MessagesChat chatState={chatState} dispatch={dispatch}/>
             }
 
         </div>

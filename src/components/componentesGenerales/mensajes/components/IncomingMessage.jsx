@@ -3,7 +3,7 @@ import moment from "moment";
 
 export const IncomingMessage = ({mensaje}) => {
 
-    const fecha = new moment(mensaje.createdAt).format("LLLL");
+    const fecha = new moment(mensaje.createdAt).format("lll");
     return (
         <>
             <div className="IncomingMessageContainer">
