@@ -97,16 +97,10 @@ const fetchConTokenSinJSON = (endpoint,data,method = "POST") =>{
             break;
     }
 }
-const fetchEmpleados = async(endpoint="/usuarios",method = "GET") =>{
-    const url = `${baseUrl}${endpoint}`;
-    const token = localStorage.getItem('token') || "";
-    return fetch(url,{method,headers:{'x-token':token}});
 
-}
 
 export {
     fetchSinToken,
     fetchConToken,
-    fetchEmpleados,
     fetchConTokenSinJSON
 }

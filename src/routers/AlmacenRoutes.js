@@ -22,7 +22,7 @@ import { ProductoScreenAlmacen } from '../components/almacen/components/producto
 import { ProductosScreen } from '../components/almacen/components/productosAlmacen/ProductosScreen';
 
 export const AlmacenRoutes = () => {
-    const { socket } = useContext(SocketContext);
+    // const { socket } = useContext(SocketContext);
     //TODO: Alertas de almacen 
 
     return (

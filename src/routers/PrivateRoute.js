@@ -5,7 +5,10 @@ import { SocketProvider } from "../context/SocketContext";
 
 //Alert's
 import { error } from "../alerts/botons";
+
+//Context's
 import { ChatProvider } from "../context/ChatContext";
+
 
 export const PrivateRoute = ({children,uid}) =>{
     if(!!uid){
