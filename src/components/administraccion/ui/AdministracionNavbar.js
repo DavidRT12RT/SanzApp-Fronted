@@ -28,7 +28,7 @@ export const AdministracionNavbar = () =>{
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark p-3">
             <div className="container-fluid menuBarra">
-                <Link to="/almacen/" className="navbar-brand h6">
+                <Link to="/almacen/" className="navbar-brand h6 titulo-descripcion">
                     <img src={require("../assets/imgs/favicon.png")} width="40" height="40"/>
                     Sanz Ingenieria Integral 
                     </Link>

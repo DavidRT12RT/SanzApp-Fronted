@@ -81,7 +81,7 @@
 }
 
 .descripcion-producto{
-	color:#000;
+	  color:#000;
   	font-family: 'Lato',sans-serif;
   	font-size:20px; 
   	font-weight: 400;
@@ -117,5 +117,16 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.pageHeader{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.pageHeader .titulo-descripcion {
+  margin:0px;
 }
 

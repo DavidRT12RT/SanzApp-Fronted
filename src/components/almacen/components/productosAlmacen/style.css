@@ -1,5 +1,5 @@
 .contenedorPrincipalProductosScreen {
-    height: 100vh;
+    min-height: 100vh;
 
     display: flex;
     justify-content: center;
@@ -7,6 +7,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     padding: 20px;
+
 }
 
 @media (min-width:200px) and (max-width:1000px){
@@ -36,9 +37,7 @@
     font-size:18px
 }
 
-.headerBarraBusqueda{
-    border-radius: 20px;
-}
+
 @media (min-width:200px) and (max-width:1000px){
    .headerProductos{
         width: 100%;
@@ -109,11 +108,16 @@
 .productosContenedorPrincipal{
     width: 80%;
     margin-top: 15px;
+
+}
+
+.productosContenedorPrincipal .headerBarraBusqueda{
+    margin:10px 0px;
 }
 
 .productosContainer{
     display: flex;
-    justify-content: start;
+    justify-content: center;
     align-items: center;
     flex-direction: row;
     flex-wrap: wrap;

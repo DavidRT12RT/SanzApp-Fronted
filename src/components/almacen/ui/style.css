@@ -1,8 +1,9 @@
-
-
 @media (min-width:100px) and (max-width: 600px) {
   .menuBarra {
     width: 100%;
+  }
+  .titulo-descripcion{
+    font-size: 1rem;
   }
 }
 

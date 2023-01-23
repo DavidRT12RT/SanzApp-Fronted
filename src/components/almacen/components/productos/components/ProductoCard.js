@@ -1,8 +1,11 @@
 import React from 'react'
+
 import { useLocation, useNavigate } from 'react-router-dom';
+
+//Style.css
 import "./assets/styleProductoCard.css";
 
-export const ProductoCard = ({producto,rol}) => {
+export const ProductoCard = ({producto}) => {
 
 
     //Ruta sera igual a la asignacion de esto

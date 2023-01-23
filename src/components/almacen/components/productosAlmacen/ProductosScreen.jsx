@@ -1,9 +1,15 @@
-import { message } from 'antd';
 import React, { useEffect, useState } from 'react'
+
+//Third party imports
+import { message } from 'antd';
 import { useLocation, useSearchParams } from 'react-router-dom';
+
+//Custom Hook's
+import { useProductos } from '../../../../hooks/useProductos';
+
+//Helper's
 import { fetchConToken } from '../../../../helpers/fetch';
 import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
-import { useProductos } from '../../../../hooks/useProductos';
 
 //Components
 import { FiltrosProductos } from './components/FiltrosProductos';
@@ -47,9 +53,14 @@ export const ProductosScreen = () => {
     if(isLoading) return <SanzSpinner/>
     else return (
         <div className="contenedorPrincipalProductosScreen">
-            <HeaderProductosAlmacen setParametrosBusqueda={setParametrosBusqueda}/>
-            <FiltrosProductos setParametrosBusqueda={setParametrosBusqueda}/>
-            <ProductosCards productos={productos}/>
+            <HeaderProductosAlmacen/>
+            <FiltrosProductos 
+                setParametrosBusqueda={setParametrosBusqueda}
+            />
+            <ProductosCards 
+                productos={productos}
+                setParametrosBusqueda={setParametrosBusqueda}
+            />
         </div>
     )
 }

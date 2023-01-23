@@ -24,6 +24,7 @@ import imagenEntradas from "./assets/imgs/juicy-girl-and-guy-preparing-start-up-
 const { RangePicker } = DatePicker;
 
 export const EntradasAlmacenNew = () => {
+
     const { isLoading,entradas,setEntradas } = useEntradas();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -108,7 +109,7 @@ export const EntradasAlmacenNew = () => {
                 <div className="col-12 col-lg-10 mt-5 mt-lg-0">
                     <h1 className="titulo-descripcion" style={{fontSize:"20px"}}>ENTRADAS ENCONTRADAS</h1>
                     <Divider/>
-                    {entradasRegistros.length === 0 && <p className="titulo-descripcion text-danger">Ninguna entrada encontrada</p>}
+                    {entradasRegistros.length === 0 && <p className="titulo-descripcion text-danger">Ninguna entrada encontrada...</p>}
                     <div className="containerEntradasCards">
                         {
                             entradasRegistros.map(entrada => (

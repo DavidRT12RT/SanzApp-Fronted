@@ -39,10 +39,10 @@ export const AplicationNavbar = () =>{
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark p-3">
             <div className="container-fluid menuBarra">
-                <Link to="/aplicacion/" className="navbar-brand h6">
+                <Link to="/aplicacion/" className="navbar-brand h6 titulo-descripcion">
                     <img src={require("../assets/favicon.png")} width="40" height="40"/>
                     Sanz Ingenieria Integral
-                    </Link>
+                </Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
                 </button>

@@ -47,7 +47,7 @@ export const AppRouter = ()=>{
                 	} 
               	/>
               	<Route path="/aplicacion/*" element={
-					<PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","INGE_ROLE","ADMINISTRADOR_ROLE","USER_ROLE"]}>
+					<PrivateRoutePorRole rolRequerido={["ADMIN_ROLE","INGE_ROLE","ADMINISTRADOR_ROLE","USER_ROLE","OBRAS_ROLE"]}>
                         <ApplicationRoutes/>
                   	</PrivateRoutePorRole>
                 	}

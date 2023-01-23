@@ -1,131 +1,199 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Divider, message, PageHeader, Tabs, Tag,} from 'antd';
-import { useNavigate, useParams } from 'react-router-dom';
-import { SalidasProducto }  from './components/SalidasProducto';
-import { EntradasProducto } from './components/EntradasProducto';
-import { MovimientosProducto } from './components/MovimientosProducto';
-import { SocketContext } from '../../../../context/SocketContext';
-import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
-import { fetchConToken } from '../../../../helpers/fetch';
+import React from "react";
+
+import { Button, DatePicker, Form, Modal, Select } from "antd";
+
+//Component's
+import { ProductoHeader } from "./components/ProductoHeader";
+import { ProductoDescription } from "./components/ProductoDescription";
+import { ProductoRegistros } from "./components/ProductoRegistros";
+import { ProductoBasicInformation } from "./components/ProductoBasicInformation";
+import { ProductoImage } from "./components/ProductoImage";
+import { SanzSpinner } from "../../../../helpers/spinner/SanzSpinner";
 
 //Estilos CSS
 import "./components/assets/style.css";
 
-const { TabPane } = Tabs;
+//Custom hook for logic
+import { useProducto } from "../../../../hooks/useProducto";
+
+import locale from "moment/locale/es";
+
+const { RangePicker } = DatePicker;
 
 export const ProductoScreen = () => {
+    //Custom hook for logic of component
+    const {
+        crearReporteGeneral,
+        isModalVisible,
+        setIsModalVisible,
+        form,
+        informacionProducto,
+        isLoadingCategorias,
+        isProductoEditing,
+        setIsProductoEditing,
+        onFinishEditingProduct,
+        auth,
+        filesList,
+        setFilesList,
+        formValues,
+        handleInputChange,
+        categorias,
+    } = useProducto();
 
+    const ModalContent = () => {
+        return (
+            <Modal
+                visible={isModalVisible}
+                footer={null}
+                onCancel={() => {
+                    setIsModalVisible(false);
+                }}
+                onOk={() => {
+                    setIsModalVisible(false);
+                }}
+            >
+                <h1 className="titulo" style={{ fontSize: "30px" }}>
+                    Filtrar registros del reporte
+                </h1>
+                <p className="descripcion">
+                    Marca en las siguientes casillas que informacion quieras que
+                    contengan el reporte general del producto
+                </p>
 
-    const navigate = useNavigate();
-    const {productoId} = useParams();
-    const [informacionProducto, setInformacionProducto] = useState({});
-    const {socket} = useContext(SocketContext);
+                <Form
+                    form={form}
+                    layout="vertical"
+                    onFinish={crearReporteGeneral}
+                >
+                    <Form.Item
+                        name="intervaloFecha"
+                        label="Intervalo de fecha del reporte"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Ingresa un intervalo de fecha!",
+                            },
+                        ]}
+                    >
+                        <RangePicker
+                            locale={locale}
+                            format="YYYY-MM-DD"
+                            size="large"
+                            style={{ width: "100%" }}
+                        />
+                    </Form.Item>
 
-    useEffect(()=>{
+                    <Form.Item
+                        label="Tipo de entrada"
+                        name="tipoEntrada"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Ingresa un tipo de entrada!",
+                            },
+                        ]}
+                    >
+                        <Select
+                            mode="multiple"
+                            placeholder="Tipo de entrada..."
+                            size="large"
+                        >
+                            <Select.Option value="sobranteObra">
+                                Sobrante de obra
+                            </Select.Option>
+                            <Select.Option value="devolucionResguardo">
+                                Devolucion resguardo
+                            </Select.Option>
+                            <Select.Option value="normal">Normal</Select.Option>
+                        </Select>
+                    </Form.Item>
 
-        const fetchDataProducto = async () => {
-            const resp = await fetchConToken(`/productos/${productoId}`);
-            const body = await resp.json();
-            if(resp.status === 200) {
-                body.registrosEntradas.sobranteObra.map(registro => {registro.tipo = "sobranteObra"; registro.key = registro._id;});
-                body.registrosEntradas.devolucionResguardo.map(registro => {registro.tipo = "devolucionResguardo"; registro.key = registro._id})
-                body.registrosEntradas.compraDirecta.map(registro => {registro.tipo = "compraDirecta"; registro.key = registro._id})
-                body.registrosSalidas.obra.map(registro => {registro.tipo = "obra"; registro.key = registro._id;});
-                body.registrosSalidas.merma.map(registro => {registro.tipo = "merma"; registro.key = registro._id});
-                body.registrosSalidas.resguardo.map(registro => {registro.tipo = "resguardo"; registro.key = registro._id});
-                setInformacionProducto(body);
-            }
-            if(resp.status === 400) {
-                message.error("El ID del producto NO existe");
-                return navigate(-1);
-            }
-        }
-        fetchDataProducto();
-    },[]);
+                    <Form.Item
+                        label="Tipo de salida"
+                        name="tipoSalida"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Ingresa un tipo de salida!",
+                            },
+                        ]}
+                    >
+                        <Select
+                            mode="multiple"
+                            placeholder="Tipo de salida..."
+                            size="large"
+                        >
+                            <Select.Option value="obra">Obra</Select.Option>
+                            <Select.Option value="resguardo">
+                                Resguardo
+                            </Select.Option>
+                            <Select.Option value="merma">Merma</Select.Option>
+                        </Select>
+                    </Form.Item>
+                    <Button type="primary" htmlType="submit">
+                        Descargar PDF
+                    </Button>
+                </Form>
+            </Modal>
+        );
+    };
 
-    useEffect(() => {
-
-       socket?.on("actualizar-producto",(producto)=>{
-            if(productoId === producto._id) {
-                producto.registrosEntradas.sobranteObra.map(registro => {registro.tipo = "sobranteObra"; registro.key = registro._id;});
-                producto.registrosEntradas.devolucionResguardo.map(registro => {registro.tipo = "devolucionResguardo"; registro.key = registro._id})
-                producto.registrosEntradas.compraDirecta.map(registro => {registro.tipo = "compraDirecta"; registro.key = registro._id})
-                producto.registrosSalidas.obra.map(registro => {registro.tipo = "obra"; registro.key = registro._id;});
-                producto.registrosSalidas.merma.map(registro => {registro.tipo = "merma"; registro.key = registro._id});
-                producto.registrosSalidas.resguardo.map(registro => {registro.tipo = "resguardo"; registro.key = registro._id});
-                setInformacionProducto(producto);
-            }
-        });
-
-    }, [socket,setInformacionProducto,productoId]);
-
-    if( Object.keys(informacionProducto).length === 0){
-        return <SanzSpinner/>
-    }else{
+    if (Object.keys(informacionProducto).length === 0 || isLoadingCategorias) {
+        <SanzSpinner />;
+    } else {
         return (
             <div className="container p-3 p-lg-5">
-                <div className="d-flex justify-content-start gap-2 flex-wrap">
-                    <PageHeader
-                        onBack={() => navigate("/aplicacion/almacen/")}
-                        title="Volver a almacen"
-                    />
-                </div>
-                 <div className="row">
+                {/* Header del producto */}
+                <ProductoHeader
+                    isProductoEditing={isProductoEditing}
+                    setIsProductoEditing={setIsProductoEditing}
+                    onFinishEditingProduct={onFinishEditingProduct}
+                    auth={auth}
+                />
+                <div className="row">
                     {/* Imagen del producto*/}
                     <div className="col-lg-6 col-12 d-flex justify-content-center align-items-center">
-                        <img src={`${process.env.REACT_APP_BACKEND_URL}/api/uploads/productos/${informacionProducto._id}`} className="imagen-producto" key={informacionProducto._id}/>
+                        <ProductoImage
+                            informacionProducto={informacionProducto}
+                            isProductoEditing={isProductoEditing}
+                            filesList={filesList}
+                            setFilesList={setFilesList}
+                            setIsModalVisible={setIsModalVisible}
+                        />
                     </div>
 
                     {/* Informacion basica del producto*/}
                     <div className="col-lg-6 col-12 d-flex flex-column">
-                        <h1 className="nombre-producto">{informacionProducto.nombre}</h1>
-                        {informacionProducto.estatus ? <h1 className="text-success estatus-producto">Disponible</h1> : <h1 className="text-danger descripcion">No disponible</h1>}
-                        <Tag className="descripcion my-3" style={{backgroundColor:informacionProducto.categoria.color,borderColor:informacionProducto.categoria.color,fontSize:"13px",padding:"13px",maxWidth:"fit-content"}}>{informacionProducto.categoria.nombre}</Tag>
-                        <h1 className="titulo-descripcion">Precio promedio X unidad:</h1>
-                        <h1 className="precio-por-unidad-producto">${informacionProducto.costo}</h1>
-                        <div className="row mt-5">
-                            <h1 className="titulo-descripcion col-6">Cantidad en bodega:</h1>
-                            <h1 className="descripcion col-6">{informacionProducto.cantidad}</h1>
-                            <h1 className="titulo-descripcion col-6">Marca:</h1>
-                            <h1 className="descripcion col-6">{informacionProducto.marca}</h1>
-                            <h1 className="titulo-descripcion col-6">Unidad: </h1>
-                            <h1 className="descripcion col-6">{informacionProducto.unidad}</h1>
-                            <h1 className="titulo-descripcion col-6">Estado del producto: </h1>
-                            <h1 className="descripcion col-6">{informacionProducto.estado}</h1>
-                            <h1 className="titulo-descripcion col-6 ">Fecha de registro en el sistema: </h1>
-                            <h1 className="descripcion col-6 text-danger">{informacionProducto.fechaRegistro}</h1>
-                            <p className="mt-5 nota col-12 text-center">Para mas detalles del producto comunicate a almacen...</p>
-                        </div>
+                        <ProductoBasicInformation
+                            formValues={formValues}
+                            handleInputChange={handleInputChange}
+                            isProductoEditing={isProductoEditing}
+                            informacionProducto={informacionProducto}
+                            auth={auth}
+                            categorias={categorias}
+                        />
                     </div>
-                    
-                    {/*Registros de el producto*/}
+
+                    {/* Registro del producto (Entradas,salidas,movimientos y codigo de barras) */}
                     <div className="col-lg-6 col-12 d-flex flex-column">
-                        <Divider/>
-                        <h1 className="nombre-producto">Registros de el producto</h1>
-                        <Tabs defaultActiveKey='1' key="1" size="large">
-                            <TabPane tab="Entradas del producto">
-                                <EntradasProducto registros={informacionProducto.registrosEntradas}/>
-                            </TabPane>
-                            <TabPane tab="Salidas del producto" key="2">
-                                <SalidasProducto registros={informacionProducto.registrosSalidas}/>
-                            </TabPane>
-                            <TabPane tab="Movimientos del producto" key="3">
-                                <MovimientosProducto registros={informacionProducto.movimientos} informacionProducto={informacionProducto}/>
-                            </TabPane>
-                        </Tabs>
+                        <ProductoRegistros
+                            informacionProducto={informacionProducto}
+                        />
                     </div>
 
                     {/* Descripcion del producto y sus aplicaciones*/}
                     <div className="col-lg-6 col-12 d-flex flex-column">
-                        <Divider/>
-                        <h1 className="nombre-producto">Descripcion del producto</h1>
-                        <h1 className="descripcion-producto">{informacionProducto.descripcion}</h1>
-                        <Divider/>
-                        <h1 className="nombre-producto">Aplicaciones del producto</h1>
-                        <h1 className="descripcion-producto">{informacionProducto.aplicaciones}</h1>
+                        <ProductoDescription
+                            formValues={formValues}
+                            handleInputChange={handleInputChange}
+                            isProductoEditing={isProductoEditing}
+                            informacionProducto={informacionProducto}
+                        />
                     </div>
-                 </div>
+                </div>
+
+                <ModalContent />
             </div>
-        )
+        );
     }
 };

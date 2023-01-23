@@ -40,7 +40,7 @@ export const GestionOficina = () => {
    
     //Obtener la información de la oficina cuando se actualize por otro cliente
     useEffect(() => {
-        socket.on("informacion-oficina-actualizada",(oficina)=>{
+        socket?.on("informacion-oficina-actualizada",(oficina)=>{
             setOficinaInfo(oficina);
         });
     }, [socket,setOficinaInfo]);
