@@ -1,32 +1,43 @@
-import React from 'react'
+import React from "react";
 
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 
 //Style.css
 import "./assets/styleProductoCard.css";
 
-export const ProductoCard = ({producto}) => {
-
-
+export const ProductoCard = ({ producto }) => {
     //Ruta sera igual a la asignacion de esto
     //const ruta = (rol === ( "ENCARGADO_ALMACEN_ROL"  || "ADMIN_ROLE" ) ? `/almacen/productos/${producto._id}/` : `/aplicacion/almacen/${producto._id}`)
     const { pathname } = useLocation();
-    const ruta = pathname.startsWith("/almacen") ? `/almacen/productos/${producto._id}/`: `/aplicacion/almacen/${producto._id}/`; 
+    const ruta = pathname.startsWith("/almacen")
+        ? `/almacen/productos/${producto._id}/`
+        : `/aplicacion/almacen/${producto._id}/`;
     const navigate = useNavigate();
 
-
     return (
-        <div className="row p-4 bg-body producto-card-container" onClick={() => {
-            navigate(ruta);
-        }}>
+        <div
+            className="row p-4 bg-body producto-card-container"
+            onClick={() => {
+                navigate(ruta);
+            }}
+        >
             <div className="col-12 mb-3 mb-lg-0 d-flex justify-content-center align-items-center">
-                <img style={{height:"186.67px",width:"186.67px"}} src={`${process.env.REACT_APP_BACKEND_URL}/api/uploads/productos/${producto._id}`}/>
+                <img
+                    style={{ height: "186.67px", width: "186.67px" }}
+                    src={`${process.env.REACT_APP_BACKEND_URL}/api/uploads/productos/${producto._id}`}
+                />
             </div>
             <div className="col-12 mt-3">
-                <p className="titulo-descripcion text-success">${producto.costo}</p>
+                <p className="titulo-descripcion text-success">
+                    ${producto.costo}
+                </p>
                 <h6 className="fw-bold">{producto.nombre}</h6>
-                {producto.estatus ? <p className="text-success">Disponible</p> : <p className="text-danger">No disponible</p>}
+                {producto.estatus ? (
+                    <p className="text-success">Disponible</p>
+                ) : (
+                    <p className="text-danger">No disponible</p>
+                )}
             </div>
         </div>
-    )
-}
+    );
+};

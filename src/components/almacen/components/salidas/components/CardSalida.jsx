@@ -1,14 +1,6 @@
 import React from "react";
 
-export const CardSalida = ({
-    tipo,
-    tipoSalidaElegida,
-    setTipoSalidaElegida,
-}) => {
-    const handleChangeTipoSalida = (e) => {
-        setTipoSalidaElegida(tipo);
-    };
-
+export const CardSalida = ({ tipo, tipoSalidaElegida, cambiarTipoSalida }) => {
     return (
         <div
             className={
@@ -22,7 +14,9 @@ export const CardSalida = ({
             </div>
             <input
                 type="radio"
-                onChange={handleChangeTipoSalida}
+                onChange={() => {
+                    cambiarTipoSalida(tipo);
+                }}
                 checked={tipo.nombre === tipoSalidaElegida.nombre}
                 value={tipo.nombre === tipoSalidaElegida.nombre}
             />

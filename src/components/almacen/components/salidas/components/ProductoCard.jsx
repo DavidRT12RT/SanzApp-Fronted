@@ -1,9 +1,31 @@
 import React from "react";
-import { Trash3Fill } from "react-bootstrap-icons";
+import { XLg } from "react-bootstrap-icons";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { Modal } from "antd";
 
-export const ProductoCard = ({ producto }) => {
+const { confirm } = Modal;
+
+export const ProductoCard = ({
+    producto,
+    cambiarCantidadProducto,
+    eliminarProducto,
+}) => {
     return (
         <div className="productoCard">
+            <XLg
+                className="deleteProductBtn"
+                onClick={(e) => {
+                    confirm({
+                        title: "¿Seguro quieres borrar el producto de la lista?",
+                        icon: <ExclamationCircleOutlined />,
+                        okText: "Borrar",
+                        cancelText: "Volver atras",
+                        async onOk() {
+                            eliminarProducto(producto._id);
+                        },
+                    });
+                }}
+            />
             <div className="img">
                 <img
                     src={`${process.env.REACT_APP_BACKEND_URL}/api/uploads/productos/${producto._id}`}
@@ -18,18 +40,36 @@ export const ProductoCard = ({ producto }) => {
                     ...
                 </p>
                 <hr style={{ margin: "5px" }} />
-                <p className="descripcion estatusProducto">Disponible</p>
+                <div className="extraInfo">
+                    <div>
+                        <p className="descripcion">
+                            Retirar:
+                            <input
+                                className="form-control sub-titulo text-danger"
+                                type="number"
+                                value={producto.cantidadRetirada}
+                                onChange={(e) =>
+                                    cambiarCantidadProducto(
+                                        producto,
+                                        parseInt(e.target.value)
+                                    )
+                                }
+                            />
+                        </p>
+                    </div>
+                    <div>
+                        <p className="descripcion">
+                            Bodega:
+                            <input
+                                className="form-control sub-titulo"
+                                type="number"
+                                value={producto.cantidad}
+                                readOnly
+                            />
+                        </p>
+                    </div>
+                </div>
             </div>
-            {/* <div className="cantidad">
-                <p className="titulo-descripcion">
-                    A retirar:
-                    {producto.cantidadARetirar}
-                </p>
-                <p className="titulo-descripcion">
-                    En bodega:
-                    {producto.cantidad}
-                </p>
-            </div> */}
         </div>
     );
 };

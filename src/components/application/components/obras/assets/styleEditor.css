@@ -1,4 +1,6 @@
-
+.layoutEditorObra{
+	min-height: 100vh;
+}
 
 #components-layout-demo-responsive .logo {
   height: 32px;

@@ -1,10 +1,18 @@
 .contenedorPrincipalEmpresasScreen{
+    min-height: 100vh;
+
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-direction:column ;
     flex-wrap: column;
     padding: 20px;
+}
+
+@media (min-width:100px) and (max-width:1000px) {
+    .contenedorPrincipalEmpresasScreen{
+        padding: 10px;
+    } 
 }
 
 /* HERO SECTION COMPONENT*/
@@ -33,7 +41,7 @@
 }
 
 .heroSectionBorder{
-    width: 100vw;
+    width: 100%;
     height:40px;
     margin:20px 0px 20px 0px;
 }
@@ -74,7 +82,9 @@
     cursor: pointer;
 
     position:relative;
+
 }
+
 .empresaCard .triangulo{
     position: absolute;
     right: 0px;
@@ -86,6 +96,8 @@
     border-width: 0 0 80px 80px;
     border-color: transparent transparent #ffc107 transparent;
 }
+
+
 
 .empresaCard .contentLeft .logoContainer{
     display: flex;
@@ -109,6 +121,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 20px;
+
 }
 
 .empresaCard .contentLeft .obraInformation .titulo-descripcion{

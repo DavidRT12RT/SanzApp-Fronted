@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Layout, Menu, message } from "antd";
+import { Layout, Menu } from "antd";
 import {
     TeamOutlined,
     FileOutlined,
@@ -12,7 +12,7 @@ import {
     InfoCircleOutlined,
     ShoppingCartOutlined,
     FrownOutlined,
-    AreaChartOutlined
+    AreaChartOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { TrabajosEjecutados } from "./components/EditorComponents/TrabajosEjecutados";
@@ -32,7 +32,12 @@ import { EstadisticasObra } from "./components/EditorComponents/EstadisticasObra
 
 //Estilos CSS
 import "./assets/styleEditor.css";
+
+//Context's
 import { SocketContext } from "../../../../context/SocketContext";
+
+//Helper's
+import { SanzSpinner } from "../../../../helpers/spinner/SanzSpinner";
 
 const { Content, Sider } = Layout;
 
@@ -45,32 +50,35 @@ export const EditorObra = () => {
     const { socket } = useContext(SocketContext);
     const { obraId } = useParams();
 
+    //Componente del editor de obra
+    const [key, setKey] = useState(1);
+
     //Solicitando obra por id
     useEffect(() => {
-        socket.emit("obtener-obra-por-id", { obraId }, (obra) => { setObraInfo(obra)});
+        socket?.emit("obtener-obra-por-id", { obraId }, (obra) => {
+            setObraInfo(obra);
+        });
     }, [socket, obraId]);
 
     //Escuchar si la obra se actualiza
     useEffect(() => {
-        socket.on("obra-actualizada", (obra) => {
-            if(JSON.stringify(obra._id) === JSON.stringify(obraInfo._id)) setObraInfo(obra);
+        socket?.on("obra-actualizada", (obra) => {
+            if (JSON.stringify(obra._id) === JSON.stringify(obraInfo._id))
+                setObraInfo(obra);
         });
     }, [socket, setObraInfo, obraInfo]);
-    const [key, setKey] = useState(1);
 
     const renderizarComponente = () => {
         switch (key) {
             case "1":
                 //Informacion general de la obra
                 return (
-                    <InformacionGeneral obraInfo={obraInfo} socket={socket}/>
-                ) 
-            
+                    <InformacionGeneral obraInfo={obraInfo} socket={socket} />
+                );
+
             case "2":
                 //Obsericiones lista
-                return (
-                    <ComentariosObra obraInfo={obraInfo} socket={socket}/>
-                )
+                return <ComentariosObra obraInfo={obraInfo} socket={socket} />;
 
             case "3":
                 //Trabajadores lista
@@ -94,43 +102,49 @@ export const EditorObra = () => {
             case "7":
                 return <HorasExtra socket={socket} obraInfo={obraInfo} />;
 
-
             case "9":
                 return <CobrosObra socket={socket} obraInfo={obraInfo} />;
 
-
             case "11":
-                return <ArchivosGenerales socket={socket} obraInfo={obraInfo}/>
-            
+                return (
+                    <ArchivosGenerales socket={socket} obraInfo={obraInfo} />
+                );
+
             case "12":
                 //return ( <MaterialUtilizado socket={socket} obraInfo={obraInfo} />);
-                return <ProductosRetiradoAlmacen socket={socket} obraInfo={obraInfo}/>
-                    
+                return (
+                    <ProductosRetiradoAlmacen
+                        socket={socket}
+                        obraInfo={obraInfo}
+                    />
+                );
+
             case "13":
-                return <FinalizarObra socket={socket} obraInfo={obraInfo}/>
-            
+                return <FinalizarObra socket={socket} obraInfo={obraInfo} />;
+
             case "14":
                 //Material y herramientas retiradas de almacen
-                return ( <RetiradoAlmacen obraInfo={obraInfo}/>) 
+                return <RetiradoAlmacen obraInfo={obraInfo} />;
 
             case "15":
-                return (<IncidentesObra obraInfo={obraInfo} socket={socket}/>)
-            
+                return <IncidentesObra obraInfo={obraInfo} socket={socket} />;
+
             case "16":
-                return (<EstadisticasObra obraInfo={obraInfo} socket={socket}/>)
+                return <EstadisticasObra obraInfo={obraInfo} socket={socket} />;
             default:
                 //Informacion general de la obra
                 return (
-                    <InformacionGeneral obraInfo={obraInfo} socket={socket}/>
-                ) 
+                    <InformacionGeneral obraInfo={obraInfo} socket={socket} />
+                );
         }
     };
-    if (Object.keys(obraInfo).length === 0 ) {
-        return <h1>Cargando informacion de la obra..</h1>;
-    }
-    else{
+
+    console.log(obraInfo);
+    if (Object.keys(obraInfo).length === 0) {
+        return <SanzSpinner />;
+    } else {
         return (
-            <Layout>
+            <Layout className="layoutEditorObra">
                 <Sider
                     breakpoint="lg"
                     collapsedWidth="0"
@@ -151,7 +165,7 @@ export const EditorObra = () => {
                         items={[
                             {
                                 key: "1",
-                                icon:<InfoCircleOutlined />,
+                                icon: <InfoCircleOutlined />,
                                 label: "Informacion general",
                             },
 
@@ -190,7 +204,7 @@ export const EditorObra = () => {
                                 icon: <ToolOutlined />,
                                 label: "Trabajos",
                             },
- 
+
                             /*
                             {
                                 key: "8",
@@ -206,36 +220,32 @@ export const EditorObra = () => {
                             },
                             */
                             {
-                                key:"11",
-                                icon:<CloudServerOutlined />,
-                                label:"Archivos en general"
+                                key: "11",
+                                icon: <CloudServerOutlined />,
+                                label: "Archivos en general",
                             },
                             {
-                                key:"12",
-                                icon:<ShoppingCartOutlined />,
-                                label:"Productos retirados del almacen"
+                                key: "12",
+                                icon: <ShoppingCartOutlined />,
+                                label: "Productos retirados del almacen",
                             },
                             {
-                                key:"15",
-                                icon:<FrownOutlined />,
-                                label:"Incidentes de la obra"
+                                key: "15",
+                                icon: <FrownOutlined />,
+                                label: "Incidentes de la obra",
                             },
                             {
-                                key:"13",
-                                icon:<CheckSquareOutlined />,
-                                label:"Finalizar obra"
-
-                            }
+                                key: "13",
+                                icon: <CheckSquareOutlined />,
+                                label: "Finalizar obra",
+                            },
                         ]}
                     />
                 </Sider>
                 <Layout>
-                    <Content>
-                            {renderizarComponente()}
-                    </Content>
-               </Layout>
+                    <Content>{renderizarComponente()}</Content>
+                </Layout>
             </Layout>
         );
     }
 };
-

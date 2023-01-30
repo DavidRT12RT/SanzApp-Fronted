@@ -1,4 +1,12 @@
 /* Global style for all components (Fonts) */
+
+*,body{
+  margin:0px;
+  padding:0px;
+
+  box-sizing: border-box;
+}
+
 .titulo{
   color:#4a4a4a;
   font-family: 'Lato', sans-serif;
