@@ -67,7 +67,6 @@ export const SalidaCard = ({ salida }) => {
     return (
         <>
             <div className="salidaCard">
-                {renderizarIcono(salida.tipo)}
                 <div>
                     {renderizarTitulo(salida.tipo, salida)}
                     <div className="d-flex justify-content-start align-items-center flex-wrap gap-lg-3">

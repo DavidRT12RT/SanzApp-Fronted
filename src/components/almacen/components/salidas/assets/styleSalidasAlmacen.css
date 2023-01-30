@@ -1,10 +1,10 @@
 .containerSalidas{
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: min-content;
     align-items: center;
-    flex-direction:column;
-    flex-wrap: wrap;
-
-    height: 100vh;
+    justify-items: center;
+    min-height: 100vh;
 }
 
 .containerRegister {
@@ -24,16 +24,14 @@
     overflow: hidden;
 }
 
-.containerRegister .titulo{
-    font-size:24px;
-}
 
-
-@media (min-width:100px) and (max-width:1200px){
+@media(min-width:100px) and (max-width:1600px){
     .imagenRegister{
         display: none;
     }
+}
 
+@media (min-width:100px) and (max-width:1000px){
     .containerRegister {
         width:100%
     }
@@ -62,11 +60,12 @@
 
 .containerSalidasCardsAlmacen{
     display: flex;
-    justify-content: start;
-    align-items: start;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
     gap: 15px;
     width: 100%;
+    margin:10px 0px;
 }
 
 
@@ -75,12 +74,11 @@
     border-radius: 10px;
     padding: 20px;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
     flex-direction: row;
     gap: 50px;
     width: 80%;/* Ajustando al 80% de su padre en este caso el container de salidas*/
-    height: fit-content;
 }
 
 

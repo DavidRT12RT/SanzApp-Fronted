@@ -68,8 +68,7 @@ export const InventariosAlmacen = () => {
                     <div className="containerRegister">
                         <div>
                             <h1 className="titulo text-warning">
-                                Buscar crear un nuevo inventario o generar un
-                                reporte?
+                                Inventarios almacen
                             </h1>
                             <p className="descripcion">
                                 Crea un nuevo inventario del almacen respecto a
@@ -94,12 +93,7 @@ export const InventariosAlmacen = () => {
                         />
                     </div>
 
-                    <h1
-                        className="titulo-descripcion mt-5"
-                        style={{ fontSize: "20px" }}
-                    >
-                        FILTRAR POR:
-                    </h1>
+                    <h1 className="sub-titulo mt-5">FILTRAR POR:</h1>
                     <Divider />
                     <h1
                         className="titulo-descripcion"
@@ -116,12 +110,7 @@ export const InventariosAlmacen = () => {
                             />
                         ))}
                     </div>
-                    <h1
-                        className="titulo-descripcion mt-5"
-                        style={{ fontSize: "20px" }}
-                    >
-                        INVENTARIOS ENCONTRADOS
-                    </h1>
+                    <h1 className="sub-titulo mt-5">INVENTARIOS ENCONTRADOS</h1>
                     <Divider />
                     <div className="containerInventariosRegistros">
                         <Input.Search
