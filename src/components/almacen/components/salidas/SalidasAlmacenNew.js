@@ -8,8 +8,6 @@ import {
     message,
     Modal,
     Select,
-    Table,
-    Tag,
 } from "antd";
 import React, { useEffect, useState } from "react";
 
@@ -289,8 +287,7 @@ export const SalidasAlmacenNew = () => {
                 </div>
                 <div className="col-12 mt-3">
                     <h1
-                        className="titulo-descripcion"
-                        style={{ fontSize: "20px" }}
+                        className="sub-titulo"
                     >
                         SALIDAS ENCONTRADAS
                     </h1>

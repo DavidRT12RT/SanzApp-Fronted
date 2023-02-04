@@ -20,6 +20,7 @@ import { MySpace } from "../components/componentesGenerales/mi-espacio/component
 import { ProductosScreen } from "../components/almacen/components/productosAlmacen/ProductosScreen";
 import { ProductoScreen } from "../components/almacen/components/productos/ProductoScreen";
 import { RetiroAlmacen } from "../components/almacen/components/salidas/RetiroAlmacen";
+import { IngresoAlmacen } from "../components/almacen/components/entradas/IngresoAlmacen";
 
 export const AlmacenRoutes = () => {
     // const { socket } = useContext(SocketContext);
@@ -40,6 +41,8 @@ export const AlmacenRoutes = () => {
                 <Route path="/retirar/old" element={<RetirarAlmacen />} />
                 <Route path="/retirar/" element={<RetiroAlmacen />}></Route>
                 <Route path="/ingresar/" element={<IngresarAlmacen />} />
+
+                <Route path="/ingresar/experimental" element={<IngresoAlmacen/>}/>
                 <Route
                     path="/productos/registrar/"
                     element={<RegistrarProductoNew />}

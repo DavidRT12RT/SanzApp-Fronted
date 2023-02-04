@@ -1,6 +1,10 @@
 import React from "react";
 
-export const CardSalida = ({ tipo, tipoSalidaElegida, cambiarTipoSalida }) => {
+export const CardSalida = ({ 
+    tipo, 
+    tipoSalidaElegida, 
+    cambiarTipoSalida 
+}) => {
     return (
         <div
             className={

@@ -1,0 +1,97 @@
+/* Estilos almacen entrada */
+.IngresoAlmacenContainer .titulo,.descripcion,.titulo-descripcion,.sub-titulo{
+    margin:0px;
+}
+
+.IngresoAlmacenContainer .titulo{
+    color:#000;
+}
+
+.IngresoAlmacenContainer .sub-titulo{
+    color:#000;
+}
+
+.IngresoAlmacenContainer{
+    width: 100%;
+    height: 100vh;
+}
+
+@media (min-width:100px) and (max-width:1000px){
+
+    .IngresoAlmacenContainer{
+        padding: 20px;
+    }
+    
+}
+
+
+/* Choose type entrada (Fase 1)*/
+.chooseTypeEntrada{
+    width: 100%;
+    height: 100%;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    gap: 20px;
+
+    text-align: center;
+}
+
+.chooseTypeEntrada .boxes{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+
+    height: min-content;
+
+}
+
+.tipoEntrada{
+    width: 450px;
+    height: 400px;
+    padding:20px;
+
+    background-color: #fff;
+
+    text-align: center;
+    border-radius: 18px;
+    box-shadow:2px 4px 12px rgb(0 0 0 / 8%);
+
+
+    display: grid;
+    align-content: center;
+
+    /* transition:all .3s cubic-bezier(0,0,.5,1); */
+}
+
+.selected{
+    border:2px solid #ffc107;
+}
+
+@media (min-width:100px) and (max-width:1000px) {
+    .tipoEntrada{
+    }
+}
+
+.tipoEntrada:hover{
+    cursor:pointer;
+    /* transform: scale(1.01); */
+    /* box-shadow:2px 4px 12px rgb(0 0 0 / 15%); */
+}
+
+
+.ScamCodeSalida{
+    width: 100%;
+    height: 100%;
+    padding: 250px;
+
+    display: grid;
+    align-content: center;
+    gap: 20px;
+    text-align: center;
+}
