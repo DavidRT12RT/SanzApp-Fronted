@@ -1,4 +1,4 @@
-import { ArrowRight } from "react-bootstrap-icons";
+import { ArrowRight, UpcScan } from "react-bootstrap-icons";
 
 export const ScamCodeSalida = ({
     cambiarPhase,
@@ -7,13 +7,24 @@ export const ScamCodeSalida = ({
 
     return (
         <div className="ScamCodeSalida">
-            <h1 className="titulo">Escanea el codigo de la salida.</h1>
-            <input 
-                autoFocus 
-                className="form-control descripcion"
-                placeholder="Codigo salida..."
-            />
-            <button type="primary" className="btn btn-warning">Seleccionar <ArrowRight/></button>
+                <h1 className="titulo">Digita el codigo de barras de la salida</h1>
+                <p className="descripcion">Escanea el codigo de barras de la salida que se encuentra en la hoja de evidencia de esta.</p>
+                <input 
+                    type="text" 
+                    className="form-control descripcion" 
+                    placeholder="Codigo de salida..."
+                    autoFocus
+                    onChange={(e) => grabarCodigoSalida(e.target.value)}
+                />
+                <button 
+                    type="primary" 
+                    className="btn btn-warning titulo-descripcion"
+                    onClick={() => {
+                        cambiarPhase(3)
+                    }}
+                >
+                    Siguiente <ArrowRight/>
+                </button>
         </div>
     );
 }

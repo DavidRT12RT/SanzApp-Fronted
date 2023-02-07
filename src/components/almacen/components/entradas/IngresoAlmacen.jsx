@@ -1,12 +1,14 @@
-// Components
-import { ChooseTypeEntrada } from "./components/ChooseTypeEntrada";
 
 //Style CSS
 import "./assets/styleEntradaAlmacen.css";
 
 //Custom hook's
 import { useForm } from "../../../../hooks/useForm";
+
+// Components
+import { ChooseTypeEntrada } from "./components/ChooseTypeEntrada";
 import { ScamCodeSalida } from "./components/ScamCodeSalida";
+import { CapturarProductos } from "./components/CapturarProductos";
 
 
 export const IngresoAlmacen = () => {
@@ -16,6 +18,7 @@ export const IngresoAlmacen = () => {
         tipoEntrada:"compraDirecta"//Tipo entrada por default
     });
 
+    console.log(values);
     const seleccionarTipoEntrada = (tipoEntrada = "compraDirecta") => {
         setValues({
             ...values,
@@ -30,7 +33,8 @@ export const IngresoAlmacen = () => {
         });
     }
 
-    const grabarCodigoSalida = (codigoSalida = 0) => {
+    const grabarCodigoSalida = (codigoSalida = "") => {
+        //Comprobar que la salida exista!
         setValues({
             ...values,
             codigoSalida
@@ -62,7 +66,14 @@ export const IngresoAlmacen = () => {
             );
         
         case 3:
-            return <h1>Fase tres</h1>
+            //TODO: Comprobar codigo de salida sea valido antes de mandarlo al siguiente pestana!
+            return (
+                <div className="IngresoAlmacenContainer">
+                    <CapturarProductos
+                        values={values}
+                    />
+                </div>
+            );
     }
 
 }

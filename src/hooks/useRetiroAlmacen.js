@@ -43,8 +43,6 @@ export const useRetiroAlmacen = () => {
 
     const [values, handleInputChange, setValues] = useForm(initialState);
 
-    console.log(values);
-
     const propsDragger = {
         onRemove: (fileRemove) => {
             const newFiles = values.filesList.filter(
@@ -117,7 +115,7 @@ export const useRetiroAlmacen = () => {
                 ...values,
                 listaProductos: [
                     ...values.listaProductos,
-                    { ...body, cantidadRetirada: 1, costoXunidad: body.costo },
+                    { ...body, id:body._id,cantidadRetirada: 1, costoXunidad: body.costo },
                 ],
             });
     };

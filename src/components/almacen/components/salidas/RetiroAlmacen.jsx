@@ -48,7 +48,7 @@ export const RetiroAlmacen = () => {
         return (
             <section className="retirarAlmacenContenedor">
                 <div className="contentLeft">
-                    <h1 className="titulo">Lista de productos</h1>
+                    <h1 className="titulo">Lista de productos a retirar</h1>
                     <p className="descripcion">
                         Escanea los productos que seran retirados del almacen y
                         su cantidad <br /> respectiva por cada uno de ellos.
@@ -99,7 +99,7 @@ export const RetiroAlmacen = () => {
                         tipoSalida={values.tipoSalida}
                     />
 
-                    <h1 className="sub-titulo">Motivo:</h1>
+                    <h1 className="sub-titulo">Motivo</h1>
                     <textarea
                         className="form-control descripcion"
                         name="motivo"

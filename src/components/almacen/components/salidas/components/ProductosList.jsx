@@ -2,7 +2,7 @@ import React from "react";
 import { ProductoCard } from "./ProductoCard";
 
 export const ProductosList = ({
-    productos,
+    productos = [],
     cambiarCantidadProducto,
     eliminarProducto,
 }) => {

@@ -1,11 +1,14 @@
-import { Button, Divider, message, Table, Tag } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Button, Divider,Table, Tag } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { fetchConToken } from '../../../../helpers/fetch';
 import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
 import { ReporteSalidaAlmacen } from '../../../../reportes/Almacen/ReporteSalidaAlmacen';
 import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
+import Barcode from "react-barcode";
+
+//Style CSS
 import "./assets/styles.css";
 
 export const SalidaScreen = () => {
@@ -13,6 +16,8 @@ export const SalidaScreen = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [informacionSalida, setinformacionSalida] = useState(null);
+
+    const salidaCodigoBarras = useRef();
 
     useEffect(() => {
         const fetchData = async() => {
@@ -59,23 +64,9 @@ export const SalidaScreen = () => {
         }
     }
 
-    /*
-    const handleDownloadEvidencia = async () => {
-        try {
-            const resp = await fetchConToken("/salidas/documento-pdf",{salidaId:id},"POST");
-            const bytes = await resp.blob();
-            let element = document.createElement('a');
-            element.href = URL.createObjectURL(bytes);
-            element.setAttribute('download',`${id}.pdf`);
-            element.click();
-        } catch (error) {
-           message.error("No se pudo descargar el archivo del servidor :("); 
-        }
-    }
-    */
    const handleDownloadEvidencia = async() => {
         const blob = await pdf((
-            <ReporteSalidaAlmacen salida={informacionSalida}/>
+            <ReporteSalidaAlmacen salida={informacionSalida} salidaCodigoBarras={salidaCodigoBarras.current.refs.currentSrc}/>
         )).toBlob();
         saveAs(blob,`salida_almacen_${informacionSalida._id}.pdf`)
    }
@@ -107,7 +98,7 @@ export const SalidaScreen = () => {
         {
             title:<p className="titulo-descripcion">Cantidad retirada</p>,
             render:(text,record) => (
-                <p className="descripcion">{record.cantidad}</p>
+                <p className="descripcion">{record.cantidadRetirada}</p>
             )
         },
         {
@@ -119,7 +110,7 @@ export const SalidaScreen = () => {
         {
             title:<p className="titulo-descripcion">Costo total del producto</p>,
             render:(text,record) => (
-                <p className="descripcion text-success">${record.costoXunidad * record.cantidad}</p>
+                <p className="descripcion text-success">${record.costoXunidad * record.cantidadRetirada}</p>
             )
         },
         {
@@ -152,6 +143,8 @@ export const SalidaScreen = () => {
         columns.push({title:<p className="titulo-descripcion">Cantidad ingresada</p>,render:(text,record)=>{return <p className="descripcion">{record.cantidad}</p>}},{title:<p className="titulo-descripcion">Informacion del producto</p>,render:(text,record)=>{ return (<Link to={`/almacen/productos/${record.id._id}`} className="descripcion text-primary" target="_blank">Ver producto</Link>)}});
         return (<Table columns={columns} dataSource={record.listaProductos}/>)
     }
+
+    console.log(salidaCodigoBarras);
     
     if(informacionSalida === null){
         return <SanzSpinner/>
@@ -200,6 +193,10 @@ export const SalidaScreen = () => {
                 <Divider/>
                 <h1 className="titulo">Lista de productos devueltos</h1>
                 <Table columns={columnsProductosDevueltos} dataSource={informacionSalida.productosDevueltos} expandable={{expandedRowRender}}/>
+
+                <Divider/>
+                <h1 className="titulo">Codigo de barras</h1>
+                <Barcode value={informacionSalida._id}/>
             </div>
         )
     }

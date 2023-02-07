@@ -5,7 +5,7 @@
 
 .retirarAlmacenContenedor .titulo{
     color:#000 !important; 
-    font-size: 28px;
+    /* font-size: 28px; */
 }
 
 .retirarAlmacenContenedor .sub-titulo{
@@ -31,6 +31,7 @@
     grid-area: 1 / 1 / 5 / 3; 
     background-color: #fff;
     padding:50px;
+
 
     display: flex;
     flex-direction: column;

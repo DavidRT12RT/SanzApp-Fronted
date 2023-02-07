@@ -18,6 +18,7 @@ import LatoRegular from "../assets/fuentes/Lato-Regular.ttf";
 export const ReporteSalidaAlmacen = ({ salida }) => {
     const fecha = moment().locale("es").format("YYYY-MM-DD");
 
+
     Font.register({
         family: "Lato",
         fonts: [
@@ -254,8 +255,8 @@ export const ReporteSalidaAlmacen = ({ salida }) => {
                             ]}
                         />
                     </View>
-                ))}
-            </Page>
+               ))}
+           </Page>
         </Document>
     );
 };
