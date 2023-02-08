@@ -123,7 +123,7 @@
     padding: 50px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 10px;
 }
 

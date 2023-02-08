@@ -10,7 +10,7 @@ import { fetchConToken, fetchConTokenSinJSON } from "../helpers/fetch";
 import { useForm } from "./useForm";
 
 //Context's
-import { SocketContext } from "../context/SocketContext";
+// import { SocketContext } from "../context/SocketContext";
 
 const { confirm } = Modal;
 

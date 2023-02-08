@@ -1,13 +1,17 @@
 import { Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { ArrowRight } from "react-bootstrap-icons";
-import { ProductosList } from "../../salidas/components/ProductosList";
+import { ProductosList } from "./ProductList";
 
 const { Dragger } = Upload;
 
 export const CapturarProductos = ({
-    values
+    values,
+    agregarProducto,
+    cambiarCantidadProducto,
+    eliminarProducto
 }) => {
+
     return (
         <div className="CapturarProductos">
            <div className="capturar">
@@ -15,18 +19,39 @@ export const CapturarProductos = ({
                     <>
                         <h1 className="titulo">Lista de productos retirados</h1>
                         <p className="descripcion">Productos que fueron retirados del almacen registrados en la salida.</p>
-                        <ProductosList/>
+                        <ProductosList
+                            productos={values.salida.listaProductos}
+                            tipo="Retirado"
+                        />
+
+                        <h1 className="titulo">Lista de productos devueltos</h1>
+                        <p className="descripcion">Productos que han sido devueltos al almacen.</p>
+                        <ProductosList
+                            productos={values.salida.productosDevueltos}
+                            tipo="Ingresado"
+                        />
                     </>
                 )}
                 <h1 className="titulo">Lista de productos a ingresar</h1>
                 <p className="descripcion">Productos a capturar para su devolucion a almacen.</p>
-                <input 
-                    type="text" 
-                    className="form-control descripcion" 
-                    autoFocus
-                    placeholder="Busca un producto por su codigo de barras..."
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    agregarProducto(e.target[0].value);
+                }}>
+                    <input 
+                        type="text" 
+                        className="form-control descripcion" 
+                        autoFocus
+                        placeholder="Busca un producto por su codigo de barras..."
+                    />
+                </form>
+                <ProductosList
+                        productos={values.listaProductos}
+                        tipo="Bodega"
+                        cambiarCantidadProducto={cambiarCantidadProducto}
+                        eliminarProducto={eliminarProducto}
+
                 />
-                <ProductosList/>
             </div>
             <div className="infoEntrada">
                 <h1 className="titulo">Detalles de la entrada</h1>

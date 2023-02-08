@@ -2,9 +2,10 @@
 import { ProductoCard } from "./ProductoCard";
 
 export const ProductosList = ({
-    productos,
-    cambiarCantidadProducto=false,
-    eliminarProducto=false,
+    productos = [],
+    cambiarCantidadProducto,
+    eliminarProducto,
+    tipo="Ingresar",
 }) => {
     return (
         <div className="productosList">
@@ -16,6 +17,7 @@ export const ProductosList = ({
                             key={producto._id}
                             cambiarCantidadProducto={cambiarCantidadProducto}
                             eliminarProducto={eliminarProducto}
+                            tipo={tipo}
                         />
                         <hr />
                     </>

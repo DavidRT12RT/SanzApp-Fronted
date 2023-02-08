@@ -7,9 +7,26 @@ const { confirm } = Modal;
 
 export const ProductoCard = ({
     producto,
-    cambiarCantidadProducto = false,
-    eliminarProducto = false,
+    cambiarCantidadProducto, 
+    eliminarProducto,
+    tipo 
 }) => {
+
+    console.log("Cambiar cantidad producto",cambiarCantidadProducto);
+
+    console.log("Eliminar producto",eliminarProducto);
+
+    const renderizarValor = () => {
+        switch(tipo){
+            case "Ingresado":
+                return producto.cantidadIngresada;
+            case "Retirado":
+                return producto.cantidadRetirada;
+            case "Bodega":
+                return producto.cantidad;
+        }
+    }
+
     return (
         <div className="productoCard">
             {
@@ -35,11 +52,11 @@ export const ProductoCard = ({
                 />
             </div>
             <div>
-                <h1 className="sub-titulo">{producto.nombre}</h1>
+                <h1 className="sub-titulo">{producto.id.nombre || producto.nombre}</h1>
                 <p className="descripcion">
-                    {producto.descripcion.length > 13
-                        ? producto.descripcion.slice(0, 30)
-                        : producto.descripcion}
+                    {
+                        (producto.id.descripcion || producto.descripcion).slice(0,30)
+                    }
                     ...
                 </p>
                 <hr style={{ margin: "5px" }} />
@@ -48,11 +65,11 @@ export const ProductoCard = ({
                         cambiarCantidadProducto != false &&
                             (<div>
                                 <p className="descripcion">
-                                    Retirar:
+                                    Ingresar:
                                     <input
                                         className="form-control sub-titulo text-danger"
                                         type="number"
-                                        value={producto.cantidadRetirada}
+                                        value={producto.cantidadIngresada}
                                         onChange={(e) =>
                                             cambiarCantidadProducto(
                                                 producto,
@@ -65,11 +82,13 @@ export const ProductoCard = ({
                     }
                    <div>
                         <p className="descripcion">
-                            Bodega:
+                            {tipo}
                             <input
                                 className="form-control sub-titulo"
                                 type="number"
-                                value={producto.cantidad}
+                                value={
+                                    renderizarValor()
+                                }
                                 readOnly
                             />
                         </p>

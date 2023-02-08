@@ -1,48 +1,34 @@
-
 //Style CSS
 import "./assets/styleEntradaAlmacen.css";
-
-//Custom hook's
-import { useForm } from "../../../../hooks/useForm";
 
 // Components
 import { ChooseTypeEntrada } from "./components/ChooseTypeEntrada";
 import { ScamCodeSalida } from "./components/ScamCodeSalida";
 import { CapturarProductos } from "./components/CapturarProductos";
 
+//Helper's
+import { SanzSpinner } from "../../../../helpers/spinner/SanzSpinner";
+
+//Custom hook for logic
+import { useIngresoAlmacen } from "../../../../hooks/useIngresoAlmacen";
+
 
 export const IngresoAlmacen = () => {
 
-    const [ values,handleInputChange,setValues ] = useForm({
-        phaseNumber:1,
-        tipoEntrada:"compraDirecta"//Tipo entrada por default
-    });
-
-    console.log(values);
-    const seleccionarTipoEntrada = (tipoEntrada = "compraDirecta") => {
-        setValues({
-            ...values,
-            tipoEntrada,
-        });
-    }
-
-    const cambiarPhase = (phaseNumber = 1) => {
-        setValues({
-            ...values,
-            phaseNumber
-        });
-    }
-
-    const grabarCodigoSalida = (codigoSalida = "") => {
-        //Comprobar que la salida exista!
-        setValues({
-            ...values,
-            codigoSalida
-        });
-    }
+    const {
+        values,
+        phaseNumber,
+        seleccionarTipoEntrada,
+        cambiarPhase,
+        grabarCodigoSalida,
+        agregarProducto,
+        cambiarCantidadProducto,
+        eliminarProducto
+    } = useIngresoAlmacen();
 
 
-    switch(values.phaseNumber){
+    if(values.isLoading) return <SanzSpinner/>
+    switch(phaseNumber){
         case 1:
             return (
                 <div className="IngresoAlmacenContainer">
@@ -60,17 +46,18 @@ export const IngresoAlmacen = () => {
                 <div className="IngresoAlmacenContainer">
                     <ScamCodeSalida
                         grabarCodigoSalida={grabarCodigoSalida}
-                        cambiarPhase={cambiarPhase}
                     />
                 </div>
             );
         
         case 3:
-            //TODO: Comprobar codigo de salida sea valido antes de mandarlo al siguiente pestana!
             return (
                 <div className="IngresoAlmacenContainer">
                     <CapturarProductos
                         values={values}
+                        agregarProducto={agregarProducto}
+                        cambiarCantidadProducto={cambiarCantidadProducto}
+                        eliminarProducto={eliminarProducto}
                     />
                 </div>
             );

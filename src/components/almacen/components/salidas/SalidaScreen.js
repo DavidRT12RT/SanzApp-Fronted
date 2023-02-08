@@ -17,7 +17,6 @@ export const SalidaScreen = () => {
     const navigate = useNavigate();
     const [informacionSalida, setinformacionSalida] = useState(null);
 
-    const salidaCodigoBarras = useRef();
 
     useEffect(() => {
         const fetchData = async() => {
@@ -66,7 +65,7 @@ export const SalidaScreen = () => {
 
    const handleDownloadEvidencia = async() => {
         const blob = await pdf((
-            <ReporteSalidaAlmacen salida={informacionSalida} salidaCodigoBarras={salidaCodigoBarras.current.refs.currentSrc}/>
+            <ReporteSalidaAlmacen salida={informacionSalida}/>
         )).toBlob();
         saveAs(blob,`salida_almacen_${informacionSalida._id}.pdf`)
    }
@@ -144,7 +143,6 @@ export const SalidaScreen = () => {
         return (<Table columns={columns} dataSource={record.listaProductos}/>)
     }
 
-    console.log(salidaCodigoBarras);
     
     if(informacionSalida === null){
         return <SanzSpinner/>
