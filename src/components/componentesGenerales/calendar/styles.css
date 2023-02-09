@@ -1,18 +1,17 @@
-html,body{
-    height: 100vh;
-    width: 100vw;
-    margin: 0;
-    padding: 0;
-}
-
 
 .calendar-screen{
     display: flex;
     flex-flow: column;
     height: 100vh;
     background:white;
+    padding: 40px;
 }
 
+@media(min-width:100px) and (max-width:1000px){
+    .calendar-screen{
+        padding:20px;
+    }
+}
 
 .rbc-calendar{
     height: 100%;
@@ -90,4 +89,38 @@ html,body{
     font-size:20px;
     position: fixed;
     left: 25px;
+}
+
+/* Overwriting style by default of calendar */
+.rbc-toolbar-label{
+  /* color:#4a4a4a; */
+  font-family: 'Lato', sans-serif;
+  line-height: 1.5;
+  font-size: 2rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.rbc-btn-group{
+  color:#000;
+  font-family: 'Lato',sans-serif;
+  font-size:18px; 
+  font-weight: 700;
+}
+
+.rbc-month-view{
+	color:#000;
+  	font-family: 'Lato',sans-serif;
+  	font-size:20px; 
+  	font-weight: 400;
+}
+.rbc-time-view{
+	color:#000;
+  	font-family: 'Lato',sans-serif;
+  	font-size:20px; 
+  	font-weight: 400;
+}
+
+.rbc-header{
+    height: fit-content;
 }

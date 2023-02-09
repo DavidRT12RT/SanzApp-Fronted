@@ -139,7 +139,7 @@ export const SalidaScreen = () => {
 
     const expandedRowRender = (record,index,indent,expanded) => {
         const columns = columnsProductosRetirados.slice(0,4);
-        columns.push({title:<p className="titulo-descripcion">Cantidad ingresada</p>,render:(text,record)=>{return <p className="descripcion">{record.cantidad}</p>}},{title:<p className="titulo-descripcion">Informacion del producto</p>,render:(text,record)=>{ return (<Link to={`/almacen/productos/${record.id._id}`} className="descripcion text-primary" target="_blank">Ver producto</Link>)}});
+        columns.push({title:<p className="titulo-descripcion">Cantidad ingresada</p>,render:(text,record)=>{return <p className="descripcion">{record.cantidadIngresada}</p>}},{title:<p className="titulo-descripcion">Informacion del producto</p>,render:(text,record)=>{ return (<Link to={`/almacen/productos/${record.id._id}`} className="descripcion text-primary" target="_blank">Ver producto</Link>)}});
         return (<Table columns={columns} dataSource={record.listaProductos}/>)
     }
 
@@ -165,6 +165,8 @@ export const SalidaScreen = () => {
                             <h1 className="col-6 descripcion">{informacionSalida.tipo.toUpperCase()}</h1>
                             <h1 className="titulo-descripcion col-6">Costo TOTAL de la salida: </h1>
                             <h1 className="col-6 descripcion text-success">${informacionSalida.costoTotal}</h1>
+                            <h1 className="titulo-descripcion col-6">Devuelto TOTAL: </h1>
+                            <h1 className={"col-6 descripcion " + (informacionSalida.devueltoTotal ? "text-success" : "text-danger")}>{informacionSalida.devueltoTotal ? "DEVUELTO" : "NO-DEVUELTO"}</h1>
                             <h1 className="titulo-descripcion col-6">Fecha creacion: </h1>
                             <h1 className="col-6 descripcion">{informacionSalida.fechaCreacion}</h1>
                             <h1 className="titulo-descripcion col-6">Fecha ultima actualizacion: </h1>

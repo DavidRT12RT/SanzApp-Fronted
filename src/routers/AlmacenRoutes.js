@@ -40,9 +40,9 @@ export const AlmacenRoutes = () => {
                 />
                 <Route path="/retirar/old" element={<RetirarAlmacen />} />
                 <Route path="/retirar/" element={<RetiroAlmacen />}></Route>
-                <Route path="/ingresar/" element={<IngresarAlmacen />} />
+                <Route path="/ingresar/old" element={<IngresarAlmacen />} />
 
-                <Route path="/ingresar/experimental" element={<IngresoAlmacen/>}/>
+                <Route path="/ingresar/" element={<IngresoAlmacen/>}/>
                 <Route
                     path="/productos/registrar/"
                     element={<RegistrarProductoNew />}

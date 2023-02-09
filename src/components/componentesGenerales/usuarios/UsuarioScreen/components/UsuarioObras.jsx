@@ -7,12 +7,12 @@ const UsuarioObras = ({userInfo}) => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        let obras = userInfo.obrasTrabajadas.map(obra => (
+        let obras = userInfo.obrasTrabajadas.map((obra,index) => (
             {
-                titulo:obra.id.titulo,
-                descripcion:obra.id.descripcion,
-                rol:obra.rol,
-                key:obra.id._id
+                titulo:(obra.id.titulo || "TITULO NO ENCONTRADO"),
+                descripcion:(obra.id.descripcion || "DESCRIPCION NO ENCONTRADA"),
+                rol:(obra.rol || "ROL NO ENCONTRADO"),
+                key:(obra.id._id || index)
             }
         ))
         setData(obras);

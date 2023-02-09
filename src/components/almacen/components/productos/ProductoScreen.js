@@ -139,7 +139,7 @@ export const ProductoScreen = () => {
     };
 
     if (Object.keys(informacionProducto).length === 0 || isLoadingCategorias) {
-        <SanzSpinner />;
+        return <SanzSpinner />;
     } else {
         return (
             <div className="container p-3 p-lg-5">

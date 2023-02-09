@@ -38,6 +38,7 @@ export const SalidasProducto = ({ registros, informacionProducto }) => {
     const { isLoading: isLoadingEmpleados, empleados } = useEmpleados();
     const { isLoading: isLoadingObras, obras } = useObras();
 
+
     useEffect(() => {
         setRegistrosSalidas([
             ...registros.obra,
@@ -443,7 +444,7 @@ export const SalidasProducto = ({ registros, informacionProducto }) => {
                                 <p>Evidencia del producto</p>
                             </>
                         )}
-                        <Link to={`/aplicacion/obras/${informacionRetiro._id}`}>
+                        <Link to={`/almacen/salidas/${informacionRetiro.salida._id}`} target="_blank">
                             Ver mas informacion
                         </Link>
                         <Divider />

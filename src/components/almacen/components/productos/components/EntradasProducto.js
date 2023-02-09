@@ -1,4 +1,4 @@
-import { Button, DatePicker, Form, Input, Modal, Select, Table, Tag } from 'antd'
+import { Button, DatePicker, Drawer, Form, Input, Modal, Select, Table, Tag } from 'antd'
 import React, { useState, useEffect } from 'react'
 import moment from 'moment';
 import locale from "antd/es/date-picker/locale/es_ES"
@@ -14,9 +14,10 @@ export const EntradasProducto = ({registros,informacionProducto}) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isModalVisibleReporte, setIsModalVisibleReporte] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
+    const [isDrawerVisible,setIsDrawerVisible] = useState(false);
+    const [informacionIngreso,setInformacionIngreso] = useState(null);
     const [form] = Form.useForm();
     const location = useLocation();
-
 
     useEffect(() => {
         setRegistrosEntradas([...registros.sobranteObra,...registros.devolucionResguardo,...registros.compraDirecta]);
@@ -74,13 +75,30 @@ export const EntradasProducto = ({registros,informacionProducto}) => {
         {
             title:"Cantidad ingresada",
             key:"cantidad",
-            dataIndex:"cantidad"
+            dataIndex:"cantidadIngresada"
         },
         {
             title:"Fecha del ingreso",
             key:"fecha",
             dataIndex:"fecha"
         },
+        {
+            title:"Detalles",
+            key:"detalles",
+            render:(text,record) => {
+                return (
+                    <a
+                        href="#"
+                        onClick={() => {
+                            setInformacionIngreso(record);
+                            setIsDrawerVisible(true);
+                        }}
+                    >
+                        Ver mas detalles
+                    </a>
+                )
+            }
+        }
     ];
     
     return (
@@ -90,6 +108,20 @@ export const EntradasProducto = ({registros,informacionProducto}) => {
                 {location.pathname.startsWith("/almacen") && <Button type="primary" onClick={()=>{setIsModalVisibleReporte(true)}}>Crear reporte de entradas</Button>}
             </div>
             <Table columns={columns} dataSource={registrosEntradas} pagination={{pageSize:4}} size="large" bordered/>
+            {informacionIngreso !== null && (
+                <Drawer
+                    width={640}
+                    placement="right"
+                    closable={false}
+                    onClose={() => {
+                        setIsDrawerVisible(false);
+                        setInformacionIngreso(null);
+                    }}
+                    visible={isDrawerVisible}
+                >
+
+                </Drawer>
+            )}
             <Modal visible={isModalVisible} footer={null} onCancel={()=>{setIsModalVisible(false)}} onOk={()=>{setIsModalVisible(false)}}>
                 <Form onFinish={filtrarEntradas} layout="vertical" form={form}>
                     <h1 className="titulo" style={{fontSize:"30px"}}>Filtrar registros de entradas</h1>

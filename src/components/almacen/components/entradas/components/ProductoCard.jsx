@@ -7,14 +7,10 @@ const { confirm } = Modal;
 
 export const ProductoCard = ({
     producto,
-    cambiarCantidadProducto, 
-    eliminarProducto,
+    cambiarCantidadProducto = false, 
+    eliminarProducto = false,
     tipo 
 }) => {
-
-    console.log("Cambiar cantidad producto",cambiarCantidadProducto);
-
-    console.log("Eliminar producto",eliminarProducto);
 
     const renderizarValor = () => {
         switch(tipo){
@@ -52,7 +48,7 @@ export const ProductoCard = ({
                 />
             </div>
             <div>
-                <h1 className="sub-titulo">{producto.id.nombre || producto.nombre}</h1>
+                <h1 className="sub-titulo">{producto.id.nombre || producto.nombre }</h1>
                 <p className="descripcion">
                     {
                         (producto.id.descripcion || producto.descripcion).slice(0,30)

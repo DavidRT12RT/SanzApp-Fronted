@@ -1,10 +1,11 @@
 //Style CSS
-import "./assets/styleEntradaAlmacen.css";
+import "./assets/styleIngresoAlmacen.css";
 
 // Components
 import { ChooseTypeEntrada } from "./components/ChooseTypeEntrada";
 import { ScamCodeSalida } from "./components/ScamCodeSalida";
 import { CapturarProductos } from "./components/CapturarProductos";
+import { EntradaSucessScreen } from "./components/EntradaSucessScreen";
 
 //Helper's
 import { SanzSpinner } from "../../../../helpers/spinner/SanzSpinner";
@@ -18,12 +19,17 @@ export const IngresoAlmacen = () => {
     const {
         values,
         phaseNumber,
+        propsDragger,
+        productosDevueltos,
+        handleInputChange,
         seleccionarTipoEntrada,
         cambiarPhase,
         grabarCodigoSalida,
         agregarProducto,
         cambiarCantidadProducto,
-        eliminarProducto
+        eliminarProducto,
+        realizarIngresoAlmacen,
+        ingresarOtraVezAlmacen
     } = useIngresoAlmacen();
 
 
@@ -52,15 +58,28 @@ export const IngresoAlmacen = () => {
         
         case 3:
             return (
-                <div className="IngresoAlmacenContainer">
+                <div className="IngresoAlmacenContainer" style={{height:"150vh"}}>
                     <CapturarProductos
                         values={values}
+                        handleInputChange={handleInputChange}
                         agregarProducto={agregarProducto}
                         cambiarCantidadProducto={cambiarCantidadProducto}
                         eliminarProducto={eliminarProducto}
+                        propsDragger={propsDragger}
+                        realizarIngresoAlmacen={realizarIngresoAlmacen}
+                        productosDevueltos={productosDevueltos}
                     />
                 </div>
             );
+        
+        case 4:
+            return (
+                <EntradaSucessScreen
+                    entrada = {values.entrada}
+                    ingresarOtraVezAlmacen={ingresarOtraVezAlmacen}
+                />
+            );
+
     }
 
 }

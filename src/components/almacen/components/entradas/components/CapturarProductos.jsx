@@ -7,11 +7,14 @@ const { Dragger } = Upload;
 
 export const CapturarProductos = ({
     values,
+    handleInputChange,
+    propsDragger,
     agregarProducto,
     cambiarCantidadProducto,
-    eliminarProducto
+    eliminarProducto,
+    realizarIngresoAlmacen,
+    productosDevueltos = []
 }) => {
-
     return (
         <div className="CapturarProductos">
            <div className="capturar">
@@ -19,6 +22,13 @@ export const CapturarProductos = ({
                     <>
                         <h1 className="titulo">Lista de productos retirados</h1>
                         <p className="descripcion">Productos que fueron retirados del almacen registrados en la salida.</p>
+                        {
+                            values.salida.devueltoTotal && (
+                                <p className="titulo-descripcion text-success">
+                                    TODOS LOS PRODUCTOS HAN SIDO DEVUELTOS AL ALMACEN!
+                                </p>
+                            )
+                        }
                         <ProductosList
                             productos={values.salida.listaProductos}
                             tipo="Retirado"
@@ -27,7 +37,9 @@ export const CapturarProductos = ({
                         <h1 className="titulo">Lista de productos devueltos</h1>
                         <p className="descripcion">Productos que han sido devueltos al almacen.</p>
                         <ProductosList
-                            productos={values.salida.productosDevueltos}
+                            productos={
+                                productosDevueltos
+                            }
                             tipo="Ingresado"
                         />
                     </>
@@ -60,10 +72,13 @@ export const CapturarProductos = ({
                 <h1 className="sub-titulo">Motivo</h1>
                 <textarea 
                     className="form-control descripcion"
+                    name="motivo"
+                    onChange={handleInputChange}
+                    value={values.motivo}
                     rows={4}/>
                 
                 <h1 className="sub-titulo">Adjunta evidencia</h1>
-                <Dragger className="bg-body dragger">
+                <Dragger  {...propsDragger} className="bg-body dragger">
                     <p className="ant-upload-drag-icon">
                         <InboxOutlined />
                     </p>
@@ -78,6 +93,13 @@ export const CapturarProductos = ({
                 <button 
                     type="primary"
                     className="btn btn-warning titulo-descripcion"
+                    onClick={realizarIngresoAlmacen}
+                    disabled={
+                        values?.salida?.devueltoTotal ||
+                        values.listaProductos.length === 0 ||
+                        values.motivo.length === 0 || 
+                        values.filesList.length === 0
+                    }
                 >
                     Ingresar <ArrowRight/>
                 </button>

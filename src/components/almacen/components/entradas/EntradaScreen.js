@@ -12,6 +12,7 @@ export const EntradaScreen = () => {
 
     const [informacionEntrada, setInformacionEntrada] = useState(null);
 
+
     useEffect(() => {
         const fetchData = async () => {
             const resp = await fetchConToken(`/entradas/${id}`);
@@ -25,21 +26,7 @@ export const EntradaScreen = () => {
         fetchData();
     }, []);
 
-    /*
-    const handleDownloadEvidencia = async () => {
-        try {
-            const resp = await fetchConToken("/salidas/documento-pdf",{salidaId:id},"POST");
-            const bytes = await resp.blob();
-            let element = document.createElement('a');
-            element.href = URL.createObjectURL(bytes);
-            element.setAttribute('download',`${id}.pdf`);
-            element.click();
-        } catch (error) {
-           message.error("No se pudo descargar el archivo del servidor :("); 
-        }
-    }
-    */
-    const handleDownloadEvidencia = async () => {
+   const handleDownloadEvidencia = async () => {
         /*
         const blob = await pdf((
             <ReporteSalidaAlmacen salida={informacionSalida}/>
@@ -88,7 +75,7 @@ export const EntradaScreen = () => {
         {
             title: <p className="titulo-descripcion">Cantidad ingresada</p>,
             render: (text, record) => (
-                <p className="descripcion">{record.cantidad}</p>
+                <p className="descripcion">{record.cantidadIngresada}</p>
             ),
         },
         {
@@ -103,7 +90,7 @@ export const EntradaScreen = () => {
             ),
             render: (text, record) => (
                 <p className="descripcion text-success">
-                    ${record.costoXunidad * record.cantidad}
+                    ${record.costoXunidad * record.cantidadIngresada}
                 </p>
             ),
         },

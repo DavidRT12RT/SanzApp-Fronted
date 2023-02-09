@@ -248,7 +248,7 @@ export const ReporteSalidaAlmacen = ({ salida }) => {
                                     return [
                                         producto.id.nombre,
                                         producto.id.marca,
-                                        producto.cantidad,
+                                        producto.cantidadIngresada,
                                         producto.id.unidad,
                                     ];
                                 }),
