@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { Divider, message, Table,Input, Button, Modal, Form, Select, InputNumber } from 'antd';
-import { ExclamationCircleOutlined,UploadOutlined } from '@ant-design/icons';
-import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
+//Icon's
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+
+//Redux
+import { useSelector } from 'react-redux';
 
 //Estilos CSS
 import "../assets/style.css";
-import { fetchConToken } from '../../../../../helpers/fetch';
-import { SanzSpinner } from '../../../../../helpers/spinner/SanzSpinner';
+
+//Helper's
+import { SanzSpinner } from '../../../../helpers/spinner/SanzSpinner';
+import { fetchConToken } from '../../../../helpers/fetch';
+import { InformacionEmpresa } from './components/EmpresaScreen/InformacionEmpresa';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -158,15 +164,7 @@ export const EmpresaScreen = () => {
                     </div>
                     <div className="col-12 col-lg-6">
                         <Divider/>
-                        <h1 className="titulo">Informacion empresa:</h1>
-                        <div className="row">
-                            <h1 className="titulo-descripcion col-6">Fecha registro:</h1>
-                            <h1 className="descripcion col-6 text-success">{empresaInfo.fechaRegistro}</h1>
-                            <h1 className="titulo-descripcion col-6">Numero de sucursales registradas:</h1>
-                            <h1 className="descripcion col-6">{empresaInfo.sucursales.length}</h1>
-                            <h1 className="titulo-descripcion col-6">Numero de obras registradas:</h1>
-                            <h1 className="descripcion col-6">{empresaInfo.obras.length}</h1>
-                        </div> 
+                        <InformacionEmpresa empresaInfo={empresaInfo}/>
                     </div>
                 </div>
                 <Divider/>

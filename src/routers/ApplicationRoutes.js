@@ -10,7 +10,6 @@ import { SocketContext } from "../context/SocketContext";
 import Footer from "../components/componentesGenerales/Footer";
 import { SeccionNoticias } from "../components/componentesGenerales/noticias/SeccionNoticias";
 import { Empresas } from "../components/application/components/empresass/EmpresasScreen/Empresas";
-import { EmpresaScreen } from "../components/application/components/empresas/components/EmpresaScreen";
 import { RegistrarEmpresa } from "../components/application/components/empresas/components/RegistrarEmpresa";
 import { SucursalScreen } from "../components/application/components/empresas/components/SucursalScreen";
 import { RegistrarObra } from "../components/application/components/obras/RegistrarObra";
@@ -23,6 +22,7 @@ import { MySpace } from "../components/componentesGenerales/mi-espacio/component
 
 import { ProductosScreen } from "../components/almacen/components/productosAlmacen/ProductosScreen";
 import { ProductoScreen } from "../components/almacen/components/productos/ProductoScreen";
+import { EmpresaScreen } from "../components/application/components/empresas/EmpresaScreen";
 
 export const ApplicationRoutes = () => {
     const { socket } = useContext(SocketContext);
