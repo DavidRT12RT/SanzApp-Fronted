@@ -224,7 +224,7 @@ export const RegistrarObra = () => {
         return (
 		    <div className="container text-center p-5">
 			    <h1 className="titulo">Registrar una nueva obra</h1> 
-			    <p className="descripcion">Registrar una nueva obra al sistema , llena el siguiente formulario con la informacion y etapa que se encuentra la obra nueva.</p>	            
+			    <p className="descripcion mb-5">Registrar una nueva obra al sistema , llena el siguiente formulario con la informacion y etapa que se encuentra la obra nueva.</p>	            
 			    <Steps current={current}>
                     {steps.map((item) => (
                         <Step key={item.title} title={item.title} />

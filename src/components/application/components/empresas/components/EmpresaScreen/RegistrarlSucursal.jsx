@@ -4,7 +4,6 @@ export const RegistrarSucursal = ({
     empresaInfo,
     registrarSucursal
 }) => {
-
     const [form] = Form.useForm();
     return (
         <>

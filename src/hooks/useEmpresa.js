@@ -7,24 +7,11 @@ import { Modal, Form, message } from 'antd';
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 //Helper's
-import { fetchConToken } from "../helpers/fetch";
+import { fetchConToken, fetchConTokenSinJSON } from "../helpers/fetch";
 
 const { confirm } = Modal;
 
 export const useEmpresa = () => {
-    //Buscar sucursales
-    const [parametrosBusqueda, setParametrosBusqueda] = useState({});
-    const [searchParams, setSearchParams] = useSearchParams();
-    const { search } = useLocation();
-    const { empresaId } = useParams();
-    const [form] = Form.useForm();
-    const { uid ,rol } = useSelector(store => store.auth);
-    const navigate = useNavigate();
-    const [empresaInfo, setEmpresaInfo] = useState(null);
-    const [sucursales, setSucursales] = useState([]);
-    const [isModalRegistrarSucursalVisible, setIsModalRegistrarSucursalVisible] = useState(false);
-
-
     const columns = [
         {
             title:<p className="titulo-descripcion">Nro. de sucursal</p>,
@@ -69,28 +56,57 @@ export const useEmpresa = () => {
             }
         },
         {
-            title:<p className="titulo-descripcion">Obras registradas</p>,
+            title:<p className="titulo-descripcion">Obras</p>,
             render:(text,record) => {
                 return <p className="descripcion">{record.obras.length}</p>
             }
         },
         {
-            title:<p className="titulo-descripcion">Ver mas detalles</p>,
+            title:<p className="titulo-descripcion">Detalles</p>,
             render:(text,record) => {
-                return <Link to={`/aplicacion/empresas/${record.empresa._id}/sucursales/${record._id}`} className="descripcion text-primary">Ver detalles</Link>
+                return <Link target={"_blank"} to={`/aplicacion/empresas/${record.empresa}/sucursales/${record._id}`} className="descripcion text-primary">Ver detalles</Link>
             }
         }
     ];
 
+
+    const [searchParams, setSearchParams] = useSearchParams();
+    const { search } = useLocation();
+    const { empresaId } = useParams();
+    const [form] = Form.useForm();
+    const { uid ,rol } = useSelector(store => store.auth);
+    const navigate = useNavigate();
+
+    const initialState = {
+        empresaInfo:null,
+        sucursales:[],
+        isModalRegistrarSucursalVisible:false,
+        parametrosBusqueda:{},
+        isEditing:false,
+        formValues:null,
+        filesList:[]
+    };
+
+    const [values,setValues] = useState(initialState);
+
+    const handleInputChange = ({target}) => {
+        setValues({
+            ...values,
+            formValues:{
+                [target]:target.value
+            }
+        });
+    }
+
     useEffect(() => {
         //Hacer una peticion a el servidor de obras y pasarle el parametro de busqueda
         let query = {};
-        for(const property in parametrosBusqueda){
-            query = {...query,[property]:parametrosBusqueda[property]}
+        for(const property in values.parametrosBusqueda){
+            query = {...query,[property]:values.parametrosBusqueda[property]}
         }
         setSearchParams(query);
 
-    }, [parametrosBusqueda]);
+    }, [values.parametrosBusqueda]);
 
     useEffect(() => {
         const fetchDataEmpresa = async() => {
@@ -101,18 +117,47 @@ export const useEmpresa = () => {
                 return navigate(-1);
             }
             //Todo salio bien y seteamos la informacion de la empresa
-            setEmpresaInfo(body);
+            setValues({
+                ...values,
+                empresaInfo:body,
+                formValues:body
+            });
         }
         fetchDataEmpresa();
     }, [search]);
 
+    console.log("Values",values);
+
     useEffect(() => {
-        if(empresaInfo != null){
-            empresaInfo.sucursales.map(sucursal => sucursal.key = sucursal._id);
-            setSucursales(empresaInfo.sucursales);
+        if(values.empresaInfo !== null){
+            const sucursales = values.empresaInfo.sucursales.map(sucursal => {
+                    sucursal.key = sucursal._id
+                    return sucursal;
+            });
+            setValues({
+                ...values,
+                sucursales
+            });
         }
-    }, [empresaInfo]);
-    
+    }, [values.empresaInfo]);
+ 
+
+    const setIsModalRegistrarSucursalVisible = (estado = false) => {
+        setValues({
+            ...values,
+            isModalRegistrarSucursalVisible:estado
+        });
+    }
+
+    const setParametrosBusqueda = (propiedad,values) => {
+        setValues({
+            ...values,
+            parametrosBusqueda:{
+                ...values.parametrosBusqueda,
+                [propiedad]:values
+            }
+        });
+    }
 
     const registrarSucursal = (values) => {
         confirm({
@@ -129,16 +174,79 @@ export const useEmpresa = () => {
                 message.success(body.msg);
                 form.resetFields();
                 //Agregando la sucursal creada en el estado de empresa en el apartado de sucursales
-                setEmpresaInfo({...empresaInfo,sucursales:[...empresaInfo.sucursales,body.sucursal]});
-                setIsModalRegistrarSucursalVisible(false);
+                setValues({
+                    ...values,
+                    sucursales:[...values.sucursales,body.sucursal],
+                    isModalRegistrarSucursalVisible:false
+                });
             }
         });
     }
 
+    const setEditInfo = (estado = false) => {
+        setValues({...values,isEditing:estado});
+    }
+
+    const props = {
+        onRemove: (file) => {
+            setValues({...values,filesList:[]});
+        },
+        beforeUpload: (file) => {
+            if (values.filesList.length < 1) setValues({...values,filesList:[file]});
+            else message.error("Solo puedes subir 1 archivo en total");
+            return false;
+        },
+        maxCount: 1,
+        fileList: values.filesList,
+    };
+
+    const onFinishEditingEmpresa = () => {
+
+        confirm({
+            title: "¿Seguro quieres editar la informacion de la empresa?",
+            icon: <ExclamationCircleOutlined />,
+            content:
+                "La informacion de la empresa se vera cambiada y NO habra forma de restablecerla",
+            okText: "Editar",
+            cancelText: "Volver atras",
+            async onOk() {
+                const formData = new FormData();
+
+                for (const property in values.formValues) {
+                    formData.append(property, values.formValues[property]);
+                } 
+
+                values.filesList.forEach((file) => {formData.append("archivo", file)});
+
+                const resp = await fetchConTokenSinJSON(
+                    `/empresas/${empresaId}`,
+                    formData,
+                    "PUT"
+                );
+                const body = await resp.json();
+
+                if(resp.status !== 200) return message.error(body.msg);
+
+                //Todo salio bien 
+                message.success(body.msg);
+                //TODO: Mandar por socket que se actualizo la empresa
+ 
+ 
+            }
+        });
+
+    }
+
     return {
         columns,
-        empresaInfo,
+        values,
         rol,
+        props,
+        handleInputChange,
         registrarSucursal,
+        setIsModalRegistrarSucursalVisible,
+        setParametrosBusqueda,
+        setEditInfo,
+        onFinishEditingEmpresa
     };
 }
