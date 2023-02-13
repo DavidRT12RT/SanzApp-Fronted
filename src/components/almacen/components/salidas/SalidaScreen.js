@@ -152,15 +152,15 @@ export const SalidaScreen = () => {
                 <div className="d-flex justify-content-end align-items-center">
                     <Button type="primary" onClick={handleDownloadEvidencia} className="my-3">Descargar PDF</Button>
                 </div>
-                <h1 className="titulo" style={{fontSize:"42px"}}>Salida del almacen</h1>
+                <h1 className="titulo">Salida del almacen</h1>
                 <Divider/>
-                <h1 className="titulo">Motivo</h1>
+                <h1 className="sub-titulo">Motivo</h1>
                 <h1 className="descripcion">{informacionSalida.motivo}</h1> 
                 <div className="row">
                     <div className="col-12 col-lg-6">
                         <Divider/>
-                        <div className="row">
-                            <h1 className="titulo" style={{fontSize:"32px"}}>Informacion de la salida</h1>
+                        <h1 className="sub-titulo">Informacion de la salida</h1>
+                        <div className="row mt-3">
                             <h1 className="titulo-descripcion col-6">Tipo de la salida: </h1>
                             <h1 className="col-6 descripcion">{informacionSalida.tipo.toUpperCase()}</h1>
                             <h1 className="titulo-descripcion col-6">Costo TOTAL de la salida: </h1>
@@ -181,22 +181,22 @@ export const SalidaScreen = () => {
                     </div>
                     <div className="col-12 col-lg-6">
                         <Divider/>
-                        <h1 className="titulo" style={{fontSize:"32px"}}>Informacion del beneficiario</h1>
-                        <div className='row'>
+                        <h1 className="sub-titulo">Informacion del beneficiario</h1>
+                        <div className='row mt-3'>
                                 {renderizarInformacionBeneficiario()}
                         </div>
                     </div>
                 </div>
                 <Divider/>
-                <h1 className="titulo">Lista de productos retirados</h1>
-                <Table columns={columnsProductosRetirados} dataSource={informacionSalida.listaProductos}/>
+                <h1 className="sub-titulo">Lista de productos retirados</h1>
+                <Table className="mt-3" columns={columnsProductosRetirados} dataSource={informacionSalida.listaProductos}/>
                 <Divider/>
-                <h1 className="titulo">Lista de productos devueltos</h1>
-                <Table columns={columnsProductosDevueltos} dataSource={informacionSalida.productosDevueltos} expandable={{expandedRowRender}}/>
+                <h1 className="sub-titulo">Lista de productos devueltos</h1>
+                <Table className="mt-3" columns={columnsProductosDevueltos} dataSource={informacionSalida.productosDevueltos} expandable={{expandedRowRender}}/>
 
                 <Divider/>
-                <h1 className="titulo">Codigo de barras</h1>
-                <Barcode value={informacionSalida._id}/>
+                <h1 className="sub-titulo">Codigo de barras</h1>
+                <Barcode className="mt-3" value={informacionSalida._id}/>
             </div>
         )
     }

@@ -35,7 +35,7 @@ import { saveAs } from "file-saver";
 
 //Estilos CSS
 import "./assets/styleSalidasAlmacen.css";
-import imagenSalidas from "./assets/imgs/juicy-boy-with-open-laptop.png";
+// import imagenSalidas from "./assets/imgs/juicy-boy-with-open-laptop.png";
 
 const { RangePicker } = DatePicker;
 
@@ -266,7 +266,7 @@ export const SalidasAlmacenNew = () => {
 
             <div className="row mt-3 containerBusquedaSalidas">
                 <div className="col-12">
-                    <h1 className="sub-titulo">FILTROS</h1>
+                    <h1 className="sub-titulo">Filtros</h1>
                     <Divider />
                     <h1 className="titulo-descripcion text-muted">
                         Tipo de salida
@@ -295,7 +295,7 @@ export const SalidasAlmacenNew = () => {
                     <h1
                         className="sub-titulo"
                     >
-                        SALIDAS ENCONTRADAS
+                        Salidas
                     </h1>
                     <Divider />
                     <Input.Search
@@ -306,11 +306,11 @@ export const SalidasAlmacenNew = () => {
                         placeholder="Buscar una salida por su numero de barras..."
                     />
                     {registrosSalidas.length === 0 && (
-                        <p className="titulo-descripcion text-danger mt-4">
+                        <p className="titulo-descripcion text-danger mt-3">
                             Ninguna salida encontrada en el sistema aun...
                         </p>
                     )}
-                    <div className="containerSalidasCardsAlmacen mt-3">
+                    <div className="containerSalidasCardsAlmacen">
                         {registrosSalidas.map((salida) => (
                             <SalidaCard salida={salida} key={salida.key} />
                         ))}

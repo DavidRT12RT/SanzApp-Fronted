@@ -137,19 +137,19 @@ export const CategoriasRegistradas = () => {
             }
         },
         {
-			title:<p className="titulo-descripcion">Cantidad de productos registrados</p>,
+			title:<p className="titulo-descripcion">Productos</p>,
             render:(text,record)=>{
                 return <p className="descripcion">{record.productosRegistrados.length}</p>
             }
         },
         {
-			title:<p className="titulo-descripcion">Registrada por</p>,
+			title:<p className="titulo-descripcion">Registrada</p>,
             render:(text,record)=>{
                 return <p className="descripcion"><b>{record.usuario.nombre}</b></p>
             }
         },
         {
-			title:<p className="titulo-descripcion">Fecha de registro</p>,
+			title:<p className="titulo-descripcion">Fecha</p>,
             render:(text,record)=>{
                 return <p className="descripcion">{record.fechaRegistro}</p>
             }
@@ -199,27 +199,27 @@ export const CategoriasRegistradas = () => {
         return (
             <>
                 <div className="container p-5" style={{}}>
-                        <h1 className="titulo" style={{fontSize:"32px"}}>Lista de categorias</h1>
+                        <h1 className="titulo">Lista de categorias</h1>
                         <p className="descripcion">Categorias registradas en el almacen.</p>
-                        <Button type="primary" onClick={()=>{setIsModalVisible(true);setCategoriaEditing(null)}}>Nueva categoria</Button>
-                        <Table columns={columns} dataSource={categorias} className="mt-3" />
+                        <Button type="primary" className="mt-3" onClick={()=>{setIsModalVisible(true);setCategoriaEditing(null)}}>Nueva categoria</Button>
+                        <Table bordered columns={columns} dataSource={categorias} className="mt-3" />
                 </div>
 
-                <div className="container p-5 mt-5">
+                <div className="container p-5 mt-5 ">
                     <Paragraph>
-                        <Text strong style={{fontSize: 16}}>
-                            Ten en cuenta los siguientes puntos antes de registrar una nueva categoria o editar una de estas.
+                        <Text strong className="sub-titulo">
+                            Observaciones
                         </Text>
                     </Paragraph>
-                    <Paragraph>
+                    <Paragraph className="descripcion">
                             <InfoCircleOutlined style={{backgroundColor:"yellow",marginRight:"10px"}}/>
                             Al marcar una categoria como "desactivada" no podras añadir mas productos con esta categoria
                     </Paragraph>
-                    <Paragraph>
+                    <Paragraph className="descripcion">
                             <InfoCircleOutlined style={{backgroundColor:"yellow",marginRight:"10px"}}/>
                             Al cambiar el nombre de una categoria , todos los productos que tengan esta categoria cambiaran el nombre de esta misma respectivamente.
                     </Paragraph>
-                    <Paragraph>
+                    <Paragraph className="descripcion">
                             <InfoCircleOutlined style={{backgroundColor:"yellow",marginRight:"10px"}}/>
                             Al eliminar una categoria todos los productos que tengan esta misma la eliminaran de su lista de categorias respectivamente.
                     </Paragraph>

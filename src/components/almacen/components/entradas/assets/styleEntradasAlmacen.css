@@ -2,10 +2,11 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: min-content;
-    align-items: center;
+    align-items: start;
     justify-items: center;
     min-height: 100vh;
-    padding: 15px;
+
+    padding:15px;
 }
 
 .containerEntradas .imagenRegister{
@@ -17,6 +18,8 @@
 }
 
 .containerEntradasCards{
+    margin-top: 20px;
+
     display: flex;
     justify-content: center;
     align-items: center;

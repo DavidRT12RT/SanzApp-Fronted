@@ -113,7 +113,6 @@ export const EntradaScreen = () => {
     if (informacionEntrada === null) {
         return <SanzSpinner />;
     } else {
-        console.log(informacionEntrada);
         return (
             <div className="container p-5" style={{ minHeight: "100vh" }}>
                 <div className="d-flex justify-content-end align-items-center">
@@ -125,16 +124,17 @@ export const EntradaScreen = () => {
                         Descargar PDF
                     </Button>
                 </div>
-                <h1 className="titulo" style={{ fontSize: "42px" }}>
+                <h1 className="titulo">
                     Entrada del almacen
                 </h1>
                 <div className="row">
                     <div className="col-12 col-lg-6">
+
                         <Divider />
-                        <div className="row">
-                            <h1 className="titulo" style={{ fontSize: "32px" }}>
-                                Informacion de la entrada
-                            </h1>
+                        <h1 className="sub-titulo">
+                            Informacion de la entrada
+                        </h1>
+                        <div className="row mt-3">
                             <h1 className="titulo-descripcion col-6">
                                 Tipo de la entrada:{" "}
                             </h1>
@@ -174,7 +174,7 @@ export const EntradaScreen = () => {
                     </div>
                     <div className="col-12 col-lg-6">
                         <Divider />
-                        <h1 className="titulo" style={{ fontSize: "32px" }}>
+                        <h1 className="sub-titulo">
                             Informacion del beneficiario
                         </h1>
                         <div className="row">
@@ -185,10 +185,11 @@ export const EntradaScreen = () => {
                     </div>
                 </div>
                 <Divider />
-                <h1 className="titulo">Lista de productos devueltos</h1>
+                <h1 className="sub-titulo">Lista de productos devueltos</h1>
                 <Table
                     columns={columnsProductosDevueltos}
                     dataSource={informacionEntrada.listaProductos}
+                    className="mt-3"
                 />
             </div>
         );

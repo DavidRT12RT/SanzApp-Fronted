@@ -238,3 +238,12 @@
     display: grid;
     align-content: center;
 }
+
+
+.cardSalida  .sub-titulo{
+    font-size: 17px !important;
+}
+
+.beneficiarioCard .sub-titulo{
+    font-size: 17px !important;
+}

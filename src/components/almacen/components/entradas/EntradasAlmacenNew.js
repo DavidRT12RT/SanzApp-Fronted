@@ -128,7 +128,7 @@ export const EntradasAlmacenNew = () => {
 
             <div className="row mt-3 containerBusquedaEntradas">
                 <div className="col-12">
-                    <h1 className="sub-titulo">FILTROS</h1>
+                    <h1 className="sub-titulo">Filtros</h1>
                     <Divider />
 
                     <h1 className="titulo-descripcion text-muted mb-3">
@@ -159,15 +159,15 @@ export const EntradasAlmacenNew = () => {
                     </Checkbox.Group>
                 </div>
                 <div className="col-12 mt-3">
-                    <h1 className="sub-titulo">ENTRADAS ENCONTRADAS</h1>
+                    <h1 className="sub-titulo">Entradas</h1>
                     <Divider />
+                    <Input.Search size="large" enterButton placeholder="Busca una entrada por su codigo de barras..."/>
                     {entradasRegistros.length === 0 && (
-                        <p className="titulo-descripcion text-danger">
+                        <p className="titulo-descripcion text-danger mt-3">
                             Ninguna entrada encontrada...
                         </p>
                     )}
                     <div className="containerEntradasCards">
-                        <Input.Search size="large" enterButton placeholder="Busca una entrada por su codigo de barras..."/>
                         {entradasRegistros.map((entrada) => (
                             <EntradaCard entrada={entrada} key={entrada.key} />
                         ))}

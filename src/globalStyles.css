@@ -18,7 +18,7 @@
 .sub-titulo{
   font-family: 'Lato',sans-serif;
   line-height: 1.5;
-  font-size: 24px;
+  font-size: 24px !important;
   font-weight: 900;
 }
 
