@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import {Affix, Button, Checkbox, Divider, Input, Menu } from 'antd';
+import { Button, Checkbox, Divider, Input, Menu } from 'antd';
 import { Loading } from '../../../obras/Loading';
 import { ProductoCard } from './components/ProductoCard';
 import { Link, useLocation } from 'react-router-dom';
 import { useProductos } from '../../../../hooks/useProductos';
 import { useSelector } from 'react-redux';
 import { useCategorias } from '../../../../hooks/useCategorias';
-import { motion } from "framer-motion"
 
 import "../../assets/css/styleProductosScreen.css";
 
@@ -92,11 +91,11 @@ export const ProductosScreen = () => {
                         <div className="col-lg-2 col-12 ">
                             <h1 className="titulo-descripcion" style={{fontSize:"20px"}}>FILTRAR POR</h1>
                             <Divider/>
-                            <h1 className="titulo-descripcion" style={{fontSize:"13px"}}>Categorias</h1>
+                            <h1 className="titulo-descripcion mb-3">Categorias</h1>
                             {
                                 categoriasDB.length === 0 
                                 ? 
-                                <p className="text-danger descripcion" style={{fontSize:"10px"}}>Ninguna categoria registrada aun en el sistema...</p>
+                                <p className="text-danger descripcion">Ninguna categoria registrada aun en el sistema...</p>
                                 :
                                 <Checkbox.Group onChange={(categorias)=>{setCategorias(categorias)}} className="d-flex flex-column" >
                                 {

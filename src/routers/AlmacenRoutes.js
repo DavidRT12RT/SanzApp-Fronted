@@ -21,6 +21,7 @@ import { ProductosScreen } from "../components/almacen/components/productosAlmac
 import { ProductoScreen } from "../components/almacen/components/productos/ProductoScreen";
 import { RetiroAlmacen } from "../components/almacen/components/salidas/RetiroAlmacen";
 import { IngresoAlmacen } from "../components/almacen/components/entradas/IngresoAlmacen";
+import { CamionetasScreen } from "../components/administraccion/components/camionetas/CamionetasScreen";
 
 export const AlmacenRoutes = () => {
     // const { socket } = useContext(SocketContext);
@@ -58,6 +59,8 @@ export const AlmacenRoutes = () => {
                     path="/inventarios/registrar-inventario/"
                     element={<RegistrarInventario />}
                 ></Route>
+
+                <Route path="/camionetas" element={<CamionetasScreen/>}/>
                 <Route path="/mi-espacio/" element={<MySpace />} />
                 <Route path="/*" element={<Component404 />} />
             </Routes>

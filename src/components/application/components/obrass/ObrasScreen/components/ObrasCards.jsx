@@ -29,8 +29,6 @@ const ObrasCards = ({obras,search,informacionObras,setParametrosBusqueda}) => {
         }));
     }
 
-    console.log(pagina);
-
     const generarBotones = () => {
         //Sacar numero de paginas
         let numPaginas = Math.round(informacionObras.totalObrasEncontradas / 5);
@@ -44,7 +42,7 @@ const ObrasCards = ({obras,search,informacionObras,setParametrosBusqueda}) => {
     
     return (
         <div className="obrasCardsContainer">
-            <Input.Search size="large" allowClear onSearch={handleChangeInputSearch} enterButton={<button type="primary" className="btn btn-warning">Buscar</button>} placeholder="busca una obra por su nombre..."/>
+            <Input.Search size="large" className="descripcion" allowClear onSearch={handleChangeInputSearch} enterButton={<button type="primary" className="btn btn-warning">Buscar</button>} placeholder="busca una obra por su nombre..."/>
 
             <h1 className="titulo-descripcion" style={{alignSelf:"start"}}>Se han encontrado <span className="text-warning">{informacionObras.totalObrasEncontradas}</span> obras!</h1>
             {obras.map(obra => {

@@ -93,7 +93,8 @@ export const useEmpresa = () => {
         setValues({
             ...values,
             formValues:{
-                [target]:target.value
+                ...values.formValues,
+                [target.name]:target.value
             }
         });
     }
@@ -126,8 +127,6 @@ export const useEmpresa = () => {
         fetchDataEmpresa();
     }, [search]);
 
-    console.log("Values",values);
-
     useEffect(() => {
         if(values.empresaInfo !== null){
             const sucursales = values.empresaInfo.sucursales.map(sucursal => {
@@ -136,7 +135,11 @@ export const useEmpresa = () => {
             });
             setValues({
                 ...values,
-                sucursales
+                sucursales,
+                formValues:{
+                    nombre:values.empresaInfo.nombre,
+                    descripcion:values.empresaInfo.descripcion
+                }
             });
         }
     }, [values.empresaInfo]);
@@ -229,8 +232,8 @@ export const useEmpresa = () => {
 
                 //Todo salio bien 
                 message.success(body.msg);
+                setValues({...values,isEditing:false});
                 //TODO: Mandar por socket que se actualizo la empresa
- 
  
             }
         });

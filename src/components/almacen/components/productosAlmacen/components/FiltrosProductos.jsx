@@ -42,7 +42,7 @@ export const FiltrosProductos = ({ setParametrosBusqueda }) => {
         return (
             <div
                 className={
-                    "categoriaCard " +
+                    "categoriaCard text-center " +
                     (categoriasSelecionadas.includes(categoria._id) &&
                         "bg-warning")
                 }
@@ -58,7 +58,7 @@ export const FiltrosProductos = ({ setParametrosBusqueda }) => {
         <section className="filtrosContenedorPrincipal">
             <h1 className="sub-titulo">Filtros</h1>
             <Divider />
-            <h2 className="titulo-descripcion text-muted">Categorias</h2>
+            <h2 className="titulo-descripcion text-muted mb-3">Categorias</h2>
             <div className="categoriasContainer">
                 {categorias.length > 0 ? (
                     categorias.map((categoria) => {
@@ -77,7 +77,7 @@ export const FiltrosProductos = ({ setParametrosBusqueda }) => {
             </div>
 
             <Divider />
-            <h2 className="titulo-descripcion text-muted">Costo</h2>
+            <h2 className="titulo-descripcion text-muted mb-3">Costo</h2>
             <div className="costoContainer">
                 <InputNumber
                     size="large"

@@ -5,11 +5,13 @@
     align-items: center;
     justify-items: center;
     min-height: 100vh;
+
+    padding:15px;
 }
 
 .containerRegister {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: flex-start;
     align-items: center;
     flex-direction: row;
     flex-wrap: wrap;
@@ -65,7 +67,6 @@
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    margin:10px 0px;
 }
 
 

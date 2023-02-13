@@ -28,12 +28,13 @@ export const EntradaCard = ({entrada}) => {
     return (
         <>
             <div className="entradaCard">
-                {renderizarIcono(entrada.tipo)}
+                {/* {renderizarIcono(entrada.tipo)} */}
                 <div>
                     <h1 className="titulo-descripcion">BENEFICIARIO ALMACEN</h1>
-                    <div className="d-flex justify-content-start align-items-center flex-wrap gap-lg-3">
+                    <div className="d-flex justify-content-start align-items-center flex-wrap gap-2">
                         <p className="nota text-muted text-start">Ingresados: {entrada.listaProductos.length}</p>
                         <p className="nota text-muted text-start">Fecha: {entrada.fecha}</p>
+                        <p className="nota text-muted text-start">Total: <span className="text-success">${entrada.costoTotal}</span></p>
                     </div>
                 </div>
 

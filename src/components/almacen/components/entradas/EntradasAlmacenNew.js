@@ -7,6 +7,7 @@ import {
     Select,
     Button,
     DatePicker,
+    Input,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
@@ -121,15 +122,18 @@ export const EntradasAlmacenNew = () => {
                     </div>
                 </div>
                 <div className="col-lg-3 d-none d-lg-block">
-                    <img src={imagenEntradas} className="imagenRegister" />
+                    {/* <img src={imagenEntradas} className="imagenRegister" /> */}
                 </div>
             </div>
 
-            <div className="row mt-5 containerBusquedaEntradas">
-                <div className="col-12 col-lg-2">
-                    <h1 className="sub-titulo">FILTRAR POR</h1>
+            <div className="row mt-3 containerBusquedaEntradas">
+                <div className="col-12">
+                    <h1 className="sub-titulo">FILTROS</h1>
                     <Divider />
 
+                    <h1 className="titulo-descripcion text-muted mb-3">
+                        Tipo de entrada 
+                    </h1>
                     <Checkbox.Group
                         onChange={(valores) => {
                             setParametrosBusqueda({
@@ -154,7 +158,7 @@ export const EntradasAlmacenNew = () => {
                         </Checkbox>
                     </Checkbox.Group>
                 </div>
-                <div className="col-12 col-lg-10 mt-5 mt-lg-0">
+                <div className="col-12 mt-3">
                     <h1 className="sub-titulo">ENTRADAS ENCONTRADAS</h1>
                     <Divider />
                     {entradasRegistros.length === 0 && (
@@ -163,6 +167,7 @@ export const EntradasAlmacenNew = () => {
                         </p>
                     )}
                     <div className="containerEntradasCards">
+                        <Input.Search size="large" enterButton placeholder="Busca una entrada por su codigo de barras..."/>
                         {entradasRegistros.map((entrada) => (
                             <EntradaCard entrada={entrada} key={entrada.key} />
                         ))}

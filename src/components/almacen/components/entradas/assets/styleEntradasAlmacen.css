@@ -1,10 +1,11 @@
 .containerEntradas{
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: min-content;
     align-items: center;
-    flex-direction:column ;
-    flex-wrap: wrap;
-
-    height: 100vh;
+    justify-items: center;
+    min-height: 100vh;
+    padding: 15px;
 }
 
 .containerEntradas .imagenRegister{

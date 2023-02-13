@@ -16,7 +16,7 @@ const EmpresaCard = ({ empresa }) => {
             <div className="contentLeft">
                 <div className="logoContainer">
                     <img
-                        src={`${process.env.REACT_APP_BACKEND_URL}/api/uploads/empresas/empresa/${empresa._id}`}
+                        src={`${process.env.REACT_APP_BACKEND_URL}/api/empresas/logo/${empresa._id}`}
                     />
                 </div>
                 <div className="empresaInformation">

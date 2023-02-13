@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Checkbox,
@@ -9,21 +10,26 @@ import {
     Modal,
     Select,
 } from "antd";
-import React, { useEffect, useState } from "react";
-
-import { SalidaCard } from "./SalidaCard";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
-import { fetchConToken } from "../../../../helpers/fetch";
-import { ReporteSalidasAlmacen } from "../../../../reportes/Almacen/ReporteSalidasAlmacen";
 
+//Helper's
+import { fetchConToken } from "../../../../helpers/fetch";
+
+//Component's
+import { SalidaCard } from "./SalidaCard";
+
+
+//Custom hook's
 import { useSalidas } from "../../../../hooks/useSalidas";
 import { useObras } from "../../../../hooks/useObras";
 import { useEmpleados } from "../../../../hooks/useEmpleados";
 
+//Date
 import moment from "moment";
 import locale from "antd/es/date-picker/locale/es_ES";
 
 //PDF REPORTE
+import { ReporteSalidasAlmacen } from "../../../../reportes/Almacen/ReporteSalidasAlmacen";
 import { pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 
@@ -255,10 +261,10 @@ export const SalidasAlmacenNew = () => {
                         </button>
                     </div>
                 </div>
-                <img src={imagenSalidas} className="imagenRegister" />
+                {/* <img src={imagenSalidas} className="imagenRegister" /> */}
             </div>
 
-            <div className="row mt-5 containerBusquedaSalidas">
+            <div className="row mt-3 containerBusquedaSalidas">
                 <div className="col-12">
                     <h1 className="sub-titulo">FILTROS</h1>
                     <Divider />

@@ -35,11 +35,11 @@ export const EmpresaScreen = () => {
                 {
                     values.isEditing 
                         ? 
-                            <>
+                            <div className="mb-3">
                                 <Button type="primary" danger onClick={onFinishEditingEmpresa}>Guardar cambios</Button>
                                 <Button className="ms-2" type="primary" onClick={() => setEditInfo(false)}>Salir sin guardar</Button>
-                            </> 
-                        : <Button type="primary" danger onClick={() => setEditInfo(true)}>Editar informacion</Button>
+                            </div> 
+                        : <Button type="primary" className="mb-3" danger onClick={() => setEditInfo(true)}>Editar informacion</Button>
                 } 
             </div>
             <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap">
@@ -62,7 +62,7 @@ export const EmpresaScreen = () => {
                             <Upload {...props} listType="picture">
                                 <Button icon={<UploadOutlined />}>Click para subir nuevo logo</Button>
                             </Upload>
-                        : <img src={`${process.env.REACT_APP_BACKEND_URL}/api/uploads/empresas/empresa/${values.empresaInfo._id}`} style={{height:"50px"}}/>
+                        : <img src={`${process.env.REACT_APP_BACKEND_URL}/api/empresas/logo/${values.empresaInfo._id}`} style={{height:"100px",width:"150px",objectFit:"cover"}}/>
                 }
             </div>
             <div className="row">
