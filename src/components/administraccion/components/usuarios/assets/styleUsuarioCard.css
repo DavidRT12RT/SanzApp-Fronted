@@ -1,16 +1,47 @@
+.usuariosCardsContainer{
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
 .usuarioCard{
-    transition: box-shadow .3s;
-    width: 600px;
+    width: 100%;
+    height: 200px;
+
     background-color: #fff;
-    padding:30px;
+    padding:20px;
+    border-radius: 10px;
+
+    display: flex;
+    justify-content:flex-start;
+    align-items: center;
+    gap: 20px;
 }
 
-.usuarioCard:hover{
-    box-shadow: 0 0 11px rgba(33,33,33,.2); 
-    cursor: pointer;
+.usuarioCard .descripcion{
+    font-size: 15px;
 }
 
-.nombreUsuario{
-    font-size: 30px;
-    font-weight: 900;
+
+
+.usuarioImageContainer{
+    width: 200px;
+    height: 100%;
+
+    background-color:#f5f2fd;
+}
+
+.usuarioImageContainer img{
+    width: 100%;
+    height:100%;
+
+    object-fit: cover;
+}
+
+@media(min-width:100px) and (max-width:1000px){
+    .usuarioImageContainer{
+        width: 100px;
+    }
 }

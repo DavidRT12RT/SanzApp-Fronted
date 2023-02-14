@@ -5,15 +5,19 @@ import { GestionCamionetas } from '../components/administraccion/components/cami
 import { RegistrarCamioneta } from '../components/administraccion/components/camionetas/RegistrarCamioneta';
 import { MapasApp } from '../components/administraccion/components/Mapas/MapasApp';
 import { GestionOficina } from '../components/administraccion/components/oficina/GestionOficina';
-import { RegistrarUsuario } from '../components/administraccion/components/usuarios/RegistrarUsuario';
-import { UsuariosPanel } from '../components/administraccion/components/usuarios/UsuariosPanel';
+//Component's
 import { AdministracionNavbar } from '../components/administraccion/ui/AdministracionNavbar';
-import { ProductosScreen } from '../components/almacen/components/productosAlmacen/ProductosScreen';
 import { Component404 } from "../components/componentesGenerales/component404/Component404";
 import Footer from '../components/componentesGenerales/Footer';
-import { SeccionNoticias } from '../components/componentesGenerales/noticias/SeccionNoticias';
+
 import { SocketContext } from '../context/SocketContext';
 import { PrivateRoutePorRole } from './PrivateRoutePorRole';
+
+//Screen's
+import { SeccionNoticias } from '../components/componentesGenerales/noticias/SeccionNoticias';
+import { UsuariosScreen } from '../components/administraccion/components/usuarios/UsuariosScreen';
+import { ProductosScreen } from '../components/almacen/components/productosAlmacen/ProductosScreen';
+import { RegistrarUsuarioScreen } from '../components/administraccion/components/usuarios/RegistrarUsuarioScreen';
 
 export const AdministracionRoutes = () => {
     const { socket } = useContext(SocketContext);
@@ -24,8 +28,8 @@ export const AdministracionRoutes = () => {
             <AdministracionNavbar/>
             <Routes>
                 <Route path="/" element={<SeccionNoticias/>}/>
-                <Route path="/usuarios/" element={<UsuariosPanel/>}/>
-                <Route path="/usuarios/registrar/" element={<RegistrarUsuario/>}/>
+                <Route path="/usuarios/" element={<UsuariosScreen/>}/>
+                <Route path="/usuarios/registrar/" element={<RegistrarUsuarioScreen/>}/>
                 <Route path="/almacen" element={<ProductosScreen/>}/>
 
                 <Route path="/oficina/" element={

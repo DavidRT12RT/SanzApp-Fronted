@@ -54,7 +54,7 @@ export const AdministracionNavbar = () =>{
                         <li className="nav-item">
                             <NavLink className={({isActive})=>
                                 "nav-link h6" + (isActive ? " active" : "")
-                            } to="/administracion/usuarios/" aria-current="page">Usuarios registrados</NavLink>
+                            } to="/administracion/usuarios/" aria-current="page">Usuarios</NavLink>
                         </li>
                         <li className="nav-item">
                             <NavLink className={({isActive})=>

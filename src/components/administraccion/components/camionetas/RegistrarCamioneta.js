@@ -74,7 +74,7 @@ export const RegistrarCamioneta = () => {
     };
 
 	return (
-		<div className="container shadow rounded mt-lg-5 especial">
+		<div className="container shadow rounded mt-lg-5 especial" style={{minHeight:"100vh"}}>
 				<div className="row">
    				{/*Imagen screen*/}
 				<div className="col-6 bgRegistro">

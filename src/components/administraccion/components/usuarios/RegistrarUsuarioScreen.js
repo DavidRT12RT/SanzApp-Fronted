@@ -11,7 +11,7 @@ const { Step } = Steps;
 const { confirm } = Modal;
 
 
-export const RegistrarUsuario = () => {
+export const RegistrarUsuarioScreen = () => {
 
     const [current, setCurrent] = useState(0);
 	const [filesList, setFilesList] = useState([]);

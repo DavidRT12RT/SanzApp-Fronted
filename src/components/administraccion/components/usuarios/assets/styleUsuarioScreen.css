@@ -1,0 +1,19 @@
+/* Estilos de pantalla usuarios */
+.usuariosContainer{
+    display: grid;
+    grid-template-rows: min-content;
+
+    min-height: 100vh;
+    padding: 50px;
+
+}
+
+@media(min-width:100px) and (max-width:1000px){
+    .usuariosContainer{
+        padding:30px;
+    }
+}
+
+.usuariosContainer .titulo{
+    color:#000 !important;
+}
