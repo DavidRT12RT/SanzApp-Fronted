@@ -1,4 +1,4 @@
-import { Button, Divider,Table, Tag } from 'antd';
+import { Button, Divider,Image,Table, Tag } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { fetchConToken } from '../../../../helpers/fetch';
@@ -194,9 +194,21 @@ export const SalidaScreen = () => {
                 <h1 className="sub-titulo">Lista de productos devueltos</h1>
                 <Table className="mt-3" columns={columnsProductosDevueltos} dataSource={informacionSalida.productosDevueltos} expandable={{expandedRowRender}}/>
 
+
+                <Divider/>
+                <h1 className="sub-titulo">Evidencia</h1>
+                <div className="containerEvidencia">
+                    {informacionSalida.evidencia.map(evidencia => 
+                        <Image 
+                            src={`${process.env.REACT_APP_BACKEND_URL}/api/salidas/obtener-evidencia-salida/${informacionSalida._id}/${evidencia}`}/>
+                        )
+                    }
+                </div>
+
                 <Divider/>
                 <h1 className="sub-titulo">Codigo de barras</h1>
                 <Barcode className="mt-3" value={informacionSalida._id}/>
+
             </div>
         )
     }

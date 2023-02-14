@@ -1,8 +1,12 @@
-import { message } from "antd";
 import React, { useEffect, useState } from "react";
+import { message } from "antd";
 import { useLocation, useSearchParams } from "react-router-dom";
+
+//Helper's
 import { fetchConToken } from "../../../../helpers/fetch";
 import { SanzSpinner } from "../../../../helpers/spinner/SanzSpinner";
+
+//Custom hook's
 import { useEmpresas } from "../../../../hooks/useEmpresas";
 
 //Components
@@ -38,9 +42,10 @@ export const Empresas = () => {
         fetchData();
     }, [search]);
 
+    console.log("Empresas!");
+
     if (isLoading) return <SanzSpinner />;
-    else
-        return (
+    else return (
             <div className="contenedorPrincipalEmpresasScreen">
                 <HeroSection />
                 <div className="heroSectionBorder bg-warning"></div>

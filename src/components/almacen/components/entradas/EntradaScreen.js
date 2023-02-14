@@ -1,16 +1,18 @@
-import { Button, Divider, message, Table, Tag } from "antd";
+import { Button, Divider, Image, message, Table, Tag } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 import { fetchConToken } from "../../../../helpers/fetch";
 import { SanzSpinner } from "../../../../helpers/spinner/SanzSpinner";
+import Barcode from "react-barcode";
 
 export const EntradaScreen = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
     const [informacionEntrada, setInformacionEntrada] = useState(null);
+
 
 
     useEffect(() => {
@@ -185,12 +187,25 @@ export const EntradaScreen = () => {
                     </div>
                 </div>
                 <Divider />
-                <h1 className="sub-titulo">Lista de productos devueltos</h1>
+                <h1 className="sub-titulo">Lista de productos</h1>
                 <Table
                     columns={columnsProductosDevueltos}
                     dataSource={informacionEntrada.listaProductos}
                     className="mt-3"
                 />
+                <Divider/>
+                <h1 className="sub-titulo">Evidencia</h1>
+                <div className="containerEvidencia">
+                    {informacionEntrada.evidencia.map(evidencia => 
+                            <Image 
+                                src={`${process.env.REACT_APP_BACKEND_URL}/api/entradas/obtener-evidencia-entrada/${informacionEntrada._id}/${evidencia}`}/>
+                        )
+                    }
+                </div>
+
+                <Divider/>
+                <h1 className="sub-titulo">Codigo de barras</h1>
+                <Barcode className="mt-3" value={informacionEntrada._id}></Barcode>
             </div>
         );
     }

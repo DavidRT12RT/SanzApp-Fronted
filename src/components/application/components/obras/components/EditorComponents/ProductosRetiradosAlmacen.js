@@ -1,14 +1,18 @@
-import { Divider, Table,Button, Tag } from 'antd'
 import React, { useEffect, useState } from 'react'
-
+import { Divider, Table,Button, Tag } from 'antd'
 import { Link } from "react-router-dom"
-import { PDFDownloadLink } from '@react-pdf/renderer';
+
+//Helper's
 import { fetchConToken } from '../../../../../../helpers/fetch';
+
+//Reporte's
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import { ReporteProductosRetiradosAlmacen } from '../../../../../../reportes/Obras/ReporteProductosRetiradosAlmacen';
 
 export const ProductosRetiradoAlmacen = ({obraInfo}) => {
     
     const [salidasObra, setSalidasObra] = useState([]);
+
 
     const columns = [
         {
@@ -65,7 +69,7 @@ export const ProductosRetiradoAlmacen = ({obraInfo}) => {
             },
             {
                 title:<p className="titulo-descripcion">Cantidad retirada</p>,
-                render:(text,record) => (<p className="descripcion">{record.cantidad}</p>)
+                render:(text,record) => (<p className="descripcion">{record.cantidadRetirada}</p>)
             },
             {
                 title:<p className="titulo-descripcion">Ver mas detalles</p>,
@@ -84,7 +88,7 @@ export const ProductosRetiradoAlmacen = ({obraInfo}) => {
             },
             {
                 title:<p className="titulo-descripcion">Cantidad devuelta</p>,
-                render:(text,record) => (<p className="descripcion">{record.cantidad}</p>)
+                render:(text,record) => (<p className="descripcion">{record.cantidadIngresada}</p>)
             },
             {
                 title:<p className="titulo-descripcion">Fecha de devolcion</p>,

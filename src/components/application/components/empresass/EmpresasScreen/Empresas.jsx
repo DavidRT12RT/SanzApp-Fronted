@@ -39,8 +39,7 @@ export const Empresas = () => {
     }, [search]);
 
     if (isLoading) return <SanzSpinner />;
-    else
-        return (
+    else return (
             <div className="contenedorPrincipalEmpresasScreen">
                 <HeroSection />
                 <div className="heroSectionBorder bg-warning"></div>
@@ -49,5 +48,5 @@ export const Empresas = () => {
                     setParametrosBusqueda={setParametrosBusqueda}
                 />
             </div>
-        );
+    );
 };

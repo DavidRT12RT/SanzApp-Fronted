@@ -58,3 +58,18 @@
         height: 149px;
     }
 }
+
+.containerEvidencia{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 10px;
+	overflow-x: auto;
+}
+
+.containerEvidencia img{
+	width: 300px;
+	height: 300px;
+	object-fit: cover;
+}

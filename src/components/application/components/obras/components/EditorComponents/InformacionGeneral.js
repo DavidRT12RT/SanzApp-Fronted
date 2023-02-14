@@ -41,10 +41,8 @@ export const InformacionGeneral = ({obraInfo,socket}) => {
         });
     }
 
-    if(isLoadingEmpleados){
-        return <SanzSpinner/>
-    }else{
-        return (
+    if(isLoadingEmpleados) return <SanzSpinner/>
+    else return (
             <div className="p-5 container"  style={{minHeight:"100vh"}}>
                 <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap">
                     <Breadcrumb>
@@ -61,18 +59,18 @@ export const InformacionGeneral = ({obraInfo,socket}) => {
                 <div className="row">
                     <div className="col-12 col-lg-6">
                         <Divider/>
-                        <h1 className="titulo">Descripcion de la obra:</h1>
+                        <h1 className="sub-titulo">Descripcion de la obra:</h1>
                         {isEditing ? <textarea style={{width:"100%"}} rows="5" name="descripcion" onChange={handleInputChange} value={formValues.descripcion} className="descripcion form-control"/> : <p className="descripcion">{obraInfo.descripcion}</p>}
                     </div>
                     <div className="col-12 col-lg-6">
                         <Divider/>
-                        <h1 className="titulo">Observaciones de la obra:</h1>
+                        <h1 className="sub-titulo">Observaciones de la obra:</h1>
                         {isEditing ? <textarea style={{width:"100%"}} rows="5" name="observaciones" onChange={handleInputChange} value={formValues.observaciones} className="descripcion form-control"/> : <p className="descripcion">{obraInfo.observaciones}</p>}
                     </div>
                 </div>
                 <Divider/>
-                <h1 className="titulo">Informacion de la obra:</h1>
-                <div className="row">
+                <h1 className="sub-titulo">Informacion de la obra:</h1>
+                <div className="row mt-3">
                     <h1 className="col-6 titulo-descripcion">Estado de la obra:</h1>
                     {isEditing 
                         ? 
@@ -141,8 +139,10 @@ export const InformacionGeneral = ({obraInfo,socket}) => {
                     <p className="col-6 descripcion">{obraInfo.empresa.nombre}</p>
                     <h1 className="col-6 titulo-descripcion">Sucursal:</h1>
                     <p className="col-6 descripcion">{obraInfo.sucursal.nombre}</p>
+                    <h1 className="col-6 titulo-descripcion">Cantidad de salidas registradas</h1>
+                    <p className="col-6 descripcion">{obraInfo.retiradoAlmacen.length}</p>
+
                 </div>
             </div>
         )
-    }
 }

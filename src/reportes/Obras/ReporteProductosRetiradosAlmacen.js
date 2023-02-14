@@ -114,7 +114,7 @@ export const ReporteProductosRetiradosAlmacen = ({salidas}) => {
                             children={[
                                 ["Nombre","Marca","Cantidad retirada","Unidad"],
                                 ...salida.listaProductos.map(producto=> {
-                                    return [producto.id.nombre,producto.id.marca,producto.cantidad,producto.id.unidad]
+                                    return [producto.id.nombre,producto.id.marca,producto.cantidadRetirada,producto.id.unidad]
                                 })
                             ]} 
                         />
@@ -129,7 +129,7 @@ export const ReporteProductosRetiradosAlmacen = ({salidas}) => {
                                         children={[
                                             ["Nombre","Marca","Cantidad retirada","Unidad"],
                                             ...entrada.listaProductos.map(producto=> {
-                                                return [producto.id.nombre,producto.id.marca,producto.cantidad,producto.id.unidad]
+                                                return [producto.id.nombre,producto.id.marca,producto.cantidadIngresada,producto.id.unidad]
                                             })
                                         ]} 
                                     />

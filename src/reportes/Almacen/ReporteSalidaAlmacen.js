@@ -18,7 +18,6 @@ import LatoRegular from "../assets/fuentes/Lato-Regular.ttf";
 export const ReporteSalidaAlmacen = ({ salida }) => {
     const fecha = moment().locale("es").format("YYYY-MM-DD");
 
-
     Font.register({
         family: "Lato",
         fonts: [
@@ -126,6 +125,31 @@ export const ReporteSalidaAlmacen = ({ salida }) => {
         },
     });
 
+    const renderizarInformacionBeneficiario = () => {
+        switch(salida.tipo){
+            case "obra":
+                return (
+                    <>
+                        <Text style={styles.label}>Titulo obra {salida.beneficiarioObra.titulo}</Text>
+                        <Text style={styles.label}>Numero de track: {salida.beneficiarioObra.numeroTrack}</Text>
+                        <Text style={styles.label}>Sucursal obra: {salida.beneficiarioObra.sucursal.nombre}</Text>
+                        <Text style={styles.label}>Delegacion sucursal: {salida.beneficiarioObra.sucursal.delegacion}</Text>
+                    </>
+                )
+            case "resguardo":
+                return (
+                    <>
+                        <Text style={styles.label}>Nombre trabajador: {salida.beneficiarioResguardo.nombre}</Text>
+                        <Text style={styles.label}>Correo trabajador: {salida.beneficiarioResguardo.correo}</Text>
+                        <Text style={styles.label}>Telefono: {salida.beneficiarioResguardo.telefono}</Text>
+                    </>
+                );
+
+            case "merma":
+                return <Text style={styles.label}>Ningun beneficiario por ser merma...</Text>
+        }
+    }
+
     return (
         <Document>
             <Page size="A4" style={styles.page}>
@@ -172,6 +196,11 @@ export const ReporteSalidaAlmacen = ({ salida }) => {
                     </Text>
                 </View>
 
+                <View style={{marginTop:"10px"}}>
+                    <Text style={styles.informacionSalida}>Informacion beneficiario:</Text>
+                    {renderizarInformacionBeneficiario()}
+                </View>
+
                 <View style={styles.salidaContainer}>
                     <Text style={{ ...styles.label, color: "red" }}>
                         Productos retirados del almacen
@@ -190,10 +219,10 @@ export const ReporteSalidaAlmacen = ({ salida }) => {
                             [
                                 "Nombre",
                                 "Marca",
-                                "Cantidad retirada",
+                                "Cantidad",
                                 "Unidad",
-                                "Costo X unidad",
-                                "Costo total del producto",
+                                "Costo unidad",
+                                "Costo total ",
                             ],
                             ...salida.listaProductos.map((producto) => {
                                 return [
@@ -241,7 +270,7 @@ export const ReporteSalidaAlmacen = ({ salida }) => {
                                 [
                                     "Nombre",
                                     "Marca",
-                                    "Cantidad ingresada",
+                                    "Cantidad",
                                     "Unidad",
                                 ],
                                 ...entrada.listaProductos.map((producto) => {
@@ -256,6 +285,8 @@ export const ReporteSalidaAlmacen = ({ salida }) => {
                         />
                     </View>
                ))}
+
+               <Text style={{...styles.label,textAlign:"center"}}>Para mas informacion(evidencia) consultar la aplicacion en internet...</Text>
            </Page>
         </Document>
     );

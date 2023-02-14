@@ -66,10 +66,9 @@ export const useRetiroAlmacen = () => {
             }
             return false;
         },
-        listType: "picture",
         showUploadList: false,
         maxCount: 5,
-        // fileList: values.filesList,
+        fileList: values.filesList,
     };
 
     const agregarProducto = async (e) => {

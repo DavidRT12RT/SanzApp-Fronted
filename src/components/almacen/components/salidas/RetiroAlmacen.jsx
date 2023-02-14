@@ -120,6 +120,7 @@ export const RetiroAlmacen = () => {
                             Soporte para varias imagenes de tipo JPG/PNG.
                         </p>
                     </Dragger>
+                    <p className="descripcion">Cantidad de fotos a subir: {values.filesList.length}</p>
                     <div className="row">
                         <button
                             type="primary"
