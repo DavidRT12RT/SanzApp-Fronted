@@ -6,6 +6,7 @@ import { saveAs } from "file-saver";
 import { fetchConToken } from "../../../../helpers/fetch";
 import { SanzSpinner } from "../../../../helpers/spinner/SanzSpinner";
 import Barcode from "react-barcode";
+import { ReporteEntradaAlmacen } from "../../../../reportes/Almacen/ReporteEntradaAlmacen";
 
 export const EntradaScreen = () => {
     const { id } = useParams();
@@ -29,14 +30,10 @@ export const EntradaScreen = () => {
     }, []);
 
    const handleDownloadEvidencia = async () => {
-        /*
         const blob = await pdf((
-            <ReporteSalidaAlmacen salida={informacionSalida}/>
+            <ReporteEntradaAlmacen entrada={informacionEntrada}/>
         )).toBlob();
-        saveAs(blob,`salida_almacen_${informacionSalida._id}.pdf`)
-        */
-
-        console.log("Entrada reporte!");
+        saveAs(blob,`entrada_almacen_${informacionEntrada._id}.pdf`)
     };
 
     const columnsProductosDevueltos = [
