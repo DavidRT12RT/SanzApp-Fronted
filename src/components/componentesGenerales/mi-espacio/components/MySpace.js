@@ -72,7 +72,7 @@ export const MySpace = () => {
     }, [path]);
 
     useEffect(() => {
-        socket.on("actualizar-archivos-usuario",(values) => {
+        socket?.on("actualizar-archivos-usuario",(values) => {
             let query;
             if(values.query.startsWith("/")){
                 query = (path === null ) ? "/" : `/${path}/`
